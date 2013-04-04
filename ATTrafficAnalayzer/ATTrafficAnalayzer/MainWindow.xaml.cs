@@ -23,5 +23,10 @@ namespace ATTrafficAnalayzer
         {
             InitializeComponent();
         }
+
+        private void MenuItemImportClick(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("SICK");
+        }
     }
 }
