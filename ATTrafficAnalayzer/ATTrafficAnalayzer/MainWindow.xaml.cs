@@ -38,11 +38,18 @@ namespace ATTrafficAnalayzer
             SpecialReports.Add("Special Report 4");
             SpecialReports.Add("Special Report 5");
             specialReportsListBox.ItemsSource = SpecialReports;
+
+            this.mainContentControl.Content = new WelcomeScreen();
         }
 
         private void MenuItemImportClick(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("SICK");
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            this.mainContentControl.Content = new VSScreen();
         }
     }
 }

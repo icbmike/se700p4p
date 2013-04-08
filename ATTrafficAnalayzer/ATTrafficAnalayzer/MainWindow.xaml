@@ -69,7 +69,8 @@
                     GroupName="VSvSM"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
-                    BorderBrush="#FF457EFF">VS</RadioButton>
+                    BorderBrush="#FF457EFF"
+                    Checked="RadioButton_Checked">VS</RadioButton>
                 <RadioButton
                     GroupName="VSvSM"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
@@ -125,7 +126,7 @@
                     Margin="0,0,0,0"
                     Name="deleteBtn"
                     VerticalAlignment="Top" />
-                
+
             </StackPanel>
 
 
@@ -170,5 +171,13 @@
 
             </TabControl>
         </StackPanel>
+
+        <ContentControl
+            x:Name="mainContentControl"
+            Grid.Column="1"
+            Height="1000"
+            Width="1000"
+            Grid.Row="2" />
+
     </Grid>
 </Window>
