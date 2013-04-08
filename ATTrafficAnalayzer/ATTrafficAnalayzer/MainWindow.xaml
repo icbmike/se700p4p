@@ -27,7 +27,6 @@
         </Grid.ColumnDefinitions>
 
         <Menu
-            Background="Green"
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="3">
@@ -39,19 +38,42 @@
                     Click="MenuItemImportClick" />
             </MenuItem>
         </Menu>
-        <ToolBarTray Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" IsLocked="True">
-            <ToolBar Band="1" BandIndex="1">
-                <Button BorderBrush="#FFF7FFC4">TABLE</Button>
-                <Button BorderBrush="#FFF7FFC4">GRAPH</Button>
-                <Label>Start Date: </Label>
+        <ToolBarTray
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="3">
+            <ToolBar
+                Band="1"
+                BandIndex="1">
+                <RadioButton
+                    GroupName="GRAPHvsTABLE"
+                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    MinWidth="45"
+                    BorderBrush="#FF457EFF">GRAPH</RadioButton>
+                <RadioButton
+                    GroupName="GRAPHvsTABLE"
+                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    MinWidth="45"
+                    BorderBrush="#FF457EFF">TABLE</RadioButton>
+                <Label
+                    Margin="5,0,0,0">Start Date:</Label>
                 <DatePicker />
-                <Label>End Date:</Label>
+                <Label
+                    Margin="5,0,0,0">End Date:</Label>
                 <DatePicker />
-                <Button BorderBrush="#FFF7FFC4">VS</Button>
-                <Button BorderBrush="#FFF7FFC4">SM</Button>
+                <RadioButton
+                    Margin="5,0,0,0"
+                    GroupName="VSvSM"
+                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    MinWidth="45"
+                    BorderBrush="#FF457EFF">VS</RadioButton>
+                <RadioButton
+                    GroupName="VSvSM"
+                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    MinWidth="45"
+                    BorderBrush="#FF457EFF">SM</RadioButton>
             </ToolBar>
         </ToolBarTray>
-
         <TabControl
             Grid.Row="3"
             Height="812"
