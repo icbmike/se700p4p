@@ -85,7 +85,10 @@
             Margin="0,0,0,0"
             Name="stackPanel1"
             VerticalAlignment="Top">
-
+            <Label
+                Content="Standard Reports"
+                Height="28"
+                Name="label1" />
             <StackPanel
                 Grid.Column="0"
                 Grid.Row="2"
@@ -142,7 +145,13 @@
                             Margin="0,0,0,0"
                             Name="standardReportsListBox"
                             Width="247" />
-
+                        <ScrollBar
+                            Height="780"
+                            HorizontalAlignment="Right"
+                            Margin="0,0,0,0"
+                            Name="scrollBar1"
+                            VerticalAlignment="Top"
+                            Width="18" />
                     </Grid>
                 </TabItem>
                 <TabItem
