@@ -22,6 +22,22 @@ namespace ATTrafficAnalayzer
         public MainWindow()
         {
             InitializeComponent();
+
+            List<string> StandardReports = new List<string>();
+            StandardReports.Add("Standard Report 1");
+            StandardReports.Add("Standard Report 2");
+            StandardReports.Add("Standard Report 3");
+            StandardReports.Add("Standard Report 4");
+            StandardReports.Add("Standard Report 5");
+            standardReportsListBox.ItemsSource = StandardReports;
+
+            List<string> SpecialReports = new List<string>();
+            SpecialReports.Add("Special Report 1");
+            SpecialReports.Add("Special Report 2");
+            SpecialReports.Add("Special Report 3");
+            SpecialReports.Add("Special Report 4");
+            SpecialReports.Add("Special Report 5");
+            specialReportsListBox.ItemsSource = SpecialReports;
         }
 
         private void MenuItemImportClick(object sender, RoutedEventArgs e)
