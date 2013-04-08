@@ -19,6 +19,9 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool mode = true;
+        bool display = true;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,9 +50,58 @@ namespace ATTrafficAnalayzer
             Console.WriteLine("SICK");
         }
 
+        private void graphradio_Checked(object sender, RoutedEventArgs e)
+        {
+            display = true;
+            if (mode)
+            {
+                this.mainContentControl.Content = new SMGraph();
+            }
+            else
+            {
+                this.mainContentControl.Content = new VSGraph();
+            }
+
+        }
+
+        private void tableradio_Checked(object sender, RoutedEventArgs e)
+        {
+            display = false;
+            if (mode)
+            {
+                this.mainContentControl.Content = new SMTable();
+            }
+            else
+            {
+                this.mainContentControl.Content = new VSTable();
+            }
+        }
+
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            this.mainContentControl.Content = new VSScreen();
+            mode = false;
+            if (display)
+            {
+                this.mainContentControl.Content = new VSGraph();
+            }
+            else
+            {
+                this.mainContentControl.Content = new VSTable();
+            }
         }
+
+        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
+        {
+            mode = true;
+            if (display)
+            {
+                this.mainContentControl.Content = new SMGraph();
+            }
+            else
+            {
+                this.mainContentControl.Content = new SMTable();
+            }
+        }
+
     }
 }

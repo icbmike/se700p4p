@@ -55,8 +55,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="VSScreen.xaml.cs">
-      <DependentUpon>VSScreen.xaml</DependentUpon>
+    <Compile Include="SMGraph.xaml.cs">
+      <DependentUpon>SMGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMTable.xaml.cs">
+      <DependentUpon>SMTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VSGraph.xaml.cs">
+      <DependentUpon>VSGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VSTable.xaml.cs">
+      <DependentUpon>VSTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="WelcomeScreen.xaml.cs">
       <DependentUpon>WelcomeScreen.xaml</DependentUpon>
@@ -73,7 +82,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="VSScreen.xaml">
+    <Page Include="SMGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VSGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VSTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

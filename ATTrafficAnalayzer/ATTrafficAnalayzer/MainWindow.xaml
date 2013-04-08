@@ -49,15 +49,19 @@
                 Band="1"
                 BandIndex="1">
                 <RadioButton
+                    Name="graphradio"
                     GroupName="GRAPHvsTABLE"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
-                    BorderBrush="#FF457EFF">GRAPH</RadioButton>
+                    BorderBrush="#FF457EFF"
+                    Checked="graphradio_Checked">GRAPH</RadioButton>
                 <RadioButton
+                    Name="tableradio"
                     GroupName="GRAPHvsTABLE"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
-                    BorderBrush="#FF457EFF">TABLE</RadioButton>
+                    BorderBrush="#FF457EFF"
+                    Checked="tableradio_Checked">TABLE</RadioButton>
                 <Label
                     Margin="5,0,0,0">Start Date:</Label>
                 <DatePicker />
@@ -75,7 +79,8 @@
                     GroupName="VSvSM"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
-                    BorderBrush="#FF457EFF">SM</RadioButton>
+                    BorderBrush="#FF457EFF"
+                    Checked="RadioButton_Checked_1">SM</RadioButton>
             </ToolBar>
         </ToolBarTray>
 
