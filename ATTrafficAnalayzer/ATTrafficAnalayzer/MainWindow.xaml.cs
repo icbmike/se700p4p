@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace ATTrafficAnalayzer
 {
@@ -42,7 +43,24 @@ namespace ATTrafficAnalayzer
 
         private void MenuItemImportClick(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("SICK");
+            // Configure open file dialog box 
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.FileName = ""; // Default file name
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); //The initial directory
+            dlg.DefaultExt = ".VS"; // Default file extension 
+            dlg.Filter = "Volume Store Files (.VS)|*.VS"; // Filter files by extension 
+
+            // Show open file dialog box 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process open file dialog box results 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+                VolumeStoreSingleton.getInstance().readFile(filename);
+
+            }
         }
     }
 }
