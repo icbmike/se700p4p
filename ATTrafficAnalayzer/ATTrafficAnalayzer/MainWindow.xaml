@@ -7,14 +7,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="378*" />
         </Grid.RowDefinitions>
-        
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition  Width="Auto"/>
+            <ColumnDefinition Width="914*" />
         </Grid.ColumnDefinitions>
-        
+
         <Menu Background="Green" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
             <MenuItem Header="_File" DockPanel.Dock="Top">
                 <MenuItem Header="_Import VS File"  Click="MenuItemImportClick"/>
@@ -25,6 +26,17 @@
                 <Button>Whatupo</Button>
             </ToolBar>
         </ToolBarTray>
-        
+
+        <TabControl Grid.Row="3" Height="812" HorizontalAlignment="Left" Name="tabControl1" Width="250" Margin="0,0,0,0" TabStripPlacement="Bottom">
+            <TabItem Header="Standard Reports" Name="standardReportsTab">
+                <Grid DataContext="{Binding}" />
+            </TabItem>
+            <TabItem Header="Special Reports" Name="specialReportsTab">
+                <Grid DataContext="{Binding}">
+                    <ListBox Height="780" HorizontalAlignment="Left" Margin="0,0,0,0" Name="listBox1" Width="247" />
+                </Grid>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>
