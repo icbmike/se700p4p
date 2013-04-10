@@ -8,12 +8,12 @@ namespace ATTrafficAnalayzer
 {
     public class VolumeStoreSingleton
     {
-        private Dictionary<DateTime, List<List<int>>> _volumesDictionary;
+        private Dictionary<DateTimeRecord, List<VolumeRecord>> _volumesDictionary;
         private static VolumeStoreSingleton instance;
 
         private VolumeStoreSingleton()
         {
-            _volumesDictionary = new Dictionary<DateTime, List<List<int>>>();
+            _volumesDictionary = new Dictionary<DateTimeRecord, List<VolumeRecord>>();
         }
 
         public static VolumeStoreSingleton getInstance()
@@ -38,7 +38,6 @@ namespace ATTrafficAnalayzer
             while (index < sizeInBytes) //seek through the byte array untill we reach the end
             {
                 int recordSize = byteArray[index] + byteArray[index+1] * 256; //The record size is stored in two bytes, little endian
-                Console.WriteLine(recordSize);
                 index += 2;
 
                 byte[] record;
@@ -53,10 +52,24 @@ namespace ATTrafficAnalayzer
                     index += recordSize + 1;
                 }
 
-                //TODO: Do stuff with the record
-
             }
 
+        }
+
+        private static RecordType checkRecordType(byte[] record)
+        {
+            //Get the first four bytes and sum them, if the sum is zero, it is a comment record
+            byte[] firstFourBytes = record.Take(4).ToArray();
+            int sum = firstFourBytes.Sum(x => (int)x);      //Using LINQ, casting individual bytes to ints
+            if (sum == 0) return RecordType.COMMENT;
+
+            //If the first two bytes sum to zero and it is not a comment record then it is a datetime record
+            byte[] firstTwoBytes = record.Take(2).ToArray();
+            sum = firstTwoBytes.Sum(x => (int)x);
+            if (sum == 0) return RecordType.DATETIME;
+
+            //Otherwise it is a volume record
+            return RecordType.VOLUME;
         }
 
         private static bool getBit(byte b, int pos)
