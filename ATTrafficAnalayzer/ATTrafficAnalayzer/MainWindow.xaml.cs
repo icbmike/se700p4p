@@ -19,8 +19,8 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool mode = true;
-        bool display = true;
+        bool mode = false;       // sm when true, vs when false
+        bool display = false;    // graph when true, table when false
 
         public MainWindow()
         {
@@ -50,34 +50,45 @@ namespace ATTrafficAnalayzer
             Console.WriteLine("SICK");
         }
 
-        private void graphradio_Checked(object sender, RoutedEventArgs e)
+        private void switchDisplay(object sender, RoutedEventArgs e)
         {
-            display = true;
-            if (mode)
+            RadioButton button = (RadioButton) sender;
+
+            if ((String) button.Content.ToString() == "Graph")
             {
                 this.mainContentControl.Content = new SMGraph();
+                display = true;
+
+                if (mode)
+                {
+                    this.mainContentControl.Content = new SMGraph();
+                }
+                else
+                {
+                    this.mainContentControl.Content = new VSGraph();
+                }
             }
-            else
+            else if ((String)button.Content.ToString() == "Table")
             {
                 this.mainContentControl.Content = new VSGraph();
-            }
+                display = false;
 
-        }
-
-        private void tableradio_Checked(object sender, RoutedEventArgs e)
-        {
-            display = false;
-            if (mode)
-            {
-                this.mainContentControl.Content = new SMTable();
+                if (mode)
+                {
+                    this.mainContentControl.Content = new SMTable();
+                }
+                else
+                {
+                    this.mainContentControl.Content = new VSTable();
+                }
             }
             else
             {
-                this.mainContentControl.Content = new VSTable();
+                Console.WriteLine(button.Content.ToString());
             }
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void vs(object sender, RoutedEventArgs e)
         {
             mode = false;
             if (display)
@@ -90,7 +101,7 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
+        private void sm(object sender, RoutedEventArgs e)
         {
             mode = true;
             if (display)

@@ -6,7 +6,7 @@
     mc:Ignorable="d"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Height="930"
+    Height="967"
     Width="1280">
     <Grid>
         <Grid.RowDefinitions>
@@ -50,18 +50,20 @@
                 BandIndex="1">
                 <RadioButton
                     Name="graphradio"
-                    GroupName="GRAPHvsTABLE"
+                    GroupName="display"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
-                    Checked="graphradio_Checked">GRAPH</RadioButton>
+                    Checked="switchDisplay"
+                    Content="Graph"></RadioButton>
                 <RadioButton
                     Name="tableradio"
-                    GroupName="GRAPHvsTABLE"
+                    GroupName="display"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
-                    Checked="tableradio_Checked">TABLE</RadioButton>
+                    Content="Table"
+                    Checked="switchDisplay"></RadioButton>
                 <Label
                     Margin="5,0,0,0">Start Date:</Label>
                 <DatePicker />
@@ -70,17 +72,19 @@
                 <DatePicker />
                 <RadioButton
                     Margin="5,0,0,0"
-                    GroupName="VSvSM"
+                    GroupName="mode"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
-                    Checked="RadioButton_Checked">VS</RadioButton>
+                    Checked="vs"
+                    Content="VS"></RadioButton>
                 <RadioButton
-                    GroupName="VSvSM"
+                    GroupName="mode"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
-                    Checked="RadioButton_Checked_1">SM</RadioButton>
+                    Checked="sm"
+                    Content="SM"></RadioButton>
             </ToolBar>
         </ToolBarTray>
 
