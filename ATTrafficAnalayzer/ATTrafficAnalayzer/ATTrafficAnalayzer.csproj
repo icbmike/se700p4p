@@ -55,6 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DateTimeRecord.cs" />
+    <Compile Include="Record.cs" />
+    <Compile Include="RecordFactory.cs" />
+    <Compile Include="VolumeRecord.cs" />
     <Compile Include="VolumeStore.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
