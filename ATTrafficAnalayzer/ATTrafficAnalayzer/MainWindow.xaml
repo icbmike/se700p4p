@@ -76,15 +76,15 @@
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
-                    Checked="vs"
-                    Content="VS"></RadioButton>
+                    Content="VS"
+                    Checked="switchMode"></RadioButton>
                 <RadioButton
                     GroupName="mode"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
-                    Checked="sm"
-                    Content="SM"></RadioButton>
+                    Content="SM"
+                    Checked="switchMode"></RadioButton>
             </ToolBar>
         </ToolBarTray>
 

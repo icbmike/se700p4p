@@ -50,7 +50,7 @@ namespace ATTrafficAnalayzer
             Console.WriteLine("SICK");
         }
 
-        private void createScreen(UserControl screen)
+        private void changeScreen(UserControl screen)
         {
             this.mainContentControl.Content = screen;
         }
@@ -63,59 +63,65 @@ namespace ATTrafficAnalayzer
             switch (value)
             {
                 case "Graph":
-                    this.mainContentControl.Content = new SMGraph();
                     display = true;
 
                     if (mode)
                     {
-                        createScreen(new SMGraph());
+                        changeScreen(new VSGraph());
                     }
                     else
                     {
-                        createScreen(new VSGraph());
+                        changeScreen(new SMGraph());
                     }
                     break;
                 case "Table":
-                    this.mainContentControl.Content = new VSGraph();
                     display = false;
 
                     if (mode)
                     {
-                        createScreen(new SMTable());
+                        changeScreen(new VSTable());
                     }
                     else
                     {
-                        createScreen(new VSTable());
+                        changeScreen(new SMTable());
                     }
                     break;
             }
         }
 
-        private void vs(object sender, RoutedEventArgs e)
+        private void switchMode(object sender, RoutedEventArgs e)
         {
-            mode = false;
-            if (display)
+            RadioButton button = (RadioButton)sender;
+            String value = (String)button.Content.ToString();
+
+            switch (value)
             {
-                this.mainContentControl.Content = new VSGraph();
-            }
-            else
-            {
-                this.mainContentControl.Content = new VSTable();
+                case "VS":
+                    mode = false;
+
+                    if (display)
+                    {
+                        changeScreen(new VSGraph());
+                    }
+                    else
+                    {
+                        changeScreen(new VSTable());
+                    }
+                    break;
+
+                case "SM":
+                    display = true;
+
+                    if (display)
+                    {
+                        changeScreen(new SMGraph());
+                    }
+                    else
+                    {
+                        changeScreen(new SMTable());
+                    }
+                    break;
             }
         }
-
-        private void sm(object sender, RoutedEventArgs e)
-        {
-            mode = true;
-            if (display)
-            {
-                this.mainContentControl.Content = new SMGraph();
-            }
-            else
-            {
-                this.mainContentControl.Content = new SMTable();
-            }
-        }
-
     }
 }
