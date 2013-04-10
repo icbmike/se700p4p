@@ -19,8 +19,11 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool mode = false;       // sm when true, vs when false
-        bool display = false;    // graph when true, table when false
+        enum modes { vs, sm };             // sm when true, vs when false
+        enum displays { graph, table };    // graph when true, table when false
+
+        modes mode;
+        displays display;
 
         public MainWindow()
         {
@@ -63,27 +66,26 @@ namespace ATTrafficAnalayzer
             switch (value)
             {
                 case "Graph":
-                    display = true;
-
-                    if (mode)
-                    {
-                        changeScreen(new VSGraph());
-                    }
-                    else
+                    display = displays.graph;
+                    if (mode == modes.sm)
                     {
                         changeScreen(new SMGraph());
                     }
-                    break;
-                case "Table":
-                    display = false;
-
-                    if (mode)
+                    else if (mode == modes.vs)
                     {
-                        changeScreen(new VSTable());
+                        changeScreen(new VSGraph());
                     }
-                    else
+                    break;
+
+                case "Table":
+                    display = displays.table;
+                    if (mode == modes.sm)
                     {
                         changeScreen(new SMTable());
+                    }
+                    else if (mode == modes.vs)
+                    {
+                        changeScreen(new VSTable());
                     }
                     break;
             }
@@ -97,26 +99,24 @@ namespace ATTrafficAnalayzer
             switch (value)
             {
                 case "VS":
-                    mode = false;
-
-                    if (display)
+                    mode = modes.vs;
+                    if (display == displays.graph)
                     {
                         changeScreen(new VSGraph());
                     }
-                    else
+                    else if (display == displays.table)
                     {
                         changeScreen(new VSTable());
                     }
                     break;
 
                 case "SM":
-                    display = true;
-
-                    if (display)
+                    mode = modes.sm;
+                    if (display == displays.graph)
                     {
                         changeScreen(new SMGraph());
                     }
-                    else
+                    else if (display == displays.table)
                     {
                         changeScreen(new SMTable());
                     }
