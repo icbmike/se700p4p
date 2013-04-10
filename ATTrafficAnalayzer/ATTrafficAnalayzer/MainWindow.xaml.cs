@@ -50,41 +50,44 @@ namespace ATTrafficAnalayzer
             Console.WriteLine("SICK");
         }
 
+        private void createScreen(UserControl screen)
+        {
+            this.mainContentControl.Content = screen;
+        }
+
         private void switchDisplay(object sender, RoutedEventArgs e)
         {
-            RadioButton button = (RadioButton) sender;
+            RadioButton button = (RadioButton)sender;
+            String value = (String)button.Content.ToString();
 
-            if ((String) button.Content.ToString() == "Graph")
+            switch (value)
             {
-                this.mainContentControl.Content = new SMGraph();
-                display = true;
-
-                if (mode)
-                {
+                case "Graph":
                     this.mainContentControl.Content = new SMGraph();
-                }
-                else
-                {
-                    this.mainContentControl.Content = new VSGraph();
-                }
-            }
-            else if ((String)button.Content.ToString() == "Table")
-            {
-                this.mainContentControl.Content = new VSGraph();
-                display = false;
+                    display = true;
 
-                if (mode)
-                {
-                    this.mainContentControl.Content = new SMTable();
-                }
-                else
-                {
-                    this.mainContentControl.Content = new VSTable();
-                }
-            }
-            else
-            {
-                Console.WriteLine(button.Content.ToString());
+                    if (mode)
+                    {
+                        createScreen(new SMGraph());
+                    }
+                    else
+                    {
+                        createScreen(new VSGraph());
+                    }
+                    break;
+                case "Table":
+                    this.mainContentControl.Content = new VSGraph();
+                    display = false;
+
+                    if (mode)
+                    {
+                        createScreen(new SMTable());
+                    }
+                    else
+                    {
+                        createScreen(new VSTable());
+                    }
+                    break;
             }
         }
 
