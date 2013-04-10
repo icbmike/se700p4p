@@ -58,10 +58,15 @@ namespace ATTrafficAnalayzer
             this.mainContentControl.Content = screen;
         }
 
-        private void switchDisplay(object sender, RoutedEventArgs e)
+        private String getRadioContent(Object sender)
         {
             RadioButton button = (RadioButton)sender;
-            String value = (String)button.Content.ToString();
+            return (String)button.Content.ToString();
+        }
+
+        private void switchDisplay(object sender, RoutedEventArgs e)
+        {
+            String value = getRadioContent(sender);
 
             switch (value)
             {
@@ -93,8 +98,7 @@ namespace ATTrafficAnalayzer
 
         private void switchMode(object sender, RoutedEventArgs e)
         {
-            RadioButton button = (RadioButton)sender;
-            String value = (String)button.Content.ToString();
+            String value = getRadioContent(sender);
 
             switch (value)
             {
