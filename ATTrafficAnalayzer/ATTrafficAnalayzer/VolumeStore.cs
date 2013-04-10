@@ -52,25 +52,23 @@ namespace ATTrafficAnalayzer
                     index += recordSize + 1;
                 }
 
+                //Find out what kind of data we have
+                RecordType recordType = RecordFactory.checkRecordType(record);
+                //Construct the appropriate record type
+                switch (recordType)
+                {
+                    case RecordType.DATETIME:
+                        break;
+                    case RecordType.VOLUME:
+                        break;
+                }
+
+
             }
 
         }
 
-        private static RecordType checkRecordType(byte[] record)
-        {
-            //Get the first four bytes and sum them, if the sum is zero, it is a comment record
-            byte[] firstFourBytes = record.Take(4).ToArray();
-            int sum = firstFourBytes.Sum(x => (int)x);      //Using LINQ, casting individual bytes to ints
-            if (sum == 0) return RecordType.COMMENT;
-
-            //If the first two bytes sum to zero and it is not a comment record then it is a datetime record
-            byte[] firstTwoBytes = record.Take(2).ToArray();
-            sum = firstTwoBytes.Sum(x => (int)x);
-            if (sum == 0) return RecordType.DATETIME;
-
-            //Otherwise it is a volume record
-            return RecordType.VOLUME;
-        }
+        
 
         private static bool getBit(byte b, int pos)
         {
