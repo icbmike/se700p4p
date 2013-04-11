@@ -49,21 +49,21 @@
                 Band="1"
                 BandIndex="1">
                 <RadioButton
-                    Name="graphradio"
-                    GroupName="display"
-                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                    MinWidth="45"
-                    BorderBrush="#FF457EFF"
-                    Checked="switchDisplay"
-                    Content="Graph"></RadioButton>
-                <RadioButton
                     Name="tableradio"
                     GroupName="display"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="Table"
-                    Checked="switchDisplay"></RadioButton>
+                    Checked="switchScreen"></RadioButton>
+                <RadioButton
+                    Name="graphradio"
+                    GroupName="display"
+                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    MinWidth="45"
+                    BorderBrush="#FF457EFF"
+                    Content="Graph"
+                    Checked="switchScreen"></RadioButton>
                 <Label
                     Margin="5,0,0,0">Start Date:</Label>
                 <DatePicker />
@@ -77,14 +77,16 @@
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="VS"
-                    Checked="switchMode"></RadioButton>
+                    Name="vsradio"
+                    Checked="switchScreen"></RadioButton>
                 <RadioButton
                     GroupName="mode"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="SM"
-                    Checked="switchMode"></RadioButton>
+                    Name="smradio"
+                    Checked="switchScreen"></RadioButton>
             </ToolBar>
         </ToolBarTray>
 

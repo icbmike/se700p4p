@@ -19,8 +19,8 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum modes { vs, sm };             // sm when true, vs when false
-        enum displays { graph, table };    // graph when true, table when false
+        enum modes { vs, sm };
+        enum displays { graph, table };
 
         modes mode;
         displays display;
@@ -58,73 +58,60 @@ namespace ATTrafficAnalayzer
             this.mainContentControl.Content = screen;
         }
 
-        private String getRadioContent(Object sender)
+        private bool getRadioContent(Object sender)
         {
-            RadioButton button = (RadioButton)sender;
-            return (String)button.Content.ToString();
+            RadioButton button = sender as RadioButton;
+            return (button.IsChecked == true);
         }
 
-        private void switchDisplay(object sender, RoutedEventArgs e)
+        private void checkDisplayValue()
         {
-            String value = getRadioContent(sender);
+            bool displayValue = getRadioContent(graphradio);
 
-            switch (value)
+            if (displayValue)
             {
-                case "Graph":
-                    display = displays.graph;
-                    if (mode == modes.sm)
-                    {
-                        changeScreen(new SMGraph());
-                    }
-                    else if (mode == modes.vs)
-                    {
-                        changeScreen(new VSGraph());
-                    }
-                    break;
-
-                case "Table":
-                    display = displays.table;
-                    if (mode == modes.sm)
-                    {
-                        changeScreen(new SMTable());
-                    }
-                    else if (mode == modes.vs)
-                    {
-                        changeScreen(new VSTable());
-                    }
-                    break;
+                display = displays.graph;
+            }
+            else
+            {
+                display = displays.table;
             }
         }
 
-        private void switchMode(object sender, RoutedEventArgs e)
+        private void checkModeValue()
         {
-            String value = getRadioContent(sender);
+            bool modeValue = getRadioContent(smradio);
 
-            switch (value)
+            if (modeValue)
             {
-                case "VS":
-                    mode = modes.vs;
-                    if (display == displays.graph)
-                    {
-                        changeScreen(new VSGraph());
-                    }
-                    else if (display == displays.table)
-                    {
-                        changeScreen(new VSTable());
-                    }
-                    break;
+                mode = modes.sm;
+            }
+            else
+            {
+                mode = modes.vs;
+            }
+        }
 
-                case "SM":
-                    mode = modes.sm;
-                    if (display == displays.graph)
-                    {
-                        changeScreen(new SMGraph());
-                    }
-                    else if (display == displays.table)
-                    {
-                        changeScreen(new SMTable());
-                    }
-                    break;
+        private void switchScreen(object sender, RoutedEventArgs e)
+        {
+            checkDisplayValue();
+            checkModeValue();
+
+            if (display == displays.table && mode == modes.vs)
+            {
+                changeScreen(new VSTable());
+            }
+            else if (display == displays.table && mode == modes.sm)
+            {
+                changeScreen(new SMTable());
+            }
+            else if (display == displays.graph && mode == modes.vs)
+            {
+                changeScreen(new VSGraph());
+            }
+            else if (display == displays.graph && mode == modes.sm)
+            {
+                changeScreen(new SMGraph());
             }
         }
     }
