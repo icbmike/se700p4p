@@ -8,31 +8,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Height="800"
     Width="1000">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
-            <RowDefinition
-                Height="Auto" />
-            <RowDefinition
-                Height="Auto" />
-            <RowDefinition
-                Height="378*" />
-        </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition
-                Width="250" />
-            <ColumnDefinition
-                Width="347" />
-            <ColumnDefinition
-                Width="653" />
-            <ColumnDefinition
-                Width="914*" />
-        </Grid.ColumnDefinitions>
+    <DockPanel
+        LastChildFill="True">
 
         <Menu
-            Grid.ColumnSpan="4">
+            DockPanel.Dock="Top">
             <Menu.Background>
                 <SolidColorBrush />
             </Menu.Background>
@@ -44,9 +25,9 @@
                     Click="MenuItemImportClick" />
             </MenuItem>
         </Menu>
+
         <ToolBarTray
-            Grid.Row="1"
-            Grid.ColumnSpan="4">
+            DockPanel.Dock="Top">
             <ToolBar
                 Band="1"
                 BandIndex="1">
@@ -99,8 +80,7 @@
         </ToolBarTray>
 
         <StackPanel
-            Grid.Column="0"
-            Grid.Row="2"
+            DockPanel.Dock="Left"
             Margin="0,0,0,0"
             Name="stackPanel1">
             <Label
@@ -182,8 +162,7 @@
                             Name="scrollBar1"
                             VerticalAlignment="Top"
                             Width="18" />
-                        <ContentControl
-                            x:Name="mainContentControl" />
+                        
                     </Grid>
                 </TabItem>
                 <TabItem
@@ -197,8 +176,11 @@
                             Name="specialReportsListBox" />
                     </Grid>
                 </TabItem>
-
             </TabControl>
         </StackPanel>
-    </Grid>
+
+        <ContentControl
+            DockPanel.Dock="Right"
+            x:Name="mainContentControl" />
+    </DockPanel>
 </Window>
