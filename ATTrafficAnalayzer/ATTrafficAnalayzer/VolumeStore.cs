@@ -35,6 +35,7 @@ namespace ATTrafficAnalayzer
 
             //Now decrypt it
             int index = 0;
+            DateTimeRecord currentDateTime = null;
             while (index < sizeInBytes) //seek through the byte array untill we reach the end
             {
                 int recordSize = byteArray[index] + byteArray[index+1] * 256; //The record size is stored in two bytes, little endian
@@ -54,25 +55,24 @@ namespace ATTrafficAnalayzer
 
                 //Find out what kind of data we have
                 RecordType recordType = RecordFactory.checkRecordType(record);
+                
                 //Construct the appropriate record type
                 switch (recordType)
                 {
                     case RecordType.DATETIME:
+                        currentDateTime = RecordFactory.createDateTimeRecord(record);
+                        _volumesDictionary.Add(currentDateTime, new List<VolumeRecord>());
+
                         break;
                     case RecordType.VOLUME:
+                        VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
+                        _volumesDictionary[currentDateTime].Add(volumeRecord);
+                        //Console.WriteLine(volumeRecord.display());
                         break;
                 }
-
-
             }
-
-        }
+        }   
 
         
-
-        private static bool getBit(byte b, int pos)
-        {
-            return (b & (1 << pos - 1)) != 0;
-        }
     }
 }

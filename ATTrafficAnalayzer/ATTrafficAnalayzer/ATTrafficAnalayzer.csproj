@@ -58,6 +58,7 @@
     <Compile Include="DateTimeRecord.cs" />
     <Compile Include="Record.cs" />
     <Compile Include="RecordFactory.cs" />
+    <Compile Include="RecordType.cs" />
     <Compile Include="VolumeRecord.cs" />
     <Compile Include="VolumeStore.cs" />
     <Page Include="MainWindow.xaml">

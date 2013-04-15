@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ATTrafficAnalayzer
 {
-    public class DateTimeRecord : Record
+    public class DateTimeRecord
     {
     }
 }
