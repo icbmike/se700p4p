@@ -6,8 +6,8 @@
     mc:Ignorable="d"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Height="967"
-    Width="1280">
+    Height="800"
+    Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition
@@ -24,17 +24,20 @@
             <ColumnDefinition
                 Width="250" />
             <ColumnDefinition
-                Width="Auto" />
+                Width="347" />
+            <ColumnDefinition
+                Width="653" />
             <ColumnDefinition
                 Width="914*" />
         </Grid.ColumnDefinitions>
 
         <Menu
-            Grid.Row="0"
-            Grid.Column="0"
-            Grid.ColumnSpan="3">
+            Grid.ColumnSpan="4">
+            <Menu.Background>
+                <SolidColorBrush />
+            </Menu.Background>
             <MenuItem
-                Header="_File"
+                Header="_FILE"
                 DockPanel.Dock="Top">
                 <MenuItem
                     Header="_Import VS File"
@@ -43,8 +46,7 @@
         </Menu>
         <ToolBarTray
             Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="3">
+            Grid.ColumnSpan="4">
             <ToolBar
                 Band="1"
                 BandIndex="1">
@@ -55,7 +57,8 @@
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="Table"
-                    Checked="switchScreen"></RadioButton>
+                    Checked="switchScreen"
+                    Background="White"></RadioButton>
                 <RadioButton
                     Name="graphradio"
                     GroupName="display"
@@ -63,13 +66,16 @@
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="Graph"
-                    Checked="switchScreen"></RadioButton>
+                    Checked="switchScreen"
+                    Background="White"></RadioButton>
                 <Label
                     Margin="5,0,0,0">Start Date:</Label>
-                <DatePicker />
+                <DatePicker
+                    Background="White" />
                 <Label
                     Margin="5,0,0,0">End Date:</Label>
-                <DatePicker />
+                <DatePicker
+                    Background="White" />
                 <RadioButton
                     Margin="5,0,0,0"
                     GroupName="mode"
@@ -78,7 +84,8 @@
                     BorderBrush="#FF457EFF"
                     Content="VS"
                     Name="vsradio"
-                    Checked="switchScreen"></RadioButton>
+                    Checked="switchScreen"
+                    Background="White"></RadioButton>
                 <RadioButton
                     GroupName="mode"
                     Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
@@ -86,21 +93,25 @@
                     BorderBrush="#FF457EFF"
                     Content="SM"
                     Name="smradio"
-                    Checked="switchScreen"></RadioButton>
+                    Checked="switchScreen"
+                    Background="White"></RadioButton>
             </ToolBar>
         </ToolBarTray>
 
         <StackPanel
             Grid.Column="0"
             Grid.Row="2"
-            HorizontalAlignment="Left"
             Margin="0,0,0,0"
-            Name="stackPanel1"
-            VerticalAlignment="Top">
+            Name="stackPanel1">
             <Label
                 Content="Standard Reports"
                 Height="28"
-                Name="label1" />
+                Name="label1"
+                Background="#FF007ACC"
+                FontWeight="Normal"
+                FontSize="14"
+                Foreground="White"
+                Padding="5" />
             <StackPanel
                 Grid.Column="0"
                 Grid.Row="2"
@@ -108,38 +119,46 @@
                 Margin="0,0,0,0"
                 Name="stackPanel2"
                 VerticalAlignment="Top"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                Visibility="Visible">
 
                 <Button
                     Content="New"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="newBtn"
-                    VerticalAlignment="Top" />
-
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"
+                    OpacityMask="{x:Null}"></Button>
                 <Button
                     Content="Modify"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="modifyBtn"
-                    VerticalAlignment="Top" />
-
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"></Button>
                 <Button
                     Content="Save"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="saveBtn"
-                    VerticalAlignment="Top" />
-
+                    VerticalAlignment="Top"
+                    BorderBrush="{x:Null}"
+                    Background="{x:Null}"></Button>
                 <Button
                     Content="Delete"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="deleteBtn"
-                    VerticalAlignment="Top" />
-
+                    VerticalAlignment="Top"
+                    Background="{x:Null}">
+                    <Button.BorderBrush>
+                        <SolidColorBrush />
+                    </Button.BorderBrush>
+                </Button>
             </StackPanel>
-
 
             <TabControl
                 HorizontalAlignment="Left"
@@ -152,18 +171,19 @@
                     <Grid
                         DataContext="{Binding}">
                         <ListBox
-                            Height="780"
-                            HorizontalAlignment="Left"
                             Margin="0,0,0,0"
                             Name="standardReportsListBox"
-                            Width="247" />
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="2" />
                         <ScrollBar
-                            Height="780"
                             HorizontalAlignment="Right"
                             Margin="0,0,0,0"
                             Name="scrollBar1"
                             VerticalAlignment="Top"
                             Width="18" />
+                        <ContentControl
+                            x:Name="mainContentControl" />
                     </Grid>
                 </TabItem>
                 <TabItem
@@ -172,23 +192,13 @@
                     <Grid
                         DataContext="{Binding}">
                         <ListBox
-                            Height="780"
                             HorizontalAlignment="Left"
                             Margin="0,0,0,0"
-                            Name="specialReportsListBox"
-                            Width="247" />
+                            Name="specialReportsListBox" />
                     </Grid>
                 </TabItem>
 
             </TabControl>
         </StackPanel>
-
-        <ContentControl
-            x:Name="mainContentControl"
-            Grid.Column="1"
-            Height="1000"
-            Width="1000"
-            Grid.Row="2" />
-
     </Grid>
 </Window>
