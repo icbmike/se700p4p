@@ -12,6 +12,8 @@
         <Grid.RowDefinitions>
             <RowDefinition
                 Height="*" />
+            <RowDefinition
+                Height="40" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
@@ -25,14 +27,34 @@
             HorizontalAlignment="Stretch"
             Name="recentStandardReportsListBox"
             VerticalAlignment="Stretch"
-            Margin="20" />
+            Margin="10,10,10,5" />
+
+        <Button
+            Grid.Column="1"
+            Grid.Row="1"
+            Content="Open"
+            HorizontalAlignment="Stretch"
+            Name="button2"
+            VerticalAlignment="Stretch"
+            Margin="10,5,10,10" />
+
         <ListBox
             Grid.Column="1"
             Grid.Row="0"
             HorizontalAlignment="Stretch"
             Name="recentSpecialReportsListBox"
             VerticalAlignment="Stretch"
-            Margin="20"/>
+            Margin="10,10,10,5"/>
+        
+        <Button
+            Grid.Column="0"
+            Grid.Row="1"
+            Content="Open"
+            HorizontalAlignment="Stretch"
+            Name="button1"
+            VerticalAlignment="Stretch"
+            Margin="10,5,10,10"/>
+        
     </Grid>
 
 </UserControl>

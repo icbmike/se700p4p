@@ -81,7 +81,8 @@
         </ToolBarTray>
 
         <DockPanel
-            LastChildFill="True">
+            LastChildFill="True"
+            Margin="10" >
             <Label
                 Content="Standard Reports"
                 Height="28"
@@ -92,15 +93,9 @@
                 Foreground="White"
                 Padding="5"
                 DockPanel.Dock="Top" />
-            <StackPanel
-                Grid.Column="0"
-                Grid.Row="2"
-                HorizontalAlignment="Left"
-                Margin="0,0,0,0"
+            <WrapPanel
                 Name="stackPanel2"
-                VerticalAlignment="Top"
                 Orientation="Horizontal"
-                Visibility="Visible"
                 DockPanel.Dock="Top">
 
                 <Button
@@ -139,7 +134,7 @@
                         <SolidColorBrush />
                     </Button.BorderBrush>
                 </Button>
-            </StackPanel>
+            </WrapPanel>
 
             <TabControl
                 HorizontalAlignment="Left"
