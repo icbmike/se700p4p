@@ -22,6 +22,22 @@ namespace ATTrafficAnalayzer
         public WelcomeScreen()
         {
             InitializeComponent();
+
+            List<string> recentStandardReports = new List<string>();
+            recentStandardReports.Add("Recent Standard Report 1");
+            recentStandardReports.Add("Recent Standard Report 2");
+            recentStandardReports.Add("Recent Standard Report 3");
+            recentStandardReports.Add("Recent Standard Report 4");
+            recentStandardReports.Add("Recent Standard Report 5");
+            recentStandardReportsListBox.ItemsSource = recentStandardReports;
+
+            List<string> recentSpecialReports = new List<string>();
+            recentSpecialReports.Add("Recent Standard Report 1");
+            recentSpecialReports.Add("Recent Standard Report 2");
+            recentSpecialReports.Add("Recent Standard Report 3");
+            recentSpecialReports.Add("Recent Standard Report 4");
+            recentSpecialReports.Add("Recent Standard Report 5");
+            recentSpecialReportsListBox.ItemsSource = recentSpecialReports;
         }
     }
 }
