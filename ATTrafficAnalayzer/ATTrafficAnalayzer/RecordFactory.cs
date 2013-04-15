@@ -10,7 +10,21 @@ namespace ATTrafficAnalayzer
         public static DateTimeRecord createDateTimeRecord(byte[] recordBytes)
         {
 
-            return new DateTimeRecord();
+            int year = recordBytes[2],
+                month = recordBytes[3],
+                day = recordBytes[4],
+                hour = recordBytes[5];
+
+            bool fiveMinutePeriod = getBit(recordBytes[6], 8);
+            int minutes = Convert.ToInt32(getBit(recordBytes[6], 1)) * 1 +
+                            Convert.ToInt32(getBit(recordBytes[6], 1)) * 2 +
+                            Convert.ToInt32(getBit(recordBytes[6], 1)) * 4 +
+                            Convert.ToInt32(getBit(recordBytes[6], 1)) * 8 +
+                            Convert.ToInt32(getBit(recordBytes[6], 1)) * 16 +
+                            Convert.ToInt32(getBit(recordBytes[6], 1)) * 32;
+
+            return new DateTimeRecord(year, month, day, hour, minutes, fiveMinutePeriod);
+
         }
 
 
@@ -38,12 +52,9 @@ namespace ATTrafficAnalayzer
                     Convert.ToInt32(getBit(detector_volume_8_10, 7)) * 8 + 
                     Convert.ToInt32(getBit(detector_volume_8_10, 8)) * 16;
                 
-                
-                
-                Console.WriteLine(detectorNumber + ": " + volume);
                 index += 2;
                 
-                //newRecord.SetVolumeForDetector(detectorNumber, volume);
+                newRecord.SetVolumeForDetector(detectorNumber, volume);
             }
 
             return newRecord;
