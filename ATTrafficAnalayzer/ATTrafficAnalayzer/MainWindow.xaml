@@ -19,7 +19,8 @@
             </Menu.Background>
             <MenuItem
                 Header="_FILE"
-                DockPanel.Dock="Top">
+                DockPanel.Dock="Top"
+                FontSize="14">
                 <MenuItem
                     Header="_Import VS File"
                     Click="MenuItemImportClick" />
@@ -79,10 +80,8 @@
             </ToolBar>
         </ToolBarTray>
 
-        <StackPanel
-            DockPanel.Dock="Left"
-            Margin="0,0,0,0"
-            Name="stackPanel1">
+        <DockPanel
+            LastChildFill="True">
             <Label
                 Content="Standard Reports"
                 Height="28"
@@ -91,7 +90,8 @@
                 FontWeight="Normal"
                 FontSize="14"
                 Foreground="White"
-                Padding="5" />
+                Padding="5"
+                DockPanel.Dock="Top" />
             <StackPanel
                 Grid.Column="0"
                 Grid.Row="2"
@@ -100,10 +100,11 @@
                 Name="stackPanel2"
                 VerticalAlignment="Top"
                 Orientation="Horizontal"
-                Visibility="Visible">
+                Visibility="Visible"
+                DockPanel.Dock="Top">
 
                 <Button
-                    Content="New"
+                    Content="_New"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="newBtn"
@@ -112,7 +113,7 @@
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}"></Button>
                 <Button
-                    Content="Modify"
+                    Content="_Modify"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="modifyBtn"
@@ -120,7 +121,7 @@
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"></Button>
                 <Button
-                    Content="Save"
+                    Content="_Save"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="saveBtn"
@@ -128,7 +129,7 @@
                     BorderBrush="{x:Null}"
                     Background="{x:Null}"></Button>
                 <Button
-                    Content="Delete"
+                    Content="_Delete"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="deleteBtn"
@@ -143,41 +144,38 @@
             <TabControl
                 HorizontalAlignment="Left"
                 Name="tabControl1"
-                Margin="0,0,0,0"
-                TabStripPlacement="Bottom">
+                TabStripPlacement="Bottom"
+                DockPanel.Dock="Top">
                 <TabItem
                     Header="Standard Reports"
                     Name="standardReportsTab">
-                    <Grid
-                        DataContext="{Binding}">
-                        <ListBox
-                            Margin="0,0,0,0"
-                            Name="standardReportsListBox"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            Grid.Row="2" />
+                    <DockPanel
+                        LastChildFill="True">
                         <ScrollBar
-                            HorizontalAlignment="Right"
-                            Margin="0,0,0,0"
                             Name="scrollBar1"
-                            VerticalAlignment="Top"
-                            Width="18" />
-                        
-                    </Grid>
+                            Width="20"
+                            DockPanel.Dock="Right" />
+                        <ListBox
+                            Name="standardReportsListBox"
+                            DockPanel.Dock="Right" />
+                    </DockPanel>
                 </TabItem>
                 <TabItem
                     Header="Special Reports"
                     Name="specialReportsTab">
-                    <Grid
-                        DataContext="{Binding}">
+                    <DockPanel
+                        LastChildFill="True">
+                        <ScrollBar
+                            Name="scrollBar2"
+                            Width="20"
+                            DockPanel.Dock="Right" />
                         <ListBox
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,0"
-                            Name="specialReportsListBox" />
-                    </Grid>
+                            Name="specialReportsListBox"
+                            DockPanel.Dock="Right" />
+                    </DockPanel>
                 </TabItem>
             </TabControl>
-        </StackPanel>
+        </DockPanel>
 
         <ContentControl
             DockPanel.Dock="Right"
