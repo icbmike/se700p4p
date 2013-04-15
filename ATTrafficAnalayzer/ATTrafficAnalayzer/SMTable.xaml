@@ -5,13 +5,54 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <DockPanel
+        LastChildFill="True">
+
         <Label
-            Content="I am a pretty table of SM data"
-            Height="28"
-            HorizontalAlignment="Left"
-            Margin="83,134,0,0"
-            Name="label1"
-            VerticalAlignment="Top" />
-    </Grid>
+            Margin="10,10,10,5"
+            DockPanel.Dock="Top"
+            FontSize="18">Strategic Monitoring - Table View</Label>
+
+        <DataGrid
+            DockPanel.Dock="Top"
+            AutoGenerateColumns="False"
+            Margin="10">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn
+                    Header="A"
+                    Width="50"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image
+                                Source="{Binding Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    Header="B"
+                    Width="50"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image
+                                Source="{Binding Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    Header="C"
+                    Width="50"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image
+                                Source="{Binding Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </DockPanel>
 </UserControl>

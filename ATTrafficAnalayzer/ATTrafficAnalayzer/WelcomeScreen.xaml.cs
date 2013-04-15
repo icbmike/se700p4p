@@ -32,11 +32,11 @@ namespace ATTrafficAnalayzer
             recentStandardReportsListBox.ItemsSource = recentStandardReports;
 
             List<string> recentSpecialReports = new List<string>();
-            recentSpecialReports.Add("Recent Standard Report 1");
-            recentSpecialReports.Add("Recent Standard Report 2");
-            recentSpecialReports.Add("Recent Standard Report 3");
-            recentSpecialReports.Add("Recent Standard Report 4");
-            recentSpecialReports.Add("Recent Standard Report 5");
+            recentSpecialReports.Add("Recent Special Report 1");
+            recentSpecialReports.Add("Recent Special Report 2");
+            recentSpecialReports.Add("Recent Special Report 3");
+            recentSpecialReports.Add("Recent Special Report 4");
+            recentSpecialReports.Add("Recent Special Report 5");
             recentSpecialReportsListBox.ItemsSource = recentSpecialReports;
         }
     }
