@@ -55,12 +55,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DateTimeRecord.cs" />
+    <Compile Include="Record.cs" />
+    <Compile Include="RecordFactory.cs" />
+    <Compile Include="RecordType.cs" />
     <Compile Include="SMGraph.xaml.cs">
       <DependentUpon>SMGraph.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMTable.xaml.cs">
       <DependentUpon>SMTable.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VolumeRecord.cs" />
+    <Compile Include="VolumeStore.cs" />
     <Compile Include="VSGraph.xaml.cs">
       <DependentUpon>VSGraph.xaml</DependentUpon>
     </Compile>
