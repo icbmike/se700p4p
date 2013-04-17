@@ -1,0 +1,29 @@
+﻿<UserControl
+    x:Class="ATTrafficAnalayzer.StandardConfig"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="300">
+    <DockPanel
+        LastChildFill="True">
+
+        <Label
+            Margin="10,10,10,5"
+            DockPanel.Dock="Top"
+            FontSize="18">New Standard Report</Label>
+
+        <DockPanel
+            Name="dockPanel1"
+            DockPanel.Dock="Top">
+            <Rectangle
+                Margin="10"
+                Name="rectangle1"
+                Stroke="Black"
+                DockPanel.Dock="Left"
+                Fill="#FF623434" />
+        </DockPanel>
+    </DockPanel>
+</UserControl>

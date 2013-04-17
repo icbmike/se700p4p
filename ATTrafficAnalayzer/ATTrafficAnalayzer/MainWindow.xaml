@@ -102,7 +102,7 @@
             LastChildFill="True"
             Margin="10" >
             <Label
-                Content="Standard Reports"
+                Content="Report Browser"
                 Height="28"
                 Name="label1"
                 Background="#FF007ACC"
