@@ -58,6 +58,24 @@
                     Margin="5,0,0,0">End Date:</Label>
                 <DatePicker
                     Background="White" />
+                <Label
+                    Margin="5,0,0,0">Interval:</Label>
+                <ComboBox
+                    Height="23"
+                    Name="comboBox1"
+                    Width="60"
+                    SelectedIndex="0">
+                    <ComboBoxItem
+                        Name="cbi1">1 min</ComboBoxItem>
+                    <ComboBoxItem
+                        Name="cbi2">5 min</ComboBoxItem>
+                    <ComboBoxItem
+                        Name="cbi3">15 min</ComboBoxItem>
+                    <ComboBoxItem
+                        Name="cbi4">30 min</ComboBoxItem>
+                    <ComboBoxItem
+                        Name="cbi5">60 min</ComboBoxItem>
+                </ComboBox>
                 <RadioButton
                     Margin="5,0,0,0"
                     GroupName="mode"
@@ -175,5 +193,6 @@
         <ContentControl
             DockPanel.Dock="Right"
             x:Name="mainContentControl" />
+     
     </DockPanel>
 </Window>

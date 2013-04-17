@@ -5,13 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <DockPanel
+        LastChildFill="True">
+
         <Label
-            Content="I am a pretty graph of sm data"
-            Height="28"
-            HorizontalAlignment="Left"
-            Margin="65,136,0,0"
-            Name="label1"
-            VerticalAlignment="Top" />
-    </Grid>
+            Margin="10,10,10,5"
+            DockPanel.Dock="Top"
+            FontSize="18">Strategic Monitoring - Graph View</Label>
+        
+        <Rectangle
+            DockPanel.Dock="Top"
+            Margin="10"
+            Name="rectangle1"
+            Stroke="Black"
+            Fill="#FF623434" />
+        
+    </DockPanel>
 </UserControl>
