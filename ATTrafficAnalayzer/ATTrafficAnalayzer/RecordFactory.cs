@@ -27,7 +27,6 @@ namespace ATTrafficAnalayzer
 
         }
 
-
         public static VolumeRecord createVolumeRecord(byte[] recordBytes, int recordSize)
         {
             int index = 0;
@@ -35,7 +34,7 @@ namespace ATTrafficAnalayzer
             //recordSize -= 2; // record size includes the intersection number
             index += 2;
             VolumeRecord newRecord = new VolumeRecord(intersectionNumber);
-            Console.WriteLine(intersectionNumber);
+           
             while (index < recordSize)
             {
                 byte volume0_7 = recordBytes[index];

@@ -67,7 +67,6 @@ namespace ATTrafficAnalayzer
                     case RecordType.VOLUME:
                         VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
                         _volumesDictionary[currentDateTime].Add(volumeRecord);
-                        //Console.WriteLine(volumeRecord.display());
                         break;
                 }
             }

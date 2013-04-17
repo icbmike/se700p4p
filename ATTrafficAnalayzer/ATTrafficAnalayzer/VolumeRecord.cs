@@ -25,10 +25,5 @@ namespace ATTrafficAnalayzer
         {
             return _detectorVolumeDict[detector];
         }
-
-        public string display()
-        {
-            return _intersectionNumber + "\n" + _detectorVolumeDict.ToString();
-        }
     }
 }
