@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Parago.Windows;
 
 namespace ATTrafficAnalayzer
 {
@@ -25,6 +26,8 @@ namespace ATTrafficAnalayzer
 
         modes mode;
         displays display;
+
+        private VolumeStore _volumeStore;
 
         public MainWindow()
         {
@@ -46,6 +49,8 @@ namespace ATTrafficAnalayzer
             SpecialReports.Add("Special Report 5");
             specialReportsListBox.ItemsSource = SpecialReports;
 
+            _volumeStore = new VolumeStore();
+
             this.mainContentControl.Content = new WelcomeScreen();
         }
 
@@ -64,10 +69,14 @@ namespace ATTrafficAnalayzer
             // Process open file dialog box results 
             if (result == true)
             {
-                // Open document 
-                string filename = dlg.FileName;
-                VolumeStore.getInstance().readFile(filename);
+                ProgressDialogResult res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) => {
 
+                    ProgressDialog.Report(bw, "Reading Files");
+
+                    // Open document 
+                    string filename = dlg.FileName;
+                    _volumeStore.readFile(bw, filename);
+                }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
         }
 

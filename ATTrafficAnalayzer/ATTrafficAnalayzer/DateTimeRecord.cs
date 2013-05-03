@@ -24,6 +24,7 @@ namespace ATTrafficAnalayzer
 
         public DateTimeRecord(int year, int month, int day, int hour, int minutes, bool fiveMinutePeriod)
         {
+            
             _dateTime = new DateTime(year, month, day, hour, minutes, 0);
 
             this.fiveMinutePeriod = fiveMinutePeriod;

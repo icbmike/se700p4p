@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.ComponentModel;
 
 namespace ATTrafficAnalayzer
 {
@@ -18,9 +19,10 @@ namespace ATTrafficAnalayzer
             _volumesDictionary = new Dictionary<DateTime, List<VolumeRecord>>();
             _intersections = new List<int>();
             _detectors = new Dictionary<int, List<int>>();
+            _dateTimeRecords = new List<DateTimeRecord>();
         }
 
-        public void readFile(string filename)
+        public void readFile(BackgroundWorker bw, string filename)
         {
             //Load the file into memory
             FileStream fs = new FileStream(filename, FileMode.Open);
@@ -33,7 +35,8 @@ namespace ATTrafficAnalayzer
             DateTimeRecord currentDateTime = null;
             while (index < sizeInBytes) //seek through the byte array untill we reach the end
             {
-                int recordSize = byteArray[index] + byteArray[index+1] * 256; //The record size is stored in two bytes, little endian
+                bw.ReportProgress(index / sizeInBytes * 100);
+                int recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
                 index += 2;
 
                 byte[] record;
@@ -50,7 +53,7 @@ namespace ATTrafficAnalayzer
 
                 //Find out what kind of data we have
                 RecordType recordType = RecordFactory.checkRecordType(record);
-                
+
                 //Construct the appropriate record type
                 switch (recordType)
                 {
@@ -65,6 +68,7 @@ namespace ATTrafficAnalayzer
                         break;
                 }
             }
+            
         }
 
         public List<int> getIntersections()
