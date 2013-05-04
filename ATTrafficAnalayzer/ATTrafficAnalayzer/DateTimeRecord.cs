@@ -7,41 +7,13 @@ namespace ATTrafficAnalayzer
 {
     public class DateTimeRecord
     {
-        private int year;
+        private DateTime _dateTime;
 
-        public int Year
+        public DateTime dateTime
         {
-            get { return year; }
-            set { year = value; }
-        }
-        private int month;
-
-        public int Month
-        {
-            get { return month; }
-            set { month = value; }
-        }
-        private int day;
-
-        public int Day
-        {
-            get { return day; }
-            set { day = value; }
-        }
-        private int hour;
-
-        public int Hour
-        {
-            get { return hour; }
-            set { hour = value; }
-        }
-        private int minutes;
-
-        public int Minutes
-        {
-            get { return minutes; }
-            set { minutes = value; }
-        }
+            get { return _dateTime; }
+            set { _dateTime = value; }
+        } 
         private bool fiveMinutePeriod;
 
         public bool FiveMinutePeriod
@@ -52,12 +24,8 @@ namespace ATTrafficAnalayzer
 
         public DateTimeRecord(int year, int month, int day, int hour, int minutes, bool fiveMinutePeriod)
         {
-            // TODO: Complete member initialization
-            this.year = year;
-            this.month = month;
-            this.day = day;
-            this.hour = hour;
-            this.minutes = minutes;
+            _dateTime = new DateTime(year, month, day, hour, minutes, 0);
+
             this.fiveMinutePeriod = fiveMinutePeriod;
         }
     }

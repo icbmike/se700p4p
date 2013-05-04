@@ -6,23 +6,17 @@ using System.IO;
 
 namespace ATTrafficAnalayzer
 {
-    public class VolumeStoreSingleton
+    public class VolumeStore
     {
-        private Dictionary<DateTimeRecord, List<VolumeRecord>> _volumesDictionary;
-        private static VolumeStoreSingleton instance;
+        private Dictionary<DateTime, List<VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
+        private List<int> _intersections; //List of intersections
+        private Dictionary<int, List<int>> _detectors; //Dictionary of detectors at an intersection
 
-        private VolumeStoreSingleton()
+        public VolumeStore()
         {
-            _volumesDictionary = new Dictionary<DateTimeRecord, List<VolumeRecord>>();
-        }
-
-        public static VolumeStoreSingleton getInstance()
-        {
-            if (instance == null)
-            {
-                instance = new VolumeStoreSingleton();
-            }
-            return instance;
+            _volumesDictionary = new Dictionary<DateTime, List<VolumeRecord>>();
+            _intersections = new List<int>();
+            _detectors = new Dictionary<int, List<int>>();
         }
 
         public void readFile(string filename)
@@ -70,8 +64,21 @@ namespace ATTrafficAnalayzer
                         break;
                 }
             }
-        }   
+        }
 
+        public int[] getIntersections()
+        {
+            return new int[]{0};
+        }
+
+        public int[] getDetectorsAtIntersection(int intersection){
+             return new int[]{0};
+        }
+
+        public int getVolume(int intersection, int detector, DateTime date)
+        {
+            return _volumesDictionary[date][intersection].GetVolumeForDetector(detector);
+        }
         
     }
 }

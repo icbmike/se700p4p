@@ -66,7 +66,7 @@ namespace ATTrafficAnalayzer
             {
                 // Open document 
                 string filename = dlg.FileName;
-                VolumeStoreSingleton.getInstance().readFile(filename);
+                VolumeStore.getInstance().readFile(filename);
 
             }
         }
