@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace ATTrafficAnalayzer
 {
-    public class VolumeStoreSingleton
+    public class VolumeStore
     {
         private Dictionary<DateTime, List<VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
         private List<int> _intersections; //List of intersections
