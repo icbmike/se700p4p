@@ -139,6 +139,7 @@ namespace ATTrafficAnalayzer
             else if (display == displays.graph && mode == modes.sm)
             {
                 changeScreen(new SMGraph());
+
             }
         }
     }

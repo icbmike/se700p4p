@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace ATTrafficAnalayzer
 {
-    public class VolumeStore
+    public class VolumeStoreSingleton
     {
         private Dictionary<DateTime, List<VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
         private List<int> _intersections; //List of intersections
@@ -37,6 +37,7 @@ namespace ATTrafficAnalayzer
             {
                 bw.ReportProgress(index / sizeInBytes * 100);
                 int recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
+
                 index += 2;
 
                 byte[] record;

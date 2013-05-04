@@ -14,6 +14,7 @@ namespace ATTrafficAnalayzer
             get { return _dateTime; }
             set { _dateTime = value; }
         } 
+
         private bool fiveMinutePeriod;
 
         public bool FiveMinutePeriod
@@ -26,6 +27,7 @@ namespace ATTrafficAnalayzer
         {
             
             _dateTime = new DateTime(year, month, day, hour, minutes, 0);
+
 
             this.fiveMinutePeriod = fiveMinutePeriod;
         }

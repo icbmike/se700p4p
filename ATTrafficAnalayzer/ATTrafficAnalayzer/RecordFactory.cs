@@ -10,7 +10,9 @@ namespace ATTrafficAnalayzer
         public static DateTimeRecord createDateTimeRecord(byte[] recordBytes)
         {
 
+
             int year = recordBytes[2] + 1900,
+
                 month = recordBytes[3],
                 day = recordBytes[4],
                 hour = recordBytes[5];
@@ -29,6 +31,7 @@ namespace ATTrafficAnalayzer
                             Convert.ToInt32(getBit(recordBytes[6], 5)) * 16 +
                             Convert.ToInt32(getBit(recordBytes[6], 6)) * 32
                             - 2; //Minutes are encoded as minutes + 2
+
 
             return new DateTimeRecord(year, month, day, hour, minutes, fiveMinutePeriod);
 
@@ -79,6 +82,7 @@ namespace ATTrafficAnalayzer
             if (sum == 0) return RecordType.DATETIME;
 
             //Otherwise it is a volume record
+
             return RecordType.VOLUME;
         }
         public static bool getBit(byte b, int pos)
