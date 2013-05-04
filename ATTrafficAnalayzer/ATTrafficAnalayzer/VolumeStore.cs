@@ -10,6 +10,7 @@ namespace ATTrafficAnalayzer
     {
         private Dictionary<DateTime, List<VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
         private List<int> _intersections; //List of intersections
+        private List<DateTimeRecord> _dateTimeRecords;
         private Dictionary<int, List<int>> _detectors; //Dictionary of detectors at an intersection
 
         public VolumeStore()
@@ -55,24 +56,24 @@ namespace ATTrafficAnalayzer
                 {
                     case RecordType.DATETIME:
                         currentDateTime = RecordFactory.createDateTimeRecord(record);
-                        _volumesDictionary.Add(currentDateTime, new List<VolumeRecord>());
+                        _dateTimeRecords.Add(currentDateTime);
+                        _volumesDictionary.Add(currentDateTime.dateTime, new List<VolumeRecord>());
                         break;
                     case RecordType.VOLUME:
                         VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
-                        _volumesDictionary[currentDateTime].Add(volumeRecord);
-
+                        _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord);
                         break;
                 }
             }
         }
 
-        public int[] getIntersections()
+        public List<int> getIntersections()
         {
-            return new int[]{0};
+            return _intersections;
         }
 
-        public int[] getDetectorsAtIntersection(int intersection){
-             return new int[]{0};
+        public List<int> getDetectorsAtIntersection(int intersection){
+            return _detectors[intersection];
         }
 
         public int getVolume(int intersection, int detector, DateTime date)
