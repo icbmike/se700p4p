@@ -19,9 +19,24 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class VSGraph : UserControl
     {
+        private VolumeStore _volumeStore;
+        private int _interval;
+        private DateTime _startDate;
+        private DateTime _endDate;
+
         public VSGraph()
         {
             InitializeComponent();
+        }
+
+
+        public VSGraph(VolumeStore _volumeStore, int interval, DateTime startDate, DateTime endDate)
+        {
+            // TODO: Complete member initialization
+            this._volumeStore = _volumeStore;
+            this._interval = interval;
+            this._startDate = startDate;
+            this._endDate = endDate;
         }
     }
 }

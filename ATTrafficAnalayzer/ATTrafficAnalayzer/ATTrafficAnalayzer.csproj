@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Core\WindowSettings.cs" />
     <Compile Include="DateTimeRecord.cs" />
+    <Compile Include="IntervalConverter.cs" />
     <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
@@ -65,6 +66,7 @@
     <Compile Include="Record.cs" />
     <Compile Include="RecordFactory.cs" />
     <Compile Include="RecordType.cs" />
+    <Compile Include="SettingsTray.cs" />
     <Compile Include="SMGraph.xaml.cs">
       <DependentUpon>SMGraph.xaml</DependentUpon>
     </Compile>
