@@ -36,6 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>d3\DynamicDataDisplay\DynamicDataDisplay.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamicDataDisplay.resources">
+      <HintPath>d3\DynamicDataDisplay\ru-ru\DynamicDataDisplay.resources.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -57,6 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="Core\WindowSettings.cs" />
     <Compile Include="DateTimeRecord.cs" />
+    <Compile Include="IntervalConverter.cs" />
     <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
@@ -65,6 +72,7 @@
     <Compile Include="Record.cs" />
     <Compile Include="RecordFactory.cs" />
     <Compile Include="RecordType.cs" />
+    <Compile Include="SettingsTray.cs" />
     <Compile Include="SMGraph.xaml.cs">
       <DependentUpon>SMGraph.xaml</DependentUpon>
     </Compile>

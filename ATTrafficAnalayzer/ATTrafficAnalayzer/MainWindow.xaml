@@ -1,5 +1,8 @@
-﻿<Window
-    x:Class="ATTrafficAnalayzer.MainWindow"
+﻿
+    
+    <Window
+    
+        x:Class="ATTrafficAnalayzer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="MainWindow"
@@ -7,8 +10,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Height="800"
+    xmlns:ta="clr-namespace:ATTrafficAnalayzer"
     Width="1000">
 
+    
+    
     <DockPanel
         LastChildFill="True">
         
@@ -28,7 +34,11 @@
         </Menu>
 
         <ToolBarTray
+            Name="SettingsTray"
             DockPanel.Dock="Top">
+            <ToolBarTray.DataContext>
+                <ta:SettingsTray/>
+            </ToolBarTray.DataContext>
             <ToolBar
                 Band="1"
                 BandIndex="1">
@@ -53,28 +63,29 @@
                 <Label
                     Margin="5,0,0,0">Start Date:</Label>
                 <DatePicker
-                    Background="White" />
+                    Name="startDatePicker"
+                    Background="White"
+                    SelectedDate="{Binding StartDate}"/>
                 <Label
                     Margin="5,0,0,0">End Date:</Label>
                 <DatePicker
-                    Background="White" />
+                    Name="endDatePicker"
+                    Background="White"
+                    SelectedDate="{Binding EndDate}"/>
                 <Label
                     Margin="5,0,0,0">Interval:</Label>
                 <ComboBox
                     Height="23"
-                    Name="comboBox1"
+                    Name="intervalComboBox"
                     Width="60"
-                    SelectedIndex="0">
-                    <ComboBoxItem
-                        Name="cbi1">1 min</ComboBoxItem>
-                    <ComboBoxItem
-                        Name="cbi2">5 min</ComboBoxItem>
-                    <ComboBoxItem
-                        Name="cbi3">15 min</ComboBoxItem>
-                    <ComboBoxItem
-                        Name="cbi4">30 min</ComboBoxItem>
-                    <ComboBoxItem
-                        Name="cbi5">60 min</ComboBoxItem>
+                    SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
+                    SelectedValuePath="Content"
+                    SelectedIndex="3">
+                        <ComboBoxItem>1 min</ComboBoxItem>
+                        <ComboBoxItem>5 min</ComboBoxItem>
+                        <ComboBoxItem>15 min</ComboBoxItem>
+                        <ComboBoxItem>30 min</ComboBoxItem>
+                        <ComboBoxItem>60 min</ComboBoxItem>
                 </ComboBox>
                 <RadioButton
                     Margin="5,0,0,0"
