@@ -16,47 +16,10 @@
             DockPanel.Dock="Top"
             FontSize="18">Volume Store - Table View</Label>
 
-        <DataGrid
+        <ContentControl
             DockPanel.Dock="Top"
-            AutoGenerateColumns="False"
-            Margin="10">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn
-                    Header="A"
-                    Width="50"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image
-                                Source="{Binding Image}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn
-                    Header="B"
-                    Width="50"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image
-                                Source="{Binding Image}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn
-                    Header="C"
-                    Width="50"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image
-                                Source="{Binding Image}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            x:Name="dataGrid"
+            Margin="10" />
 
     </DockPanel>
-
 </UserControl>

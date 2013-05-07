@@ -126,7 +126,7 @@ namespace ATTrafficAnalayzer
 
             if (display == displays.table && mode == modes.vs)
             {
-                changeScreen(new VSTable());
+                changeScreen(new VSTable(_volumeStore));
             }
             else if (display == displays.table && mode == modes.sm)
             {
