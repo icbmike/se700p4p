@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using Parago.Windows;
 
 namespace ATTrafficAnalayzer
 {
@@ -24,6 +26,8 @@ namespace ATTrafficAnalayzer
 
         modes mode;
         displays display;
+
+        private VolumeStore _volumeStore;
 
         public MainWindow()
         {
@@ -45,12 +49,35 @@ namespace ATTrafficAnalayzer
             SpecialReports.Add("Special Report 5");
             specialReportsListBox.ItemsSource = SpecialReports;
 
+            _volumeStore = new VolumeStore();
+
             this.mainContentControl.Content = new WelcomeScreen();
         }
 
-        private void MenuItemImportClick(object sender, RoutedEventArgs e)
+        private void  MenuItemImportClick(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("SICK");
+            // Configure open file dialog box 
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.FileName = ""; // Default file name
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); //The initial directory
+            dlg.DefaultExt = ".VS"; // Default file extension 
+            dlg.Filter = "Volume Store Files (.VS)|*.VS"; // Filter files by extension 
+
+            // Show open file dialog box 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process open file dialog box results 
+            if (result == true)
+            {
+                ProgressDialogResult res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) => {
+
+                    ProgressDialog.Report(bw, "Reading Files");
+
+                    // Open document 
+                    string filename = dlg.FileName;
+                    _volumeStore.readFile(bw, filename);
+                }, ProgressDialogSettings.WithSubLabelAndCancel);
+            }
         }
 
         private void changeScreen(UserControl screen)
@@ -112,6 +139,7 @@ namespace ATTrafficAnalayzer
             else if (display == displays.graph && mode == modes.sm)
             {
                 changeScreen(new SMGraph());
+
             }
         }
     }

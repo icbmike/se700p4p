@@ -11,7 +11,7 @@
 
     <DockPanel
         LastChildFill="True">
-
+        
         <Menu
             DockPanel.Dock="Top">
             <Menu.Background>
