@@ -9,14 +9,19 @@ namespace ATTrafficAnalayzer
 {
     public class VolumeStore
     {
-        private Dictionary<DateTime, List<VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
+        private Dictionary<DateTime, Dictionary<int, VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
         private List<int> _intersections; //List of intersections
         private List<DateTimeRecord> _dateTimeRecords;
+
+        public List<DateTimeRecord> DateTimeRecords
+        {
+            get { return _dateTimeRecords; }
+        }
         private Dictionary<int, List<int>> _detectors; //Dictionary of detectors at an intersection
 
         public VolumeStore()
         {
-            _volumesDictionary = new Dictionary<DateTime, List<VolumeRecord>>();
+            _volumesDictionary = new Dictionary<DateTime,Dictionary<int, VolumeRecord>>();
             _intersections = new List<int>();
             _detectors = new Dictionary<int, List<int>>();
             _dateTimeRecords = new List<DateTimeRecord>();
@@ -61,11 +66,17 @@ namespace ATTrafficAnalayzer
                     case RecordType.DATETIME:
                         currentDateTime = RecordFactory.createDateTimeRecord(record);
                         _dateTimeRecords.Add(currentDateTime);
-                        _volumesDictionary.Add(currentDateTime.dateTime, new List<VolumeRecord>());
+                        _volumesDictionary.Add(currentDateTime.dateTime, new Dictionary<int, VolumeRecord>());
                         break;
                     case RecordType.VOLUME:
+
                         VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
-                        _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord);
+                        _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
+                        _intersections.Add(volumeRecord.IntersectionNumber);
+                        
+                        if(!_detectors.ContainsKey(volumeRecord.IntersectionNumber)){
+                            _detectors.Add(volumeRecord.IntersectionNumber, volumeRecord.GetDetectors());
+                        }
                         break;
                 }
             }
@@ -83,7 +94,9 @@ namespace ATTrafficAnalayzer
 
         public int getVolume(int intersection, int detector, DateTime date)
         {
-            return _volumesDictionary[date][intersection].GetVolumeForDetector(detector);
+            Console.WriteLine(date);
+            var x = _volumesDictionary[date];
+            return x[intersection].GetVolumeForDetector(detector);
         }
         
     }

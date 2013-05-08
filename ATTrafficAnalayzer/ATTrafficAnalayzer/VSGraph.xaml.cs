@@ -11,6 +11,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Research.DynamicDataDisplay;
+using Microsoft.Research.DynamicDataDisplay.DataSources;
+using Microsoft.Research.DynamicDataDisplay.PointMarkers;
 
 namespace ATTrafficAnalayzer
 {
@@ -19,9 +22,53 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class VSGraph : UserControl
     {
+        private VolumeStore _volumeStore;
+        private int _interval;
+        private DateTime _startDate;
+        private DateTime _endDate;
+
         public VSGraph()
         {
             InitializeComponent();
+        }
+
+
+        public VSGraph(VolumeStore _volumeStore, int interval, DateTime startDate, DateTime endDate)
+        {
+            // TODO: Complete member initialization
+            this._volumeStore = _volumeStore;
+            this._interval = interval;
+            this._startDate = startDate;
+            this._endDate = endDate;
+            InitializeComponent();
+
+            List<DateTime> ds = new List<DateTime>();
+            foreach(DateTimeRecord d in _volumeStore.DateTimeRecords){
+                ds.Add(d.dateTime);
+            }
+
+            DateTime[] dates = ds.ToArray();
+            int intersection = _volumeStore.getIntersections()[0];
+            int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
+            
+            List<int> vs = new List<int>();
+            foreach (DateTime d in dates)
+            {
+                vs.Add(_volumeStore.getVolume(intersection, detector, d));
+            }
+            int[] volumes = vs.ToArray();
+
+
+            var datesDataSource = new EnumerableDataSource<DateTime>(dates);
+            datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
+
+            var volumesDataSource = new EnumerableDataSource<int>(volumes);
+            volumesDataSource.SetYMapping(y => y);
+
+            CompositeDataSource compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
+            plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
+              new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
+              new PenDescription("Number bugs open"));
         }
     }
 }
