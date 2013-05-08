@@ -123,7 +123,8 @@ namespace ATTrafficAnalayzer
         {
             checkDisplayValue();
             checkModeValue();
-
+            SettingsTray settings = SettingsTray.DataContext as SettingsTray;
+            
             if (display == displays.table && mode == modes.vs)
             {
                 changeScreen(new VSTable(_volumeStore));
@@ -134,7 +135,7 @@ namespace ATTrafficAnalayzer
             }
             else if (display == displays.graph && mode == modes.vs)
             {
-                changeScreen(new VSGraph());
+                changeScreen(new VSGraph(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
             }
             else if (display == displays.graph && mode == modes.sm)
             {
@@ -142,5 +143,6 @@ namespace ATTrafficAnalayzer
 
             }
         }
+
     }
 }
