@@ -20,35 +20,41 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class VSTable : UserControl
     {
-        public VSTable(VolumeStore dataset)
+        private VolumeStore _volumeStore;
+        private int _interval;
+        private DateTime _startDate;
+        private DateTime _endDate;
+        private List<int> _intersections;
+
+        public VSTable(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
         {
+            // TODO: Complete member initialization
+            this._volumeStore = volumeStore;
+            this._interval = interval;
+            this._startDate = startDate;
+            this._endDate = endDate;
             InitializeComponent();
 
-            
-            DataTable datatable = new DataTable();
+            this._intersections = this._volumeStore.getIntersections();
 
-            datatable.Columns.Add(new DataColumn("00", typeof(string)));
-            datatable.Columns.Add(new DataColumn("01", typeof(string)));
-            datatable.Columns.Add(new DataColumn("02", typeof(string)));
-            datatable.Columns.Add(new DataColumn("03", typeof(string)));
-            datatable.Columns.Add(new DataColumn("04", typeof(string)));
 
-            this.dataGrid.Content = datatable;
+            //DataTable datatable = new DataTable();
 
-            //_testData.Columns.Add(new DataColumn("Name", typeof(string)));
-            //_testData.Columns.Add(new DataColumn("Department", typeof(string)));
+            //datatable.Columns.Add(new DataColumn("00", typeof(string)));
+            //datatable.Columns.Add(new DataColumn("01", typeof(string)));
+            //datatable.Columns.Add(new DataColumn("02", typeof(string)));
+            //datatable.Columns.Add(new DataColumn("03", typeof(string)));
+            //datatable.Columns.Add(new DataColumn("04", typeof(string)));
 
-            //// Temp Code: User should add rows
-            //DataRow row = _testData.NewRow();
-            //row["Name"] = "John Smith";
-            //row["Department"] = "Accounting";
-            //_testData.Rows.Add(row);
+            //DataRow row = datatable.NewRow();
+            //row["00"] = "hello";
+            //row["01"] = "hello";
+            //row["02"] = "hello";
+            //row["03"] = "hello";
+            //row["04"] = "hello";
+            //datatable.Rows.Add(row);
 
-            //// Initialize combo boxes
-            //List departmentComboBoxList = new List() { "Accounting", "Purchasing", "Engineering" };
-            //_Departments.ItemsSource = departmentComboBoxList;
-
-            
+            //this.dataGrid.Content = datatable;
         }
     }
 }

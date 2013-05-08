@@ -16,10 +16,22 @@
             DockPanel.Dock="Top"
             FontSize="18">Volume Store - Table View</Label>
 
-        <ContentControl
+        <DataGrid
             DockPanel.Dock="Top"
-            x:Name="dataGrid"
-            Margin="10" />
+            AutoGenerateColumns="True"
+            Margin="10"
+            Name="dt">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn
+                    Header="Intersections"
+                    Width="100"
+                    IsReadOnly="True"
+                    x:Name="intersections"
+                    CanUserSort="False"
+                    CanUserReorder="False">
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </DockPanel>
 </UserControl>
