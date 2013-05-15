@@ -20,18 +20,7 @@
             DockPanel.Dock="Top"
             AutoGenerateColumns="True"
             Margin="10"
-            Name="dt">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn
-                    Header="Intersections"
-                    Width="100"
-                    IsReadOnly="True"
-                    x:Name="intersections"
-                    CanUserSort="False"
-                    CanUserReorder="False">
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            Name="table" />
 
     </DockPanel>
 </UserControl>

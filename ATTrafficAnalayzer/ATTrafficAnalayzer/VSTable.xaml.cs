@@ -24,7 +24,6 @@ namespace ATTrafficAnalayzer
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
-        private List<int> _intersections;
 
         public VSTable(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
         {
@@ -35,26 +34,48 @@ namespace ATTrafficAnalayzer
             this._endDate = endDate;
             InitializeComponent();
 
-            this._intersections = this._volumeStore.getIntersections();
-
-
-            //DataTable datatable = new DataTable();
-
-            //datatable.Columns.Add(new DataColumn("00", typeof(string)));
-            //datatable.Columns.Add(new DataColumn("01", typeof(string)));
-            //datatable.Columns.Add(new DataColumn("02", typeof(string)));
-            //datatable.Columns.Add(new DataColumn("03", typeof(string)));
-            //datatable.Columns.Add(new DataColumn("04", typeof(string)));
-
-            //DataRow row = datatable.NewRow();
-            //row["00"] = "hello";
-            //row["01"] = "hello";
-            //row["02"] = "hello";
-            //row["03"] = "hello";
-            //row["04"] = "hello";
-            //datatable.Rows.Add(row);
-
-            //this.dataGrid.Content = datatable;
+            table.ItemsSource = Volume.GetVolumeData();
         }
+    }
+
+    public class Volume
+    {
+        public int min00 {get; set;}
+        public int min01 {get; set;}
+        public int min02 {get; set;}
+        public int min03 {get; set;}
+        public int min04 {get; set;}
+        public int min05 {get; set;}
+        public int min06 {get; set;}
+        public int min07 {get; set;}
+        public int min08 {get; set;}
+        public int min09 {get; set;}
+
+        public Volume()
+        {
+            Random rnd = new Random();
+            this.min00 = rnd.Next();
+            this.min01 = rnd.Next();
+            this.min02 = rnd.Next();
+            this.min03 = rnd.Next();
+            this.min04 = rnd.Next();
+            this.min05 = rnd.Next();
+            this.min06 = rnd.Next();
+            this.min07 = rnd.Next();
+            this.min08 = rnd.Next();
+            this.min09 = rnd.Next();
+        }
+
+        public static List<Volume> GetVolumeData()
+        {
+            List<Volume> volumes = new List<Volume>(new Volume[4] {
+                new Volume(), 
+                new Volume(),
+                new Volume(),
+                new Volume()
+            });
+            return volumes;
+        }
+
     }
 }
