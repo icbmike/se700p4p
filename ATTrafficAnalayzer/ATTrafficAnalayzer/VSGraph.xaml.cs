@@ -48,7 +48,7 @@ namespace ATTrafficAnalayzer
             }
 
             DateTime[] dates = ds.ToArray();
-            int intersection = _volumeStore.getIntersections()[0];
+            int intersection = _volumeStore.getIntersections().ToList()[0];
             int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
             
             List<int> vs = new List<int>();
@@ -68,7 +68,7 @@ namespace ATTrafficAnalayzer
             CompositeDataSource compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
             plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
               new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
-              new PenDescription("Number bugs open"));
+              new PenDescription("Volumes"));
         }
     }
 }
