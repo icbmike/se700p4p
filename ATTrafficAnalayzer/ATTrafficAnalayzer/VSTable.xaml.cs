@@ -34,11 +34,43 @@ namespace ATTrafficAnalayzer
             this._endDate = endDate;
             InitializeComponent();
 
-            table.ItemsSource = Volume.GetVolumeData();
+            // Dates
+            List<DateTime> date = new List<DateTime>();
+
+
+            // Records 
+            //foreach (DateTimeRecord d in _volumeStore.DateTimeRecords)
+            //{
+            //    ds.Add(d.dateTime);
+            //}
+
+            //DateTime[] dates = ds.ToArray();
+
+
+            //int intersection = _volumeStore.getIntersections()[0];
+            //int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
+
+            //List<int> vs = new List<int>();
+            //foreach (DateTime d in dates)
+            //{
+            //    vs.Add(_volumeStore.getVolume(intersection, detector, d));
+            //}
+            //int[] volumes = vs.ToArray();
+
+
+            //var datesDataSource = new EnumerableDataSource<DateTime>(dates);
+            //datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
+
+            //var volumesDataSource = new EnumerableDataSource<int>(volumes);
+            //volumesDataSource.SetYMapping(y => y);
+
+            //CompositeDataSource compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
+
+            table.ItemsSource = VolumeAdaptor.GetVolumeData();
         }
     }
 
-    public class Volume
+    public class VolumeAdaptor
     {
         public int min00 {get; set;}
         public int min01 {get; set;}
@@ -51,7 +83,7 @@ namespace ATTrafficAnalayzer
         public int min08 {get; set;}
         public int min09 {get; set;}
 
-        public Volume()
+        public VolumeAdaptor()
         {
             Random rnd = new Random();
             this.min00 = rnd.Next();
@@ -66,13 +98,13 @@ namespace ATTrafficAnalayzer
             this.min09 = rnd.Next();
         }
 
-        public static List<Volume> GetVolumeData()
+        public static List<VolumeAdaptor> GetVolumeData()
         {
-            List<Volume> volumes = new List<Volume>(new Volume[4] {
-                new Volume(), 
-                new Volume(),
-                new Volume(),
-                new Volume()
+            List<VolumeAdaptor> volumes = new List<VolumeAdaptor>(new VolumeAdaptor[4] {
+                new VolumeAdaptor(), 
+                new VolumeAdaptor(),
+                new VolumeAdaptor(),
+                new VolumeAdaptor()
             });
             return volumes;
         }
