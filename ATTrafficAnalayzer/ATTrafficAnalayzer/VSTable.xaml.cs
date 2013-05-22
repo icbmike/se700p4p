@@ -85,7 +85,12 @@ namespace ATTrafficAnalayzer
             // Set DataGrid rows from the data
             for (int i = 0; i < 12; i++)
             {
-                vsDataTable.Rows.Add(vsData[i].ToArray());
+                DataRow row = vsDataTable.NewRow();
+                for (int j = 0; j < 12; j++)
+                {
+                    row[j] = vsData[i][j];
+                }
+                vsDataTable.Rows.Add(row);
             }
 
             table.ItemsSource = vsDataTable.AsDataView();
