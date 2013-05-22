@@ -54,7 +54,7 @@ namespace ATTrafficAnalayzer
             DateTime[] dates = ds.ToArray();
 
             // List intersections
-            int intersection = _volumeStore.getIntersections()[0]; // Use the first intersection for the time being
+            int intersection = _volumeStore.getIntersections().ToList()[0]; // Use the first intersection for the time being
 
             // List detectors
             int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
