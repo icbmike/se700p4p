@@ -9,18 +9,12 @@
     d:DesignWidth="300">
 
     <DockPanel
-        LastChildFill="True">
+        Name="putStuffHere">
 
         <Label
             Margin="10,10,10,5"
             DockPanel.Dock="Top"
             FontSize="18">Volume Store - Table View</Label>
-
-        <DataGrid
-            DockPanel.Dock="Top"
-            AutoGenerateColumns="True"
-            Margin="10"
-            Name="table"/>
 
     </DockPanel>
 </UserControl>
