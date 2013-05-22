@@ -9,12 +9,17 @@
     d:DesignWidth="300">
 
     <DockPanel
-        Name="putStuffHere">
-
+        LastChildFill="True">
+        
         <Label
             Margin="10,10,10,5"
             DockPanel.Dock="Top"
             FontSize="18">Volume Store - Table View</Label>
+
+        <StackPanel 
+            Name="putStuffHere"
+            DockPanel.Dock="Top"
+            HorizontalAlignment="Left"/>
 
     </DockPanel>
 </UserControl>
