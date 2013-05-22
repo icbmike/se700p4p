@@ -52,6 +52,9 @@ namespace ATTrafficAnalayzer
             _intersectionList = vs.getIntersections().ToList();
             _detectorList = new ObservableCollection<int>();
             _detectorList.Add(123);
+            _detectorList.Add(1);
+            _detectorList.Add(2);
+            _detectorList.Add(3);
             InitializeComponent();
         }
 
@@ -62,6 +65,44 @@ namespace ATTrafficAnalayzer
             {
                 _detectorList.Add(detector);
             }
+
+        }
+
+        private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+            var listview = sender as ListView;
+            var items = new List<int>();
+
+            foreach (int x in listview.SelectedItems)
+            {
+                items.Add(x);
+            }
+            DragDrop.DoDragDrop(listview, items, DragDropEffects.Move);
+
+        }
+
+        private void Border_Drop(object sender, DragEventArgs e)
+        {
+            var items = e.Data.GetData(typeof(List<int>)) as List<int>;
+
+            var b = new Border();
+            b.Width = 150;
+            b.Height = 150;
+            b.Margin = new Thickness(20, 20, 0, 0);
+            b.CornerRadius = new CornerRadius(5);
+            b.BorderBrush = Brushes.Black;
+            b.BorderThickness = new Thickness(2);
+            b.AllowDrop = true;
+            var newList = new ListView();
+            newList.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xAA, 0xEE));
+
+            foreach(int i in items)
+            {
+                newList.Items.Add(i);
+            }
+            b.Child = newList;
+            Approaches.Children.Add(b);
 
         }
     }
