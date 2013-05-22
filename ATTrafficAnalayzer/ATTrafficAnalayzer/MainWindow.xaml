@@ -135,7 +135,7 @@
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
-                    OpacityMask="{x:Null}"></Button>
+                    OpacityMask="{x:Null}" Click="newReportClick"></Button>
                 <Button
                     Content="_Modify"
                     HorizontalAlignment="Left"

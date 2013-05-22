@@ -10,7 +10,7 @@ namespace ATTrafficAnalayzer
     public class VolumeStore
     {
         private Dictionary<DateTime, Dictionary<int, VolumeRecord>> _volumesDictionary; //Dictionary of a list of volumeRecords (intersection is the index) for a date.
-        private List<int> _intersections; //List of intersections
+        private HashSet<int> _intersections; //List of intersections
         private List<DateTimeRecord> _dateTimeRecords;
 
         public List<DateTimeRecord> DateTimeRecords
@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer
         public VolumeStore()
         {
             _volumesDictionary = new Dictionary<DateTime,Dictionary<int, VolumeRecord>>();
-            _intersections = new List<int>();
+            _intersections = new HashSet<int>();
             _detectors = new Dictionary<int, List<int>>();
             _dateTimeRecords = new List<DateTimeRecord>();
         }
@@ -83,7 +83,7 @@ namespace ATTrafficAnalayzer
             
         }
 
-        public List<int> getIntersections()
+        public HashSet<int> getIntersections()
         {
             return _intersections;
         }

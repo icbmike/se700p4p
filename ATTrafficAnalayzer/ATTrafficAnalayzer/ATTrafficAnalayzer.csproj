@@ -74,6 +74,9 @@
     <Compile Include="Record.cs" />
     <Compile Include="RecordFactory.cs" />
     <Compile Include="RecordType.cs" />
+    <Compile Include="ReportConfigurationScreen.xaml.cs">
+      <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsTray.cs" />
     <Compile Include="SMGraph.xaml.cs">
       <DependentUpon>SMGraph.xaml</DependentUpon>
@@ -110,6 +113,10 @@
     <Page Include="ProgressDialog\ProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ReportConfigurationScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SMGraph.xaml">
       <SubType>Designer</SubType>
