@@ -80,7 +80,6 @@ namespace ATTrafficAnalayzer
                         break;
                 }
             }
-            
         }
 
         public HashSet<int> getIntersections()
@@ -98,6 +97,5 @@ namespace ATTrafficAnalayzer
             var x = _volumesDictionary[date];
             return x[intersection].GetVolumeForDetector(detector);
         }
-        
     }
 }

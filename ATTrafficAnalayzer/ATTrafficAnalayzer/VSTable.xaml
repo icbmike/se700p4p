@@ -18,45 +18,9 @@
 
         <DataGrid
             DockPanel.Dock="Top"
-            AutoGenerateColumns="False"
-            Margin="10">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn
-                    Header="A"
-                    Width="50"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image
-                                Source="{Binding Image}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn
-                    Header="B"
-                    Width="50"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image
-                                Source="{Binding Image}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn
-                    Header="C"
-                    Width="50"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image
-                                Source="{Binding Image}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            AutoGenerateColumns="True"
+            Margin="10"
+            Name="table"/>
 
     </DockPanel>
-
 </UserControl>
