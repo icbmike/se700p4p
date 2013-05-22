@@ -12,12 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
+using System.ComponentModel;
+using Microsoft.Research.DynamicDataDisplay.DataSources;
 
 namespace ATTrafficAnalayzer
 {
+
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
-    /// </summary>
     public partial class VSTable : UserControl
     {
         private VolumeStore _volumeStore;
@@ -25,89 +27,80 @@ namespace ATTrafficAnalayzer
         private DateTime _startDate;
         private DateTime _endDate;
 
-        public VSTable(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
+        public VSTable(VolumeStore _volumeStore, int _interval, DateTime _startDate, DateTime _endDate)
         {
-            // TODO: Complete member initialization
-            this._volumeStore = volumeStore;
-            this._interval = interval;
-            this._startDate = startDate;
-            this._endDate = endDate;
+            // TODO Complete member initialization
+            this._volumeStore = _volumeStore;
+            this._interval = _interval;
+            this._startDate = _startDate;
+            this._endDate = _endDate;
             InitializeComponent();
 
-            // Dates
-            List<DateTime> date = new List<DateTime>();
+            // Create a DataGrid
+            DataTable vsDataTable = new DataTable();
 
+            // Set column headings
+            for (int i = 0; i < 12; i++)
+            {
+                vsDataTable.Columns.Add(i.ToString(), typeof(string));
+            }
 
-            // Records 
-            //foreach (DateTimeRecord d in _volumeStore.DateTimeRecords)
-            //{
-            //    ds.Add(d.dateTime);
-            //}
+            // List dates
+            List<DateTime> ds = new List<DateTime>();
+            foreach (DateTimeRecord date in _volumeStore.DateTimeRecords)
+            {
+                ds.Add(date.dateTime);
+            }
+            DateTime[] dates = ds.ToArray();
 
-            //DateTime[] dates = ds.ToArray();
+            // List intersections
+            int intersection = _volumeStore.getIntersections()[0]; // Use the first intersection for the time being
 
+            // List detectors
+            int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
 
-            //int intersection = _volumeStore.getIntersections()[0];
-            //int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
+            // Get volume store data
+            int[][] vsData = { 
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12],
+                                 new int[12]
+                             };
+            for (int i = 0; i < 12; i++)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    vsData[i][j] = _volumeStore.getVolume(intersection, detector, dates[i * 12 + j]);
+                }
+            }
 
-            //List<int> vs = new List<int>();
-            //foreach (DateTime d in dates)
-            //{
-            //    vs.Add(_volumeStore.getVolume(intersection, detector, d));
-            //}
-            //int[] volumes = vs.ToArray();
+            // Set DataGrid rows from the data
+            for (int i = 0; i < 12; i++)
+            {
+                vsDataTable.Rows.Add(vsData[i].ToArray());
+            }
 
-
-            //var datesDataSource = new EnumerableDataSource<DateTime>(dates);
-            //datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
-
-            //var volumesDataSource = new EnumerableDataSource<int>(volumes);
-            //volumesDataSource.SetYMapping(y => y);
-
-            //CompositeDataSource compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
-
-            table.ItemsSource = VolumeAdaptor.GetVolumeData();
-        }
-    }
-
-    public class VolumeAdaptor
-    {
-        public int min00 {get; set;}
-        public int min01 {get; set;}
-        public int min02 {get; set;}
-        public int min03 {get; set;}
-        public int min04 {get; set;}
-        public int min05 {get; set;}
-        public int min06 {get; set;}
-        public int min07 {get; set;}
-        public int min08 {get; set;}
-        public int min09 {get; set;}
-
-        public VolumeAdaptor()
-        {
-            Random rnd = new Random();
-            this.min00 = rnd.Next();
-            this.min01 = rnd.Next();
-            this.min02 = rnd.Next();
-            this.min03 = rnd.Next();
-            this.min04 = rnd.Next();
-            this.min05 = rnd.Next();
-            this.min06 = rnd.Next();
-            this.min07 = rnd.Next();
-            this.min08 = rnd.Next();
-            this.min09 = rnd.Next();
+            table.ItemsSource = vsDataTable.AsDataView();
         }
 
-        public static List<VolumeAdaptor> GetVolumeData()
-        {
-            List<VolumeAdaptor> volumes = new List<VolumeAdaptor>(new VolumeAdaptor[4] {
-                new VolumeAdaptor(), 
-                new VolumeAdaptor(),
-                new VolumeAdaptor(),
-                new VolumeAdaptor()
-            });
-            return volumes;
-        }
+        //private DataTable _volumeStoreTable;
 
+        //public DataTable VolumeStoreTable
+        //{
+        //    get { return _volumeStoreTable; }
+        //    set
+        //        {
+        //            _volumeStoreTable = value;
+        //            OnPropertyChanged("VolumeStoreTable");
+        //        }
+        //}
     }
 }

@@ -20,7 +20,7 @@
             DockPanel.Dock="Top"
             AutoGenerateColumns="True"
             Margin="10"
-            Name="table" />
+            Name="table"/>
 
     </DockPanel>
 </UserControl>
