@@ -36,7 +36,19 @@ namespace ATTrafficAnalayzer
             this._endDate = _endDate;
             InitializeComponent();
 
-            table.ItemsSource = generateVSTable().AsDataView();
+            Label dateLabel = new Label();
+            dateLabel.Content = "Some date";
+            dateLabel.Margin = new Thickness(10);
+            putStuffHere.Children.Add(dateLabel);
+            DockPanel.SetDock(dateLabel, Dock.Top);
+
+            DataGrid dg = new DataGrid();
+            dg.ItemsSource = generateVSTable().AsDataView();
+            dg.Margin = new Thickness(10);
+            dg.Width = 280;
+            dg.Height = 280;
+            putStuffHere.Children.Add(dg);
+            DockPanel.SetDock(dg, Dock.Top);
         }
 
         public DataTable generateVSTable()
