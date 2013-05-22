@@ -45,13 +45,15 @@
             <Border
                 CornerRadius="5"
                 AllowDrop="True"
-                Drop="Border_Drop"
+                Drop="NewApproachDrop"
                 BorderBrush="#FF000000"
                 Background="#FF00D100"
                 Margin="20,20,0,0"
                 Height="150"
                 Width="150"
                 BorderThickness="2">
+                <Image
+                    Source="/ATTrafficAnalayzer;component/Add.png" />
 
             </Border>
         </WrapPanel>

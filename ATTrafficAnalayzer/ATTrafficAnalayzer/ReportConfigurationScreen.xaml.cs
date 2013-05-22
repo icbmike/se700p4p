@@ -78,32 +78,28 @@ namespace ATTrafficAnalayzer
             {
                 items.Add(x);
             }
-            DragDrop.DoDragDrop(listview, items, DragDropEffects.Move);
+            DataObject data = new DataObject();
+            data.SetData("source", listview);
+            data.SetData("items", items);
+            DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
 
         }
 
-        private void Border_Drop(object sender, DragEventArgs e)
+        private void NewApproachDrop(object sender, DragEventArgs e)
         {
-            var items = e.Data.GetData(typeof(List<int>)) as List<int>;
+            var source = e.Data.GetData("source") as ListView;
+            var items = e.Data.GetData("items") as List<int>;
 
-            var b = new Border();
-            b.Width = 150;
-            b.Height = 150;
-            b.Margin = new Thickness(20, 20, 0, 0);
-            b.CornerRadius = new CornerRadius(5);
-            b.BorderBrush = Brushes.Black;
-            b.BorderThickness = new Thickness(2);
-            b.AllowDrop = true;
-            var newList = new ListView();
-            newList.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xAA, 0xEE));
 
-            foreach(int i in items)
+            foreach(int item in items)
             {
-                newList.Items.Add(i);
+                (source.ItemsSource as ObservableCollection<int>).Remove(item);
             }
-            b.Child = newList;
-            Approaches.Children.Add(b);
+            
+            ApproachControl approach = new ApproachControl(Approaches, items);
+            approach.Margin = new Thickness(20, 20, 0, 0);
+            Approaches.Children.Add(approach);
 
-        }
+        }        
     }
 }
