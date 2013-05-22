@@ -144,5 +144,10 @@ namespace ATTrafficAnalayzer
             }
         }
 
+        private void newReportClick(object sender, RoutedEventArgs e)
+        {
+            changeScreen(new ReportConfigurationScreen(_volumeStore));
+        }
+
     }
 }
