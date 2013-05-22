@@ -36,11 +36,16 @@ namespace ATTrafficAnalayzer
             this._endDate = _endDate;
             InitializeComponent();
 
+            table.ItemsSource = generateVSTable().AsDataView();
+        }
+
+        public DataTable generateVSTable()
+        {
             // Create a DataGrid
             DataTable vsDataTable = new DataTable();
 
             // Set column headings
-            for (int i = 0; i < 12; i++)
+            for (int i = 1; i <= 12; i++)
             {
                 vsDataTable.Columns.Add(i.ToString(), typeof(string));
             }
@@ -60,52 +65,17 @@ namespace ATTrafficAnalayzer
             int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
 
             // Get volume store data
-            int[][] vsData = { 
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12],
-                                 new int[12]
-                             };
-            for (int i = 0; i < 12; i++)
-            {
-                for (int j = 0; j < 12; j++)
-                {
-                    vsData[i][j] = _volumeStore.getVolume(intersection, detector, dates[i * 12 + j]);
-                }
-            }
-
-            // Set DataGrid rows from the data
             for (int i = 0; i < 12; i++)
             {
                 DataRow row = vsDataTable.NewRow();
                 for (int j = 0; j < 12; j++)
                 {
-                    row[j] = vsData[i][j];
+                    row[j] = _volumeStore.getVolume(intersection, detector, dates[i * 12 + j]);
                 }
                 vsDataTable.Rows.Add(row);
             }
 
-            table.ItemsSource = vsDataTable.AsDataView();
+            return vsDataTable;
         }
-
-        //private DataTable _volumeStoreTable;
-
-        //public DataTable VolumeStoreTable
-        //{
-        //    get { return _volumeStoreTable; }
-        //    set
-        //        {
-        //            _volumeStoreTable = value;
-        //            OnPropertyChanged("VolumeStoreTable");
-        //        }
-        //}
     }
 }
