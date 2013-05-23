@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    
     <DockPanel
         LastChildFill="True">
 
@@ -12,7 +13,7 @@
             Margin="10,10,10,5"
             DockPanel.Dock="Top"
             FontSize="18">Strategic Monitoring - Table View</Label>
-
+        
         <DataGrid
             DockPanel.Dock="Top"
             AutoGenerateColumns="False"

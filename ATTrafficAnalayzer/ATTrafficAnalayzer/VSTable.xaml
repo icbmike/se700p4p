@@ -18,7 +18,6 @@
 
         <StackPanel 
             Name="putStuffHere"
-            DockPanel.Dock="Top"
             HorizontalAlignment="Left"/>
 
     </DockPanel>
