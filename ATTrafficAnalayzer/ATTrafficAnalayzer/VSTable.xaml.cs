@@ -44,8 +44,10 @@ namespace ATTrafficAnalayzer
             DataGrid dg = new DataGrid();
             dg.ItemsSource = generateVSTable().AsDataView();
             dg.Margin = new Thickness(10);
-            dg.Width = 280;
+            dg.Width = Double.NaN; //Translates to Auto
             dg.Height = 280;
+            dg.ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star);
+            dg.IsReadOnly = true;
             putStuffHere.Children.Add(dg);
         }
 
