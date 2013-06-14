@@ -29,6 +29,7 @@ namespace ATTrafficAnalayzer
         displays display;
 
         private VolumeStore _volumeStore;
+        private VolumeDBHelper _dbHelper;
 
         public MainWindow()
         {
@@ -51,6 +52,7 @@ namespace ATTrafficAnalayzer
             specialReportsListBox.ItemsSource = SpecialReports;
 
             _volumeStore = new VolumeStore();
+            _dbHelper = new VolumeDBHelper();
 
             this.mainContentControl.Content = new WelcomeScreen();
         }
@@ -76,7 +78,8 @@ namespace ATTrafficAnalayzer
 
                     // Open document 
                     string filename = dlg.FileName;
-                    _volumeStore.readFile(bw, filename);
+                    _dbHelper.importFile(filename);
+                    //_volumeStore.readFile(bw, filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
         }
@@ -150,10 +153,6 @@ namespace ATTrafficAnalayzer
             changeScreen(new ReportConfigurationScreen(_volumeStore));
         }
 
-        private void deleteBtn_Click(object sender, RoutedEventArgs e)
-        {
-            VolumeDBHelper db = new VolumeDBHelper();
-        }
 
     }
 }

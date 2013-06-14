@@ -18,7 +18,6 @@ namespace ATTrafficAnalayzer.VolumeModel
 
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
-            Trace.WriteLine("asd");
             //Check if tables exist in database file create if they don't
             createVolumesTableIfNotExists(conn);
             createApproachesTableIfNotExists(conn);
@@ -124,7 +123,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                                 foreach (int detector in volumeRecord.GetDetectors())
                                 {
                                     cmd.CommandText = "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES ('@dateTime', '@intersection', '@detector', '@volume');";
-                                    
+                                    cmd.Parameters.Clear();
                                     cmd.Parameters.AddWithValue("@dateTime", currentDateTime.dateTime);
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
