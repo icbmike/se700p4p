@@ -34,9 +34,11 @@ namespace ATTrafficAnalayzer.VolumeModel
             if (!reader.HasRows)
             {
                 var createTable = @"CREATE TABLE [configs] ( 
-                                        //TODO figure out how to blobs
-                                    )";
-                SQLiteCommand create = new SQLiteCommand(createTable);
+                                        [name] TEXT  NULL,
+                                        [config] TEXT  NULL
+                                   )";
+                SQLiteCommand create = new SQLiteCommand(conn);
+                create.CommandText = createTable;
                 create.ExecuteNonQuery();
             }
         }
@@ -50,9 +52,11 @@ namespace ATTrafficAnalayzer.VolumeModel
             if (!reader.HasRows)
             {
                 var createTable = @"CREATE TABLE [approaches] ( 
-                                        //TODO figure out how to blobs
+                                        [name] TEXT  NULL,
+                                        [approach] TEXT  NULL
                                     )";
-                SQLiteCommand create = new SQLiteCommand(createTable);
+                SQLiteCommand create = new SQLiteCommand(conn);
+                create.CommandText = createTable;
                 create.ExecuteNonQuery();
             }
         }
@@ -71,7 +75,8 @@ namespace ATTrafficAnalayzer.VolumeModel
                                         [detector] INTEGER  NULL,
                                         [volume] INTEGER  NULL
                                     )";
-                SQLiteCommand create = new SQLiteCommand(createTable);
+                SQLiteCommand create = new SQLiteCommand(conn);
+                create.CommandText = createTable;
                 create.ExecuteNonQuery();
             }
         }
