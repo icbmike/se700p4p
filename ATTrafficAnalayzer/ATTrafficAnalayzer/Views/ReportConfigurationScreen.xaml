@@ -53,7 +53,7 @@
                 Width="150"
                 BorderThickness="2">
                 <Image
-                    Source="/ATTrafficAnalayzer;component/Add.png" />
+                    Source="/ATTrafficAnalayzer;component/Resources/Images/Add.png" />
 
             </Border>
         </WrapPanel>
