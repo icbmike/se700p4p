@@ -63,45 +63,41 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ApproachControl.xaml.cs">
+    <Compile Include="Views\ApproachControl.xaml.cs">
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\WindowSettings.cs" />
-    <Compile Include="DateTimeRecord.cs" />
+    <Compile Include="VolumeModel\DateTimeRecord.cs" />
     <Compile Include="IntervalConverter.cs" />
     <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogResult.cs" />
     <Compile Include="ProgressDialog\ProgressDialogSettings.cs" />
-    <Compile Include="Record.cs" />
-    <Compile Include="RecordFactory.cs" />
-    <Compile Include="RecordType.cs" />
-    <Compile Include="ReportConfigurationScreen.xaml.cs">
+    <Compile Include="VolumeModel\RecordFactory.cs" />
+    <Compile Include="VolumeModel\RecordType.cs" />
+    <Compile Include="Views\ReportConfigurationScreen.xaml.cs">
       <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsTray.cs" />
-    <Compile Include="SMGraph.xaml.cs">
+    <Compile Include="Views\SMGraph.xaml.cs">
       <DependentUpon>SMGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SMTable.xaml.cs">
+    <Compile Include="Views\SMTable.xaml.cs">
       <DependentUpon>SMTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StandardConfig.xaml.cs">
-      <DependentUpon>StandardConfig.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="VolumeRecord.cs" />
-    <Compile Include="VolumeStore.cs" />
-    <Compile Include="VSGraph.xaml.cs">
+    <Compile Include="VolumeModel\VolumeRecord.cs" />
+    <Compile Include="VolumeModel\VolumeStore.cs" />
+    <Compile Include="Views\VSGraph.xaml.cs">
       <DependentUpon>VSGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VSTable.xaml.cs">
+    <Compile Include="Views\VSTable.xaml.cs">
       <DependentUpon>VSTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WelcomeScreen.xaml.cs">
+    <Compile Include="Views\WelcomeScreen.xaml.cs">
       <DependentUpon>WelcomeScreen.xaml</DependentUpon>
     </Compile>
-    <Page Include="ApproachControl.xaml">
+    <Page Include="Views\ApproachControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -121,31 +117,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ReportConfigurationScreen.xaml">
+    <Page Include="Views\ReportConfigurationScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SMGraph.xaml">
+    <Page Include="Views\SMGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SMTable.xaml">
+    <Page Include="Views\SMTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StandardConfig.xaml">
+    <Page Include="Views\VSGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="VSGraph.xaml">
+    <Page Include="Views\VSTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="VSTable.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WelcomeScreen.xaml">
+    <Page Include="Views\WelcomeScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
