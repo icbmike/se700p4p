@@ -90,6 +90,7 @@
     <Compile Include="SettingsTray.cs" />
     <Compile Include="VolumeModel\Report.cs" />
     <Compile Include="VolumeModel\RouteGrouping.cs" />
+    <Compile Include="VolumeModel\VolumeDBHelper.cs" />
     <Compile Include="VolumeModel\VolumeRecord.cs" />
     <Compile Include="VolumeModel\VolumeStore.cs" />
     <Compile Include="Views\VSGraph.xaml.cs">
