@@ -1,6 +1,4 @@
-﻿
-    
-    <Window
+﻿<Window
     
         x:Class="ATTrafficAnalayzer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -13,11 +11,11 @@
     xmlns:ta="clr-namespace:ATTrafficAnalayzer"
     Width="1000">
 
-    
-    
+
+
     <DockPanel
         LastChildFill="True">
-        
+
         <Menu
             DockPanel.Dock="Top">
             <Menu.Background>
@@ -81,31 +79,12 @@
                     SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
                     SelectedValuePath="Content"
                     SelectedIndex="3">
-                        <ComboBoxItem>1 min</ComboBoxItem>
-                        <ComboBoxItem>5 min</ComboBoxItem>
-                        <ComboBoxItem>15 min</ComboBoxItem>
-                        <ComboBoxItem>30 min</ComboBoxItem>
-                        <ComboBoxItem>60 min</ComboBoxItem>
+                    <ComboBoxItem>1 min</ComboBoxItem>
+                    <ComboBoxItem>5 min</ComboBoxItem>
+                    <ComboBoxItem>15 min</ComboBoxItem>
+                    <ComboBoxItem>30 min</ComboBoxItem>
+                    <ComboBoxItem>60 min</ComboBoxItem>
                 </ComboBox>
-                <RadioButton
-                    Margin="5,0,0,0"
-                    GroupName="mode"
-                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                    MinWidth="45"
-                    BorderBrush="#FF457EFF"
-                    Content="VS"
-                    Name="vsradio"
-                    Checked="switchScreen"
-                    Background="White"></RadioButton>
-                <RadioButton
-                    GroupName="mode"
-                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                    MinWidth="45"
-                    BorderBrush="#FF457EFF"
-                    Content="SM"
-                    Name="smradio"
-                    Checked="switchScreen"
-                    Background="White"></RadioButton>
             </ToolBar>
         </ToolBarTray>
 
@@ -204,6 +183,6 @@
         <ContentControl
             DockPanel.Dock="Right"
             x:Name="mainContentControl" />
-     
+
     </DockPanel>
 </Window>
