@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using System.Data;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -70,7 +71,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             if (!reader.HasRows)
             {
                 var createTable = @"CREATE TABLE [volumes] ( 
-                                        [DateTime] TIME DEFAULT CURRENT_TIMESTAMP NULL, 
+                                        [dateTime] TIME DEFAULT CURRENT_TIMESTAMP NULL, 
                                         [intersection] INTEGER  NULL,
                                         [detector] INTEGER  NULL,
                                         [volume] INTEGER  NULL
@@ -88,17 +89,63 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public List<int> getIntersections()
         {
-            throw new NotImplementedException();
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+            SQLiteCommand query = new SQLiteCommand(conn);
+            query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
+            SQLiteDataReader reader = query.ExecuteReader();
+
+            var intersections = new List<int>();
+            while (reader.Read())
+            {
+                intersections.Add(reader.GetInt32(0));
+            }
+            conn.Close();
+            return intersections;
+            
         }
 
         public List<int> getDetectorsAtIntersection(int intersection)
         {
-            throw new NotImplementedException();
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+
+            SQLiteCommand query = new SQLiteCommand(conn);
+            query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = '@intersection';";
+            query.Parameters.AddWithValue("@intersection", intersection);
+            SQLiteDataReader reader = query.ExecuteReader();
+
+            List<int> detectors = new List<int>();
+            while (reader.Read())
+            {
+                detectors.Add(reader.GetInt32(0);
+            }
+
+            conn.Close();
+            return detectors;
         }
 
         public int getVolume(int intersection, int detector, DateTime dateTime)
         {
-            throw new NotImplementedException();
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+
+            SQLiteCommand query = new SQLiteCommand(conn);
+
+            query.CommandText = "SELECT volume from volumes WHERE intersection = '@intersection' AND detector = '@detector' AND dateTime = '@dateTime';";
+            
+            query.Parameters.AddWithValue("@intersection", intersection);
+            query.Parameters.AddWithValue("@detector", intersection);
+            query.Parameters.AddWithValue("@dateTime", dateTime);
+
+            SQLiteDataReader reader = query.ExecuteReader();
+            if (reader.RecordsAffected != 1)
+            {
+                throw new Exception("WHOAH");
+            }
+            int volume = reader.GetInt32(0);
+            conn.Close();
+            return volume;
         }
         #endregion
 
