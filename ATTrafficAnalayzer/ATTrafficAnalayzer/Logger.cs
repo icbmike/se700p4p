@@ -8,6 +8,11 @@ namespace ATTrafficAnalayzer
 {
     public static class Logger
     {
+        public static void Debug(string message, string module)
+        {
+            WriteEntry(message, "debug", module);
+        }
+
         public static void Error(string message, string module)
         {
             WriteEntry(message, "error", module);
