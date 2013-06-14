@@ -93,7 +93,6 @@ namespace ATTrafficAnalayzer
 
         public int getVolume(int intersection, int detector, DateTime date)
         {
-            Console.WriteLine(date);
             var x = _volumesDictionary[date];
             return x[intersection].GetVolumeForDetector(detector);
         }

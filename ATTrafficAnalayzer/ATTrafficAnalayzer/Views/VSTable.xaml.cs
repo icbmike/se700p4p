@@ -49,6 +49,8 @@ namespace ATTrafficAnalayzer
             dg.ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star);
             dg.IsReadOnly = true;
             putStuffHere.Children.Add(dg);
+
+            Logger.Info("constructed view", "VS table");
         }
 
         public DataTable generateVSTable()

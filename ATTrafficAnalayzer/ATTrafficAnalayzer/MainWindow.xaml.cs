@@ -22,10 +22,7 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum modes { vs, sm };
         enum displays { graph, table };
-
-        modes mode;
         displays display;
 
         private VolumeStore _volumeStore;
@@ -109,42 +106,20 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        private void checkModeValue()
-        {
-            bool modeValue = getRadioContent(smradio);
-
-            if (modeValue)
-            {
-                mode = modes.sm;
-            }
-            else
-            {
-                mode = modes.vs;
-            }
-        }
-
         private void switchScreen(object sender, RoutedEventArgs e)
         {
             checkDisplayValue();
-            checkModeValue();
             SettingsTray settings = SettingsTray.DataContext as SettingsTray;
             
-            if (display == displays.table && mode == modes.vs)
+            if (display == displays.table)
             {
                 changeScreen(new VSTable(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
             }
-            else if (display == displays.table && mode == modes.sm)
-            {
-                changeScreen(new SMTable());
-            }
-            else if (display == displays.graph && mode == modes.vs)
+            else if (display == displays.graph)
             {
                 changeScreen(new VSGraph(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
-            }
-            else if (display == displays.graph && mode == modes.sm)
-            {
-                changeScreen(new SMGraph());
-
+            } else {
+                throw new Exception();
             }
         }
 
