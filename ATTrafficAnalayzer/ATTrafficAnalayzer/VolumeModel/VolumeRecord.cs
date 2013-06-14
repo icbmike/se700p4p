@@ -9,6 +9,7 @@ namespace ATTrafficAnalayzer
     {
         private int _intersectionNumber;
 
+
         public int IntersectionNumber
         {
             get { return _intersectionNumber; }
