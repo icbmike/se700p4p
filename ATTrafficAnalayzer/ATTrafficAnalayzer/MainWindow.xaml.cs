@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Parago.Windows;
+using ATTrafficAnalayzer.VolumeModel;
 
 namespace ATTrafficAnalayzer
 {
@@ -147,6 +148,11 @@ namespace ATTrafficAnalayzer
         private void newReportClick(object sender, RoutedEventArgs e)
         {
             changeScreen(new ReportConfigurationScreen(_volumeStore));
+        }
+
+        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            VolumeDBHelper db = new VolumeDBHelper();
         }
 
     }

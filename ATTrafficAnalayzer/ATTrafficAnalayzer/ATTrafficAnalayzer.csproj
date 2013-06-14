@@ -73,6 +73,7 @@
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\WindowSettings.cs" />
+    <Compile Include="VolumeModel\Approach.cs" />
     <Compile Include="VolumeModel\DateTimeRecord.cs" />
     <Compile Include="IntervalConverter.cs" />
     <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
@@ -92,6 +93,7 @@
     <Compile Include="Views\SMTable.xaml.cs">
       <DependentUpon>SMTable.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VolumeModel\VolumeDBHelper.cs" />
     <Compile Include="VolumeModel\VolumeRecord.cs" />
     <Compile Include="VolumeModel\VolumeStore.cs" />
     <Compile Include="Views\VSGraph.xaml.cs">
