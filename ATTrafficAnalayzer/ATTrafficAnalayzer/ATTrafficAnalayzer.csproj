@@ -86,12 +86,6 @@
       <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsTray.cs" />
-    <Compile Include="Views\SMGraph.xaml.cs">
-      <DependentUpon>SMGraph.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SMTable.xaml.cs">
-      <DependentUpon>SMTable.xaml</DependentUpon>
-    </Compile>
     <Compile Include="VolumeModel\VolumeRecord.cs" />
     <Compile Include="VolumeModel\VolumeStore.cs" />
     <Compile Include="Views\VSGraph.xaml.cs">
@@ -124,14 +118,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ReportConfigurationScreen.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\SMGraph.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\SMTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -177,9 +163,7 @@
     <Resource Include="Resources\Images\Add.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="x64\SQLite.Interop.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
