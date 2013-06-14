@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -31,7 +32,9 @@ namespace ATTrafficAnalayzer.VolumeModel
 
             var createTable = @"CREATE TABLE IF NOT EXISTS [configs] ( 
                                     [name] TEXT  NULL,
-                                    [config] TEXT  NULL
+                                    [config] TEXT  NULL,
+
+                                    PRIMARY KEY (name)
                                 )";
             SQLiteCommand create = new SQLiteCommand(conn);
             create.CommandText = createTable;
@@ -44,7 +47,9 @@ namespace ATTrafficAnalayzer.VolumeModel
 
             var createTable = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
                                     [name] TEXT  NULL,
-                                    [approach] TEXT  NULL
+                                    [approach] TEXT  NULL,
+
+                                    PRIMARY KEY (name)
                                 )";
             SQLiteCommand create = new SQLiteCommand(conn);
             create.CommandText = createTable;
@@ -56,10 +61,12 @@ namespace ATTrafficAnalayzer.VolumeModel
         {
 
             var createTable = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
-                                    [dateTime] TIME DEFAULT CURRENT_TIMESTAMP NULL, 
+                                    [dateTime] DATETIME DEFAULT CURRENT_TIMESTAMP NULL, 
                                     [intersection] INTEGER  NULL,
                                     [detector] INTEGER  NULL,
-                                    [volume] INTEGER  NULL
+                                    [volume] INTEGER  NULL,
+                                    PRIMARY KEY ( dateTime, intersection, detector)
+                                    
                                 )";
             SQLiteCommand create = new SQLiteCommand(conn);
             create.CommandText = createTable;
@@ -80,6 +87,8 @@ namespace ATTrafficAnalayzer.VolumeModel
             int sizeInBytes = (int)fs.Length;
             byte[] byteArray = new byte[sizeInBytes];
             fs.Read(byteArray, 0, sizeInBytes);
+
+            bool alreadyLoaded = false;
 
             //Now decrypt it
             int index = 0;
@@ -122,17 +131,40 @@ namespace ATTrafficAnalayzer.VolumeModel
 
                                 foreach (int detector in volumeRecord.GetDetectors())
                                 {
-                                    cmd.CommandText = "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES ('@dateTime', '@intersection', '@detector', '@volume');";
+                                   
+
+                                    cmd.CommandText = "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
+                                    
                                     cmd.Parameters.Clear();
+                                 
                                     cmd.Parameters.AddWithValue("@dateTime", currentDateTime.dateTime);
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
                                     cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
 
-                                    cmd.ExecuteNonQuery();
+                                    try
+                                    {
+                                        cmd.ExecuteNonQuery();
+                                    }
+                                    catch (SQLiteException e)
+                                    {
+
+                                        if(e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
+                                        {
+                                            
+                                            alreadyLoaded = true;
+                                        }
+                                        
+                                        break;
+                                    }
                                 }
                                 
                                 break;
+                        }
+                        if (alreadyLoaded)
+                        {
+                            MessageBox.Show("Volume information from " + filename + " has already been loaded");
+                            break;
                         }
                     }
                     transaction.Commit();
@@ -140,6 +172,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                 
             }
             conn.Close();
+            fs.Close();
         }
 
         public List<int> getIntersections()
