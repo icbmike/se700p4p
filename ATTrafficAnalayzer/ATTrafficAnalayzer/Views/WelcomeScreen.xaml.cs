@@ -38,6 +38,8 @@ namespace ATTrafficAnalayzer
             recentSpecialReports.Add("Recent Special Report 4");
             recentSpecialReports.Add("Recent Special Report 5");
             recentSpecialReportsListBox.ItemsSource = recentSpecialReports;
+
+            Logger.Info("constructed view", "homescreen");
         }
     }
 }

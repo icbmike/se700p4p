@@ -56,6 +56,8 @@ namespace ATTrafficAnalayzer
             _detectorList.Add(2);
             _detectorList.Add(3);
             InitializeComponent();
+
+            Logger.Info("constructed view", "report config");
         }
 
         private void onIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
