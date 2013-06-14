@@ -30,6 +30,8 @@ namespace ATTrafficAnalayzer
         public VSGraph()
         {
             InitializeComponent();
+
+            Logger.Info("constructed view", "VS graph");
         }
 
 
