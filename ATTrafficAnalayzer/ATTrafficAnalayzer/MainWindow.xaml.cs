@@ -45,7 +45,8 @@ namespace ATTrafficAnalayzer
 
         public MainWindow()
         {
-            
+            Logger.Clear();
+
             InitializeComponent();
             DataContext = this;
             _dbHelper = new VolumeDBHelper();
