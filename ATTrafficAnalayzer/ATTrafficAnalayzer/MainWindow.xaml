@@ -158,8 +158,9 @@
                             Name="scrollBar1"
                             Width="20"
                             DockPanel.Dock="Right" />
-                        <ListBox
+                        <ListView
                             Name="standardReportsListBox"
+                            ItemsSource="{Binding Path=StandardReports, Mode=TwoWay}"
                             DockPanel.Dock="Right" />
                     </DockPanel>
                 </TabItem>
@@ -172,8 +173,9 @@
                             Name="scrollBar2"
                             Width="20"
                             DockPanel.Dock="Right" />
-                        <ListBox
+                        <ListView
                             Name="specialReportsListBox"
+                            ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
                             DockPanel.Dock="Right" />
                     </DockPanel>
                 </TabItem>
