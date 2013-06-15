@@ -266,6 +266,61 @@ namespace ATTrafficAnalayzer.VolumeModel
         {
             throw new NotImplementedException();
         }
+
+        public int removeConfiguration(String name)
+        {
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+            String sql = "DELETE FROM configs WHERE name=@name;";
+            SQLiteCommand command = new SQLiteCommand(sql, conn);
+            try
+            {
+                command.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (SQLiteException)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public int renameConfig(String oldName, String newName)
+        {
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+            String sql = "UPDATE configs SET name=@newName WHERE name=@oldName;";
+            SQLiteCommand command = new SQLiteCommand(sql, conn);
+            try
+            {
+                command.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (SQLiteException)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public int addConfig(String name)
+        {
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+            String sql = "INSERT INTO configs (name) VALUES (@name);";
+            SQLiteCommand command = new SQLiteCommand(sql, conn);
+            try
+            {
+                command.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (SQLiteException)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
         #endregion
     }
 }
