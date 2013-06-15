@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using Parago.Windows;
 using ATTrafficAnalayzer.VolumeModel;
+using System.Collections.ObjectModel;
 
 namespace ATTrafficAnalayzer
 {
@@ -27,26 +28,32 @@ namespace ATTrafficAnalayzer
 
         private VolumeStore _volumeStore;
         private VolumeDBHelper _dbHelper;
+        ObservableCollection<string> _standardReports;
+
+        public ObservableCollection<string> StandardReports
+        {
+            get { return _standardReports; }
+            set { _standardReports = value; }
+        }
+        ObservableCollection<string> _specialReports;
+
+        public ObservableCollection<string> SpecialReports
+        {
+            get { return _specialReports; }
+            set { _specialReports = value; }
+        }
 
         public MainWindow()
         {
+            
             InitializeComponent();
+            DataContext = this;
+            _standardReports = new ObservableCollection<string>();
+            _standardReports.Add("asdasd");
 
-            List<string> StandardReports = new List<string>();
-            StandardReports.Add("Standard Report 1");
-            StandardReports.Add("Standard Report 2");
-            StandardReports.Add("Standard Report 3");
-            StandardReports.Add("Standard Report 4");
-            StandardReports.Add("Standard Report 5");
-            standardReportsListBox.ItemsSource = StandardReports;
 
-            List<string> SpecialReports = new List<string>();
-            SpecialReports.Add("Special Report 1");
-            SpecialReports.Add("Special Report 2");
-            SpecialReports.Add("Special Report 3");
-            SpecialReports.Add("Special Report 4");
-            SpecialReports.Add("Special Report 5");
-            specialReportsListBox.ItemsSource = SpecialReports;
+            _specialReports = new ObservableCollection<string>();
+            _specialReports.Add("WHHO");
 
             _volumeStore = new VolumeStore();
             _dbHelper = new VolumeDBHelper();
