@@ -55,6 +55,10 @@ namespace ATTrafficAnalayzer
             InitializeComponent();
 
         }
+        public ApproachControl(WrapPanel container, List<int> detectors, String name) : this(container, detectors)
+        {
+            _approachName = name;
+        }
 
         public int getDetectorCount()
         {

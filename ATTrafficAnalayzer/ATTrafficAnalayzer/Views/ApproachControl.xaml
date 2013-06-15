@@ -26,7 +26,7 @@
         <TextBox
             Name="Approach"
             Grid.Row="0"
-            Text="{Binding ApproachName}"
+            Text="{Binding Path=ApproachName, Mode=TwoWay}"
             Background="Transparent"
             Foreground="White"
             Focusable="True"

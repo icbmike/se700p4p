@@ -135,7 +135,8 @@ namespace ATTrafficAnalayzer
            
             foreach (int detector in _detectorList)
             {
-                var newApproach = new ApproachControl(Approaches, null);
+                var newApproach = new ApproachControl(Approaches, null, "Approach " + detector);
+                newApproach.Margin = new Thickness(20, 20, 0, 0);
                 newApproach.AddDetector(detector);
                 Approaches.Children.Add(newApproach);
                 
@@ -148,7 +149,8 @@ namespace ATTrafficAnalayzer
             {
                 Approaches.Children.RemoveAt(1);
             }
-            var newApproach = new ApproachControl(Approaches, null);
+            var newApproach = new ApproachControl(Approaches, null, "All Detectors");
+            newApproach.Margin = new Thickness(20, 20, 0, 0);
             Approaches.Children.Add(newApproach);
             foreach (int detector in _detectorList)
             {

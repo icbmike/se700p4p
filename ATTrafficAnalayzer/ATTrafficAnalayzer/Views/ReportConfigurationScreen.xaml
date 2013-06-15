@@ -38,14 +38,15 @@
 
         </ListView>
 
-        <WrapPanel
-            Name="Approaches"
-            Grid.Column="1"
+
+        <ScrollViewer Grid.Column="1"
             Grid.RowSpan="2"
             Grid.ColumnSpan="2"
-            >
+                      VerticalScrollBarVisibility="Auto">
+            <WrapPanel
+            Name="Approaches">
 
-            <Border
+                <Border
                 CornerRadius="5"
                 AllowDrop="True"
                 Drop="NewApproachDrop"
@@ -55,16 +56,17 @@
                 Height="150"
                 Width="150"
                 BorderThickness="2">
-                <Image
+                    <Image
                     Source="/ATTrafficAnalayzer;component/Resources/Images/Add.png" />
 
-            </Border>
-        </WrapPanel>
+                </Border>
+            </WrapPanel>
+        </ScrollViewer>
         <StackPanel
             Grid.Row="2"
             Grid.Column="1"
             Orientation="Horizontal">
-            
+
             <Button 
                 Height="30"
                 Margin="20,0,0,0"
@@ -77,7 +79,7 @@
                 Padding="10, 0, 10, 0"
                 Content="Group All"
                 Click="Group_Click"/>
-            
+
         </StackPanel>
         <Button
             Width="75"
