@@ -48,15 +48,19 @@ namespace ATTrafficAnalayzer
             
             InitializeComponent();
             DataContext = this;
+            _dbHelper = new VolumeDBHelper();
             _standardReports = new ObservableCollection<string>();
-            _standardReports.Add("asdasd");
-
+            
+            foreach (String config in _dbHelper.getConfigurations())
+            {
+                _standardReports.Add(config);
+            }
 
             _specialReports = new ObservableCollection<string>();
             _specialReports.Add("WHHO");
 
             _volumeStore = new VolumeStore();
-            _dbHelper = new VolumeDBHelper();
+            
 
             this.mainContentControl.Content = new WelcomeScreen();
         }

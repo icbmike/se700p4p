@@ -33,6 +33,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             var createTable = @"CREATE TABLE IF NOT EXISTS [configs] ( 
                                     [name] TEXT  NULL,
                                     [config] TEXT  NULL,
+                                    [last_used] DATETIME,
 
                                     PRIMARY KEY (name)
                                 )";
@@ -245,7 +246,20 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public List<String> getConfigurations()
         {
-            throw new NotImplementedException();
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+            List<String> configs = new List<string>();
+            using (SQLiteCommand query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "SELECT name FROM configs;";
+                SQLiteDataReader reader = query.ExecuteReader();
+                while (reader.Read())
+                {
+                    configs.Add(reader.GetString(0));
+                }
+            }
+            conn.Close();
+            return configs;
         }
 
         public List<Approach> getApproaches(String configName)
