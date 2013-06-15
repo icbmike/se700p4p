@@ -140,6 +140,12 @@ namespace ATTrafficAnalayzer
             changeScreen(new ReportConfigurationScreen());
         }
 
+        private void renameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ListViewItem item = standardReportsListBox.SelectedItems();
+
+        }
+
 
     }
 }

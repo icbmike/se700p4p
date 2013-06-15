@@ -116,13 +116,21 @@
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}" Click="newReportClick"></Button>
                 <Button
-                    Content="_Modify"
+                    Content="Edit"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
-                    Name="modifyBtn"
+                    Name="editBtn"
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"></Button>
+                <Button
+                    Content="Rename"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"
+                    Name="renameBtn"
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}" Click="renameBtn_Click"></Button>
                 <Button
                     Content="_Save"
                     HorizontalAlignment="Left"
