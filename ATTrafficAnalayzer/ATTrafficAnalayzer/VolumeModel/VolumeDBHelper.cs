@@ -269,6 +269,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public int removeConfiguration(String name)
         {
+            Logger.Info("deleting @name", "db helper");
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
             String sql = "DELETE FROM configs WHERE name=@name;";
@@ -287,6 +288,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public int renameConfig(String oldName, String newName)
         {
+            Logger.Info("renaming '@oldName' to '@newName'", "db helper");
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
             String sql = "UPDATE configs SET name=@newName WHERE name=@oldName;";
@@ -305,6 +307,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public int addConfig(String name)
         {
+            Logger.Info("inserting @name", "db helper");
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
             String sql = "INSERT INTO configs (name) VALUES (@name);";
