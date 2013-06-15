@@ -74,6 +74,7 @@
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\WindowSettings.cs" />
+    <Compile Include="VolumeModel\AbstractApproach.cs" />
     <Compile Include="VolumeModel\Approach.cs" />
     <Compile Include="VolumeModel\DateTimeRecord.cs" />
     <Compile Include="IntervalConverter.cs" />
@@ -89,7 +90,6 @@
     </Compile>
     <Compile Include="SettingsTray.cs" />
     <Compile Include="VolumeModel\Report.cs" />
-    <Compile Include="VolumeModel\RouteGrouping.cs" />
     <Compile Include="VolumeModel\VolumeDBHelper.cs" />
     <Compile Include="VolumeModel\VolumeRecord.cs" />
     <Compile Include="VolumeModel\VolumeStore.cs" />
