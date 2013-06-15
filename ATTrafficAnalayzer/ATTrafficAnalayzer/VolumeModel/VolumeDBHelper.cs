@@ -202,7 +202,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             List<int> detectors = new List<int>();
             using (SQLiteCommand query = new SQLiteCommand(conn))
             {
-                query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = '@intersection';";
+                query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
                 query.Parameters.AddWithValue("@intersection", intersection);
                 SQLiteDataReader reader = query.ExecuteReader();
 

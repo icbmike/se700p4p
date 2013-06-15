@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using ATTrafficAnalayzer.VolumeModel;
 
 namespace ATTrafficAnalayzer
 {
@@ -25,7 +26,7 @@ namespace ATTrafficAnalayzer
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
         private int _selectedIntersection;
-        private VolumeStore _vs;
+        VolumeDBHelper dbHelper;
 
         public int SelectedIntersection
         {
@@ -45,16 +46,18 @@ namespace ATTrafficAnalayzer
             set { _detectorList = value; }
         }
 
-        public ReportConfigurationScreen(VolumeStore vs)
+        public ReportConfigurationScreen()
         {
             DataContext = this;
-            _vs = vs;
-            _intersectionList = vs.getIntersections().ToList();
+            _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
-            _detectorList.Add(123);
-            _detectorList.Add(1);
-            _detectorList.Add(2);
-            _detectorList.Add(3);
+
+            dbHelper = new VolumeDBHelper();
+            foreach (int detector in dbHelper.getIntersections())
+            {
+                _intersectionList.Add(detector);
+            }
+
             InitializeComponent();
 
             Logger.Info("constructed view", "report config");
@@ -63,7 +66,7 @@ namespace ATTrafficAnalayzer
         private void onIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-            foreach (int detector in _vs.getDetectorsAtIntersection(_selectedIntersection))
+            foreach (int detector in dbHelper.getDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }
