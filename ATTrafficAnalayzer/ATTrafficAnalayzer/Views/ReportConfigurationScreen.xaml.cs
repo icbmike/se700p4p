@@ -78,7 +78,12 @@ namespace ATTrafficAnalayzer
 
             var listview = sender as ListView;
             var items = new List<int>();
-
+            
+            if (listview.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            
             foreach (int x in listview.SelectedItems)
             {
                 items.Add(x);
@@ -95,16 +100,60 @@ namespace ATTrafficAnalayzer
             var source = e.Data.GetData("source") as ListView;
             var items = e.Data.GetData("items") as List<int>;
 
-
-            foreach(int item in items)
-            {
-                (source.ItemsSource as ObservableCollection<int>).Remove(item);
-            }
+            var dragSourceList = source.ItemsSource as ObservableCollection<int>;
             
+            
+            if (source != DetectorListView)
+            {
+                foreach (int item in items)
+                {
+                    (source.ItemsSource as ObservableCollection<int>).Remove(item);
+                }
+            }
+
             ApproachControl approach = new ApproachControl(Approaches, items);
             approach.Margin = new Thickness(20, 20, 0, 0);
             Approaches.Children.Add(approach);
 
-        }        
+            if (dragSourceList.Count == 0)
+            {
+                if (e.Data.GetDataPresent("approach"))
+                {
+                    Approaches.Children.Remove(e.Data.GetData("approach") as ApproachControl);
+                }
+            }
+
+        }
+
+        private void Distribute_Click(object sender, RoutedEventArgs e)
+        {
+            while (Approaches.Children.Count > 1)
+            {
+                Approaches.Children.RemoveAt(1);
+            }
+
+           
+            foreach (int detector in _detectorList)
+            {
+                var newApproach = new ApproachControl(Approaches, null);
+                newApproach.AddDetector(detector);
+                Approaches.Children.Add(newApproach);
+                
+            }
+        }
+        
+        private void Group_Click(object sender, RoutedEventArgs e)
+        {
+            while (Approaches.Children.Count > 1)
+            {
+                Approaches.Children.RemoveAt(1);
+            }
+            var newApproach = new ApproachControl(Approaches, null);
+            Approaches.Children.Add(newApproach);
+            foreach (int detector in _detectorList)
+            {
+                newApproach.AddDetector(detector);
+            }
+        } 
     }
 }

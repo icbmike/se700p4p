@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
-    class Approach
+    public class Approach
     {
     }
 }

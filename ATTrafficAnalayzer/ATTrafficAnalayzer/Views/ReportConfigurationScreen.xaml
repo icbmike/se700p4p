@@ -9,14 +9,14 @@
     d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition
-                Width="100" />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <ComboBox
@@ -26,9 +26,11 @@
             SelectedValue="{Binding SelectedIntersection}"
             SelectionChanged="onIntersectionSelectionChanged" />
         <ListView
+            Name="DetectorListView"
             Grid.Column="0"
             Grid.Row="1"
-            
+            Grid.RowSpan="2"
+             Margin=" 0, 0, 0, 10"
             Background="Beige"
             VerticalAlignment="Stretch"
             ItemsSource="{Binding Path=DetectorList, Mode=TwoWay}"
@@ -40,6 +42,7 @@
             Name="Approaches"
             Grid.Column="1"
             Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
             >
 
             <Border
@@ -57,5 +60,32 @@
 
             </Border>
         </WrapPanel>
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="1"
+            Orientation="Horizontal">
+            
+            <Button 
+                Height="30"
+                Margin="20,0,0,0"
+                Padding="10, 0, 10, 0"
+                Click="Distribute_Click"
+                Content="Distribute Detectors" />
+            <Button 
+                Height="30"
+                Margin="20,0,0,0"
+                Padding="10, 0, 10, 0"
+                Content="Group All"
+                Click="Group_Click"/>
+            
+        </StackPanel>
+        <Button
+            Width="75"
+            Height="30"
+            Margin=" 0, 0, 20, 20"
+            Grid.Row="2"
+            Grid.Column="2"
+            Content="Save"
+            />
     </Grid>
 </UserControl>

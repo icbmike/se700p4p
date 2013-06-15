@@ -262,6 +262,12 @@ namespace ATTrafficAnalayzer.VolumeModel
             return configs;
         }
 
+        public void addConfiguration(ReportConfiguration config)
+        {
+
+        }
+
+
         public List<Approach> getApproaches(String configName)
         {
             throw new NotImplementedException();

@@ -44,15 +44,23 @@ namespace ATTrafficAnalayzer
             DataContext = this;
             _container = container;
             _detectors = new ObservableCollection<int>();
-
-            foreach (int d in detectors)
+            
+            if (detectors != null)
             {
-                Detectors.Add(d);
+                foreach (int d in detectors)
+                {
+                    Detectors.Add(d);
+                }
             }
-
             InitializeComponent();
 
         }
+
+        public int getDetectorCount()
+        {
+            return _detectors.Count;
+        }
+
 
 
         private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -60,6 +68,11 @@ namespace ATTrafficAnalayzer
 
             var listview = sender as ListView;
             var items = new List<int>();
+
+            if (listview.SelectedItems.Count == 0 || Keyboard.GetKeyStates(Key.LeftShift).Equals(KeyStates.Down))
+            {
+                return;
+            }
 
             foreach (int x in listview.SelectedItems)
             {
@@ -86,6 +99,7 @@ namespace ATTrafficAnalayzer
                 dragSourceList.Remove(item);
             }
 
+            
             if (dragSourceList.Count == 0)
             {
                 if (e.Data.GetDataPresent("approach"))
@@ -94,6 +108,11 @@ namespace ATTrafficAnalayzer
                 }
             }
 
-        }    
+        }
+
+        internal void AddDetector(int detector)
+        {
+            Detectors.Add(detector);
+        }
     }
 }
