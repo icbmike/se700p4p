@@ -58,10 +58,7 @@ namespace ATTrafficAnalayzer
             }
 
             _specialReports = new ObservableCollection<string>();
-            _specialReports.Add("WHHO");
-
             _volumeStore = new VolumeStore();
-            
 
             this.mainContentControl.Content = new WelcomeScreen();
         }
@@ -142,10 +139,59 @@ namespace ATTrafficAnalayzer
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
         {
-            ListViewItem item = standardReportsListBox.SelectedItems();
-
+            String item = standardReportsListBox.SelectedItem.ToString();
+            Console.WriteLine("Rename: " + item);
         }
 
+        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Configure the message box to be displayed 
+            String item = standardReportsListBox.SelectedItem.ToString();
+            string messageBoxText = "Are you sure you wish to delete " + item + "?";
+            string caption = "Confirm delete";
+            MessageBoxButton button = MessageBoxButton.OKCancel;
+            MessageBoxImage icon = MessageBoxImage.Question;
 
+            // Display message box
+            MessageBoxResult isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
+
+            // Process message box results 
+            switch (isConfirmedDeletion)
+            {
+                case MessageBoxResult.OK:
+                    bool isDeleted = new VolumeDBHelper().removeConfiguration(item);
+                    if (isDeleted)
+                    {
+                        messageBoxText = item + " was deleted";
+                        caption = "Delete successful";
+                        button = MessageBoxButton.OK;
+                        icon = MessageBoxImage.Information;
+                        MessageBox.Show(messageBoxText, caption, button, icon);
+
+                        _standardReports.Remove(item);
+
+                        Logger.Debug(item + " report deleted", "Reports panel");
+                    }
+                    else
+                    {
+                        messageBoxText = item + " could not be deleted";
+                        caption = "Delete failure";
+                        button = MessageBoxButton.OK;
+                        icon = MessageBoxImage.Error;
+                        MessageBox.Show(messageBoxText, caption, button, icon);
+
+                        Logger.Error(item + " report could not be deleted", "Reports panel");
+                    }
+                    break;
+                case MessageBoxResult.Cancel:
+                    Logger.Debug(item + " report deletion was canceled", "Reports panel");
+                    break;
+            }
+        }
+
+        private void editBtn_Click(object sender, RoutedEventArgs e)
+        {
+            changeScreen(new ReportConfigurationScreen());
+        }
     }
 }

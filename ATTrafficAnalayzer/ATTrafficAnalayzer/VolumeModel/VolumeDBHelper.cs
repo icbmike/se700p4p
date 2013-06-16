@@ -267,26 +267,27 @@ namespace ATTrafficAnalayzer.VolumeModel
             throw new NotImplementedException();
         }
 
-        public int removeConfiguration(String name)
+        public bool removeConfiguration(String name)
         {
-            Logger.Info("deleting @name", "db helper");
+            Logger.Info("deleting " + name, "db helper");
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
-            String sql = "DELETE FROM configs WHERE name=@name;";
+            String sql = string.Format("DELETE FROM configs WHERE name='{0}';", name);
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             try
             {
                 command.ExecuteNonQuery();
                 conn.Close();
             }
-            catch (SQLiteException)
+            catch (SQLiteException e)
             {
-                return 1;
+                Logger.Error(e.StackTrace, "DBHelper");
+                return false;
             }
-            return 0;
+            return true;
         }
 
-        public int renameConfig(String oldName, String newName)
+        public bool renameConfig(String oldName, String newName)
         {
             Logger.Info("renaming '@oldName' to '@newName'", "db helper");
             SQLiteConnection conn = new SQLiteConnection(dbFile);
@@ -300,12 +301,12 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
             catch (SQLiteException)
             {
-                return 1;
+                return false;
             }
-            return 0;
+            return true;
         }
 
-        public int addConfig(String name)
+        public bool addConfig(String name)
         {
             Logger.Info("inserting @name", "db helper");
             SQLiteConnection conn = new SQLiteConnection(dbFile);
@@ -319,9 +320,9 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
             catch (SQLiteException)
             {
-                return 1;
+                return false;
             }
-            return 0;
+            return true;
         }
 
         #endregion
