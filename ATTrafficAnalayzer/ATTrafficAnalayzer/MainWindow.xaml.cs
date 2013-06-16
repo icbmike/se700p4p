@@ -15,6 +15,8 @@ using Microsoft.Win32;
 using Parago.Windows;
 using ATTrafficAnalayzer.VolumeModel;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Common;
 
 namespace ATTrafficAnalayzer
 {
@@ -28,20 +30,6 @@ namespace ATTrafficAnalayzer
 
         private VolumeStore _volumeStore;
         private VolumeDBHelper _dbHelper;
-        ObservableCollection<string> _standardReports;
-
-        public ObservableCollection<string> StandardReports
-        {
-            get { return _standardReports; }
-            set { _standardReports = value; }
-        }
-        ObservableCollection<string> _specialReports;
-
-        public ObservableCollection<string> SpecialReports
-        {
-            get { return _specialReports; }
-            set { _specialReports = value; }
-        }
 
         public MainWindow()
         {
@@ -49,16 +37,15 @@ namespace ATTrafficAnalayzer
 
             InitializeComponent();
             DataContext = this;
-            _dbHelper = new VolumeDBHelper();
-            _standardReports = new ObservableCollection<string>();
-            
-            foreach (String config in _dbHelper.getConfigurations())
-            {
-                _standardReports.Add(config);
-            }
+            Console.WriteLine("1");
 
-            _specialReports = new ObservableCollection<string>();
-            _volumeStore = new VolumeStore();
+
+            _dbHelper = new VolumeDBHelper();
+
+            Console.WriteLine("2");
+
+            standardReportsListBox.ItemsSource = _dbHelper.getConfigurations();
+            standardReportsListBox.DisplayMemberPath = "name";
 
             this.mainContentControl.Content = new WelcomeScreen();
         }
@@ -146,7 +133,8 @@ namespace ATTrafficAnalayzer
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
         {
             // Configure the message box to be displayed 
-            String item = standardReportsListBox.SelectedItem.ToString();
+            DataRowView drv = standardReportsListBox.SelectedItem as DataRowView;
+            String item = drv.Row["name"] as string;
             string messageBoxText = "Are you sure you wish to delete " + item + "?";
             string caption = "Confirm delete";
             MessageBoxButton button = MessageBoxButton.OKCancel;
@@ -167,8 +155,6 @@ namespace ATTrafficAnalayzer
                         button = MessageBoxButton.OK;
                         icon = MessageBoxImage.Information;
                         MessageBox.Show(messageBoxText, caption, button, icon);
-
-                        _standardReports.Remove(item);
 
                         Logger.Debug(item + " report deleted", "Reports panel");
                     }

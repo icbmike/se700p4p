@@ -7,12 +7,15 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Data.Common;
+using System.Data.OleDb;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
     class VolumeDBHelper
     {
         string dbFile = "Data Source=TAdb.db3";
+        public DataSet ds;
 
         public VolumeDBHelper()
         {
@@ -132,12 +135,12 @@ namespace ATTrafficAnalayzer.VolumeModel
 
                                 foreach (int detector in volumeRecord.GetDetectors())
                                 {
-                                   
+
 
                                     cmd.CommandText = "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
-                                    
+
                                     cmd.Parameters.Clear();
-                                 
+
                                     cmd.Parameters.AddWithValue("@dateTime", currentDateTime.dateTime);
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
@@ -150,16 +153,16 @@ namespace ATTrafficAnalayzer.VolumeModel
                                     catch (SQLiteException e)
                                     {
 
-                                        if(e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
+                                        if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
-                                            
+
                                             alreadyLoaded = true;
                                         }
-                                        
+
                                         break;
                                     }
                                 }
-                                
+
                                 break;
                         }
                         if (alreadyLoaded)
@@ -170,7 +173,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                     }
                     transaction.Commit();
                 }
-                
+
             }
             conn.Close();
             fs.Close();
@@ -244,22 +247,28 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         #region Configuration Related Methods
 
-        public List<String> getConfigurations()
+        public DataView getConfigurations()
         {
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
-            List<String> configs = new List<string>();
-            using (SQLiteCommand query = new SQLiteCommand(conn))
-            {
-                query.CommandText = "SELECT name FROM configs;";
-                SQLiteDataReader reader = query.ExecuteReader();
-                while (reader.Read())
-                {
-                    configs.Add(reader.GetString(0));
-                }
-            }
-            conn.Close();
-            return configs;
+
+            SQLiteCommand query = new SQLiteCommand("SELECT name FROM configs;", conn);
+
+            Console.WriteLine("1");
+
+            DataAdapter dataAdapter = new SQLiteDataAdapter(query);
+            ds = new DataSet();
+            Console.WriteLine("3");
+
+
+            dataAdapter.Fill(ds);
+
+            Console.WriteLine("4");
+
+
+            return ds.Tables[0].DefaultView;
+
+            // Need to close connection in some way
         }
 
         public List<Approach> getApproaches(String configName)
