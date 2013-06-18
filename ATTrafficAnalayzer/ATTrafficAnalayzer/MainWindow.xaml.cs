@@ -147,7 +147,7 @@ namespace ATTrafficAnalayzer
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    bool isDeleted = new VolumeDBHelper().removeConfiguration(item);
+                    bool isDeleted = _dbHelper.testRemove();
                     if (isDeleted)
                     {
                         messageBoxText = item + " was deleted";

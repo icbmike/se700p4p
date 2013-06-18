@@ -9,6 +9,7 @@ using System.IO;
 using System.Windows;
 using System.Data.Common;
 using System.Data.OleDb;
+using System.Data.SqlClient;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -16,6 +17,9 @@ namespace ATTrafficAnalayzer.VolumeModel
     {
         string dbFile = "Data Source=TAdb.db3";
         public DataSet ds;
+        SQLiteDataAdapter dataAdapter;
+
+        
 
         public VolumeDBHelper()
         {
@@ -256,7 +260,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
             Console.WriteLine("1");
 
-            DataAdapter dataAdapter = new SQLiteDataAdapter(query);
+            dataAdapter = new SQLiteDataAdapter(query);
             ds = new DataSet();
             Console.WriteLine("3");
 
@@ -264,7 +268,6 @@ namespace ATTrafficAnalayzer.VolumeModel
             dataAdapter.Fill(ds);
 
             Console.WriteLine("4");
-
 
             return ds.Tables[0].DefaultView;
 
@@ -274,6 +277,32 @@ namespace ATTrafficAnalayzer.VolumeModel
         public List<Approach> getApproaches(String configName)
         {
             throw new NotImplementedException();
+        }
+
+        public bool testRemove()
+        {
+            using (SqlConnection connection = new SqlConnection(dbFile))
+            {
+                //dataAdapter.UpdateCommand = new SQLiteCommand("UPDATE configs SET name=@newName WHERE name=@oldName;");
+                //dataAdapter.UpdateCommand.Parameters.Add("@newname", DbType.String, 20, "namename");
+                //dataAdapter.UpdateCommand.Parameters.Add("@oldname", DbType.String, 20, "oldname");
+
+                //dataAdapter.DeleteCommand = new SQLiteCommand("DELETE FROM configs WHERE name='@name';");
+                //dataAdapter.DeleteCommand.Parameters.Add("@name", DbType.String, 20, "name");
+
+                SQLiteCommandBuilder sb = new SQLiteCommandBuilder(dataAdapter);
+            }
+
+            DataRowCollection vdrc = ds.Tables[0].Rows;
+            DataColumn[] colPK = new DataColumn[1];
+            colPK[0] = ds.Tables[0].Columns["name"];
+            ds.Tables[0].PrimaryKey = colPK;
+            DataRow vdr2 = vdrc.Find("boobies");
+            vdr2.Delete();
+
+            dataAdapter.Update(ds);
+
+            return true;
         }
 
         public bool removeConfiguration(String name)
