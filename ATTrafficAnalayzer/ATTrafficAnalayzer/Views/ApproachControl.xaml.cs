@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 
 
@@ -21,7 +14,6 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class ApproachControl : Border
     {
-
 
         private String _approachName;
         private ObservableCollection<int> _detectors;
@@ -85,6 +77,7 @@ namespace ATTrafficAnalayzer
             DataObject data = new DataObject();
             data.SetData("source", listview);
             data.SetData("items", items);
+            data.SetData("fromMainList", false);
             data.SetData("approach", this);
             DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
 
@@ -94,15 +87,26 @@ namespace ATTrafficAnalayzer
         {
             var source = e.Data.GetData("source") as ListView;
             var items = e.Data.GetData("items") as List<int>;
-            
+            var fromMainList = (bool)e.Data.GetData("fromMainList");
+
+            if (source == DetectorListView)
+            {
+                return;
+            }
 
             var dragSourceList = source.ItemsSource as ObservableCollection<int>;
             foreach (int item in items)
             {
-                Detectors.Add(item);
-                dragSourceList.Remove(item);
+                if(!Detectors.Contains(item)) Detectors.Add(item);
+                if(!fromMainList) dragSourceList.Remove(item);
             }
-
+            
+            var sortedDetectors = Detectors.OrderBy(x => x).ToList();
+            Detectors.Clear();
+            foreach (int i in sortedDetectors)
+            {
+                Detectors.Add(i);
+            }
             
             if (dragSourceList.Count == 0)
             {

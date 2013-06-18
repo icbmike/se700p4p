@@ -33,6 +33,7 @@
             />
 
         <ListView
+            Name="DetectorListView"
             Grid.Row="1"
             ItemsSource="{Binding Path=Detectors, Mode=TwoWay}"
             AllowDrop="True"

@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.VolumeModel;
 
@@ -90,6 +83,7 @@ namespace ATTrafficAnalayzer
             }
             DataObject data = new DataObject();
             data.SetData("source", listview);
+            data.SetData("fromMainList", true);
             data.SetData("items", items);
             DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
 
@@ -111,8 +105,7 @@ namespace ATTrafficAnalayzer
                 }
             }
 
-            ApproachControl approach = new ApproachControl(Approaches, items);
-            approach.Margin = new Thickness(20, 20, 0, 0);
+            ApproachControl approach = new ApproachControl(Approaches, items) { Margin = new Thickness(20, 20, 0, 0) };
             Approaches.Children.Add(approach);
 
             if (dragSourceList.Count == 0)
@@ -135,8 +128,7 @@ namespace ATTrafficAnalayzer
            
             foreach (int detector in _detectorList)
             {
-                var newApproach = new ApproachControl(Approaches, null, "Approach " + detector);
-                newApproach.Margin = new Thickness(20, 20, 0, 0);
+                var newApproach = new ApproachControl(Approaches, null, "Approach " + detector) { Margin = new Thickness(20, 20, 0, 0) };
                 newApproach.AddDetector(detector);
                 Approaches.Children.Add(newApproach);
                 
@@ -149,8 +141,7 @@ namespace ATTrafficAnalayzer
             {
                 Approaches.Children.RemoveAt(1);
             }
-            var newApproach = new ApproachControl(Approaches, null, "All Detectors");
-            newApproach.Margin = new Thickness(20, 20, 0, 0);
+            var newApproach = new ApproachControl(Approaches, null, "All Detectors") { Margin = new Thickness(20, 20, 0, 0) };
             Approaches.Children.Add(newApproach);
             foreach (int detector in _detectorList)
             {
