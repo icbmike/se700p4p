@@ -50,7 +50,7 @@ namespace ATTrafficAnalayzer
             this.mainContentControl.Content = new WelcomeScreen();
         }
 
-        private void  MenuItemImportClick(object sender, RoutedEventArgs e)
+        private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box 
             OpenFileDialog dlg = new OpenFileDialog();
@@ -119,7 +119,7 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        private void newReportClick(object sender, RoutedEventArgs e)
+        private void newBtn_Click(object sender, RoutedEventArgs e)
         {
             changeScreen(new ReportConfigurationScreen());
         }

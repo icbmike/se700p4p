@@ -105,6 +105,11 @@ namespace ATTrafficAnalayzer
             approach.Margin = new Thickness(20, 20, 0, 0);
             Approaches.Children.Add(approach);
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }        
     }
 }
