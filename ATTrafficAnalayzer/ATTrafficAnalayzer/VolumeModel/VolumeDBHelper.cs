@@ -7,7 +7,6 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using ServiceStack.Text;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -48,10 +47,8 @@ namespace ATTrafficAnalayzer.VolumeModel
         {
 
             var createTable = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
-                                    [name] TEXT  NULL,
-                                    [approach] TEXT  NULL,
-
-                                    PRIMARY KEY (name)
+                                    [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                                    [approach] TEXT  NULL
                                 )";
             SQLiteCommand create = new SQLiteCommand(conn);
             create.CommandText = createTable;
@@ -265,17 +262,31 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public void addConfiguration(ReportConfiguration config)
         {
+
+            var configJson = config.toJson();
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
             using (SQLiteTransaction transaction = conn.BeginTransaction())
             {
-                using (SQLiteCommand query = new SQLiteCommand(conn))
+                
+                //INSERT APPROACHES INTO TABLE
+                foreach(Approach approach in config.Approaches)
                 {
-                    //INSERT APPROACHES INTO TABLE
-                    //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
-                    //INSERT REPORT CONFIGURATION INTO TABLE
-
+                    using (SQLiteCommand query = new SQLiteCommand(conn))
+                    {
+                        query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
+                        query.Parameters.AddWithValue("@approach", approach.toJSON().ToString());
+                        query.ExecuteNonQuery();
+                    }
+                    using (SQLiteCommand query = new SQLiteCommand(conn))
+                    {
+                        query.CommandText = "SELECT last_insert_rowid();";
+                        int rowID = (Int32)query.ExecuteScalar();
+                        configJson.GetJSONArray("approaches").Put(rowID);
+                    }
                 }
+                //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
+                //INSERT REPORT CONFIGURATION INTO TABLE
 
             }
             

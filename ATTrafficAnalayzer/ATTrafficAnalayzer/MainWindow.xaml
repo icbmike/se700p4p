@@ -1,6 +1,6 @@
 ﻿<Window
     
-        x:Class="ATTrafficAnalayzer.MainWindow"
+    x:Class="ATTrafficAnalayzer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="MainWindow"
@@ -10,8 +10,6 @@
     Height="800"
     xmlns:ta="clr-namespace:ATTrafficAnalayzer"
     Width="1000">
-
-
 
     <DockPanel
         LastChildFill="True">

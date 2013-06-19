@@ -101,6 +101,8 @@ namespace ATTrafficAnalayzer.VolumeModel
             var keys = _dict.Keys.ToList();
             for (int i = 0; i < keys.Count; i++ )
             {
+                sb.Append(keys[i]);
+                sb.Append(":");
                 sb.Append(_dict[keys[i]].ToString());
                 if(i != keys.Count -1) sb.Append(",");
             }

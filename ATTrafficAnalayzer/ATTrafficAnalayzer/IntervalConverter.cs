@@ -10,7 +10,6 @@ namespace ATTrafficAnalayzer
 {
     class IntervalConverter : MarkupExtension, IValueConverter 
 
-
     {
 
         private static IntervalConverter _converter = null;
