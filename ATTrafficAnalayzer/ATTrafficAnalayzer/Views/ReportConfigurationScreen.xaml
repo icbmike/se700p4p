@@ -67,6 +67,6 @@
                 Grid.Column="1"
                 Grid.Row="2"
                 HorizontalAlignment="Right"
-                Click="Button_Click"/>
+                Click="saveConfigBtn_Click"/>
     </Grid>
 </UserControl>

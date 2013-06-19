@@ -70,12 +70,10 @@ namespace ATTrafficAnalayzer
             {
                 _detectorList.Add(detector);
             }
-
         }
 
         private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             var listview = sender as ListView;
             var items = new List<int>();
 
@@ -87,14 +85,12 @@ namespace ATTrafficAnalayzer
             data.SetData("source", listview);
             data.SetData("items", items);
             DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
-
         }
 
         private void NewApproachDrop(object sender, DragEventArgs e)
         {
             var source = e.Data.GetData("source") as ListView;
             var items = e.Data.GetData("items") as List<int>;
-
 
             foreach(int item in items)
             {
@@ -104,7 +100,6 @@ namespace ATTrafficAnalayzer
             ApproachControl approach = new ApproachControl(Approaches, items);
             approach.Margin = new Thickness(20, 20, 0, 0);
             Approaches.Children.Add(approach);
-
         }
 
         private void saveConfigBtn_Click(object sender, RoutedEventArgs e)
