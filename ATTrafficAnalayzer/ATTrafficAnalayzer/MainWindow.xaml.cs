@@ -147,7 +147,7 @@ namespace ATTrafficAnalayzer
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _dbHelper.removeConfig();
+                    _dbHelper.removeConfig(item);
                     
                     messageBoxText = item + " was deleted";
                     caption = "Delete successful";

@@ -254,24 +254,18 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public DataView getConfigs()
         {
-            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
-            conn.Open();
+            //TODO change to USING
+            SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH);
+            dbConnection.Open();
 
-            SQLiteCommand query = new SQLiteCommand("SELECT name FROM configs;", conn);
-
-            Console.WriteLine("1");
-
-            configsDataAdapter = new SQLiteDataAdapter(query);
-            Console.WriteLine("3");
-
-
+            SQLiteCommand getConfigsSQL = new SQLiteCommand("SELECT name FROM configs;", dbConnection);
+            configsDataAdapter = new SQLiteDataAdapter(getConfigsSQL);
             configsDataAdapter.Fill(configsDataSet);
 
-            Console.WriteLine("4");
+            dbConnection.Close();
 
+            //TODO Why returning?
             return configsDataSet.Tables[0].DefaultView;
-
-            // Need to close connection in some way
         }
 
         public List<Approach> getApproaches(String configName)
@@ -279,27 +273,23 @@ namespace ATTrafficAnalayzer.VolumeModel
             throw new NotImplementedException();
         }
 
-        public void removeConfig()
+        public void removeConfig(string configToDelete)
         {
-            using (SqlConnection connection = new SqlConnection(DB_PATH))
+            using (SqlConnection dbConnection = new SqlConnection(DB_PATH))
             {
-                //dataAdapter.UpdateCommand = new SQLiteCommand("UPDATE configs SET name=@newName WHERE name=@oldName;");
-                //dataAdapter.UpdateCommand.Parameters.Add("@newname", DbType.String, 20, "namename");
-                //dataAdapter.UpdateCommand.Parameters.Add("@oldname", DbType.String, 20, "oldname");
-
-                //dataAdapter.DeleteCommand = new SQLiteCommand("DELETE FROM configs WHERE name='@name';");
-                //dataAdapter.DeleteCommand.Parameters.Add("@name", DbType.String, 20, "name");
-
-                SQLiteCommandBuilder sb = new SQLiteCommandBuilder(configsDataAdapter);
+                SQLiteCommandBuilder dbCoomandBuilder = new SQLiteCommandBuilder(configsDataAdapter);
             }
 
-            DataRowCollection vdrc = configsDataSet.Tables[0].Rows;
-            DataColumn[] colPK = new DataColumn[1];
-            colPK[0] = configsDataSet.Tables[0].Columns["name"];
-            configsDataSet.Tables[0].PrimaryKey = colPK;
-            DataRow vdr2 = vdrc.Find("boobies");
-            vdr2.Delete();
+            DataRowCollection configs = configsDataSet.Tables[0].Rows;
+            DataColumn[] configsPrimaryKeys = new DataColumn[1];
+            configsPrimaryKeys[0] = configsDataSet.Tables[0].Columns["name"];
+            configsDataSet.Tables[0].PrimaryKey = configsPrimaryKeys;
 
+            //Get row and delete it
+            DataRow rowToDelete = configs.Find(configToDelete);
+            rowToDelete.Delete();
+
+            //Update database
             configsDataAdapter.Update(configsDataSet);
         }
 
