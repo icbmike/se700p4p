@@ -107,9 +107,9 @@ namespace ATTrafficAnalayzer
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void saveConfigBtn_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
-        }        
+        }   
     }
 }

@@ -61,10 +61,12 @@
             </Border>
         </WrapPanel>
 
-        <Button Content="Save"
+        <Button Name="saveConfigBtn"
+                Content="Save"
                 Width="75"
                 Grid.Column="1"
                 Grid.Row="2"
-                HorizontalAlignment="Right" Click="Button_Click"/>
+                HorizontalAlignment="Right"
+                Click="Button_Click"/>
     </Grid>
 </UserControl>
