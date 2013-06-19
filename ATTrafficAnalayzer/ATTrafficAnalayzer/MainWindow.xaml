@@ -160,8 +160,11 @@
                             DockPanel.Dock="Right" />
                         <ListView
                             Name="standardReportsListBox"
-                            ItemsSource="{Binding Path=StandardReports, Mode=TwoWay}"
                             DockPanel.Dock="Right" />
+                        <!--<ListView
+                            Name="standardReportsListBox"
+                            ItemsSource="{Binding Path=StandardReports, Mode=TwoWay}"
+                            DockPanel.Dock="Right" />-->
                     </DockPanel>
                 </TabItem>
                 <TabItem
