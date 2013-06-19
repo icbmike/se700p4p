@@ -254,18 +254,39 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public DataView getConfigs()
         {
-            //TODO change to USING
+            //TODO change to USING but stops deleting
             SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH);
             dbConnection.Open();
 
-            SQLiteCommand getConfigsSQL = new SQLiteCommand("SELECT name FROM configs;", dbConnection);
-            configsDataAdapter = new SQLiteDataAdapter(getConfigsSQL);
-            configsDataAdapter.Fill(configsDataSet);
+            try
+            {
+                SQLiteCommand getConfigsSQL = new SQLiteCommand("SELECT name FROM configs;", dbConnection);
+                configsDataAdapter = new SQLiteDataAdapter(getConfigsSQL);
+                configsDataAdapter.Fill(configsDataSet);
+            }
+            catch (SQLiteException e)
+            {
+                Logger.Error(e.ToString(), "DB Helper");
+            }
+            finally
+            {
+                Logger.Info("Retrieved configs data", "DB Helper");
+            }
 
             dbConnection.Close();
 
-            //TODO Why returning?
+            initializeConfigs();
+
             return configsDataSet.Tables[0].DefaultView;
+        }
+
+        public void initializeConfigs()
+        {
+            SQLiteCommandBuilder dbCoomandBuilder = new SQLiteCommandBuilder(configsDataAdapter);
+
+            DataColumn[] configsPrimaryKeys = new DataColumn[1];
+            configsPrimaryKeys[0] = configsDataSet.Tables[0].Columns["name"];
+            configsDataSet.Tables[0].PrimaryKey = configsPrimaryKeys;
         }
 
         public List<Approach> getApproaches(String configName)
@@ -275,22 +296,8 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public void removeConfig(string configToDelete)
         {
-            using (SqlConnection dbConnection = new SqlConnection(DB_PATH))
-            {
-                SQLiteCommandBuilder dbCoomandBuilder = new SQLiteCommandBuilder(configsDataAdapter);
-            }
-
-            DataRowCollection configs = configsDataSet.Tables[0].Rows;
-            DataColumn[] configsPrimaryKeys = new DataColumn[1];
-            configsPrimaryKeys[0] = configsDataSet.Tables[0].Columns["name"];
-            configsDataSet.Tables[0].PrimaryKey = configsPrimaryKeys;
-
-            //Get row and delete it
-            DataRow rowToDelete = configs.Find(configToDelete);
-            rowToDelete.Delete();
-
-            //Update database
-            configsDataAdapter.Update(configsDataSet);
+            removeConfigFromDataSet(configToDelete);
+            syncDatabase();            
         }
 
         public bool renameConfig(String oldName, String newName)
@@ -329,6 +336,40 @@ namespace ATTrafficAnalayzer.VolumeModel
             //    return false;
             //}
             return true;
+        }
+
+        public void removeConfigFromDataSet(String configToDelete)
+        {
+            try
+            {
+                //Get row and delete it
+                DataRowCollection configs = configsDataSet.Tables[0].Rows;
+                DataRow rowToDelete = configs.Find(configToDelete);
+                rowToDelete.Delete();
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Could not deleted " + configToDelete + " from the dataset", "DB Helper");
+            }
+            finally
+            {
+                Logger.Error("Successfully deleted " + configToDelete + " from the dataset", "DB Helper");
+            }
+        }
+
+        public void syncDatabase()
+        {
+            try
+            {
+                configsDataAdapter.Update(configsDataSet);
+            } catch (SQLiteException e)
+            {
+                Logger.Error("Could not synchronize database", "DB Helper");
+            }
+            finally
+            {
+                Logger.Error("Successfully synchronized database", "DB Helper");
+            }
         }
 
         #endregion

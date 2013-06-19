@@ -132,34 +132,36 @@ namespace ATTrafficAnalayzer
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Configure the message box to be displayed 
-            DataRowView drv = standardReportsListBox.SelectedItem as DataRowView;
-            String item = drv.Row["name"] as string;
-            string messageBoxText = "Are you sure you wish to delete " + item + "?";
+            //Get selection
+            DataRowView selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            String selectedItem = selectedRow.Row["name"] as string;
+
+            //Configure the message box to be displayed 
+            string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
             string caption = "Confirm delete";
             MessageBoxButton button = MessageBoxButton.OKCancel;
             MessageBoxImage icon = MessageBoxImage.Question;
 
-            // Display message box
+            //Display message box
             MessageBoxResult isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
 
-            // Process message box results 
+            //Process message box results 
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _dbHelper.removeConfig(item);
+                    _dbHelper.removeConfig(selectedItem);
                     
-                    messageBoxText = item + " was deleted";
+                    messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
                     button = MessageBoxButton.OK;
                     icon = MessageBoxImage.Information;
                     MessageBox.Show(messageBoxText, caption, button, icon);
 
-                    Logger.Debug(item + " report deleted", "Reports panel");
-                    
+                    Logger.Debug(selectedItem + " report deleted", "Reports panel");
                     break;
+
                 case MessageBoxResult.Cancel:
-                    Logger.Debug(item + " report deletion was canceled", "Reports panel");
+                    Logger.Debug(selectedItem + " report deletion was canceled", "Reports panel");
                     break;
             }
         }
