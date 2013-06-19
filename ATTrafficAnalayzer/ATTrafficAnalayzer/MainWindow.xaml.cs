@@ -15,6 +15,8 @@ using Microsoft.Win32;
 using Parago.Windows;
 using ATTrafficAnalayzer.VolumeModel;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Common;
 
 namespace ATTrafficAnalayzer
 {
@@ -28,20 +30,6 @@ namespace ATTrafficAnalayzer
 
         private VolumeStore _volumeStore;
         private VolumeDBHelper _dbHelper;
-        ObservableCollection<string> _standardReports;
-
-        public ObservableCollection<string> StandardReports
-        {
-            get { return _standardReports; }
-            set { _standardReports = value; }
-        }
-        ObservableCollection<string> _specialReports;
-
-        public ObservableCollection<string> SpecialReports
-        {
-            get { return _specialReports; }
-            set { _specialReports = value; }
-        }
 
         public MainWindow()
         {
@@ -49,19 +37,15 @@ namespace ATTrafficAnalayzer
 
             InitializeComponent();
             DataContext = this;
+            Console.WriteLine("1");
+
+
             _dbHelper = new VolumeDBHelper();
-            _standardReports = new ObservableCollection<string>();
-            
-            foreach (String config in _dbHelper.getConfigurations())
-            {
-                _standardReports.Add(config);
-            }
 
-            _specialReports = new ObservableCollection<string>();
-            _specialReports.Add("WHHO");
+            Console.WriteLine("2");
 
-            _volumeStore = new VolumeStore();
-            
+            standardReportsListBox.ItemsSource = _dbHelper.getConfigs();
+            standardReportsListBox.DisplayMemberPath = "name";
 
             this.mainContentControl.Content = new WelcomeScreen();
         }
@@ -140,6 +124,51 @@ namespace ATTrafficAnalayzer
             changeScreen(new ReportConfigurationScreen());
         }
 
+        private void renameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            String item = standardReportsListBox.SelectedItem.ToString();
+            Console.WriteLine("Rename: " + item);
+        }
 
+        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //Get selection
+            DataRowView selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            String selectedItem = selectedRow.Row["name"] as string;
+
+            //Configure the message box to be displayed 
+            string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
+            string caption = "Confirm delete";
+            MessageBoxButton button = MessageBoxButton.OKCancel;
+            MessageBoxImage icon = MessageBoxImage.Question;
+
+            //Display message box
+            MessageBoxResult isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
+
+            //Process message box results 
+            switch (isConfirmedDeletion)
+            {
+                case MessageBoxResult.OK:
+                    _dbHelper.removeConfig(selectedItem);
+                    
+                    messageBoxText = selectedItem + " was deleted";
+                    caption = "Delete successful";
+                    button = MessageBoxButton.OK;
+                    icon = MessageBoxImage.Information;
+                    MessageBox.Show(messageBoxText, caption, button, icon);
+
+                    Logger.Debug(selectedItem + " report deleted", "Reports panel");
+                    break;
+
+                case MessageBoxResult.Cancel:
+                    Logger.Debug(selectedItem + " report deletion was canceled", "Reports panel");
+                    break;
+            }
+        }
+
+        private void editBtn_Click(object sender, RoutedEventArgs e)
+        {
+            changeScreen(new ReportConfigurationScreen());
+        }
     }
 }

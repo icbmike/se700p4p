@@ -116,32 +116,32 @@
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}" Click="newReportClick"></Button>
                 <Button
-                    Content="_Modify"
+                    Content="Edit"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
-                    Name="modifyBtn"
+                    Name="editBtn"
                     VerticalAlignment="Top"
                     Background="{x:Null}"
-                    BorderBrush="{x:Null}"></Button>
-                <Button
-                    Content="_Save"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,0,0"
-                    Name="saveBtn"
-                    VerticalAlignment="Top"
-                    BorderBrush="{x:Null}"
-                    Background="{x:Null}"></Button>
+                    BorderBrush="{x:Null}" Click="editBtn_Click"></Button>
                 <Button
                     Content="_Delete"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="deleteBtn"
                     VerticalAlignment="Top"
-                    Background="{x:Null}">
+                    Background="{x:Null}" Click="deleteBtn_Click">
                     <Button.BorderBrush>
                         <SolidColorBrush />
                     </Button.BorderBrush>
                 </Button>
+                <Button
+                	Content="Rename"
+                	HorizontalAlignment="Left"
+                	Margin="0,0,0,0"
+                	x:Name="renameBtn"
+                	VerticalAlignment="Top"
+                	Background="{x:Null}"
+                	BorderBrush="{x:Null}" Click="renameBtn_Click"/>
             </WrapPanel>
 
             <TabControl
@@ -160,8 +160,11 @@
                             DockPanel.Dock="Right" />
                         <ListView
                             Name="standardReportsListBox"
-                            ItemsSource="{Binding Path=StandardReports, Mode=TwoWay}"
                             DockPanel.Dock="Right" />
+                        <!--<ListView
+                            Name="standardReportsListBox"
+                            ItemsSource="{Binding Path=StandardReports, Mode=TwoWay}"
+                            DockPanel.Dock="Right" />-->
                     </DockPanel>
                 </TabItem>
                 <TabItem
