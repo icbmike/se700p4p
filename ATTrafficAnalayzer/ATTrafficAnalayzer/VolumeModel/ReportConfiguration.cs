@@ -16,6 +16,13 @@ namespace ATTrafficAnalayzer.VolumeModel
         }
         
         private int _intersection;
+        private string _configName;
+
+        public String ConfigName
+        {
+            get { return _configName; }
+            set { _configName = value; }
+        }
 
         public int Intersection
         {
@@ -24,11 +31,22 @@ namespace ATTrafficAnalayzer.VolumeModel
         }
 
 
-        public ReportConfiguration(int intersection, List<Approach> approaches)
+        public ReportConfiguration(string configName, int intersection, List<Approach> approaches)
         {
-            _intersection = intersection;
-            _approaches = approaches;
+             this._configName = configName;
+             this._intersection = intersection;
+             this._approaches = approaches;
         }
 
+        public JSONObject toJson()
+        {
+            JSONObject json = new JSONObject();
+            json.Add("intersection", Intersection);
+            
+            var arr = new JSONArray();
+            json.Add("approaches", arr); // Add an empty array that will be filled in later with approach IDs once we know them
+           
+            return json;
+        }
     }
 }

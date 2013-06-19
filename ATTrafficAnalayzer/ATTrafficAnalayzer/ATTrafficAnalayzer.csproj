@@ -42,6 +42,9 @@
     <Reference Include="DynamicDataDisplay.resources">
       <HintPath>d3\DynamicDataDisplay\ru-ru\DynamicDataDisplay.resources.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\packages\ServiceStack.Text.3.9.49\lib\net35\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
@@ -70,7 +73,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
-    <Compile Include="ObservableSortedList.cs" />
     <Compile Include="Views\ApproachControl.xaml.cs">
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>

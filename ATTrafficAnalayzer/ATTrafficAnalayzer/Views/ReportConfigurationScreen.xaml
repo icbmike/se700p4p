@@ -9,6 +9,8 @@
     d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
+           
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
@@ -20,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <ComboBox
-            Grid.Row="0"
+            Grid.Row="1" 
             Grid.Column="0"
             ItemsSource="{Binding IntersectionList}"
             SelectedValue="{Binding SelectedIntersection}"
@@ -28,7 +30,7 @@
         <ListView
             Name="DetectorListView"
             Grid.Column="0"
-            Grid.Row="1"
+            Grid.Row="2" 
             Grid.RowSpan="2"
              Margin=" 0, 0, 0, 10"
             Background="Beige"
@@ -37,9 +39,15 @@
             PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown">
 
         </ListView>
+        <TextBox 
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            FontSize="30"
+            Text="{Binding ConfigName}"
+            />
 
-
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer Grid.Row="1" Grid.Column="1"
             Grid.RowSpan="2"
             Grid.ColumnSpan="2"
                       VerticalScrollBarVisibility="Auto">
@@ -63,7 +71,7 @@
             </WrapPanel>
         </ScrollViewer>
         <StackPanel
-            Grid.Row="2"
+            Grid.Row="3" 
             Grid.Column="1"
             Orientation="Horizontal">
 
@@ -85,9 +93,9 @@
             Width="75"
             Height="30"
             Margin=" 0, 0, 20, 20"
-            Grid.Row="2"
+            Grid.Row="3" 
             Grid.Column="2"
-            Content="Save"
+            Content="Save" Click="Save_Click"
             />
     </Grid>
 </UserControl>

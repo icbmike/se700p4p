@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using ServiceStack.Text;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -264,7 +265,20 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public void addConfiguration(ReportConfiguration config)
         {
+            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            conn.Open();
+            using (SQLiteTransaction transaction = conn.BeginTransaction())
+            {
+                using (SQLiteCommand query = new SQLiteCommand(conn))
+                {
+                    //INSERT APPROACHES INTO TABLE
+                    //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
+                    //INSERT REPORT CONFIGURATION INTO TABLE
 
+                }
+
+            }
+            
         }
 
 

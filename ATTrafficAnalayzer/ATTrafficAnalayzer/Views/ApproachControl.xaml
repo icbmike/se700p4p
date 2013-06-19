@@ -6,8 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d"
     xmlns:ta="clr-namespace:ATTrafficAnalayzer"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
     BorderThickness="2"
     BorderBrush="Black"
     Width="150"

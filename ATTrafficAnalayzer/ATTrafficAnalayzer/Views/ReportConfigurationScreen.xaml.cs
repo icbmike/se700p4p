@@ -19,7 +19,14 @@ namespace ATTrafficAnalayzer
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
         private int _selectedIntersection;
-        VolumeDBHelper dbHelper;
+        private String _configName;
+
+        public String ConfigName
+        {
+            get { return _configName; }
+            set { _configName = value; }
+        }
+        VolumeDBHelper _dbHelper;
 
         public int SelectedIntersection
         {
@@ -45,8 +52,8 @@ namespace ATTrafficAnalayzer
             _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
 
-            dbHelper = new VolumeDBHelper();
-            foreach (int detector in dbHelper.getIntersections())
+            _dbHelper = new VolumeDBHelper();
+            foreach (int detector in _dbHelper.getIntersections())
             {
                 _intersectionList.Add(detector);
             }
@@ -59,7 +66,7 @@ namespace ATTrafficAnalayzer
         private void onIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-            foreach (int detector in dbHelper.getDetectorsAtIntersection(_selectedIntersection))
+            foreach (int detector in _dbHelper.getDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }
@@ -124,7 +131,6 @@ namespace ATTrafficAnalayzer
             {
                 Approaches.Children.RemoveAt(1);
             }
-
            
             foreach (int detector in _detectorList)
             {
@@ -147,6 +153,18 @@ namespace ATTrafficAnalayzer
             {
                 newApproach.AddDetector(detector);
             }
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+           
+            List<Approach> approaches = new List<Approach>();
+            for(int i = 1; i < Approaches.Children.Count; i ++){
+
+                ApproachControl appCtrl = Approaches.Children[i] as ApproachControl;
+                approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
+            }
+            _dbHelper.addConfiguration(new ReportConfiguration(ConfigName,  _selectedIntersection, approaches));
         } 
     }
 }
