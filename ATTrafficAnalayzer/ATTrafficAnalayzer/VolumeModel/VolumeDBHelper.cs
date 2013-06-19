@@ -15,60 +15,58 @@ namespace ATTrafficAnalayzer.VolumeModel
 {
     class VolumeDBHelper
     {
-        string dbFile = "Data Source=TAdb.db3";
-        public DataSet ds;
-        SQLiteDataAdapter dataAdapter;
+        private const string DB_PATH = "Data Source=TAdb.db3";
 
-        
+        SQLiteDataAdapter configsDataAdapter;
+        public DataSet configsDataSet = new DataSet();
 
         public VolumeDBHelper()
         {
+            using (SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH))
+            {
+                dbConnection.Open();
 
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
-            conn.Open();
-            //Check if tables exist in database file create if they don't
-            createVolumesTableIfNotExists(conn);
-            createApproachesTableIfNotExists(conn);
-            createConfigsTableIfNotExists(conn);
+                //Initialize a new database
+                createVolumesTableIfNotExists(dbConnection);
+                createApproachesTableIfNotExists(dbConnection);
+                createConfigsTableIfNotExists(dbConnection);
 
-            conn.Close();
+                dbConnection.Close();
+            }
         }
 
-        private void createConfigsTableIfNotExists(SQLiteConnection conn)
+        private void createConfigsTableIfNotExists(SQLiteConnection dbConnection)
         {
-
-            var createTable = @"CREATE TABLE IF NOT EXISTS [configs] ( 
+            var createConfigsTableSQL = @"CREATE TABLE IF NOT EXISTS [configs] ( 
                                     [name] TEXT  NULL,
                                     [config] TEXT  NULL,
                                     [last_used] DATETIME,
 
                                     PRIMARY KEY (name)
                                 )";
-            SQLiteCommand create = new SQLiteCommand(conn);
-            create.CommandText = createTable;
-            create.ExecuteNonQuery();
 
+            SQLiteCommand createConfigsTableCommand = new SQLiteCommand(dbConnection);
+            createConfigsTableCommand.CommandText = createConfigsTableSQL;
+            createConfigsTableCommand.ExecuteNonQuery();
         }
 
-        private void createApproachesTableIfNotExists(SQLiteConnection conn)
+        private void createApproachesTableIfNotExists(SQLiteConnection dbConnection)
         {
-
-            var createTable = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
+            var createApproachesTableSQL = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
                                     [name] TEXT  NULL,
                                     [approach] TEXT  NULL,
 
                                     PRIMARY KEY (name)
                                 )";
-            SQLiteCommand create = new SQLiteCommand(conn);
-            create.CommandText = createTable;
-            create.ExecuteNonQuery();
 
+            SQLiteCommand createApproachesTableCommand = new SQLiteCommand(dbConnection);
+            createApproachesTableCommand.CommandText = createApproachesTableSQL;
+            createApproachesTableCommand.ExecuteNonQuery();
         }
 
-        private void createVolumesTableIfNotExists(SQLiteConnection conn)
+        private void createVolumesTableIfNotExists(SQLiteConnection dbConnection)
         {
-
-            var createTable = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
+            var createVolumesTableSQL = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
                                     [dateTime] DATETIME DEFAULT CURRENT_TIMESTAMP NULL, 
                                     [intersection] INTEGER  NULL,
                                     [detector] INTEGER  NULL,
@@ -76,19 +74,20 @@ namespace ATTrafficAnalayzer.VolumeModel
                                     PRIMARY KEY ( dateTime, intersection, detector)
                                     
                                 )";
-            SQLiteCommand create = new SQLiteCommand(conn);
-            create.CommandText = createTable;
-            create.ExecuteNonQuery();
 
+            SQLiteCommand createVolumesTableCommand = new SQLiteCommand(dbConnection);
+            createVolumesTableCommand.CommandText = createVolumesTableSQL;
+            createVolumesTableCommand.ExecuteNonQuery();
         }
 
+
         #region Volume Related Methods
+
         public void importFile(string filename)
         {
-
             //Open the db connection
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
-            conn.Open();
+            SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH);
+            dbConnection.Open();
 
             //Load the file into memory
             FileStream fs = new FileStream(filename, FileMode.Open);
@@ -102,9 +101,9 @@ namespace ATTrafficAnalayzer.VolumeModel
             int index = 0;
             DateTimeRecord currentDateTime = null;
 
-            using (SQLiteCommand cmd = new SQLiteCommand(conn))
+            using (SQLiteCommand cmd = new SQLiteCommand(dbConnection))
             {
-                using (SQLiteTransaction transaction = conn.BeginTransaction())
+                using (SQLiteTransaction transaction = dbConnection.BeginTransaction())
                 {
 
                     while (index < sizeInBytes) //seek through the byte array untill we reach the end
@@ -179,13 +178,13 @@ namespace ATTrafficAnalayzer.VolumeModel
                 }
 
             }
-            conn.Close();
+            dbConnection.Close();
             fs.Close();
         }
 
         public List<int> getIntersections()
         {
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
             conn.Open();
             var intersections = new List<int>();
             using (SQLiteCommand query = new SQLiteCommand(conn))
@@ -205,7 +204,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public List<int> getDetectorsAtIntersection(int intersection)
         {
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
             conn.Open();
             List<int> detectors = new List<int>();
             using (SQLiteCommand query = new SQLiteCommand(conn))
@@ -225,7 +224,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public int getVolume(int intersection, int detector, DateTime dateTime)
         {
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
             conn.Open();
             int volume;
             using (SQLiteCommand query = new SQLiteCommand(conn))
@@ -247,29 +246,30 @@ namespace ATTrafficAnalayzer.VolumeModel
             conn.Close();
             return volume;
         }
+
         #endregion
+
 
         #region Configuration Related Methods
 
-        public DataView getConfig()
+        public DataView getConfigs()
         {
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
+            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
             conn.Open();
 
             SQLiteCommand query = new SQLiteCommand("SELECT name FROM configs;", conn);
 
             Console.WriteLine("1");
 
-            dataAdapter = new SQLiteDataAdapter(query);
-            ds = new DataSet();
+            configsDataAdapter = new SQLiteDataAdapter(query);
             Console.WriteLine("3");
 
 
-            dataAdapter.Fill(ds);
+            configsDataAdapter.Fill(configsDataSet);
 
             Console.WriteLine("4");
 
-            return ds.Tables[0].DefaultView;
+            return configsDataSet.Tables[0].DefaultView;
 
             // Need to close connection in some way
         }
@@ -281,7 +281,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public void removeConfig()
         {
-            using (SqlConnection connection = new SqlConnection(dbFile))
+            using (SqlConnection connection = new SqlConnection(DB_PATH))
             {
                 //dataAdapter.UpdateCommand = new SQLiteCommand("UPDATE configs SET name=@newName WHERE name=@oldName;");
                 //dataAdapter.UpdateCommand.Parameters.Add("@newname", DbType.String, 20, "namename");
@@ -290,54 +290,54 @@ namespace ATTrafficAnalayzer.VolumeModel
                 //dataAdapter.DeleteCommand = new SQLiteCommand("DELETE FROM configs WHERE name='@name';");
                 //dataAdapter.DeleteCommand.Parameters.Add("@name", DbType.String, 20, "name");
 
-                SQLiteCommandBuilder sb = new SQLiteCommandBuilder(dataAdapter);
+                SQLiteCommandBuilder sb = new SQLiteCommandBuilder(configsDataAdapter);
             }
 
-            DataRowCollection vdrc = ds.Tables[0].Rows;
+            DataRowCollection vdrc = configsDataSet.Tables[0].Rows;
             DataColumn[] colPK = new DataColumn[1];
-            colPK[0] = ds.Tables[0].Columns["name"];
-            ds.Tables[0].PrimaryKey = colPK;
+            colPK[0] = configsDataSet.Tables[0].Columns["name"];
+            configsDataSet.Tables[0].PrimaryKey = colPK;
             DataRow vdr2 = vdrc.Find("boobies");
             vdr2.Delete();
 
-            dataAdapter.Update(ds);
+            configsDataAdapter.Update(configsDataSet);
         }
 
         public bool renameConfig(String oldName, String newName)
         {
-            Logger.Info("renaming '@oldName' to '@newName'", "db helper");
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
-            conn.Open();
-            String sql = "UPDATE configs SET name=@newName WHERE name=@oldName;";
-            SQLiteCommand command = new SQLiteCommand(sql, conn);
-            try
-            {
-                command.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (SQLiteException)
-            {
-                return false;
-            }
+            //Logger.Info("renaming '@oldName' to '@newName'", "db helper");
+            //SQLiteConnection conn = new SQLiteConnection(DB_PATH);
+            //conn.Open();
+            //String sql = "UPDATE configs SET name=@newName WHERE name=@oldName;";
+            //SQLiteCommand command = new SQLiteCommand(sql, conn);
+            //try
+            //{
+            //    command.ExecuteNonQuery();
+            //    conn.Close();
+            //}
+            //catch (SQLiteException)
+            //{
+            //    return false;
+            //}
             return true;
         }
 
         public bool addConfig(String name)
         {
-            Logger.Info("inserting @name", "db helper");
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
-            conn.Open();
-            String sql = "INSERT INTO configs (name) VALUES (@name);";
-            SQLiteCommand command = new SQLiteCommand(sql, conn);
-            try
-            {
-                command.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (SQLiteException)
-            {
-                return false;
-            }
+            //Logger.Info("inserting @name", "db helper");
+            //SQLiteConnection conn = new SQLiteConnection(DB_PATH);
+            //conn.Open();
+            //String sql = "INSERT INTO configs (name) VALUES (@name);";
+            //SQLiteCommand command = new SQLiteCommand(sql, conn);
+            //try
+            //{
+            //    command.ExecuteNonQuery();
+            //    conn.Close();
+            //}
+            //catch (SQLiteException)
+            //{
+            //    return false;
+            //}
             return true;
         }
 

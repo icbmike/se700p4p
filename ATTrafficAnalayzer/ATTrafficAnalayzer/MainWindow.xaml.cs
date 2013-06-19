@@ -44,7 +44,7 @@ namespace ATTrafficAnalayzer
 
             Console.WriteLine("2");
 
-            standardReportsListBox.ItemsSource = _dbHelper.getConfig();
+            standardReportsListBox.ItemsSource = _dbHelper.getConfigs();
             standardReportsListBox.DisplayMemberPath = "name";
 
             this.mainContentControl.Content = new WelcomeScreen();
