@@ -12,6 +12,8 @@
             <RowDefinition
                 Height="Auto" />
             <RowDefinition />
+            <RowDefinition
+                Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
@@ -28,6 +30,7 @@
         <ListView
             Grid.Column="0"
             Grid.Row="1"
+            Grid.RowSpan="2"
             
             Background="Beige"
             VerticalAlignment="Stretch"
@@ -57,5 +60,13 @@
 
             </Border>
         </WrapPanel>
+
+        <Button Name="saveConfigBtn"
+                Content="Save"
+                Width="75"
+                Grid.Column="1"
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                Click="saveConfigBtn_Click"/>
     </Grid>
 </UserControl>

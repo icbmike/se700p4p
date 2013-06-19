@@ -1,6 +1,5 @@
 ﻿<Window
-    
-        x:Class="ATTrafficAnalayzer.MainWindow"
+    x:Class="ATTrafficAnalayzer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="MainWindow"
@@ -10,8 +9,6 @@
     Height="800"
     xmlns:ta="clr-namespace:ATTrafficAnalayzer"
     Width="1000">
-
-
 
     <DockPanel
         LastChildFill="True">
@@ -26,8 +23,8 @@
                 DockPanel.Dock="Top"
                 FontSize="14">
                 <MenuItem
-                    Header="_Import VS File"
-                    Click="MenuItemImportClick" />
+                    Name="fileImportMenuItem"
+                    Header="_Import VS File" Click="fileImportMenuItem_Click"/>
             </MenuItem>
         </Menu>
 
@@ -114,9 +111,9 @@
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
-                    OpacityMask="{x:Null}" Click="newReportClick"></Button>
+                    OpacityMask="{x:Null}" Click="newBtn_Click"></Button>
                 <Button
-                    Content="Edit"
+                    Content="_Edit"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
                     Name="editBtn"
