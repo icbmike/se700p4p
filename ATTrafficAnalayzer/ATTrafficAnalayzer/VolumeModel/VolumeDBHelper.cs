@@ -251,7 +251,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         #region Configuration Related Methods
 
-        public DataView getConfigurations()
+        public DataView getConfig()
         {
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
@@ -279,7 +279,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             throw new NotImplementedException();
         }
 
-        public bool testRemove()
+        public void removeConfig()
         {
             using (SqlConnection connection = new SqlConnection(dbFile))
             {
@@ -301,28 +301,6 @@ namespace ATTrafficAnalayzer.VolumeModel
             vdr2.Delete();
 
             dataAdapter.Update(ds);
-
-            return true;
-        }
-
-        public bool removeConfiguration(String name)
-        {
-            Logger.Info("deleting " + name, "db helper");
-            SQLiteConnection conn = new SQLiteConnection(dbFile);
-            conn.Open();
-            String sql = string.Format("DELETE FROM configs WHERE name='{0}';", name);
-            SQLiteCommand command = new SQLiteCommand(sql, conn);
-            try
-            {
-                command.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (SQLiteException e)
-            {
-                Logger.Error(e.StackTrace, "DBHelper");
-                return false;
-            }
-            return true;
         }
 
         public bool renameConfig(String oldName, String newName)

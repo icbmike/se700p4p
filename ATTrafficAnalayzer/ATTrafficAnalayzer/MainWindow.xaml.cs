@@ -44,7 +44,7 @@ namespace ATTrafficAnalayzer
 
             Console.WriteLine("2");
 
-            standardReportsListBox.ItemsSource = _dbHelper.getConfigurations();
+            standardReportsListBox.ItemsSource = _dbHelper.getConfig();
             standardReportsListBox.DisplayMemberPath = "name";
 
             this.mainContentControl.Content = new WelcomeScreen();
@@ -147,27 +147,16 @@ namespace ATTrafficAnalayzer
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    bool isDeleted = _dbHelper.testRemove();
-                    if (isDeleted)
-                    {
-                        messageBoxText = item + " was deleted";
-                        caption = "Delete successful";
-                        button = MessageBoxButton.OK;
-                        icon = MessageBoxImage.Information;
-                        MessageBox.Show(messageBoxText, caption, button, icon);
+                    _dbHelper.removeConfig();
+                    
+                    messageBoxText = item + " was deleted";
+                    caption = "Delete successful";
+                    button = MessageBoxButton.OK;
+                    icon = MessageBoxImage.Information;
+                    MessageBox.Show(messageBoxText, caption, button, icon);
 
-                        Logger.Debug(item + " report deleted", "Reports panel");
-                    }
-                    else
-                    {
-                        messageBoxText = item + " could not be deleted";
-                        caption = "Delete failure";
-                        button = MessageBoxButton.OK;
-                        icon = MessageBoxImage.Error;
-                        MessageBox.Show(messageBoxText, caption, button, icon);
-
-                        Logger.Error(item + " report could not be deleted", "Reports panel");
-                    }
+                    Logger.Debug(item + " report deleted", "Reports panel");
+                    
                     break;
                 case MessageBoxResult.Cancel:
                     Logger.Debug(item + " report deletion was canceled", "Reports panel");
