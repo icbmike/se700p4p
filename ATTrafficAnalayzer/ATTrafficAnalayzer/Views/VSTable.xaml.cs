@@ -1,90 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Data;
-using System.ComponentModel;
-using Microsoft.Research.DynamicDataDisplay.DataSources;
 
 namespace ATTrafficAnalayzer
 {
 
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
-    public partial class VSTable : UserControl
+    /// </summary>
+    public partial class VsTable : UserControl
     {
-        private VolumeStore _volumeStore;
+        private VolumeStore _volumeStore = null;
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
 
-        public VSTable(VolumeStore _volumeStore, int _interval, DateTime _startDate, DateTime _endDate)
+        public VsTable(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
         {
             // TODO Complete member initialization
-            this._volumeStore = _volumeStore;
-            this._interval = _interval;
-            this._startDate = _startDate;
-            this._endDate = _endDate;
+            _volumeStore = volumeStore;
+            _interval = interval;
+            _startDate = startDate;
+            _endDate = endDate;
             InitializeComponent();
 
-            Label dateLabel = new Label();
-            dateLabel.Content = "Day: xxxx AM     Time range: yyyy";
-            dateLabel.Margin = new Thickness(10);
+            var dateLabel = new Label {Content = string.Format("Day: {0} Time range: {1}", "", ""), Margin = new Thickness(10)};
             putStuffHere.Children.Add(dateLabel);
 
-            DataGrid dg = new DataGrid();
-            dg.ItemsSource = generateVSTable().AsDataView();
-            dg.Margin = new Thickness(10);
-            dg.Width = Double.NaN; //Translates to Auto
-            dg.Height = 280;
-            dg.ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star);
-            dg.IsReadOnly = true;
+            var dg = new DataGrid
+                {
+                    ItemsSource = GenerateVsTable().AsDataView(),
+                    Margin = new Thickness(10),
+                    Width = Double.NaN,
+                    Height = 280,
+                    ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
+                    IsReadOnly = true
+                };
             putStuffHere.Children.Add(dg);
 
             Logger.Info("constructed view", "VS table");
         }
 
-        public DataTable generateVSTable()
+        public DataTable GenerateVsTable()
         {
             // Create a DataGrid
-            DataTable vsDataTable = new DataTable();
+            var vsDataTable = new DataTable();
 
             // Set column headings
-            for (int i = 1; i <= 12; i++)
+            for (var i = 1; i <= 12; i++)
             {
                 vsDataTable.Columns.Add(i.ToString(), typeof(string));
             }
 
             // List dates
-            List<DateTime> ds = new List<DateTime>();
-            foreach (DateTimeRecord date in _volumeStore.DateTimeRecords)
+            var ds = new List<DateTime>();
+            foreach (var date in _volumeStore.DateTimeRecords)
             {
-                ds.Add(date.dateTime);
+                ds.Add(date.DateTime);
             }
-            DateTime[] dates = ds.ToArray();
+            var dates = ds.ToArray();
 
             // List intersections
-            int intersection = _volumeStore.getIntersections().ToList()[0]; // Use the first intersection for the time being
+            var intersection = _volumeStore.GetIntersections().ToList()[0]; // Use the first intersection for the time being
 
             // List detectors
-            int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
+            var detector = _volumeStore.GetDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
 
             // Get volume store data
-            for (int i = 0; i < 12; i++)
+            for (var i = 0; i < 12; i++)
             {
-                DataRow row = vsDataTable.NewRow();
-                for (int j = 0; j < 12; j++)
+                var row = vsDataTable.NewRow();
+                for (var j = 0; j < 12; j++)
                 {
-                    row[j] = _volumeStore.getVolume(intersection, detector, dates[i * 12 + j]);
+                    row[j] = _volumeStore.GetVolume(intersection, detector, dates[i * 12 + j]);
                 }
                 vsDataTable.Rows.Add(row);
             }

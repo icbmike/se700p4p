@@ -82,11 +82,9 @@ namespace Parago.Windows
 
 			_isBusy = true;
 
-			_worker = new BackgroundWorker();
-			_worker.WorkerReportsProgress = true;
-			_worker.WorkerSupportsCancellation = true;
+			_worker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
 
-			_worker.DoWork +=
+		    _worker.DoWork +=
 				(s, e) => {
 					if(operation is Action)
 						((Action)operation)();
@@ -206,7 +204,7 @@ namespace Parago.Windows
 
 		internal static void Execute(Window owner, string label, Action operation, Action<ProgressDialogResult> successOperation, Action<ProgressDialogResult> failureOperation = null, Action<ProgressDialogResult> cancelledOperation = null)
 		{
-			ProgressDialogResult result = ExecuteInternal(owner, label, operation, null);
+			var result = ExecuteInternal(owner, label, operation, null);
 
 			if(result.Cancelled && cancelledOperation != null)
 				cancelledOperation(result);
@@ -218,10 +216,9 @@ namespace Parago.Windows
 
 		internal static ProgressDialogResult ExecuteInternal(Window owner, string label, object operation, ProgressDialogSettings settings)
 		{
-			ProgressDialog dialog = new ProgressDialog(settings);
-			dialog.Owner = owner;
+			var dialog = new ProgressDialog(settings) {Owner = owner};
 
-			if(!string.IsNullOrEmpty(label))
+		    if(!string.IsNullOrEmpty(label))
 				dialog.Label = label;
 
 			return dialog.Execute(operation);

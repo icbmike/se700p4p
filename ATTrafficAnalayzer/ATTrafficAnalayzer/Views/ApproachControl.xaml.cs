@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 
 
@@ -45,7 +37,7 @@ namespace ATTrafficAnalayzer
             _container = container;
             _detectors = new ObservableCollection<int>();
 
-            foreach (int d in detectors)
+            foreach (var d in detectors)
             {
                 Detectors.Add(d);
             }
@@ -65,7 +57,7 @@ namespace ATTrafficAnalayzer
             {
                 items.Add(x);
             }
-            DataObject data = new DataObject();
+            var data = new DataObject();
             data.SetData("source", listview);
             data.SetData("items", items);
             data.SetData("approach", this);
@@ -80,7 +72,7 @@ namespace ATTrafficAnalayzer
             
 
             var dragSourceList = source.ItemsSource as ObservableCollection<int>;
-            foreach (int item in items)
+            foreach (var item in items)
             {
                 Detectors.Add(item);
                 dragSourceList.Remove(item);

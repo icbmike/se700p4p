@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace ATTrafficAnalayzer
 {
     public static class Logger
     {
-        const string LOG_FILE_PATH = "App.log";
+        const string LogFilePath = "App.log";
 
         public static void Clear()
         {
-            File.WriteAllText(LOG_FILE_PATH, "LOG FILE STARTING " + DateTime.Today.ToString() + "\n\n");
+            File.WriteAllText(LogFilePath, string.Format("LOG FILE STARTING {0}\n\n", DateTime.Today));
         }
 
         public static void Debug(string message, string module)

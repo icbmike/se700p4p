@@ -26,7 +26,7 @@
             Grid.Column="0"
             ItemsSource="{Binding IntersectionList}"
             SelectedValue="{Binding SelectedIntersection}"
-            SelectionChanged="onIntersectionSelectionChanged" />
+            SelectionChanged="OnIntersectionSelectionChanged" />
         <ListView
             Grid.Column="0"
             Grid.Row="1"

@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
@@ -20,14 +12,14 @@ namespace ATTrafficAnalayzer
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class VSGraph : UserControl
+    public partial class VsGraph : UserControl
     {
         private VolumeStore _volumeStore;
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
 
-        public VSGraph()
+        public VsGraph()
         {
             InitializeComponent();
 
@@ -35,30 +27,30 @@ namespace ATTrafficAnalayzer
         }
 
 
-        public VSGraph(VolumeStore _volumeStore, int interval, DateTime startDate, DateTime endDate)
+        public VsGraph(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
         {
             // TODO: Complete member initialization
-            this._volumeStore = _volumeStore;
-            this._interval = interval;
-            this._startDate = startDate;
-            this._endDate = endDate;
+            _volumeStore = volumeStore;
+            _interval = interval;
+            _startDate = startDate;
+            _endDate = endDate;
             InitializeComponent();
 
-            List<DateTime> ds = new List<DateTime>();
-            foreach(DateTimeRecord d in _volumeStore.DateTimeRecords){
-                ds.Add(d.dateTime);
+            var ds = new List<DateTime>();
+            foreach(var d in volumeStore.DateTimeRecords){
+                ds.Add(d.DateTime);
             }
 
-            DateTime[] dates = ds.ToArray();
-            int intersection = _volumeStore.getIntersections().ToList()[0];
-            int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
+            var dates = ds.ToArray();
+            var intersection = volumeStore.GetIntersections().ToList()[0];
+            var detector = volumeStore.GetDetectorsAtIntersection(intersection)[0];
             
-            List<int> vs = new List<int>();
-            foreach (DateTime d in dates)
+            var vs = new List<int>();
+            foreach (var d in dates)
             {
-                vs.Add(_volumeStore.getVolume(intersection, detector, d));
+                vs.Add(volumeStore.GetVolume(intersection, detector, d));
             }
-            int[] volumes = vs.ToArray();
+            var volumes = vs.ToArray();
 
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dates);
@@ -67,7 +59,7 @@ namespace ATTrafficAnalayzer
             var volumesDataSource = new EnumerableDataSource<int>(volumes);
             volumesDataSource.SetYMapping(y => y);
 
-            CompositeDataSource compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
+            var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
             plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
               new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
               new PenDescription("Volumes"));

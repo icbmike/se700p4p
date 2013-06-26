@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
-using System.Windows.Controls;
 using System.Windows.Markup;
 
 namespace ATTrafficAnalayzer
@@ -31,7 +27,7 @@ namespace ATTrafficAnalayzer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return int.Parse((value as string).Split(new char[]{' '})[0]);   
+            return int.Parse((value as string).Split(new[]{' '})[0]);   
         }
     }
 }

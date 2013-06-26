@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.ComponentModel;
 
@@ -27,21 +26,21 @@ namespace ATTrafficAnalayzer
             _dateTimeRecords = new List<DateTimeRecord>();
         }
 
-        public void readFile(BackgroundWorker bw, string filename)
+        public void ReadFile(BackgroundWorker bw, string filename)
         {
             //Load the file into memory
-            FileStream fs = new FileStream(filename, FileMode.Open);
-            int sizeInBytes = (int)fs.Length;
-            byte[] byteArray = new byte[sizeInBytes];
+            var fs = new FileStream(filename, FileMode.Open);
+            var sizeInBytes = (int)fs.Length;
+            var byteArray = new byte[sizeInBytes];
             fs.Read(byteArray, 0, sizeInBytes);
 
             //Now decrypt it
-            int index = 0;
+            var index = 0;
             DateTimeRecord currentDateTime = null;
             while (index < sizeInBytes) //seek through the byte array untill we reach the end
             {
                 bw.ReportProgress(index / sizeInBytes * 100);
-                int recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
+                var recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
 
                 index += 2;
 
@@ -58,20 +57,20 @@ namespace ATTrafficAnalayzer
                 }
 
                 //Find out what kind of data we have
-                RecordType recordType = RecordFactory.checkRecordType(record);
+                var recordType = RecordFactory.CheckRecordType(record);
 
                 //Construct the appropriate record type
                 switch (recordType)
                 {
-                    case RecordType.DATETIME:
-                        currentDateTime = RecordFactory.createDateTimeRecord(record);
+                    case RecordType.Datetime:
+                        currentDateTime = RecordFactory.CreateDateTimeRecord(record);
                         _dateTimeRecords.Add(currentDateTime);
-                        _volumesDictionary.Add(currentDateTime.dateTime, new Dictionary<int, VolumeRecord>());
+                        _volumesDictionary.Add(currentDateTime.DateTime, new Dictionary<int, VolumeRecord>());
                         break;
-                    case RecordType.VOLUME:
+                    case RecordType.Volume:
 
-                        VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
-                        _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
+                        var volumeRecord = RecordFactory.CreateVolumeRecord(record, recordSize);
+                        _volumesDictionary[currentDateTime.DateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
                         _intersections.Add(volumeRecord.IntersectionNumber);
                         
                         if(!_detectors.ContainsKey(volumeRecord.IntersectionNumber)){
@@ -82,16 +81,16 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        public HashSet<int> getIntersections()
+        public HashSet<int> GetIntersections()
         {
             return _intersections;
         }
 
-        public List<int> getDetectorsAtIntersection(int intersection){
+        public List<int> GetDetectorsAtIntersection(int intersection){
             return _detectors[intersection];
         }
 
-        public int getVolume(int intersection, int detector, DateTime date)
+        public int GetVolume(int intersection, int detector, DateTime date)
         {
             var x = _volumesDictionary[date];
             return x[intersection].GetVolumeForDetector(detector);
