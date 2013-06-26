@@ -35,9 +35,9 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
         }
 
-        private void createConfigsTableIfNotExists(SQLiteConnection dbConnection)
+        private static void createConfigsTableIfNotExists(SQLiteConnection dbConnection)
         {
-            var createConfigsTableSQL = @"CREATE TABLE IF NOT EXISTS [configs] ( 
+            const string createConfigsTableSQL = @"CREATE TABLE IF NOT EXISTS [configs] ( 
                                     [name] TEXT  NULL,
                                     [config] TEXT  NULL,
                                     [last_used] DATETIME,
@@ -50,9 +50,9 @@ namespace ATTrafficAnalayzer.VolumeModel
             createConfigsTableCommand.ExecuteNonQuery();
         }
 
-        private void createApproachesTableIfNotExists(SQLiteConnection dbConnection)
+        private static void createApproachesTableIfNotExists(SQLiteConnection dbConnection)
         {
-            var createApproachesTableSQL = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
+            const string createApproachesTableSQL = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
                                     [name] TEXT  NULL,
                                     [approach] TEXT  NULL,
 
@@ -64,9 +64,9 @@ namespace ATTrafficAnalayzer.VolumeModel
             createApproachesTableCommand.ExecuteNonQuery();
         }
 
-        private void createVolumesTableIfNotExists(SQLiteConnection dbConnection)
+        private static void createVolumesTableIfNotExists(SQLiteConnection dbConnection)
         {
-            var createVolumesTableSQL = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
+            const string createVolumesTableSQL = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
                                     [dateTime] DATETIME DEFAULT CURRENT_TIMESTAMP NULL, 
                                     [intersection] INTEGER  NULL,
                                     [detector] INTEGER  NULL,
@@ -83,7 +83,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         #region Volume Related Methods
 
-        public void importFile(string filename)
+        public static void importFile(string filename)
         {
             //Open the db connection
             var dbConnection = new SQLiteConnection(DB_PATH);
@@ -95,20 +95,20 @@ namespace ATTrafficAnalayzer.VolumeModel
             var byteArray = new byte[sizeInBytes];
             fs.Read(byteArray, 0, sizeInBytes);
 
-            bool alreadyLoaded = false;
+            var alreadyLoaded = false;
 
             //Now decrypt it
-            int index = 0;
+            var index = 0;
             DateTimeRecord currentDateTime = null;
 
             using (var cmd = new SQLiteCommand(dbConnection))
             {
-                using (SQLiteTransaction transaction = dbConnection.BeginTransaction())
+                using (var transaction = dbConnection.BeginTransaction())
                 {
 
                     while (index < sizeInBytes) //seek through the byte array untill we reach the end
                     {
-                        int recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
+                        var recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
 
                         index += 2;
 
@@ -125,18 +125,18 @@ namespace ATTrafficAnalayzer.VolumeModel
                         }
 
                         //Find out what kind of data we have
-                        RecordType recordType = RecordFactory.checkRecordType(record);
+                        var recordType = RecordFactory.checkRecordType(record);
 
                         //Construct the appropriate record type
                         switch (recordType)
                         {
-                            case RecordType.DATETIME:
+                            case RecordType.Datetime:
                                 currentDateTime = RecordFactory.createDateTimeRecord(record);
                                 break;
-                            case RecordType.VOLUME:
-                                VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
+                            case RecordType.Volume:
+                                var volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
 
-                                foreach (int detector in volumeRecord.GetDetectors())
+                                foreach (var detector in volumeRecord.GetDetectors())
                                 {
 
 
@@ -182,7 +182,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             fs.Close();
         }
 
-        public List<int> getIntersections()
+        public static List<int> GetIntersections()
         {
             var conn = new SQLiteConnection(DB_PATH);
             conn.Open();
@@ -190,7 +190,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
-                SQLiteDataReader reader = query.ExecuteReader();
+                var reader = query.ExecuteReader();
 
                 while (reader.Read())
                 {
@@ -202,7 +202,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         }
 
-        public List<int> getDetectorsAtIntersection(int intersection)
+        public static List<int> GetDetectorsAtIntersection(int intersection)
         {
             var conn = new SQLiteConnection(DB_PATH);
             conn.Open();
@@ -211,7 +211,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             {
                 query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
                 query.Parameters.AddWithValue("@intersection", intersection);
-                SQLiteDataReader reader = query.ExecuteReader();
+                var reader = query.ExecuteReader();
 
                 while (reader.Read())
                 {
@@ -236,7 +236,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                 query.Parameters.AddWithValue("@detector", intersection);
                 query.Parameters.AddWithValue("@dateTime", dateTime);
 
-                SQLiteDataReader reader = query.ExecuteReader();
+                var reader = query.ExecuteReader();
                 if (reader.RecordsAffected != 1)
                 {
                     throw new Exception("WHOAH");
@@ -252,7 +252,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         #region Configuration Related Methods
 
-        public DataView getConfigs()
+        public DataView GetConfigs()
         {
             //TODO change to USING but stops deleting
             var dbConnection = new SQLiteConnection(DB_PATH);
@@ -343,8 +343,8 @@ namespace ATTrafficAnalayzer.VolumeModel
             try
             {
                 //Get row and delete it
-                DataRowCollection configs = configsDataSet.Tables[0].Rows;
-                DataRow rowToDelete = configs.Find(configToDelete);
+                var configs = configsDataSet.Tables[0].Rows;
+                var rowToDelete = configs.Find(configToDelete);
                 rowToDelete.Delete();
             }
             catch (Exception)

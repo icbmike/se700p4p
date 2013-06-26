@@ -45,20 +45,20 @@ namespace ATTrafficAnalayzer
             InitializeComponent();
 
             var ds = new List<DateTime>();
-            foreach(DateTimeRecord d in _volumeStore.DateTimeRecords){
+            foreach(var d in _volumeStore.DateTimeRecords){
                 ds.Add(d.dateTime);
             }
 
-            DateTime[] dates = ds.ToArray();
-            int intersection = _volumeStore.getIntersections().ToList()[0];
-            int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
+            var dates = ds.ToArray();
+            var intersection = _volumeStore.getIntersections().ToList()[0];
+            var detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
             
             var vs = new List<int>();
-            foreach (DateTime d in dates)
+            foreach (var d in dates)
             {
                 vs.Add(_volumeStore.getVolume(intersection, detector, d));
             }
-            int[] volumes = vs.ToArray();
+            var volumes = vs.ToArray();
 
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dates);

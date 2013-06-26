@@ -7,8 +7,8 @@ namespace ATTrafficAnalayzer
 {
     public enum RecordType
     {
-        COMMENT,
-        DATETIME,
-        VOLUME
+        Comment,
+        Datetime,
+        Volume
     }
 }

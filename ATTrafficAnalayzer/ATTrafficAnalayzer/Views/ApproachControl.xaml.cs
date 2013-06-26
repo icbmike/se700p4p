@@ -45,7 +45,7 @@ namespace ATTrafficAnalayzer
             _container = container;
             _detectors = new ObservableCollection<int>();
 
-            foreach (int d in detectors)
+            foreach (var d in detectors)
             {
                 Detectors.Add(d);
             }
@@ -80,7 +80,7 @@ namespace ATTrafficAnalayzer
             
 
             var dragSourceList = source.ItemsSource as ObservableCollection<int>;
-            foreach (int item in items)
+            foreach (var item in items)
             {
                 Detectors.Add(item);
                 dragSourceList.Remove(item);

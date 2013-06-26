@@ -53,7 +53,7 @@ namespace ATTrafficAnalayzer
             _detectorList = new ObservableCollection<int>();
 
             dbHelper = new VolumeDBHelper();
-            foreach (int detector in dbHelper.getIntersections())
+            foreach (var detector in VolumeDBHelper.GetIntersections())
             {
                 _intersectionList.Add(detector);
             }
@@ -66,7 +66,7 @@ namespace ATTrafficAnalayzer
         private void onIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-            foreach (int detector in dbHelper.getDetectorsAtIntersection(_selectedIntersection))
+            foreach (var detector in VolumeDBHelper.GetDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }
@@ -92,7 +92,7 @@ namespace ATTrafficAnalayzer
             var source = e.Data.GetData("source") as ListView;
             var items = e.Data.GetData("items") as List<int>;
 
-            foreach(int item in items)
+            foreach(var item in items)
             {
                 (source.ItemsSource as ObservableCollection<int>).Remove(item);
             }

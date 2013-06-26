@@ -59,30 +59,30 @@ namespace ATTrafficAnalayzer
             var vsDataTable = new DataTable();
 
             // Set column headings
-            for (int i = 1; i <= 12; i++)
+            for (var i = 1; i <= 12; i++)
             {
                 vsDataTable.Columns.Add(i.ToString(), typeof(string));
             }
 
             // List dates
             var ds = new List<DateTime>();
-            foreach (DateTimeRecord date in _volumeStore.DateTimeRecords)
+            foreach (var date in _volumeStore.DateTimeRecords)
             {
                 ds.Add(date.dateTime);
             }
-            DateTime[] dates = ds.ToArray();
+            var dates = ds.ToArray();
 
             // List intersections
-            int intersection = _volumeStore.getIntersections().ToList()[0]; // Use the first intersection for the time being
+            var intersection = _volumeStore.getIntersections().ToList()[0]; // Use the first intersection for the time being
 
             // List detectors
-            int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
+            var detector = _volumeStore.getDetectorsAtIntersection(intersection)[0]; // Use the first detector for the time being
 
             // Get volume store data
-            for (int i = 0; i < 12; i++)
+            for (var i = 0; i < 12; i++)
             {
-                DataRow row = vsDataTable.NewRow();
-                for (int j = 0; j < 12; j++)
+                var row = vsDataTable.NewRow();
+                for (var j = 0; j < 12; j++)
                 {
                     row[j] = _volumeStore.getVolume(intersection, detector, dates[i * 12 + j]);
                 }

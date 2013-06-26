@@ -44,7 +44,7 @@ namespace ATTrafficAnalayzer
 
             Console.WriteLine("2");
 
-            standardReportsListBox.ItemsSource = _dbHelper.getConfigs();
+            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
             standardReportsListBox.DisplayMemberPath = "name";
 
             this.mainContentControl.Content = new WelcomeScreen();
@@ -65,13 +65,13 @@ namespace ATTrafficAnalayzer
             // Process open file dialog box results 
             if (result == true)
             {
-                ProgressDialogResult res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) => {
+                var res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) => {
 
                     ProgressDialog.Report(bw, "Reading Files");
 
                     // Open document 
-                    string filename = dlg.FileName;
-                    _dbHelper.importFile(filename);
+                    var filename = dlg.FileName;
+                    VolumeDBHelper.importFile(filename);
                     //_volumeStore.readFile(bw, filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
@@ -90,7 +90,7 @@ namespace ATTrafficAnalayzer
 
         private void checkDisplayValue()
         {
-            bool displayValue = getRadioContent(graphradio);
+            var displayValue = getRadioContent(graphradio);
 
             if (displayValue)
             {
@@ -126,7 +126,7 @@ namespace ATTrafficAnalayzer
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
         {
-            String item = standardReportsListBox.SelectedItem.ToString();
+            var item = standardReportsListBox.SelectedItem.ToString();
             Console.WriteLine("Rename: " + item);
         }
 
@@ -137,13 +137,13 @@ namespace ATTrafficAnalayzer
             var selectedItem = selectedRow.Row["name"] as string;
 
             //Configure the message box to be displayed 
-            string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
-            string caption = "Confirm delete";
+            var messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
+            var caption = "Confirm delete";
             var button = MessageBoxButton.OKCancel;
             var icon = MessageBoxImage.Question;
 
             //Display message box
-            MessageBoxResult isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
+            var isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
 
             //Process message box results 
             switch (isConfirmedDeletion)

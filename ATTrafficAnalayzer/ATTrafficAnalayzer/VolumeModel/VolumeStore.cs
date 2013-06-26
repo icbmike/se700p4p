@@ -36,12 +36,12 @@ namespace ATTrafficAnalayzer
             fs.Read(byteArray, 0, sizeInBytes);
 
             //Now decrypt it
-            int index = 0;
+            var index = 0;
             DateTimeRecord currentDateTime = null;
             while (index < sizeInBytes) //seek through the byte array untill we reach the end
             {
                 bw.ReportProgress(index / sizeInBytes * 100);
-                int recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
+                var recordSize = byteArray[index] + byteArray[index + 1] * 256; //The record size is stored in two bytes, little endian
 
                 index += 2;
 
@@ -58,19 +58,19 @@ namespace ATTrafficAnalayzer
                 }
 
                 //Find out what kind of data we have
-                RecordType recordType = RecordFactory.checkRecordType(record);
+                var recordType = RecordFactory.checkRecordType(record);
 
                 //Construct the appropriate record type
                 switch (recordType)
                 {
-                    case RecordType.DATETIME:
+                    case RecordType.Datetime:
                         currentDateTime = RecordFactory.createDateTimeRecord(record);
                         _dateTimeRecords.Add(currentDateTime);
                         _volumesDictionary.Add(currentDateTime.dateTime, new Dictionary<int, VolumeRecord>());
                         break;
-                    case RecordType.VOLUME:
+                    case RecordType.Volume:
 
-                        VolumeRecord volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
+                        var volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
                         _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
                         _intersections.Add(volumeRecord.IntersectionNumber);
                         

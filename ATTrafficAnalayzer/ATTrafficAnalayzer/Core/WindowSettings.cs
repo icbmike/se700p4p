@@ -98,13 +98,13 @@ namespace Parago.Windows.Controls
 
 		static void HideCloseButton(Window w)
 		{
-			IntPtr hWnd = new WindowInteropHelper(w).Handle;
+			var hWnd = new WindowInteropHelper(w).Handle;
 			SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SYSMENU);
 		}
 
 		static void ShowCloseButton(Window w)
 		{
-			IntPtr hWnd = new WindowInteropHelper(w).Handle;
+			var hWnd = new WindowInteropHelper(w).Handle;
 			SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) | WS_SYSMENU);
 		}
 
