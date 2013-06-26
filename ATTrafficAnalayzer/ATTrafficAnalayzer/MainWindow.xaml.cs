@@ -29,7 +29,7 @@ namespace ATTrafficAnalayzer
         displays display;
 
         private VolumeStore _volumeStore;
-        private VolumeDBHelper _dbHelper;
+        private VolumeDbHelper _dbHelper;
 
         public MainWindow()
         {
@@ -40,7 +40,7 @@ namespace ATTrafficAnalayzer
             Console.WriteLine("1");
 
 
-            _dbHelper = new VolumeDBHelper();
+            _dbHelper = new VolumeDbHelper();
 
             Console.WriteLine("2");
 
@@ -71,7 +71,7 @@ namespace ATTrafficAnalayzer
 
                     // Open document 
                     var filename = dlg.FileName;
-                    VolumeDBHelper.importFile(filename);
+                    VolumeDbHelper.ImportFile(filename);
                     //_volumeStore.readFile(bw, filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
@@ -149,7 +149,7 @@ namespace ATTrafficAnalayzer
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _dbHelper.removeConfig(selectedItem);
+                    _dbHelper.RemoveConfig(selectedItem);
                     
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";

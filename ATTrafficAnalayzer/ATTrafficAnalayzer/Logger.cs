@@ -9,11 +9,11 @@ namespace ATTrafficAnalayzer
 {
     public static class Logger
     {
-        const string LOG_FILE_PATH = "App.log";
+        const string LogFilePath = "App.log";
 
         public static void Clear()
         {
-            File.WriteAllText(LOG_FILE_PATH, "LOG FILE STARTING " + DateTime.Today.ToString() + "\n\n");
+            File.WriteAllText(LogFilePath, "LOG FILE STARTING " + DateTime.Today.ToString() + "\n\n");
         }
 
         public static void Debug(string message, string module)

@@ -58,19 +58,19 @@ namespace ATTrafficAnalayzer
                 }
 
                 //Find out what kind of data we have
-                var recordType = RecordFactory.checkRecordType(record);
+                var recordType = RecordFactory.CheckRecordType(record);
 
                 //Construct the appropriate record type
                 switch (recordType)
                 {
                     case RecordType.Datetime:
-                        currentDateTime = RecordFactory.createDateTimeRecord(record);
+                        currentDateTime = RecordFactory.CreateDateTimeRecord(record);
                         _dateTimeRecords.Add(currentDateTime);
                         _volumesDictionary.Add(currentDateTime.dateTime, new Dictionary<int, VolumeRecord>());
                         break;
                     case RecordType.Volume:
 
-                        var volumeRecord = RecordFactory.createVolumeRecord(record, recordSize);
+                        var volumeRecord = RecordFactory.CreateVolumeRecord(record, recordSize);
                         _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
                         _intersections.Add(volumeRecord.IntersectionNumber);
                         

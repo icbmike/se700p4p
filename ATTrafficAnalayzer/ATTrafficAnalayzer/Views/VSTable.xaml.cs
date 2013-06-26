@@ -20,9 +20,10 @@ namespace ATTrafficAnalayzer
 
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
+    /// </summary>
     public partial class VSTable : UserControl
     {
-        private VolumeStore _volumeStore;
+        private VolumeStore _volumeStore = null;
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
