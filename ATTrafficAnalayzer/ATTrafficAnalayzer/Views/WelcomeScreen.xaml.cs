@@ -23,7 +23,7 @@ namespace ATTrafficAnalayzer
         {
             InitializeComponent();
 
-            List<string> recentStandardReports = new List<string>();
+            var recentStandardReports = new List<string>();
             recentStandardReports.Add("Recent Standard Report 1");
             recentStandardReports.Add("Recent Standard Report 2");
             recentStandardReports.Add("Recent Standard Report 3");
@@ -31,7 +31,7 @@ namespace ATTrafficAnalayzer
             recentStandardReports.Add("Recent Standard Report 5");
             recentStandardReportsListBox.ItemsSource = recentStandardReports;
 
-            List<string> recentSpecialReports = new List<string>();
+            var recentSpecialReports = new List<string>();
             recentSpecialReports.Add("Recent Special Report 1");
             recentSpecialReports.Add("Recent Special Report 2");
             recentSpecialReports.Add("Recent Special Report 3");

@@ -30,9 +30,9 @@ namespace ATTrafficAnalayzer
         public void readFile(BackgroundWorker bw, string filename)
         {
             //Load the file into memory
-            FileStream fs = new FileStream(filename, FileMode.Open);
-            int sizeInBytes = (int)fs.Length;
-            byte[] byteArray = new byte[sizeInBytes];
+            var fs = new FileStream(filename, FileMode.Open);
+            var sizeInBytes = (int)fs.Length;
+            var byteArray = new byte[sizeInBytes];
             fs.Read(byteArray, 0, sizeInBytes);
 
             //Now decrypt it

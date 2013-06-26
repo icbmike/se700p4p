@@ -81,7 +81,7 @@ namespace ATTrafficAnalayzer
             {
                 items.Add(x);
             }
-            DataObject data = new DataObject();
+            var data = new DataObject();
             data.SetData("source", listview);
             data.SetData("items", items);
             DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
@@ -97,7 +97,7 @@ namespace ATTrafficAnalayzer
                 (source.ItemsSource as ObservableCollection<int>).Remove(item);
             }
             
-            ApproachControl approach = new ApproachControl(Approaches, items);
+            var approach = new ApproachControl(Approaches, items);
             approach.Margin = new Thickness(20, 20, 0, 0);
             Approaches.Children.Add(approach);
         }

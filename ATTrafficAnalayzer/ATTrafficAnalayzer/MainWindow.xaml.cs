@@ -53,7 +53,7 @@ namespace ATTrafficAnalayzer
         private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box 
-            OpenFileDialog dlg = new OpenFileDialog();
+            var dlg = new OpenFileDialog();
             dlg.FileName = ""; // Default file name
             dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); //The initial directory
             dlg.DefaultExt = ".VS"; // Default file extension 
@@ -84,7 +84,7 @@ namespace ATTrafficAnalayzer
 
         private bool getRadioContent(Object sender)
         {
-            RadioButton button = sender as RadioButton;
+            var button = sender as RadioButton;
             return (button.IsChecked == true);
         }
 
@@ -105,7 +105,7 @@ namespace ATTrafficAnalayzer
         private void switchScreen(object sender, RoutedEventArgs e)
         {
             checkDisplayValue();
-            SettingsTray settings = SettingsTray.DataContext as SettingsTray;
+            var settings = SettingsTray.DataContext as SettingsTray;
             
             if (display == displays.table)
             {
@@ -133,14 +133,14 @@ namespace ATTrafficAnalayzer
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            DataRowView selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-            String selectedItem = selectedRow.Row["name"] as string;
+            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            var selectedItem = selectedRow.Row["name"] as string;
 
             //Configure the message box to be displayed 
             string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
             string caption = "Confirm delete";
-            MessageBoxButton button = MessageBoxButton.OKCancel;
-            MessageBoxImage icon = MessageBoxImage.Question;
+            var button = MessageBoxButton.OKCancel;
+            var icon = MessageBoxImage.Question;
 
             //Display message box
             MessageBoxResult isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);

@@ -43,7 +43,7 @@ namespace ATTrafficAnalayzer
             int intersectionNumber = recordBytes[index] + recordBytes[index + 1] * 256;
             //recordSize -= 2; // record size includes the intersection number
             index += 2;
-            VolumeRecord newRecord = new VolumeRecord(intersectionNumber);
+            var newRecord = new VolumeRecord(intersectionNumber);
            
             while (index < recordSize)
             {

@@ -65,7 +65,7 @@ namespace ATTrafficAnalayzer
             {
                 items.Add(x);
             }
-            DataObject data = new DataObject();
+            var data = new DataObject();
             data.SetData("source", listview);
             data.SetData("items", items);
             data.SetData("approach", this);

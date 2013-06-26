@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public VolumeDBHelper()
         {
-            using (SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH))
+            using (var dbConnection = new SQLiteConnection(DB_PATH))
             {
                 dbConnection.Open();
 
@@ -45,7 +45,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                                     PRIMARY KEY (name)
                                 )";
 
-            SQLiteCommand createConfigsTableCommand = new SQLiteCommand(dbConnection);
+            var createConfigsTableCommand = new SQLiteCommand(dbConnection);
             createConfigsTableCommand.CommandText = createConfigsTableSQL;
             createConfigsTableCommand.ExecuteNonQuery();
         }
@@ -59,7 +59,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                                     PRIMARY KEY (name)
                                 )";
 
-            SQLiteCommand createApproachesTableCommand = new SQLiteCommand(dbConnection);
+            var createApproachesTableCommand = new SQLiteCommand(dbConnection);
             createApproachesTableCommand.CommandText = createApproachesTableSQL;
             createApproachesTableCommand.ExecuteNonQuery();
         }
@@ -75,7 +75,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                                     
                                 )";
 
-            SQLiteCommand createVolumesTableCommand = new SQLiteCommand(dbConnection);
+            var createVolumesTableCommand = new SQLiteCommand(dbConnection);
             createVolumesTableCommand.CommandText = createVolumesTableSQL;
             createVolumesTableCommand.ExecuteNonQuery();
         }
@@ -86,13 +86,13 @@ namespace ATTrafficAnalayzer.VolumeModel
         public void importFile(string filename)
         {
             //Open the db connection
-            SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH);
+            var dbConnection = new SQLiteConnection(DB_PATH);
             dbConnection.Open();
 
             //Load the file into memory
-            FileStream fs = new FileStream(filename, FileMode.Open);
-            int sizeInBytes = (int)fs.Length;
-            byte[] byteArray = new byte[sizeInBytes];
+            var fs = new FileStream(filename, FileMode.Open);
+            var sizeInBytes = (int)fs.Length;
+            var byteArray = new byte[sizeInBytes];
             fs.Read(byteArray, 0, sizeInBytes);
 
             bool alreadyLoaded = false;
@@ -101,7 +101,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             int index = 0;
             DateTimeRecord currentDateTime = null;
 
-            using (SQLiteCommand cmd = new SQLiteCommand(dbConnection))
+            using (var cmd = new SQLiteCommand(dbConnection))
             {
                 using (SQLiteTransaction transaction = dbConnection.BeginTransaction())
                 {
@@ -184,10 +184,10 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public List<int> getIntersections()
         {
-            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
+            var conn = new SQLiteConnection(DB_PATH);
             conn.Open();
             var intersections = new List<int>();
-            using (SQLiteCommand query = new SQLiteCommand(conn))
+            using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
                 SQLiteDataReader reader = query.ExecuteReader();
@@ -204,10 +204,10 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public List<int> getDetectorsAtIntersection(int intersection)
         {
-            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
+            var conn = new SQLiteConnection(DB_PATH);
             conn.Open();
-            List<int> detectors = new List<int>();
-            using (SQLiteCommand query = new SQLiteCommand(conn))
+            var detectors = new List<int>();
+            using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
                 query.Parameters.AddWithValue("@intersection", intersection);
@@ -224,10 +224,10 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public int getVolume(int intersection, int detector, DateTime dateTime)
         {
-            SQLiteConnection conn = new SQLiteConnection(DB_PATH);
+            var conn = new SQLiteConnection(DB_PATH);
             conn.Open();
             int volume;
-            using (SQLiteCommand query = new SQLiteCommand(conn))
+            using (var query = new SQLiteCommand(conn))
             {
 
                 query.CommandText = "SELECT volume from volumes WHERE intersection = '@intersection' AND detector = '@detector' AND dateTime = '@dateTime';";
@@ -255,12 +255,12 @@ namespace ATTrafficAnalayzer.VolumeModel
         public DataView getConfigs()
         {
             //TODO change to USING but stops deleting
-            SQLiteConnection dbConnection = new SQLiteConnection(DB_PATH);
+            var dbConnection = new SQLiteConnection(DB_PATH);
             dbConnection.Open();
 
             try
             {
-                SQLiteCommand getConfigsSQL = new SQLiteCommand("SELECT name FROM configs;", dbConnection);
+                var getConfigsSQL = new SQLiteCommand("SELECT name FROM configs;", dbConnection);
                 configsDataAdapter = new SQLiteDataAdapter(getConfigsSQL);
                 configsDataAdapter.Fill(configsDataSet);
             }
@@ -282,9 +282,9 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         public void initializeConfigs()
         {
-            SQLiteCommandBuilder dbCoomandBuilder = new SQLiteCommandBuilder(configsDataAdapter);
+            var dbCoomandBuilder = new SQLiteCommandBuilder(configsDataAdapter);
 
-            DataColumn[] configsPrimaryKeys = new DataColumn[1];
+            var configsPrimaryKeys = new DataColumn[1];
             configsPrimaryKeys[0] = configsDataSet.Tables[0].Columns["name"];
             configsDataSet.Tables[0].PrimaryKey = configsPrimaryKeys;
         }
@@ -347,7 +347,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                 DataRow rowToDelete = configs.Find(configToDelete);
                 rowToDelete.Delete();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Logger.Error("Could not deleted " + configToDelete + " from the dataset", "DB Helper");
             }
@@ -362,7 +362,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             try
             {
                 configsDataAdapter.Update(configsDataSet);
-            } catch (SQLiteException e)
+            } catch (SQLiteException)
             {
                 Logger.Error("Could not synchronize database", "DB Helper");
             }

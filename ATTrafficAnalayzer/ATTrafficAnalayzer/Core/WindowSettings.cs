@@ -34,7 +34,7 @@ namespace Parago.Windows.Controls
 
 		static void OnHideCloseButtonPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			Window window = d as Window;
+			var window = d as Window;
 
 			if(window != null)
 			{
@@ -65,7 +65,7 @@ namespace Parago.Windows.Controls
 
 			if(s is Window)
 			{
-				Window window = s as Window;
+				var window = s as Window;
 				HideCloseButton(window);
 				window.Loaded -= OnWindowLoaded;
 			}

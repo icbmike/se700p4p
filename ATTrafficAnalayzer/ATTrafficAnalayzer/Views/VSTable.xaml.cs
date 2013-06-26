@@ -36,12 +36,12 @@ namespace ATTrafficAnalayzer
             this._endDate = _endDate;
             InitializeComponent();
 
-            Label dateLabel = new Label();
+            var dateLabel = new Label();
             dateLabel.Content = "Day: xxxx AM     Time range: yyyy";
             dateLabel.Margin = new Thickness(10);
             putStuffHere.Children.Add(dateLabel);
 
-            DataGrid dg = new DataGrid();
+            var dg = new DataGrid();
             dg.ItemsSource = generateVSTable().AsDataView();
             dg.Margin = new Thickness(10);
             dg.Width = Double.NaN; //Translates to Auto
@@ -56,7 +56,7 @@ namespace ATTrafficAnalayzer
         public DataTable generateVSTable()
         {
             // Create a DataGrid
-            DataTable vsDataTable = new DataTable();
+            var vsDataTable = new DataTable();
 
             // Set column headings
             for (int i = 1; i <= 12; i++)
@@ -65,7 +65,7 @@ namespace ATTrafficAnalayzer
             }
 
             // List dates
-            List<DateTime> ds = new List<DateTime>();
+            var ds = new List<DateTime>();
             foreach (DateTimeRecord date in _volumeStore.DateTimeRecords)
             {
                 ds.Add(date.dateTime);

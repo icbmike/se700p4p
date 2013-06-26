@@ -218,7 +218,7 @@ namespace Parago.Windows
 
 		internal static ProgressDialogResult ExecuteInternal(Window owner, string label, object operation, ProgressDialogSettings settings)
 		{
-			ProgressDialog dialog = new ProgressDialog(settings);
+			var dialog = new ProgressDialog(settings);
 			dialog.Owner = owner;
 
 			if(!string.IsNullOrEmpty(label))

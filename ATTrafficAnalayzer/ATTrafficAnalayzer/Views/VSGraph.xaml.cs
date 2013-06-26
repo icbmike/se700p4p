@@ -44,7 +44,7 @@ namespace ATTrafficAnalayzer
             this._endDate = endDate;
             InitializeComponent();
 
-            List<DateTime> ds = new List<DateTime>();
+            var ds = new List<DateTime>();
             foreach(DateTimeRecord d in _volumeStore.DateTimeRecords){
                 ds.Add(d.dateTime);
             }
@@ -53,7 +53,7 @@ namespace ATTrafficAnalayzer
             int intersection = _volumeStore.getIntersections().ToList()[0];
             int detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
             
-            List<int> vs = new List<int>();
+            var vs = new List<int>();
             foreach (DateTime d in dates)
             {
                 vs.Add(_volumeStore.getVolume(intersection, detector, d));
@@ -67,7 +67,7 @@ namespace ATTrafficAnalayzer
             var volumesDataSource = new EnumerableDataSource<int>(volumes);
             volumesDataSource.SetYMapping(y => y);
 
-            CompositeDataSource compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
+            var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
             plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
               new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
               new PenDescription("Volumes"));
