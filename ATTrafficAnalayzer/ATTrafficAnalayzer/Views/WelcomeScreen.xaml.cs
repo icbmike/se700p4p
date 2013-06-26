@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ATTrafficAnalayzer
 {
@@ -23,20 +12,24 @@ namespace ATTrafficAnalayzer
         {
             InitializeComponent();
 
-            var recentStandardReports = new List<string>();
-            recentStandardReports.Add("Recent Standard Report 1");
-            recentStandardReports.Add("Recent Standard Report 2");
-            recentStandardReports.Add("Recent Standard Report 3");
-            recentStandardReports.Add("Recent Standard Report 4");
-            recentStandardReports.Add("Recent Standard Report 5");
+            var recentStandardReports = new List<string>
+                {
+                    "Recent Standard Report 1",
+                    "Recent Standard Report 2",
+                    "Recent Standard Report 3",
+                    "Recent Standard Report 4",
+                    "Recent Standard Report 5"
+                };
             recentStandardReportsListBox.ItemsSource = recentStandardReports;
 
-            var recentSpecialReports = new List<string>();
-            recentSpecialReports.Add("Recent Special Report 1");
-            recentSpecialReports.Add("Recent Special Report 2");
-            recentSpecialReports.Add("Recent Special Report 3");
-            recentSpecialReports.Add("Recent Special Report 4");
-            recentSpecialReports.Add("Recent Special Report 5");
+            var recentSpecialReports = new List<string>
+                {
+                    "Recent Special Report 1",
+                    "Recent Special Report 2",
+                    "Recent Special Report 3",
+                    "Recent Special Report 4",
+                    "Recent Special Report 5"
+                };
             recentSpecialReportsListBox.ItemsSource = recentSpecialReports;
 
             Logger.Info("constructed view", "homescreen");

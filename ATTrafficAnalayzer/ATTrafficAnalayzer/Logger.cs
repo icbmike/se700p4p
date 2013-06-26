@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace ATTrafficAnalayzer
 {
@@ -13,7 +10,7 @@ namespace ATTrafficAnalayzer
 
         public static void Clear()
         {
-            File.WriteAllText(LogFilePath, "LOG FILE STARTING " + DateTime.Today.ToString() + "\n\n");
+            File.WriteAllText(LogFilePath, string.Format("LOG FILE STARTING {0}\n\n", DateTime.Today));
         }
 
         public static void Debug(string message, string module)

@@ -1,22 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using Parago.Windows;
 using ATTrafficAnalayzer.VolumeModel;
-using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.Common;
 
 namespace ATTrafficAnalayzer
 {
@@ -25,8 +13,8 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum displays { graph, table };
-        displays display;
+        enum Displays { Graph, Table };
+        Displays _display;
 
         private VolumeStore _volumeStore;
         private VolumeDbHelper _dbHelper;
@@ -37,27 +25,25 @@ namespace ATTrafficAnalayzer
 
             InitializeComponent();
             DataContext = this;
-            Console.WriteLine("1");
-
 
             _dbHelper = new VolumeDbHelper();
-
-            Console.WriteLine("2");
 
             standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
             standardReportsListBox.DisplayMemberPath = "name";
 
-            this.mainContentControl.Content = new WelcomeScreen();
+            mainContentControl.Content = new WelcomeScreen();
         }
 
         private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box 
-            var dlg = new OpenFileDialog();
-            dlg.FileName = ""; // Default file name
-            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); //The initial directory
-            dlg.DefaultExt = ".VS"; // Default file extension 
-            dlg.Filter = "Volume Store Files (.VS)|*.VS"; // Filter files by extension 
+            var dlg = new OpenFileDialog
+                {
+                    FileName = "",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    DefaultExt = ".VS",
+                    Filter = "Volume Store Files (.VS)|*.VS"
+                };
 
             // Show open file dialog box 
             Nullable<bool> result = dlg.ShowDialog();
@@ -77,12 +63,12 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        private void changeScreen(UserControl screen)
+        private void ChangeScreen(UserControl screen)
         {
-            this.mainContentControl.Content = screen;
+            mainContentControl.Content = screen;
         }
 
-        private bool getRadioContent(Object sender)
+        private static bool getRadioContent(Object sender)
         {
             var button = sender as RadioButton;
             return (button.IsChecked == true);
@@ -94,26 +80,26 @@ namespace ATTrafficAnalayzer
 
             if (displayValue)
             {
-                display = displays.graph;
+                _display = Displays.Graph;
             }
             else
             {
-                display = displays.table;
+                _display = Displays.Table;
             }
         }
 
-        private void switchScreen(object sender, RoutedEventArgs e)
+        private void SwitchScreen(object sender, RoutedEventArgs e)
         {
             checkDisplayValue();
             var settings = SettingsTray.DataContext as SettingsTray;
             
-            if (display == displays.table)
+            if (_display == Displays.Table)
             {
-                changeScreen(new VSTable(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
+                ChangeScreen(new VsTable(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
             }
-            else if (display == displays.graph)
+            else if (_display == Displays.Graph)
             {
-                changeScreen(new VSGraph(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
+                ChangeScreen(new VsGraph(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
             } else {
                 throw new Exception();
             }
@@ -121,7 +107,7 @@ namespace ATTrafficAnalayzer
 
         private void newBtn_Click(object sender, RoutedEventArgs e)
         {
-            changeScreen(new ReportConfigurationScreen());
+            ChangeScreen(new ReportConfigurationScreen());
         }
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
@@ -168,7 +154,7 @@ namespace ATTrafficAnalayzer
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-            changeScreen(new ReportConfigurationScreen());
+            ChangeScreen(new ReportConfigurationScreen());
         }
     }
 }

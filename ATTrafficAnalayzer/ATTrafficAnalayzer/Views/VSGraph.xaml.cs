@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
@@ -20,14 +12,14 @@ namespace ATTrafficAnalayzer
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class VSGraph : UserControl
+    public partial class VsGraph : UserControl
     {
         private VolumeStore _volumeStore;
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
 
-        public VSGraph()
+        public VsGraph()
         {
             InitializeComponent();
 
@@ -35,28 +27,28 @@ namespace ATTrafficAnalayzer
         }
 
 
-        public VSGraph(VolumeStore _volumeStore, int interval, DateTime startDate, DateTime endDate)
+        public VsGraph(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
         {
             // TODO: Complete member initialization
-            this._volumeStore = _volumeStore;
-            this._interval = interval;
-            this._startDate = startDate;
-            this._endDate = endDate;
+            _volumeStore = volumeStore;
+            _interval = interval;
+            _startDate = startDate;
+            _endDate = endDate;
             InitializeComponent();
 
             var ds = new List<DateTime>();
-            foreach(var d in _volumeStore.DateTimeRecords){
-                ds.Add(d.dateTime);
+            foreach(var d in volumeStore.DateTimeRecords){
+                ds.Add(d.DateTime);
             }
 
             var dates = ds.ToArray();
-            var intersection = _volumeStore.getIntersections().ToList()[0];
-            var detector = _volumeStore.getDetectorsAtIntersection(intersection)[0];
+            var intersection = volumeStore.GetIntersections().ToList()[0];
+            var detector = volumeStore.GetDetectorsAtIntersection(intersection)[0];
             
             var vs = new List<int>();
             foreach (var d in dates)
             {
-                vs.Add(_volumeStore.getVolume(intersection, detector, d));
+                vs.Add(volumeStore.GetVolume(intersection, detector, d));
             }
             var volumes = vs.ToArray();
 

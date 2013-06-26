@@ -22,13 +22,13 @@ namespace ATTrafficAnalayzer
                 day += 1;
             }
 
-            var fiveMinutePeriod = getBit(recordBytes[6], 8);
-            var minutes = Convert.ToInt32(getBit(recordBytes[6], 1))*1 +
-                          Convert.ToInt32(getBit(recordBytes[6], 2))*2 +
-                          Convert.ToInt32(getBit(recordBytes[6], 3))*4 +
-                          Convert.ToInt32(getBit(recordBytes[6], 4))*8 +
-                          Convert.ToInt32(getBit(recordBytes[6], 5))*16 +
-                          Convert.ToInt32(getBit(recordBytes[6], 6))*32
+            var fiveMinutePeriod = GetBit(recordBytes[6], 8);
+            var minutes = Convert.ToInt32(GetBit(recordBytes[6], 1))*1 +
+                          Convert.ToInt32(GetBit(recordBytes[6], 2))*2 +
+                          Convert.ToInt32(GetBit(recordBytes[6], 3))*4 +
+                          Convert.ToInt32(GetBit(recordBytes[6], 4))*8 +
+                          Convert.ToInt32(GetBit(recordBytes[6], 5))*16 +
+                          Convert.ToInt32(GetBit(recordBytes[6], 6))*32
                           - 2; //Minutes are encoded as minutes + 2
 
 
@@ -48,16 +48,16 @@ namespace ATTrafficAnalayzer
                 var volume0_7 = recordBytes[index];
                 var detector_volume_8_10 = recordBytes[index + 1];
                 var volume = volume0_7 +
-                             Convert.ToInt32(getBit(detector_volume_8_10, 1))*256 +
-                             Convert.ToInt32(getBit(detector_volume_8_10, 2))*512 +
-                             Convert.ToInt32(getBit(detector_volume_8_10, 3))*1024;
+                             Convert.ToInt32(GetBit(detector_volume_8_10, 1))*256 +
+                             Convert.ToInt32(GetBit(detector_volume_8_10, 2))*512 +
+                             Convert.ToInt32(GetBit(detector_volume_8_10, 3))*1024;
 
 
-                var detectorNumber = Convert.ToInt32(getBit(detector_volume_8_10, 4))*1 +
-                                     Convert.ToInt32(getBit(detector_volume_8_10, 5))*2 +
-                                     Convert.ToInt32(getBit(detector_volume_8_10, 6))*4 +
-                                     Convert.ToInt32(getBit(detector_volume_8_10, 7))*8 +
-                                     Convert.ToInt32(getBit(detector_volume_8_10, 8))*16;
+                var detectorNumber = Convert.ToInt32(GetBit(detector_volume_8_10, 4))*1 +
+                                     Convert.ToInt32(GetBit(detector_volume_8_10, 5))*2 +
+                                     Convert.ToInt32(GetBit(detector_volume_8_10, 6))*4 +
+                                     Convert.ToInt32(GetBit(detector_volume_8_10, 7))*8 +
+                                     Convert.ToInt32(GetBit(detector_volume_8_10, 8))*16;
 
                 index += 2;
 
@@ -84,7 +84,7 @@ namespace ATTrafficAnalayzer
             return RecordType.Volume;
         }
 
-        private static bool getBit(byte b, int pos)
+        private static bool GetBit(byte b, int pos)
         {
             return (b & (1 << pos - 1)) != 0;
         }

@@ -99,21 +99,21 @@ namespace Parago.Windows.Controls
 		static void HideCloseButton(Window w)
 		{
 			var hWnd = new WindowInteropHelper(w).Handle;
-			SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SYSMENU);
+			SetWindowLong(hWnd, GwlStyle, GetWindowLong(hWnd, GwlStyle) & ~WsSysmenu);
 		}
 
 		static void ShowCloseButton(Window w)
 		{
 			var hWnd = new WindowInteropHelper(w).Handle;
-			SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) | WS_SYSMENU);
+			SetWindowLong(hWnd, GwlStyle, GetWindowLong(hWnd, GwlStyle) | WsSysmenu);
 		}
 
 		#endregion
 
 		#region Win32 Native Methods And Constants
 
-		const int GWL_STYLE = -16;
-		const int WS_SYSMENU = 0x80000;
+		const int GwlStyle = -16;
+		const int WsSysmenu = 0x80000;
 
 		[DllImport("user32.dll", SetLastError = true)]
 		static extern int GetWindowLong(IntPtr hWnd, int nIndex);

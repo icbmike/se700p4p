@@ -44,7 +44,7 @@
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="Table"
-                    Checked="switchScreen"
+                    Checked="SwitchScreen"
                     Background="White"></RadioButton>
                 <RadioButton
                     Name="graphradio"
@@ -53,7 +53,7 @@
                     MinWidth="45"
                     BorderBrush="#FF457EFF"
                     Content="Graph"
-                    Checked="switchScreen"
+                    Checked="SwitchScreen"
                     Background="White"></RadioButton>
                 <Label
                     Margin="5,0,0,0">Start Date:</Label>

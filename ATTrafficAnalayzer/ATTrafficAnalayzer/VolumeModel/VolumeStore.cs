@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.ComponentModel;
 
@@ -27,7 +26,7 @@ namespace ATTrafficAnalayzer
             _dateTimeRecords = new List<DateTimeRecord>();
         }
 
-        public void readFile(BackgroundWorker bw, string filename)
+        public void ReadFile(BackgroundWorker bw, string filename)
         {
             //Load the file into memory
             var fs = new FileStream(filename, FileMode.Open);
@@ -66,12 +65,12 @@ namespace ATTrafficAnalayzer
                     case RecordType.Datetime:
                         currentDateTime = RecordFactory.CreateDateTimeRecord(record);
                         _dateTimeRecords.Add(currentDateTime);
-                        _volumesDictionary.Add(currentDateTime.dateTime, new Dictionary<int, VolumeRecord>());
+                        _volumesDictionary.Add(currentDateTime.DateTime, new Dictionary<int, VolumeRecord>());
                         break;
                     case RecordType.Volume:
 
                         var volumeRecord = RecordFactory.CreateVolumeRecord(record, recordSize);
-                        _volumesDictionary[currentDateTime.dateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
+                        _volumesDictionary[currentDateTime.DateTime].Add(volumeRecord.IntersectionNumber, volumeRecord);
                         _intersections.Add(volumeRecord.IntersectionNumber);
                         
                         if(!_detectors.ContainsKey(volumeRecord.IntersectionNumber)){
@@ -82,16 +81,16 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        public HashSet<int> getIntersections()
+        public HashSet<int> GetIntersections()
         {
             return _intersections;
         }
 
-        public List<int> getDetectorsAtIntersection(int intersection){
+        public List<int> GetDetectorsAtIntersection(int intersection){
             return _detectors[intersection];
         }
 
-        public int getVolume(int intersection, int detector, DateTime date)
+        public int GetVolume(int intersection, int detector, DateTime date)
         {
             var x = _volumesDictionary[date];
             return x[intersection].GetVolumeForDetector(detector);

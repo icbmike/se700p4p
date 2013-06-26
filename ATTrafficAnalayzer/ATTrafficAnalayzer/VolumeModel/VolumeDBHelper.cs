@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Data.SQLite;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using System.Data.Common;
-using System.Data.OleDb;
-using System.Data.SqlClient;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -141,7 +136,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
                                     cmd.Parameters.Clear();
 
-                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.dateTime);
+                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime);
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
                                     cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
@@ -277,7 +272,7 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         private void InitializeConfigs()
         {
-            var dbCoomandBuilder = new SQLiteCommandBuilder(_configsDataAdapter);
+            new SQLiteCommandBuilder(_configsDataAdapter);
 
             var configsPrimaryKeys = new DataColumn[1];
             configsPrimaryKeys[0] = _configsDataSet.Tables[0].Columns["name"];
