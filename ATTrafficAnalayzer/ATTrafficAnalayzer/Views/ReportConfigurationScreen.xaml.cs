@@ -7,7 +7,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.VolumeModel;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views
 {
     /// <summary>
     /// Interaction logic for ReportConfigurationScreen.xaml
@@ -20,15 +20,9 @@ namespace ATTrafficAnalayzer
         private List<int> _intersectionList;
         private int _selectedIntersection;
 
-        VolumeDbHelper _dbHelper;
+        readonly VolumeDbHelper _dbHelper;
 
-        private String _configName;
-
-        public String ConfigName
-        {
-            get { return _configName; }
-            set { _configName = value; }
-        }
+        public string ConfigName { get; set; }
 
         public int SelectedIntersection
         {

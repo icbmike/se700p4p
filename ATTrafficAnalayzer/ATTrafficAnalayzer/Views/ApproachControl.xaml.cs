@@ -1,28 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using ATTrafficAnalayzer.Annotations;
 
-
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views
 {
     /// <summary>
     /// Interaction logic for ApproachControl.xaml
     /// </summary>
-    public partial class ApproachControl : Border
+    public partial class ApproachControl : Border, INotifyPropertyChanged
     {
-
-        private String _approachName;
         private ObservableCollection<int> _detectors;
         private WrapPanel _container;
+        private string _approachName;
 
-        public String ApproachName
+        public string ApproachName
         {
             get { return _approachName; }
-            set { _approachName = value; }
+            set { 
+                _approachName = value;
+                if (null != this.PropertyChanged)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("ApproachName"));
+                }
+            }
         }
 
         public ObservableCollection<int> Detectors
@@ -31,7 +37,7 @@ namespace ATTrafficAnalayzer
             set { _detectors = value; }
         }
 
-        public ApproachControl(WrapPanel container, List<int> detectors)
+        public ApproachControl(WrapPanel container, IEnumerable<int> detectors)
         {
             DataContext = this;
             _container = container;
@@ -45,15 +51,16 @@ namespace ATTrafficAnalayzer
                     Detectors.Add(d);
                 }
             }
+            
             InitializeComponent();
 
         }
         public ApproachControl(WrapPanel container, List<int> detectors, String name) : this(container, detectors)
         {
-            _approachName = name;
+            ApproachName = name;
         }
 
-        public int getDetectorCount()
+        public int GetDetectorCount()
         {
             return _detectors.Count;
         }
@@ -64,17 +71,15 @@ namespace ATTrafficAnalayzer
         {
 
             var listview = sender as ListView;
-            var items = new List<int>();
 
-            if (listview.SelectedItems.Count == 0 || Keyboard.GetKeyStates(Key.LeftShift).Equals(KeyStates.Down))
+            if (listview != null && (listview.SelectedItems.Count == 0 || Keyboard.GetKeyStates(Key.LeftShift).Equals(KeyStates.Down)))
             {
                 return;
             }
 
-            foreach (int x in listview.SelectedItems)
-            {
-                items.Add(x);
-            }
+            var items = listview.SelectedItems.Cast<int>().ToList();
+
+
             var data = new DataObject();
             data.SetData("source", listview);
             data.SetData("items", items);
@@ -123,5 +128,8 @@ namespace ATTrafficAnalayzer
         {
             Detectors.Add(detector);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
     }
 }
