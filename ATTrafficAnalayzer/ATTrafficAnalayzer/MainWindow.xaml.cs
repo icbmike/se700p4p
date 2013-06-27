@@ -17,8 +17,8 @@ namespace ATTrafficAnalayzer
         enum Displays { Graph, Table };
         Displays _display;
 
-        private VolumeStore _volumeStore;
         private VolumeDbHelper _dbHelper;
+        private VolumeStore _volumeStore;
 
         public MainWindow()
         {
@@ -108,7 +108,14 @@ namespace ATTrafficAnalayzer
 
         private void newBtn_Click(object sender, RoutedEventArgs e)
         {
-            ChangeScreen(new ReportConfigurationScreen());
+            var reportConfigurationScreen = new ReportConfigurationScreen();
+            reportConfigurationScreen.ConfigurationSaved += OnConfigurationSaved;
+            ChangeScreen(reportConfigurationScreen);
+        }
+
+        private void OnConfigurationSaved(object sender, ReportConfigurationScreen.ConfigurationSavedEventHandlerArgs args)
+        {
+            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
         }
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)

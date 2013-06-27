@@ -162,6 +162,25 @@ namespace ATTrafficAnalayzer.Views
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
             _dbHelper.addConfiguration(new ReportConfiguration(ConfigName,  _selectedIntersection, approaches));
-        } 
+
+            if(ConfigurationSaved != null)
+            ConfigurationSaved(this, new ConfigurationSavedEventHandlerArgs(ConfigName));
+        }
+
+        public delegate void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventHandlerArgs args);
+
+        public event ConfigurationSavedEventHandler ConfigurationSaved;
+        
+        public class ConfigurationSavedEventHandlerArgs
+        {
+            public string ConfigName { get; set; }
+
+            public ConfigurationSavedEventHandlerArgs(string configName)
+            {
+                ConfigName = configName;
+            }
+        }
     }
+
+    
 }
