@@ -103,7 +103,15 @@ namespace ATTrafficAnalayzer.VolumeModel
             {
                 sb.Append(keys[i]);
                 sb.Append(":");
+                if (_dict[keys[i]].GetType() == typeof(String))
+                {
+                    sb.Append('"');
+                }
                 sb.Append(_dict[keys[i]].ToString());
+                if (_dict[keys[i]].GetType() == typeof(String))
+                {
+                    sb.Append('"');
+                }
                 if(i != keys.Count -1) sb.Append(",");
             }
             sb.Append("}");

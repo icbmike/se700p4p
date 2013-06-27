@@ -67,7 +67,15 @@ namespace ATTrafficAnalayzer.VolumeModel
             sb.Append("[");
             for (int i = 0; i < _list.Count; i++)
             {
+                if (_list[i].GetType() == typeof(String))
+                {
+                    sb.Append('"');
+                }
                 sb.Append(_list[i].ToString());
+                if (_list[i].GetType() == typeof(String))
+                {
+                    sb.Append('"');
+                }
                 if (i != _list.Count - 1)
                 {
                     sb.Append(",");

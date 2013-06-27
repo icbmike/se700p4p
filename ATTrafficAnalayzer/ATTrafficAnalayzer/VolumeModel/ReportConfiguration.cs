@@ -42,7 +42,6 @@ namespace ATTrafficAnalayzer.VolumeModel
         {
             JSONObject json = new JSONObject();
             json.Add("intersection", Intersection);
-            json.Add("configName", ConfigName);
             var arr = new JSONArray();
             json.Add("approaches", arr); // Add an empty array that will be filled in later with approach IDs once we know them
            

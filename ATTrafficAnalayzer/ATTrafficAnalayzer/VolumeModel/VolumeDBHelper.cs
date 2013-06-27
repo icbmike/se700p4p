@@ -266,32 +266,37 @@ namespace ATTrafficAnalayzer.VolumeModel
             var configJson = config.toJson();
             SQLiteConnection conn = new SQLiteConnection(dbFile);
             conn.Open();
-            using (SQLiteTransaction transaction = conn.BeginTransaction())
+
+            
+            foreach(Approach approach in config.Approaches)
             {
-                
                 //INSERT APPROACHES INTO TABLE
-                foreach(Approach approach in config.Approaches)
+                using (SQLiteCommand query = new SQLiteCommand(conn))
                 {
-                    using (SQLiteCommand query = new SQLiteCommand(conn))
-                    {
-                        query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
-                        query.Parameters.AddWithValue("@approach", approach.toJSON().ToString());
-                        query.ExecuteNonQuery();
-                    }
-                    using (SQLiteCommand query = new SQLiteCommand(conn))
-                    {
-                        query.CommandText = "SELECT last_insert_rowid();";
-                        int rowID = (Int32)query.ExecuteScalar();
-                        configJson.GetJSONArray("approaches").Put(rowID);
-                    }
+                    query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
+                    query.Parameters.AddWithValue("@approach", approach.toJSON().ToString());
+                    query.ExecuteNonQuery();
                 }
                 //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
-                //INSERT REPORT CONFIGURATION INTO TABLE
-
+                using (SQLiteCommand query = new SQLiteCommand(conn))
+                {
+                    query.CommandText = "SELECT last_insert_rowid();";
+                    var rowID = (Int64)query.ExecuteScalar();
+                    configJson.GetJSONArray("approaches").Put(rowID);
+                }
             }
-            
-        }
 
+            //INSERT REPORT CONFIGURATION INTO TABLE
+            using (SQLiteCommand query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
+                query.Parameters.AddWithValue("@name", config.ConfigName);
+                query.Parameters.AddWithValue("@config", configJson.ToString());
+                query.Parameters.AddWithValue("@last_used", DateTime.Today);
+                query.ExecuteNonQuery();
+
+            }            
+        }
 
         public List<Approach> getApproaches(String configName)
         {
