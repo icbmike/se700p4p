@@ -7,6 +7,8 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="300"
+    xmlns:ta="clr-namespace:ATTrafficAnalayzer"
+
     BorderThickness="2"
     BorderBrush="Black"
     Width="150"
@@ -25,13 +27,14 @@
         <TextBox
             Name="Approach"
             Grid.Row="0"
-            Text="{Binding ApproachName}"
+            Text="{Binding Path=ApproachName, Mode=TwoWay}"
             Background="Transparent"
             Foreground="White"
             Focusable="True"
             />
 
         <ListView
+            Name="DetectorListView"
             Grid.Row="1"
             ItemsSource="{Binding Path=Detectors, Mode=TwoWay}"
             AllowDrop="True"

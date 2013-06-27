@@ -9,43 +9,54 @@
     d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
+           
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition
                 Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition
-                Width="100" />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <ComboBox
-            Grid.Row="0"
+            Grid.Row="1" 
             Grid.Column="0"
             ItemsSource="{Binding IntersectionList}"
             SelectedValue="{Binding SelectedIntersection}"
             SelectionChanged="OnIntersectionSelectionChanged" />
         <ListView
+            Name="DetectorListView"
             Grid.Column="0"
-            Grid.Row="1"
+
+            Grid.Row="2" 
             Grid.RowSpan="2"
-            
+             Margin=" 0, 0, 0, 10"
             Background="Beige"
             VerticalAlignment="Stretch"
             ItemsSource="{Binding Path=DetectorList, Mode=TwoWay}"
             PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown">
 
         </ListView>
+        <TextBox 
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            FontSize="30"
+            Text="{Binding ConfigName}"
+            />
 
-        <WrapPanel
-            Name="Approaches"
-            Grid.Column="1"
+        <ScrollViewer Grid.Row="1" Grid.Column="1"
             Grid.RowSpan="2"
-            >
+            Grid.ColumnSpan="2"
+                      VerticalScrollBarVisibility="Auto">
+            <WrapPanel
+            Name="Approaches">
 
-            <Border
+                <Border
                 CornerRadius="5"
                 AllowDrop="True"
                 Drop="NewApproachDrop"
@@ -55,18 +66,38 @@
                 Height="150"
                 Width="150"
                 BorderThickness="2">
-                <Image
+                    <Image
                     Source="/ATTrafficAnalayzer;component/Resources/Images/Add.png" />
 
-            </Border>
-        </WrapPanel>
+                </Border>
+            </WrapPanel>
+        </ScrollViewer>
+        <StackPanel
+            Grid.Row="3" 
+            Grid.Column="1"
+            Orientation="Horizontal">
 
-        <Button Name="saveConfigBtn"
-                Content="Save"
-                Width="75"
-                Grid.Column="1"
-                Grid.Row="2"
-                HorizontalAlignment="Right"
-                Click="saveConfigBtn_Click"/>
+            <Button 
+                Height="30"
+                Margin="20,0,0,0"
+                Padding="10, 0, 10, 0"
+                Click="Distribute_Click"
+                Content="Distribute Detectors" />
+            <Button 
+                Height="30"
+                Margin="20,0,0,0"
+                Padding="10, 0, 10, 0"
+                Content="Group All"
+                Click="Group_Click"/>
+
+        </StackPanel>
+        <Button
+            Width="75"
+            Height="30"
+            Margin=" 0, 0, 20, 20"
+            Grid.Row="3" 
+            Grid.Column="2"
+            Content="Save" Click="Save_Click"
+            />
     </Grid>
 </UserControl>

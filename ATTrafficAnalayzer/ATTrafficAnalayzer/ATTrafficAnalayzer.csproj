@@ -83,6 +83,8 @@
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogResult.cs" />
     <Compile Include="ProgressDialog\ProgressDialogSettings.cs" />
+    <Compile Include="VolumeModel\JSONArray.cs" />
+    <Compile Include="VolumeModel\JSONObject.cs" />
     <Compile Include="VolumeModel\RecordFactory.cs" />
     <Compile Include="VolumeModel\RecordType.cs" />
     <Compile Include="Views\ReportConfigurationScreen.xaml.cs">
@@ -90,7 +92,8 @@
     </Compile>
     <Compile Include="SettingsTray.cs" />
     <Compile Include="VolumeModel\Report.cs" />
-    <Compile Include="VolumeModel\VolumeDBHelper.cs" />
+    <Compile Include="VolumeModel\ReportConfiguration.cs" />
+    <Compile Include="VolumeModel\VolumeDbHelper.cs" />
     <Compile Include="VolumeModel\VolumeRecord.cs" />
     <Compile Include="VolumeModel\VolumeStore.cs" />
     <Compile Include="Views\VSGraph.xaml.cs">

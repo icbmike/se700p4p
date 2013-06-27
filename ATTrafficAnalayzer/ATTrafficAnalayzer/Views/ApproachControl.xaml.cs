@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,7 +14,6 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class ApproachControl : Border
     {
-
 
         private String _approachName;
         private ObservableCollection<int> _detectors;
@@ -37,14 +37,27 @@ namespace ATTrafficAnalayzer
             _container = container;
             _detectors = new ObservableCollection<int>();
 
-            foreach (var d in detectors)
+            
+            if (detectors != null)
             {
-                Detectors.Add(d);
+                foreach (var d in detectors)
+                {
+                    Detectors.Add(d);
+                }
             }
-
             InitializeComponent();
 
         }
+        public ApproachControl(WrapPanel container, List<int> detectors, String name) : this(container, detectors)
+        {
+            _approachName = name;
+        }
+
+        public int getDetectorCount()
+        {
+            return _detectors.Count;
+        }
+
 
 
         private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -53,6 +66,11 @@ namespace ATTrafficAnalayzer
             var listview = sender as ListView;
             var items = new List<int>();
 
+            if (listview.SelectedItems.Count == 0 || Keyboard.GetKeyStates(Key.LeftShift).Equals(KeyStates.Down))
+            {
+                return;
+            }
+
             foreach (int x in listview.SelectedItems)
             {
                 items.Add(x);
@@ -60,6 +78,7 @@ namespace ATTrafficAnalayzer
             var data = new DataObject();
             data.SetData("source", listview);
             data.SetData("items", items);
+            data.SetData("fromMainList", false);
             data.SetData("approach", this);
             DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
 
@@ -69,15 +88,27 @@ namespace ATTrafficAnalayzer
         {
             var source = e.Data.GetData("source") as ListView;
             var items = e.Data.GetData("items") as List<int>;
-            
+            var fromMainList = (bool)e.Data.GetData("fromMainList");
+
+            if (source == DetectorListView)
+            {
+                return;
+            }
 
             var dragSourceList = source.ItemsSource as ObservableCollection<int>;
             foreach (var item in items)
             {
-                Detectors.Add(item);
-                dragSourceList.Remove(item);
+                if(!Detectors.Contains(item)) Detectors.Add(item);
+                if(!fromMainList) dragSourceList.Remove(item);
             }
-
+            
+            var sortedDetectors = Detectors.OrderBy(x => x).ToList();
+            Detectors.Clear();
+            foreach (int i in sortedDetectors)
+            {
+                Detectors.Add(i);
+            }
+            
             if (dragSourceList.Count == 0)
             {
                 if (e.Data.GetDataPresent("approach"))
@@ -86,6 +117,11 @@ namespace ATTrafficAnalayzer
                 }
             }
 
-        }    
+        }
+
+        internal void AddDetector(int detector)
+        {
+            Detectors.Add(detector);
+        }
     }
 }
