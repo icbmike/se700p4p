@@ -12,105 +12,115 @@
     Width="1000" 
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
-    WindowStyle="SingleBorderWindow">
+    WindowStyle="SingleBorderWindow" Icon="Resources/Images/at-logo.png" Background="#FF1E3D51">
 
     <DockPanel
         LastChildFill="True">
 
-        <Menu
-            DockPanel.Dock="Top">
-            <Menu.Background>
-                <SolidColorBrush Color="#FFEEF5FD" />
-            </Menu.Background>
-            <MenuItem
-                Header="_File"
-                DockPanel.Dock="Top"
-                FontSize="14">
-                <MenuItem
-                    Name="FileImportMenuItem"
-                    Header="_Import" Click="fileImportMenuItem_Click"/>
-                <Separator />
-                <MenuItem
-                    Name="FileQuitMenuItem"
-                    Header="_Quit" Click="FileQuitMenuItem_OnClick"/>
-            </MenuItem>
-            <MenuItem
-                Header="_Help"
-                DockPanel.Dock="Top"
-                FontSize="14">
-                <MenuItem
-                    Name="HelpAboutUsMenuItem"
-                    Header="_About Us"
-                    Click="HelpAboutUsMenuItem_OnClick"/>
-            </MenuItem>
-        </Menu>
+        <Canvas
+            DockPanel.Dock="Top"
+            Height="100">
+            <Canvas.Background>
+                <ImageBrush ImageSource="Resources/Images/at-banner.png"/>
+            </Canvas.Background>
 
-        <ToolBarTray
-            Name="SettingsTray"
-            DockPanel.Dock="Top">
-            <ToolBarTray.DataContext>
-                <ta:SettingsTray/>
-            </ToolBarTray.DataContext>
-            <ToolBar
-                Band="1"
-                BandIndex="1"
-                VerticalContentAlignment="Stretch"
-                HorizontalContentAlignment="Stretch">
-                <Image
-                    Height="26.6666666666667"
-                    VerticalAlignment="Center"
-                    Source="Resources/Images/home_icon.png" Margin="5,0" MouseLeftButtonDown="Image_MouseLeftButtonDown"/>
-                <RadioButton
-                    Name="tableradio"
-                    GroupName="display"
-                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                    MinWidth="45"
-                    BorderBrush="#FF457EFF"
-                    Content="Table"
-                    Checked="SwitchScreen"
-                    Background="White"></RadioButton>
-                <RadioButton
-                    Name="graphradio"
-                    GroupName="display"
-                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                    MinWidth="45"
-                    BorderBrush="#FF457EFF"
-                    Content="Graph"
-                    Checked="SwitchScreen"
-                    Background="White"></RadioButton>
-                <Label
-                    Margin="5,0,0,0">Start Date:</Label>
-                <DatePicker
-                    Name="startDatePicker"
-                    Background="White"
-                    SelectedDate="{Binding StartDate}"/>
-                <Label
-                    Margin="5,0,0,0">End Date:</Label>
-                <DatePicker
-                    Name="endDatePicker"
-                    Background="White"
-                    SelectedDate="{Binding EndDate}"/>
-                <Label
-                    Margin="5,0,0,0">Interval:</Label>
-                <ComboBox
-                    Height="23"
-                    Name="intervalComboBox"
-                    Width="60"
-                    SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
-                    SelectedValuePath="Content"
-                    SelectedIndex="3">
-                    <ComboBoxItem>1 min</ComboBoxItem>
-                    <ComboBoxItem>5 min</ComboBoxItem>
-                    <ComboBoxItem>15 min</ComboBoxItem>
-                    <ComboBoxItem>30 min</ComboBoxItem>
-                    <ComboBoxItem>60 min</ComboBoxItem>
-                </ComboBox>
-            </ToolBar>
-        </ToolBarTray>
+            <Menu
+                Canvas.Top="20"
+                Canvas.Left="20"
+                Background="{x:Null}">
+                <MenuItem
+                    Header="_File"
+                    DockPanel.Dock="Top"
+                    FontSize="16" Foreground="White">
+                    <MenuItem
+                        Name="FileImportMenuItem"
+                        Header="_Import" Click="fileImportMenuItem_Click" Foreground="Black"/>
+                    <Separator />
+                    <MenuItem
+                        Name="FileQuitMenuItem"
+                        Header="_Quit" Click="FileQuitMenuItem_OnClick" Foreground="Black"/>
+                </MenuItem>
+                <MenuItem
+                    Header="_Help"
+                    DockPanel.Dock="Top"
+                    FontSize="16" Foreground="White">
+                    <MenuItem
+                        Name="HelpAboutUsMenuItem"
+                        Header="_About Us"
+                        Click="HelpAboutUsMenuItem_OnClick" Foreground="Black"/>
+                </MenuItem>
+            </Menu>
+
+            <ToolBarTray
+                Name="SettingsTray"
+                Canvas.Top="65"
+                Canvas.Left="20" Background="{x:Null}">
+                <ToolBarTray.DataContext>
+                    <ta:SettingsTray/>
+                </ToolBarTray.DataContext>
+                <ToolBar
+                    Band="1"
+                    BandIndex="1"
+                    VerticalContentAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch" Background="{x:Null}" Foreground="White" BorderBrush="White">
+                    <Image
+                        Height="26.6666666666667"
+                        VerticalAlignment="Center"
+                        Source="Resources/Images/home_icon.png" Margin="5,0" MouseLeftButtonDown="Image_MouseLeftButtonDown"/>
+                    <RadioButton
+                        Name="tableradio"
+                        GroupName="display"
+                        Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                        MinWidth="45"
+                        BorderBrush="#FF457EFF"
+                        Content="Table"
+                        Checked="SwitchScreen"
+                        Background="White"></RadioButton>
+                    <RadioButton
+                        Name="graphradio"
+                        GroupName="display"
+                        Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                        MinWidth="45"
+                        BorderBrush="#FF457EFF"
+                        Content="Graph"
+                        Checked="SwitchScreen"
+                        Background="White"></RadioButton>
+                    <Label
+                        Margin="5,0,0,0">Start Date:</Label>
+                    <DatePicker
+                        Name="startDatePicker"
+                        Background="White"
+                        SelectedDate="{Binding StartDate}"/>
+                    <Label
+                        Margin="5,0,0,0">End Date:</Label>
+                    <DatePicker
+                        Name="endDatePicker"
+                        Background="White"
+                        SelectedDate="{Binding EndDate}"/>
+                    <Label
+                        Margin="5,0,0,0">Interval:</Label>
+                    <ComboBox
+                        Height="23"
+                        Name="intervalComboBox"
+                        Width="60"
+                        SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
+                        SelectedValuePath="Content"
+                        SelectedIndex="3">
+                        <ComboBoxItem>1 min</ComboBoxItem>
+                        <ComboBoxItem>5 min</ComboBoxItem>
+                        <ComboBoxItem>15 min</ComboBoxItem>
+                        <ComboBoxItem>30 min</ComboBoxItem>
+                        <ComboBoxItem>60 min</ComboBoxItem>
+                    </ComboBox>
+                </ToolBar>
+            </ToolBarTray>
+
+        </Canvas>
 
         <DockPanel
             LastChildFill="True"
-            Margin="10" >
+            Margin="10"
+            DockPanel.Dock="Left">
             <Label
                 Content="Report Browser"
                 Height="28"
@@ -203,7 +213,9 @@
 
         <ContentControl
             DockPanel.Dock="Right"
-            x:Name="mainContentControl" />
+            x:Name="mainContentControl"
+            Margin="10"
+            Background="White" />
 
     </DockPanel>
 </Window>
