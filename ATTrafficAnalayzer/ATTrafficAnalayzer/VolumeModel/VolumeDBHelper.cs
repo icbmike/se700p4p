@@ -330,44 +330,6 @@ namespace ATTrafficAnalayzer.VolumeModel
             SyncDatabase();            
         }
 
-        public bool RenameConfig(String oldName, String newName)
-        {
-            //Logger.Info("renaming '@oldName' to '@newName'", "db helper");
-            //SQLiteConnection conn = new SQLiteConnection(DB_PATH);
-            //conn.Open();
-            //String sql = "UPDATE configs SET name=@newName WHERE name=@oldName;";
-            //SQLiteCommand command = new SQLiteCommand(sql, conn);
-            //try
-            //{
-            //    command.ExecuteNonQuery();
-            //    conn.Close();
-            //}
-            //catch (SQLiteException)
-            //{
-            //    return false;
-            //}
-            return true;
-        }
-
-        public bool AddConfig(String name)
-        {
-            //Logger.Info("inserting @name", "db helper");
-            //SQLiteConnection conn = new SQLiteConnection(DB_PATH);
-            //conn.Open();
-            //String sql = "INSERT INTO configs (name) VALUES (@name);";
-            //SQLiteCommand command = new SQLiteCommand(sql, conn);
-            //try
-            //{
-            //    command.ExecuteNonQuery();
-            //    conn.Close();
-            //}
-            //catch (SQLiteException)
-            //{
-            //    return false;
-            //}
-            return true;
-        }
-
         public void RemoveConfigFromDataSet(String configToDelete)
         {
             try
