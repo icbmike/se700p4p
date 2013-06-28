@@ -42,6 +42,9 @@
     <Reference Include="DynamicDataDisplay.resources">
       <HintPath>d3\DynamicDataDisplay\ru-ru\DynamicDataDisplay.resources.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
@@ -84,8 +87,6 @@
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogResult.cs" />
     <Compile Include="ProgressDialog\ProgressDialogSettings.cs" />
-    <Compile Include="VolumeModel\JSONArray.cs" />
-    <Compile Include="VolumeModel\JSONObject.cs" />
     <Compile Include="VolumeModel\RecordFactory.cs" />
     <Compile Include="VolumeModel\RecordType.cs" />
     <Compile Include="Views\ReportConfigurationScreen.xaml.cs">
