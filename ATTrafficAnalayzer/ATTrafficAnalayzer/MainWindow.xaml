@@ -11,8 +11,7 @@
     xmlns:ta="clr-namespace:ATTrafficAnalayzer"
     Width="1000" 
     WindowStartupLocation="CenterScreen"
-    WindowState="Maximized"
-    WindowStyle="SingleBorderWindow" Icon="Resources/Images/at-logo.png" Background="#FF1E3D51">
+    WindowState="Maximized" Icon="Resources/Images/at-logo.png">
 
     <DockPanel
         LastChildFill="True">
@@ -51,18 +50,24 @@
                 </MenuItem>
             </Menu>
 
-            <ToolBarTray
+            <ToolBarPanel
                 Name="SettingsTray"
-                Canvas.Top="65"
-                Canvas.Left="20" Background="{x:Null}">
-                <ToolBarTray.DataContext>
+                Canvas.Top="60"
+                Canvas.Left="20"
+                Background="{x:Null}">
+                <ToolBarPanel.DataContext>
                     <ta:SettingsTray/>
-                </ToolBarTray.DataContext>
+                </ToolBarPanel.DataContext>
                 <ToolBar
+                    Name="mainToolbar"
                     Band="1"
                     BandIndex="1"
                     VerticalContentAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch" Background="{x:Null}" Foreground="White" BorderBrush="White">
+                    HorizontalContentAlignment="Stretch"
+                    Foreground="White"
+                    ToolBarTray.IsLocked="True"
+                    Background="{x:Null}"
+                    Loaded="MainToolbar_OnLoaded">
                     <Image
                         Height="26.6666666666667"
                         VerticalAlignment="Center"
@@ -72,40 +77,43 @@
                         GroupName="display"
                         Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                         MinWidth="45"
-                        BorderBrush="#FF457EFF"
+                        BorderBrush="{x:Null}"
                         Content="Table"
                         Checked="SwitchScreen"
-                        Background="White"></RadioButton>
+                        Background="White"
+                        FontSize="16" Margin="10,0,1,0" BorderThickness="1" Width="70"></RadioButton>
                     <RadioButton
                         Name="graphradio"
                         GroupName="display"
                         Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
                         MinWidth="45"
-                        BorderBrush="#FF457EFF"
+                        BorderBrush="{x:Null}"
                         Content="Graph"
                         Checked="SwitchScreen"
-                        Background="White"></RadioButton>
+                        Background="White"
+                        FontSize="16" Margin="1,0,10,0" Width="70" ></RadioButton>
                     <Label
-                        Margin="5,0,0,0">Start Date:</Label>
+                        Margin="10,0,4,0" Foreground="White" FontSize="16" >Start Date:</Label>
                     <DatePicker
                         Name="startDatePicker"
                         Background="White"
-                        SelectedDate="{Binding StartDate}"/>
+                        SelectedDate="{Binding StartDate}"
+                        FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <Label
-                        Margin="5,0,0,0">End Date:</Label>
+                        Margin="20,0,0,0" Foreground="#FFF6F6F6" FontSize="16" >End Date:</Label>
                     <DatePicker
                         Name="endDatePicker"
                         Background="White"
-                        SelectedDate="{Binding EndDate}"/>
+                        SelectedDate="{Binding EndDate}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <Label
-                        Margin="5,0,0,0">Interval:</Label>
+                        Margin="20,0,0,0" Foreground="White" FontSize="16" >Interval:</Label>
                     <ComboBox
                         Height="23"
                         Name="intervalComboBox"
-                        Width="60"
+                        Width="80"
                         SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
                         SelectedValuePath="Content"
-                        SelectedIndex="3">
+                        SelectedIndex="3" Foreground="Black" FontSize="16" >
                         <ComboBoxItem>1 min</ComboBoxItem>
                         <ComboBoxItem>5 min</ComboBoxItem>
                         <ComboBoxItem>15 min</ComboBoxItem>
@@ -113,7 +121,7 @@
                         <ComboBoxItem>60 min</ComboBoxItem>
                     </ComboBox>
                 </ToolBar>
-            </ToolBarTray>
+            </ToolBarPanel>
 
         </Canvas>
 
@@ -125,7 +133,7 @@
                 Content="Report Browser"
                 Height="28"
                 Name="label1"
-                Background="#FF007ACC"
+                Background="#428FBF"
                 FontWeight="Normal"
                 FontSize="14"
                 Foreground="White"
@@ -214,7 +222,6 @@
         <ContentControl
             DockPanel.Dock="Right"
             x:Name="mainContentControl"
-            Margin="10"
             Background="White" />
 
     </DockPanel>

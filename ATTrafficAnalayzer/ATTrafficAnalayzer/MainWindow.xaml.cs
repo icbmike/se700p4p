@@ -180,5 +180,15 @@ namespace ATTrafficAnalayzer
 
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
+
+        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }
