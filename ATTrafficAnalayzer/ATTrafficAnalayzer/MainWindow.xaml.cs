@@ -12,7 +12,7 @@ namespace ATTrafficAnalayzer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         enum Displays { Graph, Table };
         Displays _display;
@@ -20,65 +20,66 @@ namespace ATTrafficAnalayzer
         private VolumeStore _volumeStore;
         private VolumeDbHelper _dbHelper;
 
-        public MainWindow()
+        public MainWindow ()
         {
-            Logger.Clear();
+            Logger.Clear ();
 
-            InitializeComponent();
+            InitializeComponent ();
             DataContext = this;
 
-            _dbHelper = new VolumeDbHelper();
+            _dbHelper = new VolumeDbHelper ();
 
-            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
+            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs ();
             standardReportsListBox.DisplayMemberPath = "name";
 
-            mainContentControl.Content = new WelcomeScreen();
+            mainContentControl.Content = new WelcomeScreen ();
         }
 
-        private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
+        private void fileImportMenuItem_Click (object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box 
             var dlg = new OpenFileDialog
                 {
                     FileName = "",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    InitialDirectory = Environment.GetFolderPath (Environment.SpecialFolder.UserProfile),
                     DefaultExt = ".VS",
                     Filter = "Volume Store Files (.VS)|*.VS"
                 };
 
             // Show open file dialog box 
-            Nullable<bool> result = dlg.ShowDialog();
+            Nullable<bool> result = dlg.ShowDialog ();
 
             // Process open file dialog box results 
             if (result == true)
             {
-                var res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) => {
+                var res = ProgressDialog.Execute (this, "Importing VS File", (bw, we) =>
+                {
 
-                    ProgressDialog.Report(bw, "Reading Files");
+                    ProgressDialog.Report (bw, "Reading Files");
 
                     // Open document 
                     var filename = dlg.FileName;
-                    VolumeDbHelper.ImportFile(filename);
+                    VolumeDbHelper.ImportFile (filename);
                     //_volumeStore.readFile(bw, filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
         }
 
-        private void ChangeScreen(UserControl screen)
+        private void ChangeScreen (UserControl screen)
         {
-            if (screen.GetType() != mainContentControl.Content.GetType())
+            if (screen.GetType () != mainContentControl.Content.GetType ())
                 mainContentControl.Content = screen;
         }
 
-        private static bool GetRadioContent(Object sender)
+        private static bool GetRadioContent (Object sender)
         {
             var button = sender as RadioButton;
             return (button.IsChecked == true);
         }
 
-        private void CheckDisplayValue()
+        private void CheckDisplayValue ()
         {
-            var displayValue = GetRadioContent(graphradio);
+            var displayValue = GetRadioContent (graphradio);
 
             if (displayValue)
             {
@@ -90,35 +91,37 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        private void SwitchScreen(object sender, RoutedEventArgs e)
+        private void SwitchScreen (object sender, RoutedEventArgs e)
         {
-            CheckDisplayValue();
+            CheckDisplayValue ();
             var settings = SettingsTray.DataContext as SettingsTray;
-            
+
             if (_display == Displays.Table)
             {
-                ChangeScreen(new VsTable(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
+                ChangeScreen (new VsTable (_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
             }
             else if (_display == Displays.Graph)
             {
-                ChangeScreen(new VsGraph(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
-            } else {
-                throw new Exception();
+                ChangeScreen (new VsGraph (_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
+            }
+            else
+            {
+                throw new Exception ();
             }
         }
 
-        private void newBtn_Click(object sender, RoutedEventArgs e)
+        private void newBtn_Click (object sender, RoutedEventArgs e)
         {
-            ChangeScreen(new ReportConfigurationScreen());
+            ChangeScreen (new ReportConfigurationScreen ());
         }
 
-        private void renameBtn_Click(object sender, RoutedEventArgs e)
+        private void renameBtn_Click (object sender, RoutedEventArgs e)
         {
-            var item = standardReportsListBox.SelectedItem.ToString();
-            Console.WriteLine("Rename: " + item);
+            var item = standardReportsListBox.SelectedItem.ToString ();
+            Console.WriteLine ("Rename: {0}", item);
         }
 
-        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        private void deleteBtn_Click (object sender, RoutedEventArgs e)
         {
             //Get selection
             var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
@@ -131,60 +134,60 @@ namespace ATTrafficAnalayzer
             var icon = MessageBoxImage.Question;
 
             //Display message box
-            var isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
+            var isConfirmedDeletion = MessageBox.Show (messageBoxText, caption, button, icon);
 
             //Process message box results 
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _dbHelper.RemoveConfig(selectedItem);
-                    
+                    _dbHelper.RemoveConfig (selectedItem);
+
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
                     button = MessageBoxButton.OK;
                     icon = MessageBoxImage.Information;
-                    MessageBox.Show(messageBoxText, caption, button, icon);
+                    MessageBox.Show (messageBoxText, caption, button, icon);
 
-                    Logger.Debug(selectedItem + " report deleted", "Reports panel");
+                    Logger.Debug (selectedItem + " report deleted", "Reports panel");
                     break;
 
                 case MessageBoxResult.Cancel:
-                    Logger.Debug(selectedItem + " report deletion was canceled", "Reports panel");
+                    Logger.Debug (selectedItem + " report deletion was canceled", "Reports panel");
                     break;
             }
         }
 
-        private void editBtn_Click(object sender, RoutedEventArgs e)
+        private void editBtn_Click (object sender, RoutedEventArgs e)
         {
-            ChangeScreen(new ReportConfigurationScreen());
+            ChangeScreen (new ReportConfigurationScreen ());
         }
 
-        private void Image_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Image_MouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            ChangeScreen(new WelcomeScreen());
+            ChangeScreen (new WelcomeScreen ());
         }
 
-        private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void FileQuitMenuItem_OnClick (object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Application.Current.Shutdown ();
         }
 
-        private void HelpAboutUsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void HelpAboutUsMenuItem_OnClick (object sender, RoutedEventArgs e)
         {
             // Configure the message box to be displayed 
-            var messageBoxText = "Auckland Transport Traffic Report Viewer\n\n" +
-                                 "Created by Michael Little and Andrew Luey";
-            var caption = "About Us";
-            var button = MessageBoxButton.OK;
-            var icon = MessageBoxImage.None;
+            const string messageBoxText = "Auckland Transport Traffic Report Viewer\n\n" +
+                                          "Created by Michael Little and Andrew Luey";
+            const string caption = "About Us";
+            const MessageBoxButton button = MessageBoxButton.OK;
+            const MessageBoxImage icon = MessageBoxImage.None;
 
-            MessageBox.Show(messageBoxText, caption, button, icon);
+            MessageBox.Show (messageBoxText, caption, button, icon);
         }
 
-        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
+        private void MainToolbar_OnLoaded (object sender, RoutedEventArgs e)
         {
             var toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            var overflowGrid = toolBar.Template.FindName ("OverflowGrid", toolBar) as FrameworkElement;
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;

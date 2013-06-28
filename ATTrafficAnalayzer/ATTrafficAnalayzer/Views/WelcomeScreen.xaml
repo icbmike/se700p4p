@@ -22,6 +22,7 @@
             <ColumnDefinition
                 Width="*" />
         </Grid.ColumnDefinitions>
+        
         <ListBox
             Grid.Column="0"
             Grid.Row="0"
@@ -29,7 +30,6 @@
             Name="recentStandardReportsListBox"
             VerticalAlignment="Stretch"
             Margin="10,10,10,5" />
-
         <Button
             Grid.Column="1"
             Grid.Row="1"
@@ -46,7 +46,6 @@
             Name="recentSpecialReportsListBox"
             VerticalAlignment="Stretch"
             Margin="10,10,10,5"/>
-        
         <Button
             Grid.Column="0"
             Grid.Row="1"
@@ -57,5 +56,4 @@
             Margin="10,5,10,10" />
         
     </Grid>
-
 </UserControl>
