@@ -1,45 +1,46 @@
-﻿<Border
-    x:Class="ATTrafficAnalayzer.Views.ApproachControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
-    xmlns:ta="clr-namespace:ATTrafficAnalayzer"
-
-    BorderThickness="2"
-    BorderBrush="Black"
-    Width="150"
-    Height="150"
-    Background="DarkCyan"
-    CornerRadius="5"
-    Padding="5">
+﻿<Border x:Class="ATTrafficAnalayzer.Views.ApproachControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        d:DesignHeight="300"
+        d:DesignWidth="300"
+        BorderThickness="1"
+        BorderBrush="#FF1E3D51"
+        Width="120"
+        Height="130"
+        CornerRadius="5"
+        Padding="5"
+        Background="#FF428FBF">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
+        <TextBox Name="Approach"
+                 Grid.Row="0"
+                 Text="{Binding Path=ApproachName, Mode=TwoWay}"
+                 Background="#FF428FBF"
+                 Foreground="White"
+                 Focusable="True"
+                 HorizontalContentAlignment="Center"
+                 FontWeight="Bold"
+                 FontSize="14"
+                 BorderBrush="{x:Null}" />
 
-        <TextBox
-            Name="Approach"
-            Grid.Row="0"
-            Text="{Binding Path=ApproachName, Mode=TwoWay}"
-            Background="Transparent"
-            Foreground="White"
-            Focusable="True"
-            />
-
-        <ListView
-            Name="DetectorListView"
-            Grid.Row="1"
-            ItemsSource="{Binding Path=Detectors, Mode=TwoWay}"
-            AllowDrop="True"
-            Background="Transparent"
-            PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
-            Drop="ApproachDrop"/>
+        <ListView Name="DetectorListView"
+                  Grid.Row="1"
+                  ItemsSource="{Binding Path=Detectors, Mode=TwoWay}"
+                  AllowDrop="True"
+                  Background="White"
+                  PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
+                  Drop="ApproachDrop"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Stretch"
+                  BorderBrush="{x:Null}" />
+        
     </Grid>
 </Border>

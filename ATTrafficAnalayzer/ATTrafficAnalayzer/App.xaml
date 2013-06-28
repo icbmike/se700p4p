@@ -2,7 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
+    
     <Application.Resources>
-         
+        <Color x:Key="HighlightLight">#FF428FBF</Color>
+        <Color x:Key="AtBlue">#FF1E3D51</Color>
+        <Color x:Key="HighlightDark">#FF276D97</Color>
     </Application.Resources>
+    
 </Application>

@@ -175,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\home_icon.png" />
+    <Resource Include="Resources\Images\at-banner.png" />
+    <Resource Include="Resources\Images\at-logo.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
