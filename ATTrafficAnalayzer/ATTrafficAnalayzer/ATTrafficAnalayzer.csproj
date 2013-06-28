@@ -173,6 +173,7 @@
     <Resource Include="Resources\Images\Add.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\home_icon.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

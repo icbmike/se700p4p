@@ -37,7 +37,13 @@
             </ToolBarTray.DataContext>
             <ToolBar
                 Band="1"
-                BandIndex="1">
+                BandIndex="1"
+                VerticalContentAlignment="Stretch"
+                HorizontalContentAlignment="Stretch">
+                <Image
+                    Height="26.6666666666667"
+                    VerticalAlignment="Center"
+                    Source="Resources/Images/home_icon.png" Margin="5,0" MouseLeftButtonDown="Image_MouseLeftButtonDown"/>
                 <RadioButton
                     Name="tableradio"
                     GroupName="display"
@@ -159,10 +165,6 @@
                         <ListView
                             Name="standardReportsListBox"
                             DockPanel.Dock="Right" />
-                        <!--<ListView
-                            Name="standardReportsListBox"
-                            ItemsSource="{Binding Path=StandardReports, Mode=TwoWay}"
-                            DockPanel.Dock="Right" />-->
                     </DockPanel>
                 </TabItem>
                 <TabItem
