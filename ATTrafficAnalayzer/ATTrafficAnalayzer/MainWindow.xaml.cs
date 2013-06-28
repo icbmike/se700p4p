@@ -157,5 +157,10 @@ namespace ATTrafficAnalayzer
         {
             ChangeScreen(new ReportConfigurationScreen());
         }
+
+        private void Image_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ChangeScreen(new WelcomeScreen());
+        }
     }
 }

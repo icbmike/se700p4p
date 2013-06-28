@@ -262,7 +262,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             finally
             {
                 Logger.Info("Retrieved configs data", "DB Helper");
-            }
+            } 
 
             dbConnection.Close();
 
