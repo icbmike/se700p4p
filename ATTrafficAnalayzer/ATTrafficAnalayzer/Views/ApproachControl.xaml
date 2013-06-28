@@ -9,13 +9,12 @@
     d:DesignWidth="300"
     xmlns:ta="clr-namespace:ATTrafficAnalayzer"
 
-    BorderThickness="2"
-    BorderBrush="Black"
-    Width="150"
-    Height="150"
-    Background="DarkCyan"
+    BorderThickness="1"
+    BorderBrush="#FF1E3D51"
+    Width="100"
+    Height="130"
     CornerRadius="5"
-    Padding="5">
+    Padding="5" Background="#FF428FBF">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -28,9 +27,9 @@
             Name="Approach"
             Grid.Row="0"
             Text="{Binding Path=ApproachName, Mode=TwoWay}"
-            Background="Transparent"
+            Background="#FF428FBF"
             Foreground="White"
-            Focusable="True"
+            Focusable="True" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" BorderBrush="{x:Null}"
             />
 
         <ListView
@@ -38,8 +37,8 @@
             Grid.Row="1"
             ItemsSource="{Binding Path=Detectors, Mode=TwoWay}"
             AllowDrop="True"
-            Background="Transparent"
+            Background="White"
             PreviewMouseLeftButtonDown="ListView_PreviewMouseLeftButtonDown"
-            Drop="ApproachDrop"/>
+            Drop="ApproachDrop" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" BorderBrush="{x:Null}"/>
     </Grid>
 </Border>
