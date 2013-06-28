@@ -66,18 +66,19 @@ namespace ATTrafficAnalayzer
 
         private void ChangeScreen(UserControl screen)
         {
-            mainContentControl.Content = screen;
+            if (screen.GetType() != mainContentControl.Content.GetType())
+                mainContentControl.Content = screen;
         }
 
-        private static bool getRadioContent(Object sender)
+        private static bool GetRadioContent(Object sender)
         {
             var button = sender as RadioButton;
             return (button.IsChecked == true);
         }
 
-        private void checkDisplayValue()
+        private void CheckDisplayValue()
         {
-            var displayValue = getRadioContent(graphradio);
+            var displayValue = GetRadioContent(graphradio);
 
             if (displayValue)
             {
@@ -91,7 +92,7 @@ namespace ATTrafficAnalayzer
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
-            checkDisplayValue();
+            CheckDisplayValue();
             var settings = SettingsTray.DataContext as SettingsTray;
             
             if (_display == Displays.Table)
