@@ -20,15 +20,28 @@
         <Menu
             DockPanel.Dock="Top">
             <Menu.Background>
-                <SolidColorBrush />
+                <SolidColorBrush Color="#FFEEF5FD" />
             </Menu.Background>
             <MenuItem
-                Header="_FILE"
+                Header="_File"
                 DockPanel.Dock="Top"
                 FontSize="14">
                 <MenuItem
-                    Name="fileImportMenuItem"
-                    Header="_Import VS File" Click="fileImportMenuItem_Click"/>
+                    Name="FileImportMenuItem"
+                    Header="_Import" Click="fileImportMenuItem_Click"/>
+                <Separator />
+                <MenuItem
+                    Name="FileQuitMenuItem"
+                    Header="_Quit" Click="FileQuitMenuItem_OnClick"/>
+            </MenuItem>
+            <MenuItem
+                Header="_Help"
+                DockPanel.Dock="Top"
+                FontSize="14">
+                <MenuItem
+                    Name="HelpAboutUsMenuItem"
+                    Header="_About Us"
+                    Click="HelpAboutUsMenuItem_OnClick"/>
             </MenuItem>
         </Menu>
 

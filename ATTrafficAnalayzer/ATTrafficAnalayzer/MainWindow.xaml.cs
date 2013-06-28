@@ -163,5 +163,22 @@ namespace ATTrafficAnalayzer
         {
             ChangeScreen(new WelcomeScreen());
         }
+
+        private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void HelpAboutUsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            // Configure the message box to be displayed 
+            var messageBoxText = "Auckland Transport Traffic Report Viewer\n\n" +
+                                 "Created by Michael Little and Andrew Luey";
+            var caption = "About Us";
+            var button = MessageBoxButton.OK;
+            var icon = MessageBoxImage.None;
+
+            MessageBox.Show(messageBoxText, caption, button, icon);
+        }
     }
 }
