@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using System.Data;
 using System.IO;
 using System.Windows;
+using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -271,6 +272,49 @@ namespace ATTrafficAnalayzer.VolumeModel
             return _configsDataSet.Tables[0].DefaultView;
         }
 
+        public ReportConfiguration GetConfiguration(string name)
+        {
+            Console.WriteLine(name);
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+
+            JObject configJson = null;
+            
+            using (var query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "SELECT config FROM configs WHERE name = @name;";
+                query.Parameters.AddWithValue("@name", name);
+                var reader = query.ExecuteReader();
+                
+                if(reader.Read())
+                    configJson = JObject.Parse(reader.GetString(0));
+            }
+            if (configJson != null)
+            {
+                var approaches = new List<Approach>();
+                foreach (var approachID in (JArray) configJson["approaches"])
+                {
+                    using (var query = new SQLiteCommand(conn))
+                    {
+                        query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
+                        query.Parameters.AddWithValue("@id", approachID);
+
+                        var reader = query.ExecuteReader();
+                        JObject approachJson = null;
+                        
+                        if(reader.Read())
+                            approachJson = JObject.Parse(reader.GetString(0));
+
+                        approaches.Add(new Approach((string) approachJson["name"], approachJson["detectors"].Select(t => (int) t).ToList()));
+                    }
+                }
+                conn.Close();
+                return new ReportConfiguration(name, (int) configJson["intersection"], approaches);
+            }
+            conn.Close();
+            return null;
+        }
+
         private void InitializeConfigs()
         {
             new SQLiteCommandBuilder(_configsDataAdapter);
@@ -283,26 +327,25 @@ namespace ATTrafficAnalayzer.VolumeModel
         public void addConfiguration(ReportConfiguration config)
         {
 
-            var configJson = config.toJson();
-            SQLiteConnection conn = new SQLiteConnection(DbPath);
+            var configJson = config.ToJson();
+            var conn = new SQLiteConnection(DbPath);
             conn.Open();
-
-            
+      
             foreach(Approach approach in config.Approaches)
             {
                 //INSERT APPROACHES INTO TABLE
-                using (SQLiteCommand query = new SQLiteCommand(conn))
+                using (var query = new SQLiteCommand(conn))
                 {
                     query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
-                    query.Parameters.AddWithValue("@approach", approach.toJSON().ToString());
+                    query.Parameters.AddWithValue("@approach", approach.ToJson().ToString());
                     query.ExecuteNonQuery();
                 }
                 //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
-                using (SQLiteCommand query = new SQLiteCommand(conn))
+                using (var query = new SQLiteCommand(conn))
                 {
                     query.CommandText = "SELECT last_insert_rowid();";
                     var rowID = (Int64)query.ExecuteScalar();
-                    configJson.GetJSONArray("approaches").Put(rowID);
+                    ((JArray)configJson["approaches"]).Add(rowID);
                 }
             }
 
@@ -403,5 +446,30 @@ namespace ATTrafficAnalayzer.VolumeModel
         }
 
         #endregion
+
+        public List<int> GetVolumes(int intersection, int detector, DateTime startDate, DateTime endDate)
+        {
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+            List<int> volumes = new List<int>();
+
+            using (var query = new SQLiteCommand(conn))
+            {
+                query.CommandText =
+                    "SELECT volume FROM volumes WHERE intersection = @intersection AND detector = @detector AND (dateTime BETWEEN @startDate AND @endDate);";
+                query.Parameters.AddWithValue("@intersection", intersection);
+                query.Parameters.AddWithValue("@detector", detector);
+                query.Parameters.AddWithValue("@startDate", startDate);
+                query.Parameters.AddWithValue("@endDate", endDate);
+                var reader = query.ExecuteReader();
+                while (reader.Read())
+                {
+                    volumes.Add(reader.GetInt32(0));
+                }
+            }
+            conn.Close();
+
+            return volumes;
+        }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -33,14 +31,13 @@ namespace ATTrafficAnalayzer.VolumeModel
             return Name;
         }
 
-        public JSONObject toJSON()
+        public JObject ToJson()
         {
-            var json = new JSONObject();
-            json.Add("name", Name);
-            var arr = new JSONArray();
+            var json = new JObject {{"name", Name}};
+            var arr = new JArray();
             foreach (int detector in Detectors)
             {
-                arr.Put(detector);
+                arr.Add(detector);
             }
             json.Add("detectors", arr);
             return json;

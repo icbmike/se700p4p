@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Data;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views
 {
 
     /// <summary>
@@ -13,18 +13,17 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class VsTable : UserControl
     {
-        private VolumeStore _volumeStore = null;
+
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
 
-        public VsTable(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
+
+        /*
+        public VsTable(SettingsTray settings, string configName) : base(settings, configName)
         {
-            // TODO Complete member initialization
-            _volumeStore = volumeStore;
-            _interval = interval;
-            _startDate = startDate;
-            _endDate = endDate;
+         
+            _
             InitializeComponent();
 
             var dateLabel = new Label {Content = string.Format("Day: {0} Time range: {1}", "", ""), Margin = new Thickness(10)};
@@ -44,8 +43,14 @@ namespace ATTrafficAnalayzer
             Logger.Info("constructed view", "VS table");
         }
 
+        public VsTable(SettingsTray volumeStore, object selectedItem)
+        {
+            
+        }
+
         public DataTable GenerateVsTable()
         {
+           
             // Create a DataGrid
             var vsDataTable = new DataTable();
 
@@ -82,5 +87,8 @@ namespace ATTrafficAnalayzer
 
             return vsDataTable;
         }
+    
+         * 
+         */
     }
 }

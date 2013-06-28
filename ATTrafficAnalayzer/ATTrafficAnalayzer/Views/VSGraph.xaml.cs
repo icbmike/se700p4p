@@ -3,66 +3,70 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using ATTrafficAnalayzer.VolumeModel;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views
 {
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
+    
     public partial class VsGraph : UserControl
     {
-        private VolumeStore _volumeStore;
-        private int _interval;
-        private DateTime _startDate;
-        private DateTime _endDate;
+        private readonly SettingsTray _settings;
+        private readonly string _configName;
+        private VolumeDbHelper _dbHelper;
 
-        public VsGraph()
+        public VsGraph(SettingsTray settings, string configName)
         {
-            InitializeComponent();
-
-            Logger.Info("constructed view", "VS graph");
-        }
-
-
-        public VsGraph(VolumeStore volumeStore, int interval, DateTime startDate, DateTime endDate)
-        {
-            // TODO: Complete member initialization
-            _volumeStore = volumeStore;
-            _interval = interval;
-            _startDate = startDate;
-            _endDate = endDate;
-            InitializeComponent();
-
-            var ds = new List<DateTime>();
-            foreach(var d in volumeStore.DateTimeRecords){
-                ds.Add(d.DateTime);
-            }
-
-            var dates = ds.ToArray();
-            var intersection = volumeStore.GetIntersections().ToList()[0];
-            var detector = volumeStore.GetDetectorsAtIntersection(intersection)[0];
+            _settings = settings;
+            _configName = configName;
             
-            var vs = new List<int>();
-            foreach (var d in dates)
-            {
-                vs.Add(volumeStore.GetVolume(intersection, detector, d));
-            }
-            var volumes = vs.ToArray();
+            _dbHelper = new VolumeDbHelper();
 
+            InitializeComponent();
+          
+            var ds = new List<DateTime>();
+            for(var date = _settings.StartDate; date < _settings.EndDate; date = date.AddMinutes(_settings.Interval)){
+                ds.Add(date);
+            }
+
+            var dates = ds.ToArray(); 
+            var reportConfiguration = _dbHelper.GetConfiguration(configName);
+            var intersection = reportConfiguration.Intersection;
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dates);
             datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
+            Console.WriteLine("Num dates: " + dates.Count());
+            foreach (var approach in reportConfiguration.Approaches)
+            {
+                var approachVolumes = new List<int>();
+                foreach (var detector in approach.Detectors)
+                {
+                    if (approachVolumes.Count == 0)
+                    {
+                        approachVolumes.AddRange(_dbHelper.GetVolumes(intersection, detector, settings.StartDate,
+                                                                      settings.EndDate));
+                    }
+                    else
+                    {
+                        List<int> detectorVolumes = _dbHelper.GetVolumes(intersection, detector, settings.StartDate, settings.EndDate);
+                        approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
+                    }
+                    Console.WriteLine(approachVolumes.Count);
+                }
+                
+                var volumesDataSource = new EnumerableDataSource<int>(approachVolumes.ToArray());
+                volumesDataSource.SetYMapping(y => y);
+                var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
-            var volumesDataSource = new EnumerableDataSource<int>(volumes);
-            volumesDataSource.SetYMapping(y => y);
-
-            var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
-            plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
-              new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
-              new PenDescription("Volumes"));
+                Plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
+                  new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
+                  new PenDescription("Volumes"));
+            }    
         }
     }
 }

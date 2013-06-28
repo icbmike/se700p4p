@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ATTrafficAnalayzer.VsGraph"
+﻿<UserControl x:Class="ATTrafficAnalayzer.Views.VsGraph"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,7 +17,7 @@
         <d3:ChartPlotter
             Margin="0 0 15 15"
             DockPanel.Dock="Top"
-            Name="plotter">
+            Name="Plotter">
             <d3:ChartPlotter.HorizontalAxis>
                 <d3:HorizontalDateTimeAxis Name="dateAxis"/>
             </d3:ChartPlotter.HorizontalAxis>
