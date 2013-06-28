@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.VolumeModel
 {
@@ -38,11 +39,11 @@ namespace ATTrafficAnalayzer.VolumeModel
              this._approaches = approaches;
         }
 
-        public JSONObject toJson()
+        public JObject ToJson()
         {
-            JSONObject json = new JSONObject();
+            var json = new JObject();
             json.Add("intersection", Intersection);
-            var arr = new JSONArray();
+            var arr = new JArray();
             json.Add("approaches", arr); // Add an empty array that will be filled in later with approach IDs once we know them
            
             return json;

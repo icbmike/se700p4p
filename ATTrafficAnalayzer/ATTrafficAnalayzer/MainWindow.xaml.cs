@@ -17,15 +17,17 @@ namespace ATTrafficAnalayzer
         enum Displays { Graph, Table };
         Displays _display;
 
-        private VolumeStore _volumeStore;
         private VolumeDbHelper _dbHelper;
 
         public MainWindow()
         {
             Logger.Clear();
 
-            InitializeComponent();
             DataContext = this;
+            
+            InitializeComponent();
+            startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+            endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
 
             _dbHelper = new VolumeDbHelper();
 
@@ -97,11 +99,14 @@ namespace ATTrafficAnalayzer
             
             if (_display == Displays.Table)
             {
-                ChangeScreen(new VsTable(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
+                //ChangeScreen(new VsTable(settings, standardReportsListBox.SelectedItem));
             }
             else if (_display == Displays.Graph)
             {
-                ChangeScreen(new VsGraph(_volumeStore, settings.Interval, settings.StartDate, settings.EndDate));
+                //Get selection
+                var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+                var selectedItem = selectedRow.Row["name"] as string;
+                ChangeScreen(new VsGraph(settings, selectedItem));
             } else {
                 throw new Exception();
             }
@@ -109,7 +114,14 @@ namespace ATTrafficAnalayzer
 
         private void newBtn_Click(object sender, RoutedEventArgs e)
         {
-            ChangeScreen(new ReportConfigurationScreen());
+            var reportConfigurationScreen = new ReportConfigurationScreen();
+            reportConfigurationScreen.ConfigurationSaved += OnConfigurationSaved;
+            ChangeScreen(reportConfigurationScreen);
+        }
+
+        private void OnConfigurationSaved(object sender, ReportConfigurationScreen.ConfigurationSavedEventHandlerArgs args)
+        {
+            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
         }
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
