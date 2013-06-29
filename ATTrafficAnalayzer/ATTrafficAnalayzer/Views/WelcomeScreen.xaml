@@ -11,10 +11,9 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition
-                Height="*" />
-            <RowDefinition
-                Height="40" />
+                Height="55" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
@@ -37,7 +36,11 @@
             HorizontalAlignment="Stretch"
             Name="button2"
             VerticalAlignment="Stretch"
-            Margin="10,5,10,10" />
+            Margin="10,5,10,10" Foreground="White" BorderBrush="{x:Null}" FontSize="18.667" >
+        	<Button.Background>
+        		<SolidColorBrush Color="{DynamicResource HighlightLight}"/>
+        	</Button.Background>
+        </Button>
 
         <ListBox
             Grid.Column="1"
@@ -53,7 +56,11 @@
             HorizontalAlignment="Stretch"
             Name="button1"
             VerticalAlignment="Stretch"
-            Margin="10,5,10,10" />
+            Margin="10,5,10,10" BorderBrush="{x:Null}" Foreground="White" FontSize="18.667" >
+        	<Button.Background>
+        		<SolidColorBrush Color="{DynamicResource HighlightLight}"/>
+        	</Button.Background>
+        </Button>
         
     </Grid>
 </UserControl>
