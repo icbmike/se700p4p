@@ -11,7 +11,6 @@ namespace ATTrafficAnalayzer.Views
     /// <summary>
     /// Interaction logic for ReportConfigurationScreen.xaml
     /// </summary>
-    /// 
     public partial class ReportConfigurationScreen : UserControl
     {
         private ObservableCollection<int> _detectorList;
@@ -95,7 +94,7 @@ namespace ATTrafficAnalayzer.Views
 
             if (source != DetectorListView)
             {
-                foreach (int item in items)
+                foreach (var item in items)
                 {
                     (source.ItemsSource as ObservableCollection<int>).Remove(item);
                 }
@@ -123,9 +122,9 @@ namespace ATTrafficAnalayzer.Views
                 Approaches.Children.RemoveAt(1);
             }
 
-            foreach (int detector in _detectorList)
+            foreach (var detector in _detectorList)
             {
-                var newApproach = new ApproachControl(Approaches, null, "Approach " + detector) { Margin = new Thickness(20, 20, 0, 0) };
+                var newApproach = new ApproachControl(Approaches, null, string.Format("Group {0}", detector)) { Margin = new Thickness(20, 20, 0, 0) };
                 newApproach.AddDetector(detector);
                 Approaches.Children.Add(newApproach);
             }
@@ -139,7 +138,7 @@ namespace ATTrafficAnalayzer.Views
             }
             var newApproach = new ApproachControl(Approaches, null, "All Detectors") { Margin = new Thickness(20, 20, 0, 0) };
             Approaches.Children.Add(newApproach);
-            foreach (int detector in _detectorList)
+            foreach (var detector in _detectorList)
             {
                 newApproach.AddDetector(detector);
             }
@@ -147,23 +146,23 @@ namespace ATTrafficAnalayzer.Views
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            List<Approach> approaches = new List<Approach>();
-            for (int i = 1; i < Approaches.Children.Count; i++)
+            var approaches = new List<Approach>();
+            for (var i = 1; i < Approaches.Children.Count; i++)
             {
-                ApproachControl appCtrl = Approaches.Children[i] as ApproachControl;
+                var appCtrl = Approaches.Children[i] as ApproachControl;
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
             _dbHelper.addConfiguration(new ReportConfiguration(ConfigName, _selectedIntersection, approaches));
 
-            if(ConfigurationSaved != null)
-            ConfigurationSaved(this, new ConfigurationSavedEventHandlerArgs(ConfigName));
+            if (ConfigurationSaved != null)
+                ConfigurationSaved(this, new ConfigurationSavedEventHandlerArgs(ConfigName));
         }
 
         public delegate void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventHandlerArgs args);
 
         public event ConfigurationSavedEventHandler ConfigurationSaved;
-        
+
         public class ConfigurationSavedEventHandlerArgs
         {
             public string ConfigName { get; set; }
@@ -173,5 +172,5 @@ namespace ATTrafficAnalayzer.Views
                 ConfigName = configName;
             }
         }
-    }   
+    }
 }
