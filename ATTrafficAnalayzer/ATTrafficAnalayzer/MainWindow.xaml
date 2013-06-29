@@ -69,29 +69,25 @@
                            Source="Resources/Images/home_icon.png"
                            Margin="5,0"
                            MouseLeftButtonDown="Image_MouseLeftButtonDown" />
-                    <RadioButton Name="tableradio"
-                                 GroupName="display"
-                                 Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    <Button Name="TableButton"
                                  MinWidth="45"
                                  BorderBrush="{x:Null}"
                                  Content="Table"
-                                 Checked="SwitchScreen"
                                  Background="White"
                                  FontSize="16"
                                  Margin="10,0,1,0"
                                  BorderThickness="1"
-                                 Width="70"></RadioButton>
-                    <RadioButton Name="graphradio"
-                                 GroupName="display"
-                                 Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                                 Click="SwitchScreen"
+                                 Width="70"></Button>
+                    <Button Name="GraphButton"
+                                Click="SwitchScreen"
                                  MinWidth="45"
                                  BorderBrush="{x:Null}"
                                  Content="Graph"
-                                 Checked="SwitchScreen"
                                  Background="White"
                                  FontSize="16"
                                  Margin="1,0,10,0"
-                                 Width="70"></RadioButton>
+                                 Width="70"></Button>
                     <Label Margin="10,0,4,0"
                            Foreground="White"
                            FontSize="16">Start Date:</Label>
@@ -118,7 +114,7 @@
                               Width="80"
                               SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
                               SelectedValuePath="Content"
-                              SelectedIndex="3"
+                              SelectedIndex="1"
                               Foreground="Black"
                               FontSize="16">
                         <ComboBoxItem>1 min</ComboBoxItem>
