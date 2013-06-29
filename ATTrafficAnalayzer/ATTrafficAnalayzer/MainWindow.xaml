@@ -70,27 +70,24 @@
                            Margin="5,0"
                            MouseLeftButtonDown="Image_MouseLeftButtonDown" />
                     <Button Name="TableButton"
-                                 MinWidth="45"
-                                 BorderBrush="{x:Null}"
-                                 Content="Table"
-                                 Background="White"
-                                 FontSize="16"
-                                 Margin="10,0,1,0"
-                                 BorderThickness="1"
-                                 Click="SwitchScreen"
-                                 Width="70"></Button>
+                            Content="Table"
+                            Margin="10,0,1,0"
+                            Click="SwitchScreen"
+                            Width="70"
+                            Style="{StaticResource AtToolbarButtonStyle}">
+                    </Button>
                     <Button Name="GraphButton"
-                                Click="SwitchScreen"
-                                 MinWidth="45"
-                                 BorderBrush="{x:Null}"
-                                 Content="Graph"
-                                 Background="White"
-                                 FontSize="16"
-                                 Margin="1,0,10,0"
-                                 Width="70"></Button>
+                            Click="SwitchScreen"
+                            Style="{StaticResource AtToolbarButtonStyle}"
+                            Margin="1,0,10,0"
+                            Content="Graph"
+                            Width="70">
+                    </Button>
                     <Label Margin="10,0,4,0"
                            Foreground="White"
-                           FontSize="16">Start Date:</Label>
+                           FontSize="16">
+                        Start Date:
+                    </Label>
                     <DatePicker Name="startDatePicker"
                                 Background="White"
                                 SelectedDate="{Binding StartDate}"
@@ -99,7 +96,9 @@
                                 VerticalAlignment="Center" />
                     <Label Margin="20,0,0,0"
                            Foreground="#FFF6F6F6"
-                           FontSize="16">End Date:</Label>
+                           FontSize="16">
+                        End Date:
+                    </Label>
                     <DatePicker Name="endDatePicker"
                                 Background="White"
                                 SelectedDate="{Binding EndDate}"
@@ -108,7 +107,9 @@
                                 VerticalAlignment="Center" />
                     <Label Margin="20,0,0,0"
                            Foreground="White"
-                           FontSize="16">Interval:</Label>
+                           FontSize="16">
+                        Interval:
+                    </Label>
                     <ComboBox Height="23"
                               Name="intervalComboBox"
                               Width="80"
@@ -150,7 +151,8 @@
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
                         OpacityMask="{x:Null}"
-                        Click="newBtn_Click"></Button>
+                        Click="newBtn_Click">
+                </Button>
                 <Button Content="_Edit"
                         HorizontalAlignment="Left"
                         Margin="0,0,0,0"
@@ -158,7 +160,8 @@
                         VerticalAlignment="Top"
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
-                        Click="editBtn_Click"></Button>
+                        Click="editBtn_Click">
+                </Button>
                 <Button Content="_Delete"
                         HorizontalAlignment="Left"
                         Margin="0,0,0,0"
@@ -211,6 +214,6 @@
         <ContentControl DockPanel.Dock="Right"
                         x:Name="mainContentControl"
                         Background="White" />
-        
+
     </DockPanel>
 </Window>
