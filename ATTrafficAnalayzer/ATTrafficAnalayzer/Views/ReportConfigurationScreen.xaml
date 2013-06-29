@@ -54,7 +54,7 @@
                  Padding="3,6"
                  BorderThickness="1">
             <TextBox.BorderBrush>
-                <SolidColorBrush Color="#FF276D97" />
+                <SolidColorBrush Color="{StaticResource HighlightDark}" />
             </TextBox.BorderBrush>
         </TextBox>
 
@@ -85,27 +85,15 @@
         <StackPanel Grid.Row="3"
                     Grid.Column="1"
                     Orientation="Horizontal">
-            <Button Margin="20,0,0,10"
-                    Padding="12,6"
+            <Button Margin="20,0,0,10"   
                     Click="Distribute_Click"
                     Content="Distribute Detectors"
-                    Foreground="White"
-                    BorderThickness="0"
-                    FontSize="18.667">
-                <Button.Background>
-                    <SolidColorBrush Color="{DynamicResource HighlightLight}" />
-                </Button.Background>
+                    Style="{StaticResource AtButtonStyle}">
             </Button>
             <Button Margin="20,0,0,10"
-                    Padding="12,6"
                     Content="Group All"
                     Click="Group_Click"
-                    Foreground="White"
-                    BorderThickness="0"
-                    FontSize="18.667">
-                <Button.Background>
-                    <SolidColorBrush Color="{DynamicResource HighlightLight}" />
-                </Button.Background>
+                    Style="{StaticResource AtButtonStyle}">
             </Button>
         </StackPanel>
         
@@ -114,13 +102,7 @@
                 Grid.Column="2"
                 Content="Save"
                 Click="Save_Click"
-                BorderThickness="0"
-                Foreground="White"
-                FontSize="18.667"
-                Padding="12,6">
-            <Button.Background>
-                <SolidColorBrush Color="{DynamicResource HighlightLight}" />
-            </Button.Background>
+                Style="{StaticResource AtButtonStyle}">
         </Button>
         
     </Grid>

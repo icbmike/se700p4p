@@ -68,50 +68,30 @@ namespace ATTrafficAnalayzer
             }
         }
 
+        //Changes the screen in the content part of the main windows
+        //Potentially could check if the new screen is an instance of one already being displayed??
         private void ChangeScreen (UserControl screen)
         {
             if (screen.GetType () != mainContentControl.Content.GetType ())
                 mainContentControl.Content = screen;
         }
 
-        private static bool GetRadioContent (Object sender)
-        {
-            var button = sender as RadioButton;
-            return (button.IsChecked == true);
-        }
-
-        private void CheckDisplayValue ()
-        {
-            var displayValue = GetRadioContent (graphradio);
-
-            if (displayValue)
-            {
-                _display = Displays.Graph;
-            }
-            else
-            {
-                _display = Displays.Table;
-            }
-        }
 
         private void SwitchScreen (object sender, RoutedEventArgs e)
         {
-            CheckDisplayValue ();
             var settings = SettingsTray.DataContext as SettingsTray;
 
-            if (_display == Displays.Table)
-            {
-                //ChangeScreen(new VsTable(settings, standardReportsListBox.SelectedItem));
-            }
-            else if (_display == Displays.Graph)
+            if (sender.Equals(GraphButton))
             {
                 //Get selection
                 var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
                 var selectedItem = selectedRow.Row["name"] as string;
                 ChangeScreen(new VsGraph(settings, selectedItem));
-            } else {
-                throw new Exception();
             }
+            else if (sender.Equals(TableButton))
+            {
+                
+            }        
         }
 
         private void newBtn_Click (object sender, RoutedEventArgs e)

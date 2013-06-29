@@ -69,32 +69,25 @@
                            Source="Resources/Images/home_icon.png"
                            Margin="5,0"
                            MouseLeftButtonDown="Image_MouseLeftButtonDown" />
-                    <RadioButton Name="tableradio"
-                                 GroupName="display"
-                                 Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                                 MinWidth="45"
-                                 BorderBrush="{x:Null}"
-                                 Content="Table"
-                                 Checked="SwitchScreen"
-                                 Background="White"
-                                 FontSize="16"
-                                 Margin="10,0,1,0"
-                                 BorderThickness="1"
-                                 Width="70"></RadioButton>
-                    <RadioButton Name="graphradio"
-                                 GroupName="display"
-                                 Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                                 MinWidth="45"
-                                 BorderBrush="{x:Null}"
-                                 Content="Graph"
-                                 Checked="SwitchScreen"
-                                 Background="White"
-                                 FontSize="16"
-                                 Margin="1,0,10,0"
-                                 Width="70"></RadioButton>
+                    <Button Name="TableButton"
+                            Content="Table"
+                            Margin="10,0,1,0"
+                            Click="SwitchScreen"
+                            Width="70"
+                            Style="{StaticResource AtToolbarButtonStyle}">
+                    </Button>
+                    <Button Name="GraphButton"
+                            Click="SwitchScreen"
+                            Style="{StaticResource AtToolbarButtonStyle}"
+                            Margin="1,0,10,0"
+                            Content="Graph"
+                            Width="70">
+                    </Button>
                     <Label Margin="10,0,4,0"
                            Foreground="White"
-                           FontSize="16">Start Date:</Label>
+                           FontSize="16">
+                        Start Date:
+                    </Label>
                     <DatePicker Name="startDatePicker"
                                 Background="White"
                                 SelectedDate="{Binding StartDate}"
@@ -103,7 +96,9 @@
                                 VerticalAlignment="Center" />
                     <Label Margin="20,0,0,0"
                            Foreground="#FFF6F6F6"
-                           FontSize="16">End Date:</Label>
+                           FontSize="16">
+                        End Date:
+                    </Label>
                     <DatePicker Name="endDatePicker"
                                 Background="White"
                                 SelectedDate="{Binding EndDate}"
@@ -112,13 +107,15 @@
                                 VerticalAlignment="Center" />
                     <Label Margin="20,0,0,0"
                            Foreground="White"
-                           FontSize="16">Interval:</Label>
+                           FontSize="16">
+                        Interval:
+                    </Label>
                     <ComboBox Height="23"
                               Name="intervalComboBox"
                               Width="80"
                               SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
                               SelectedValuePath="Content"
-                              SelectedIndex="3"
+                              SelectedIndex="1"
                               Foreground="Black"
                               FontSize="16">
                         <ComboBoxItem>1 min</ComboBoxItem>
@@ -154,7 +151,8 @@
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
                         OpacityMask="{x:Null}"
-                        Click="newBtn_Click"></Button>
+                        Click="newBtn_Click">
+                </Button>
                 <Button Content="_Edit"
                         HorizontalAlignment="Left"
                         Margin="0,0,0,0"
@@ -162,7 +160,8 @@
                         VerticalAlignment="Top"
                         Background="{x:Null}"
                         BorderBrush="{x:Null}"
-                        Click="editBtn_Click"></Button>
+                        Click="editBtn_Click">
+                </Button>
                 <Button Content="_Delete"
                         HorizontalAlignment="Left"
                         Margin="0,0,0,0"
@@ -215,6 +214,6 @@
         <ContentControl DockPanel.Dock="Right"
                         x:Name="mainContentControl"
                         Background="White" />
-        
+
     </DockPanel>
 </Window>
