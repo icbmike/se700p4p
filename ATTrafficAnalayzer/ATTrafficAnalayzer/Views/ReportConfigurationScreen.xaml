@@ -52,7 +52,8 @@
                  Margin="10"
                  FontWeight="Bold"
                  Padding="3,6"
-                 BorderThickness="1">
+                 BorderThickness="1"
+                 Loaded="ConfigNameTextBox_Loaded">
             <TextBox.BorderBrush>
                 <SolidColorBrush Color="#FF276D97" />
             </TextBox.BorderBrush>

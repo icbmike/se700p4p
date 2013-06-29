@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -170,6 +171,21 @@ namespace ATTrafficAnalayzer.Views
             public ConfigurationSavedEventHandlerArgs(string configName)
             {
                 ConfigName = configName;
+            }
+        }
+
+        private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var configTextBox = (TextBox) sender;
+
+            for (var count=1; count<10; count++)
+            {
+                var exists = _dbHelper.ConfigExists("Report" + count);
+                if (!exists)
+                {
+                    configTextBox.Text = "Report" + count;
+                    break;
+                }
             }
         }
     }
