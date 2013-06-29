@@ -15,8 +15,23 @@ namespace ATTrafficAnalayzer.VolumeModel
 
         SQLiteDataAdapter _configsDataAdapter;
         private DataSet _configsDataSet = new DataSet();
+        private static VolumeDbHelper _instance;
+        private static readonly object SyncLock = new object();
 
-        public VolumeDbHelper()
+        public static VolumeDbHelper GetDbHelper()
+        {
+            lock (SyncLock)
+            {
+                if (_instance == null)
+                {
+                    _instance =  new VolumeDbHelper();
+                }
+                return _instance;    
+            }
+            
+        }
+
+        private VolumeDbHelper()
         {
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
