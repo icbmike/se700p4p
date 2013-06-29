@@ -30,7 +30,7 @@ namespace ATTrafficAnalayzer
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
 
-            _dbHelper = new VolumeDbHelper ();
+            _dbHelper = VolumeDbHelper.GetDbHelper();
 
             standardReportsListBox.ItemsSource = _dbHelper.GetConfigs ();
             standardReportsListBox.DisplayMemberPath = "name";

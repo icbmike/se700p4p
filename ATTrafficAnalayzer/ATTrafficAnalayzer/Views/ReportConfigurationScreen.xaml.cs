@@ -45,7 +45,7 @@ namespace ATTrafficAnalayzer.Views
             _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
 
-            _dbHelper = new VolumeDbHelper();
+            _dbHelper = VolumeDbHelper.GetDbHelper();
             foreach (var detector in VolumeDbHelper.GetIntersections())
             {
                 _intersectionList.Add(detector);

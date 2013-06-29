@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views
             _settings = settings;
             _configName = configName;
             
-            _dbHelper = new VolumeDbHelper();
+            _dbHelper = VolumeDbHelper.GetDbHelper();
 
             InitializeComponent();
           
