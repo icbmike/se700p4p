@@ -19,8 +19,6 @@ namespace ATTrafficAnalayzer.Views
         private int _selectedIntersection;
         readonly VolumeDbHelper _dbHelper;
 
-        public string ConfigName { get; set; }
-
         public int SelectedIntersection
         {
             get { return _selectedIntersection; }
@@ -147,6 +145,8 @@ namespace ATTrafficAnalayzer.Views
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            var configName = ConfigNameTextBox.Text;
+
             var approaches = new List<Approach>();
             for (var i = 1; i < Approaches.Children.Count; i++)
             {
@@ -154,24 +154,8 @@ namespace ATTrafficAnalayzer.Views
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
-            _dbHelper.addConfiguration(new ReportConfiguration(ConfigName, _selectedIntersection, approaches));
-
-            if (ConfigurationSaved != null)
-                ConfigurationSaved(this, new ConfigurationSavedEventHandlerArgs(ConfigName));
-        }
-
-        public delegate void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventHandlerArgs args);
-
-        public event ConfigurationSavedEventHandler ConfigurationSaved;
-
-        public class ConfigurationSavedEventHandlerArgs
-        {
-            public string ConfigName { get; set; }
-
-            public ConfigurationSavedEventHandlerArgs(string configName)
-            {
-                ConfigName = configName;
-            }
+            _dbHelper.addConfiguration(new ReportConfiguration(configName, _selectedIntersection, approaches));
+            _dbHelper.SyncDatabase();
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)

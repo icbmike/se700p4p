@@ -48,7 +48,6 @@
                  Grid.Column="0"
                  Grid.ColumnSpan="3"
                  FontSize="30"
-                 Text="{Binding ConfigName}"
                  Margin="10"
                  FontWeight="Bold"
                  Padding="3,6"
