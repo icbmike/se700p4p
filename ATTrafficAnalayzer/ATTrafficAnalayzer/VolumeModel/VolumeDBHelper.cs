@@ -24,21 +24,26 @@ namespace ATTrafficAnalayzer.VolumeModel
             {
                 if (_instance == null)
                 {
-                    _instance =  new VolumeDbHelper();
+                    _instance = new VolumeDbHelper();
                 }
-                return _instance;    
+                return _instance;
             }
         }
 
         private VolumeDbHelper()
         {
-                CreateVolumesTableIfNotExists();
-                CreateApproachesTableIfNotExists();
-                CreateConfigsTableIfNotExists();
+            CreateVolumesTableIfNotExists();
+            CreateApproachesTableIfNotExists();
+            CreateConfigsTableIfNotExists();
         }
 
         #region Helper Functions
 
+        /// <summary>
+        ///     Allows the programmer to run a query against the Database.
+        /// </summary>
+        /// <param name="sql">The SQL to run</param>
+        /// <returns>A DataTable containing the result set.</returns>
         private DataTable GetDataTable(string sql)
         {
             var dataTable = new DataTable();
@@ -58,6 +63,11 @@ namespace ATTrafficAnalayzer.VolumeModel
             return dataTable;
         }
 
+        /// <summary>
+        ///     Allows the programmer to interact with the database for purposes other than a query.
+        /// </summary>
+        /// <param name="sql">The SQL to be run.</param>
+        /// <returns>An Integer containing the number of rows updated.</returns>
         private int ExecuteNonQuery(string sql)
         {
             var rowsUpdated = 0;
@@ -66,7 +76,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             {
                 dbConnection.Open();
 
-                var createConfigsTableCommand = new SQLiteCommand(dbConnection) {CommandText = sql};
+                var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql };
                 rowsUpdated = createConfigsTableCommand.ExecuteNonQuery();
 
                 dbConnection.Close();
@@ -75,6 +85,11 @@ namespace ATTrafficAnalayzer.VolumeModel
             return rowsUpdated;
         }
 
+        /// <summary>
+        ///     Allows the programmer to retrieve single items from the DB.
+        /// </summary>
+        /// <param name="sql">The query to run.</param>
+        /// <returns>A string.</returns>
         private object ExecuteScalar(string sql)
         {
             object reader;
@@ -91,6 +106,133 @@ namespace ATTrafficAnalayzer.VolumeModel
 
             return reader;
         }
+
+        /// <summary>
+        ///     Allows the programmer to easily update rows in the DB.
+        /// </summary>
+        /// <param name="tableName">The table to update.</param>
+        /// <param name="data">A dictionary containing Column names and their new values.</param>
+        /// <param name="where">The where clause for the update statement.</param>
+        /// <returns>A boolean true or false to signify success or failure.</returns>
+        public bool Update(String tableName, Dictionary<String, String> data, String where)
+        {
+            var valuesToUpdate = "";
+            var returnCode = true;
+
+            if (data.Count >= 1)
+            {
+                foreach (var val in data)
+                {
+                    valuesToUpdate += String.Format(" {0} = {1},", val.Key, val.Value);
+                }
+                valuesToUpdate = valuesToUpdate.Substring(0, valuesToUpdate.Length - 1);
+            }
+            try
+            {
+                ExecuteNonQuery(String.Format("UPDATE {0} SET {1} WHERE {2};", tableName, valuesToUpdate, where));
+            }
+            catch
+            {
+                returnCode = false;
+            }
+            return returnCode;
+        }
+
+        /// <summary>
+        ///     Allows the programmer to easily delete rows from the DB.
+        /// </summary>
+        /// <param name="tableName">The table from which to delete.</param>
+        /// <param name="where">The where clause for the delete.</param>
+        /// <returns>A boolean true or false to signify success or failure.</returns>
+        public bool Delete(String tableName, String where)
+        {
+            var returnCode = true;
+            try
+            {
+                ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1};", tableName, where));
+            }
+            catch (Exception fail)
+            {
+                returnCode = false;
+            }
+            return returnCode;
+        }
+
+        /// <summary>
+        ///     Allows the programmer to easily insert into the DB
+        /// </summary>
+        /// <param name="tableName">The table into which we insert the data.</param>
+        /// <param name="data">A dictionary containing the column names and data for the insert.</param>
+        /// <returns>A boolean true or false to signify success or failure.</returns>
+        public bool Insert(String tableName, Dictionary<String, String> data)
+        {
+            var columns = "";
+            var values = "";
+            var returnCode = true;
+
+            foreach (var val in data)
+            {
+                columns += String.Format(" {0},", val.Key);
+                values += String.Format(" '{0}',", val.Value);
+            }
+
+            columns = columns.Substring(0, columns.Length - 1);
+            values = values.Substring(0, values.Length - 1);
+
+            try
+            {
+                this.ExecuteNonQuery(String.Format("insert into {0}({1}) values({2});", tableName, columns, values));
+            }
+            catch (Exception fail)
+            {
+                MessageBox.Show(fail.Message);
+                returnCode = false;
+            }
+
+            return returnCode;
+        }
+
+        /// <summary>
+        ///     Allows the programmer to easily delete all data from the DB.
+        /// </summary>
+        /// <returns>A boolean true or false to signify success or failure.</returns>
+        public bool ClearDB()
+        {
+            DataTable tables;
+
+            try
+            {
+                tables = this.GetDataTable("select NAME from SQLITE_MASTER where type='table' order by NAME;");
+                foreach (DataRow table in tables.Rows)
+                {
+                    this.ClearTable(table["NAME"].ToString());
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Allows the user to easily clear all data from a specific table.
+        /// </summary>
+        /// <param name="table">The name of the table to clear.</param>
+        /// <returns>A boolean true or false to signify success or failure.</returns>
+        public bool ClearTable(String table)
+        {
+            try
+            {
+                this.ExecuteNonQuery(String.Format("delete from {0};", table));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         #endregion
 
@@ -129,7 +271,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                                 )";
             ExecuteNonQuery(createVolumesTableSql);
         }
-   
+
         #endregion
 
         #region Volume Related Methods
@@ -245,7 +387,6 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
             conn.Close();
             return intersections;
-
         }
 
         public static List<int> GetDetectorsAtIntersection(int intersection)
@@ -317,7 +458,7 @@ namespace ATTrafficAnalayzer.VolumeModel
             finally
             {
                 Logger.Info("Retrieved configs data", "DB Helper");
-            } 
+            }
 
             dbConnection.Close();
 
@@ -333,20 +474,20 @@ namespace ATTrafficAnalayzer.VolumeModel
             conn.Open();
 
             JObject configJson = null;
-            
+
             using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "SELECT config FROM configs WHERE name = @name;";
                 query.Parameters.AddWithValue("@name", name);
                 var reader = query.ExecuteReader();
-                
-                if(reader.Read())
+
+                if (reader.Read())
                     configJson = JObject.Parse(reader.GetString(0));
             }
             if (configJson != null)
             {
                 var approaches = new List<Approach>();
-                foreach (var approachID in (JArray) configJson["approaches"])
+                foreach (var approachID in (JArray)configJson["approaches"])
                 {
                     using (var query = new SQLiteCommand(conn))
                     {
@@ -355,15 +496,15 @@ namespace ATTrafficAnalayzer.VolumeModel
 
                         var reader = query.ExecuteReader();
                         JObject approachJson = null;
-                        
-                        if(reader.Read())
+
+                        if (reader.Read())
                             approachJson = JObject.Parse(reader.GetString(0));
 
-                        approaches.Add(new Approach((string) approachJson["name"], approachJson["detectors"].Select(t => (int) t).ToList()));
+                        approaches.Add(new Approach((string)approachJson["name"], approachJson["detectors"].Select(t => (int)t).ToList()));
                     }
                 }
                 conn.Close();
-                return new ReportConfiguration(name, (int) configJson["intersection"], approaches);
+                return new ReportConfiguration(name, (int)configJson["intersection"], approaches);
             }
             conn.Close();
             return null;
@@ -384,8 +525,8 @@ namespace ATTrafficAnalayzer.VolumeModel
             var configJson = config.ToJson();
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
-      
-            foreach(Approach approach in config.Approaches)
+
+            foreach (Approach approach in config.Approaches)
             {
                 //INSERT APPROACHES INTO TABLE
                 using (var query = new SQLiteCommand(conn))
@@ -413,11 +554,10 @@ namespace ATTrafficAnalayzer.VolumeModel
                 query.Parameters.AddWithValue("@last_used", DateTime.Today);
                 query.ExecuteNonQuery();
 
-            }            
+            }
         }
 
         public List<Approach> GetApproaches(String configName)
-
         {
             throw new NotImplementedException();
         }
@@ -425,7 +565,7 @@ namespace ATTrafficAnalayzer.VolumeModel
         public void RemoveConfig(string configToDelete)
         {
             RemoveConfigFromDataSet(configToDelete);
-            SyncDatabase();            
+            SyncDatabase();
         }
 
         public void RemoveConfigFromDataSet(String configToDelete)
@@ -452,7 +592,8 @@ namespace ATTrafficAnalayzer.VolumeModel
             try
             {
                 _configsDataAdapter.Update(_configsDataSet);
-            } catch (SQLiteException)
+            }
+            catch (SQLiteException)
             {
                 Logger.Error("Could not synchronize database", "DB Helper");
             }
@@ -474,7 +615,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                 var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql };
 
                 configExistsQuery.Parameters.AddWithValue("@configName", configName);
-                reader = (Int64) configExistsQuery.ExecuteScalar();
+                reader = (Int64)configExistsQuery.ExecuteScalar();
 
                 dbConnection.Close();
             }
