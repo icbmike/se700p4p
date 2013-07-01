@@ -32,8 +32,8 @@ namespace ATTrafficAnalayzer
 
             _dbHelper = VolumeDbHelper.GetDbHelper();
 
-            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs ();
-            standardReportsListBox.DisplayMemberPath = "name";
+            //standardReportsListBox.ItemsSource = _dbHelper.GetConfigs ();
+            //standardReportsListBox.DisplayMemberPath = "name";
 
             mainContentControl.Content = new WelcomeScreen ();
         }
@@ -81,72 +81,19 @@ namespace ATTrafficAnalayzer
         {
             var settings = SettingsTray.DataContext as SettingsTray;
             //Get selection
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-            var selectedItem = selectedRow.Row["name"] as string;
+            //var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            //var selectedItem = selectedRow.Row["name"] as string;
             if (sender.Equals(GraphButton))
             {
-                ChangeScreen(new VsGraph(settings, selectedItem));
+                //ChangeScreen(new VsGraph(settings, selectedItem));
             }
             else if (sender.Equals(TableButton))
             {
-                ChangeScreen(new VsTable(settings, selectedItem));
+                //ChangeScreen(new VsTable(settings, selectedItem));
             }        
         }
 
-        private void newBtn_Click (object sender, RoutedEventArgs e)
-        {
-            ChangeScreen (new ReportConfigurationScreen ());
-            var reportConfigurationScreen = new ReportConfigurationScreen();
-            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
-            ChangeScreen(reportConfigurationScreen);
-        }
-
-        private void renameBtn_Click (object sender, RoutedEventArgs e)
-        {
-            var item = standardReportsListBox.SelectedItem.ToString ();
-            Console.WriteLine ("Rename: {0}", item);
-        }
-
-        private void deleteBtn_Click (object sender, RoutedEventArgs e)
-        {
-            //Get selection
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-            var selectedItem = selectedRow.Row["name"] as string;
-
-            //Configure the message box to be displayed 
-            var messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
-            var caption = "Confirm delete";
-            var button = MessageBoxButton.OKCancel;
-            var icon = MessageBoxImage.Question;
-
-            //Display message box
-            var isConfirmedDeletion = MessageBox.Show (messageBoxText, caption, button, icon);
-
-            //Process message box results 
-            switch (isConfirmedDeletion)
-            {
-                case MessageBoxResult.OK:
-                    _dbHelper.RemoveConfig (selectedItem);
-
-                    messageBoxText = selectedItem + " was deleted";
-                    caption = "Delete successful";
-                    button = MessageBoxButton.OK;
-                    icon = MessageBoxImage.Information;
-                    MessageBox.Show (messageBoxText, caption, button, icon);
-
-                    Logger.Debug (selectedItem + " report deleted", "Reports panel");
-                    break;
-
-                case MessageBoxResult.Cancel:
-                    Logger.Debug (selectedItem + " report deletion was canceled", "Reports panel");
-                    break;
-            }
-        }
-
-        private void editBtn_Click (object sender, RoutedEventArgs e)
-        {
-            ChangeScreen (new ReportConfigurationScreen ());
-        }
+        
 
         private void Image_MouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
