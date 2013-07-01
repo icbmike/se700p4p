@@ -15,7 +15,6 @@ namespace ATTrafficAnalayzer.Views
     public partial class VsTable
     {
         private readonly SettingsTray _settings;
-        private readonly string _configName;
 
         private int _interval;
         private DateTime _startDate;
@@ -30,7 +29,7 @@ namespace ATTrafficAnalayzer.Views
             _volumeDbHelper = VolumeDbHelper.GetDbHelper();
 
             //Retrieve the config for the supplied name
-            _configuration = _volumeDbHelper.GetConfiguration(_configName);
+            _configuration = _volumeDbHelper.GetConfiguration(configName);
 
             InitializeComponent();
 
@@ -72,18 +71,30 @@ namespace ATTrafficAnalayzer.Views
             {
                 dates.Add(date);
             }
+            var approachVolumes = new List<int>();
             foreach (var detector in approach.Detectors)
             {
-                _volumeDbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate, _settings.EndDate);    
+                if (approachVolumes.Count == 0)
+                {
+                    approachVolumes.AddRange(_volumeDbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                                                                  _settings.EndDate));
+                }
+                else
+                {
+                    List<int> detectorVolumes = _volumeDbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                                                                  _settings.EndDate);
+                    approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
+                }
+
             }
-            
-            // Get volume store data
+            // Get volume store data //12 hours
             for (var i = 0; i < 12; i++)
             {
                 var row = vsDataTable.NewRow();
                 for (var j = 0; j < 12; j++)
                 {
-                    row[j] = _volumeStore.GetVolume(intersection, detector, dates[i * 12 + j]);
+                   //row[j] = _volumeStore.GetVolume(intersection, detector, dates[i * 12 + j]);
+                   row[j] = approachVolumes[i*12 + j];
                 }
                 vsDataTable.Rows.Add(row);
             }

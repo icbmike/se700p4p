@@ -10,15 +10,18 @@
 
     <DockPanel
         LastChildFill="True">
-        
+
         <Label
             Margin="10,10,10,5"
             DockPanel.Dock="Top"
-            FontSize="18">Volume Store - Table View</Label>
-
-        <StackPanel 
-            Name="ContainerStackPanel"
-            HorizontalAlignment="Left"/>
-
+            FontSize="18">
+            Volume Store - Table View
+        </Label>
+        <ScrollViewer
+            HorizontalAlignment="Left"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel
+                Name="ContainerStackPanel" />
+        </ScrollViewer>
     </DockPanel>
 </UserControl>

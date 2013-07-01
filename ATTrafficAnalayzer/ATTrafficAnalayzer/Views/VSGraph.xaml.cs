@@ -40,7 +40,6 @@ namespace ATTrafficAnalayzer.Views
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dates);
             datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
-            Console.WriteLine("Num dates: " + dates.Count());
             foreach (var approach in reportConfiguration.Approaches)
             {
                 var approachVolumes = new List<int>();
@@ -56,16 +55,15 @@ namespace ATTrafficAnalayzer.Views
                         List<int> detectorVolumes = _dbHelper.GetVolumes(intersection, detector, settings.StartDate, settings.EndDate);
                         approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                     }
-                    Console.WriteLine(approachVolumes.Count);
                 }
                 
                 var volumesDataSource = new EnumerableDataSource<int>(approachVolumes.ToArray());
                 volumesDataSource.SetYMapping(y => y);
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
-                Plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 2),
-                  new CirclePointMarker { Size = 10.0, Fill = Brushes.Red },
-                  new PenDescription("Volumes"));
+                Plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 1),
+                  new CirclePointMarker { Size = 7.0, Fill = Brushes.Red },
+                  new PenDescription(approach.Name));
             }    
         }
     }
