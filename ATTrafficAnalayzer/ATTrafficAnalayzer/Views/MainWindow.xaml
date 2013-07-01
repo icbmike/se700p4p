@@ -11,14 +11,14 @@
         Width="1000"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Icon="Resources/Images/at-logo.png">
+        Icon="..\Resources\Images\at-logo.png">
 
     <DockPanel LastChildFill="True">
 
         <Canvas DockPanel.Dock="Top"
                 Height="100">
             <Canvas.Background>
-                <ImageBrush ImageSource="Resources/Images/at-banner.png" />
+                <ImageBrush ImageSource="..\Resources/Images/at-banner.png" />
             </Canvas.Background>
 
             <Menu Canvas.Top="20"
@@ -67,7 +67,7 @@
                          Loaded="MainToolbar_OnLoaded">
                     <Image Height="26.6666666666667"
                            VerticalAlignment="Center"
-                           Source="Resources/Images/home_icon.png"
+                           Source="..\Resources/Images/home_icon.png"
                            Margin="5,0"
                            MouseLeftButtonDown="HomeImageMouseLeftButtonDown" />
                     <Button Name="TableButton"
