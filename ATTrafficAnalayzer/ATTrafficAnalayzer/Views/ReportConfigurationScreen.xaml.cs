@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,15 +12,12 @@ namespace ATTrafficAnalayzer.Views
     /// <summary>
     /// Interaction logic for ReportConfigurationScreen.xaml
     /// </summary>
-    /// 
     public partial class ReportConfigurationScreen : UserControl
     {
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
         private int _selectedIntersection;
         readonly VolumeDbHelper _dbHelper;
-
-        public string ConfigName { get; set; }
 
         public int SelectedIntersection
         {
@@ -95,7 +93,7 @@ namespace ATTrafficAnalayzer.Views
 
             if (source != DetectorListView)
             {
-                foreach (int item in items)
+                foreach (var item in items)
                 {
                     (source.ItemsSource as ObservableCollection<int>).Remove(item);
                 }
@@ -123,9 +121,9 @@ namespace ATTrafficAnalayzer.Views
                 Approaches.Children.RemoveAt(1);
             }
 
-            foreach (int detector in _detectorList)
+            foreach (var detector in _detectorList)
             {
-                var newApproach = new ApproachControl(Approaches, null, "Approach " + detector) { Margin = new Thickness(20, 20, 0, 0) };
+                var newApproach = new ApproachControl(Approaches, null, string.Format("Group {0}", detector)) { Margin = new Thickness(20, 20, 0, 0) };
                 newApproach.AddDetector(detector);
                 Approaches.Children.Add(newApproach);
             }
@@ -139,7 +137,7 @@ namespace ATTrafficAnalayzer.Views
             }
             var newApproach = new ApproachControl(Approaches, null, "All Detectors") { Margin = new Thickness(20, 20, 0, 0) };
             Approaches.Children.Add(newApproach);
-            foreach (int detector in _detectorList)
+            foreach (var detector in _detectorList)
             {
                 newApproach.AddDetector(detector);
             }
@@ -147,31 +145,31 @@ namespace ATTrafficAnalayzer.Views
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            List<Approach> approaches = new List<Approach>();
-            for (int i = 1; i < Approaches.Children.Count; i++)
+            var configName = ConfigNameTextBox.Text;
+
+            var approaches = new List<Approach>();
+            for (var i = 1; i < Approaches.Children.Count; i++)
             {
-                ApproachControl appCtrl = Approaches.Children[i] as ApproachControl;
+                var appCtrl = Approaches.Children[i] as ApproachControl;
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
-            _dbHelper.addConfiguration(new ReportConfiguration(ConfigName, _selectedIntersection, approaches));
-
-            if(ConfigurationSaved != null)
-            ConfigurationSaved(this, new ConfigurationSavedEventHandlerArgs(ConfigName));
+            _dbHelper.addConfiguration(new ReportConfiguration(configName, _selectedIntersection, approaches));
+            _dbHelper.SyncDatabase();
         }
 
-        public delegate void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventHandlerArgs args);
-
-        public event ConfigurationSavedEventHandler ConfigurationSaved;
-        
-        public class ConfigurationSavedEventHandlerArgs
+        private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
-            public string ConfigName { get; set; }
+            var configTextBox = (TextBox) sender;
 
-            public ConfigurationSavedEventHandlerArgs(string configName)
+            for (var count=1; ; count++)
             {
-                ConfigName = configName;
+                if (!_dbHelper.ConfigExists("Report" + count))
+                {
+                    configTextBox.Text = "Report" + count;
+                    break;
+                }
             }
         }
-    }   
+    }
 }

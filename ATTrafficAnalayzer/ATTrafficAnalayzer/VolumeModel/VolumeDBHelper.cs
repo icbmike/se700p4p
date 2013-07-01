@@ -64,7 +64,7 @@ namespace ATTrafficAnalayzer.VolumeModel
         {
 
 
-            var createApproachesTableSql = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
+            const string createApproachesTableSql = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
                                     [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                                     [approach] TEXT  NULL
 
@@ -423,6 +423,26 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
         }
 
+        public bool ConfigExists(String configName)
+        {
+            long reader;
+
+            using (var dbConnection = new SQLiteConnection(DbPath))
+            {
+                dbConnection.Open();
+
+                var configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
+                var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql };
+
+                configExistsQuery.Parameters.AddWithValue("@configName", configName);
+                reader = (Int64) configExistsQuery.ExecuteScalar();
+
+                dbConnection.Close();
+            }
+
+            return reader.Equals(1);
+        }
+
         #endregion
 
         public List<int> GetVolumes(int intersection, int detector, DateTime startDate, DateTime endDate)
@@ -433,8 +453,11 @@ namespace ATTrafficAnalayzer.VolumeModel
 
             using (var query = new SQLiteCommand(conn))
             {
-                query.CommandText =
-                    "SELECT volume FROM volumes WHERE intersection = @intersection AND detector = @detector AND (dateTime BETWEEN @startDate AND @endDate);";
+                query.CommandText = "SELECT volume " +
+                                    "FROM volumes " +
+                                    "WHERE intersection = @intersection " +
+                                    "AND detector = @detector " +
+                                    "AND (dateTime BETWEEN @startDate AND @endDate);";
                 query.Parameters.AddWithValue("@intersection", intersection);
                 query.Parameters.AddWithValue("@detector", detector);
                 query.Parameters.AddWithValue("@startDate", startDate);

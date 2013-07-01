@@ -26,7 +26,6 @@
                   SelectedValue="{Binding SelectedIntersection}"
                   SelectionChanged="OnIntersectionSelectionChanged"
                   Margin="10,10,0,0"
-                  FontWeight="Bold"
                   FontSize="16"
                   VerticalContentAlignment="Center"
                   HorizontalContentAlignment="Center"
@@ -44,15 +43,16 @@
                   BorderThickness="1"
                   x:FieldModifier="private" />
 
-        <TextBox Grid.Row="0"
+        <TextBox Name="ConfigNameTextBox"
+                 Grid.Row="0"
                  Grid.Column="0"
                  Grid.ColumnSpan="3"
                  FontSize="30"
-                 Text="{Binding ConfigName}"
                  Margin="10"
                  FontWeight="Bold"
                  Padding="3,6"
-                 BorderThickness="1">
+                 BorderThickness="1"
+                 Loaded="ConfigNameTextBox_Loaded">
             <TextBox.BorderBrush>
                 <SolidColorBrush Color="{StaticResource HighlightDark}" />
             </TextBox.BorderBrush>

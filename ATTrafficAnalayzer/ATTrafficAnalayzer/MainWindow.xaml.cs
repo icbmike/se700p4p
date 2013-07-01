@@ -97,13 +97,8 @@ namespace ATTrafficAnalayzer
         {
             ChangeScreen (new ReportConfigurationScreen ());
             var reportConfigurationScreen = new ReportConfigurationScreen();
-            reportConfigurationScreen.ConfigurationSaved += OnConfigurationSaved;
-            ChangeScreen(reportConfigurationScreen);
-        }
-
-        private void OnConfigurationSaved(object sender, ReportConfigurationScreen.ConfigurationSavedEventHandlerArgs args)
-        {
             standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
+            ChangeScreen(reportConfigurationScreen);
         }
 
         private void renameBtn_Click (object sender, RoutedEventArgs e)
