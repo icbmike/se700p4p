@@ -78,6 +78,9 @@
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\WindowSettings.cs" />
+    <Compile Include="Views\ReportList.xaml.cs">
+      <DependentUpon>ReportList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VolumeModel\AbstractApproach.cs" />
     <Compile Include="VolumeModel\Approach.cs" />
     <Compile Include="VolumeModel\DateTimeRecord.cs" />
@@ -128,6 +131,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ReportConfigurationScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReportList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

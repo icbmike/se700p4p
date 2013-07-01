@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="ATTrafficAnalayzer.Views.ReportList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel LastChildFill="True"
+               Margin="10"
+               DockPanel.Dock="Left">
+        <Label Content="Report Browser"
+               Height="28"
+               Name="label1"
+               Background="#428FBF"
+               FontWeight="Normal"
+               FontSize="14"
+               Foreground="White"
+               Padding="5"
+               DockPanel.Dock="Top" />
+        <WrapPanel Name="stackPanel2"
+                   Orientation="Horizontal"
+                   DockPanel.Dock="Top">
+            <Button Content="_New"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"
+                    Name="newBtn"
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"
+                    OpacityMask="{x:Null}"
+                    Click="newBtn_Click">
+            </Button>
+            <Button Content="_Edit"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"
+                    Name="editBtn"
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"
+                    Click="editBtn_Click">
+            </Button>
+            <Button Content="_Delete"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"
+                    Name="deleteBtn"
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    Click="deleteBtn_Click">
+                <Button.BorderBrush>
+                    <SolidColorBrush />
+                </Button.BorderBrush>
+            </Button>
+            <Button Content="Rename"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,0"
+                    x:Name="renameBtn"
+                    VerticalAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"
+                    Click="renameBtn_Click" />
+        </WrapPanel>
+
+        <TabControl HorizontalAlignment="Left"
+                    Name="tabControl1"
+                    TabStripPlacement="Bottom"
+                    DockPanel.Dock="Top">
+            <TabItem Header="Standard Reports"
+                     Name="standardReportsTab">
+                <DockPanel LastChildFill="True">
+                    <ScrollBar Name="scrollBar1"
+                               Width="20"
+                               DockPanel.Dock="Right" />
+                    <ListView Name="standardReportsListBox"
+                              DockPanel.Dock="Right" />
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Special Reports"
+                     Name="specialReportsTab">
+                <DockPanel LastChildFill="True">
+                    <ScrollBar Name="scrollBar2"
+                               Width="20"
+                               DockPanel.Dock="Right" />
+                    <ListView Name="specialReportsListBox"
+                              ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
+                              DockPanel.Dock="Right" />
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>
