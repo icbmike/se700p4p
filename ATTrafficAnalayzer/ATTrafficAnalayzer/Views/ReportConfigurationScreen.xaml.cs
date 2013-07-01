@@ -178,10 +178,9 @@ namespace ATTrafficAnalayzer.Views
         {
             var configTextBox = (TextBox) sender;
 
-            for (var count=1; count<10; count++)
+            for (var count=1; ; count++)
             {
-                var exists = _dbHelper.ConfigExists("Report" + count);
-                if (!exists)
+                if (!_dbHelper.ConfigExists("Report" + count))
                 {
                     configTextBox.Text = "Report" + count;
                     break;
