@@ -359,6 +359,7 @@ namespace ATTrafficAnalayzer.VolumeModel
                 using (var query = new SQLiteCommand(conn))
                 {
                     query.CommandText = "SELECT last_insert_rowid();";
+
                     var rowID = (Int64)query.ExecuteScalar();
                     ((JArray)configJson["approaches"]).Add(rowID);
                 }

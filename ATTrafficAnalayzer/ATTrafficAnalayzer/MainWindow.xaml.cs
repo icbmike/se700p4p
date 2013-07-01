@@ -80,17 +80,16 @@ namespace ATTrafficAnalayzer
         private void SwitchScreen (object sender, RoutedEventArgs e)
         {
             var settings = SettingsTray.DataContext as SettingsTray;
-
+            //Get selection
+            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            var selectedItem = selectedRow.Row["name"] as string;
             if (sender.Equals(GraphButton))
             {
-                //Get selection
-                var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-                var selectedItem = selectedRow.Row["name"] as string;
                 ChangeScreen(new VsGraph(settings, selectedItem));
             }
             else if (sender.Equals(TableButton))
             {
-                
+                ChangeScreen(new VsTable(settings, selectedItem));
             }        
         }
 
