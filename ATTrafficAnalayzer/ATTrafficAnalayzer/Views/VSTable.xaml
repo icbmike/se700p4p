@@ -17,7 +17,7 @@
             FontSize="18">Volume Store - Table View</Label>
 
         <StackPanel 
-            Name="putStuffHere"
+            Name="ContainerStackPanel"
             HorizontalAlignment="Left"/>
 
     </DockPanel>
