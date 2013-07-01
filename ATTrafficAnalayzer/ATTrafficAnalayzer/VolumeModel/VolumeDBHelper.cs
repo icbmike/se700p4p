@@ -233,7 +233,6 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
         }
 
-
         #endregion
 
         #region Table Initialization
@@ -331,8 +330,6 @@ namespace ATTrafficAnalayzer.VolumeModel
 
                                 foreach (var detector in volumeRecord.GetDetectors())
                                 {
-
-
                                     cmd.CommandText = "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
 
                                     cmd.Parameters.Clear();
@@ -355,7 +352,6 @@ namespace ATTrafficAnalayzer.VolumeModel
                                         break;
                                     }
                                 }
-
                                 break;
                         }
                         if (!alreadyLoaded) continue;
@@ -364,8 +360,8 @@ namespace ATTrafficAnalayzer.VolumeModel
                     }
                     transaction.Commit();
                 }
-
             }
+
             dbConnection.Close();
             fs.Close();
         }
