@@ -407,26 +407,26 @@ namespace ATTrafficAnalayzer.VolumeModel
             }
         }
 
-        public Boolean ConfigExists(String configName)
+        public bool ConfigExists(String configName)
         {
-            Boolean exists;
+            object reader;
 
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
                 dbConnection.Open();
 
-                var configExistsSql = @"SELECT EXISTS(SELECT * FROM configs WHERE name = '@configName');";
+                var configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = \"@configName\" LIMIT 1);";
                 var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql };
-                configExistsQuery.Parameters.AddWithValue("@configName", configName);
+                configExistsQuery.Parameters.Add("@configName", DbType.String);
+                configExistsQuery.Parameters["@configName"].Value = configName;
                 Console.WriteLine(configName);
-                var reader = configExistsQuery.ExecuteReader();
-                exists = reader.Read();
+                reader = configExistsQuery.ExecuteScalar();
+                Console.WriteLine(reader);
 
                 dbConnection.Close();
             }
 
-            Console.WriteLine(exists);
-            return exists;
+            return true;
         }
 
         #endregion
