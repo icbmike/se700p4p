@@ -28,25 +28,75 @@ namespace ATTrafficAnalayzer.VolumeModel
                 }
                 return _instance;    
             }
-            
         }
 
         private VolumeDbHelper()
         {
+                CreateVolumesTableIfNotExists();
+                CreateApproachesTableIfNotExists();
+                CreateConfigsTableIfNotExists();
+        }
+
+        #region Helper Functions
+
+        private DataTable GetDataTable(string sql)
+        {
+            var dataTable = new DataTable();
+
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
                 dbConnection.Open();
 
-                //Initialize a new database
-                CreateVolumesTableIfNotExists(dbConnection);
-                CreateApproachesTableIfNotExists(dbConnection);
-                CreateConfigsTableIfNotExists(dbConnection);
+                var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql };
+                var reader = createConfigsTableCommand.ExecuteReader();
+                dataTable.Load(reader);
+                reader.Close();
 
                 dbConnection.Close();
             }
+
+            return dataTable;
         }
 
-        private static void CreateConfigsTableIfNotExists(SQLiteConnection dbConnection)
+        private int ExecuteNonQuery(string sql)
+        {
+            var rowsUpdated = 0;
+
+            using (var dbConnection = new SQLiteConnection(DbPath))
+            {
+                dbConnection.Open();
+
+                var createConfigsTableCommand = new SQLiteCommand(dbConnection) {CommandText = sql};
+                rowsUpdated = createConfigsTableCommand.ExecuteNonQuery();
+
+                dbConnection.Close();
+            }
+
+            return rowsUpdated;
+        }
+
+        private object ExecuteScalar(string sql)
+        {
+            object reader;
+
+            using (var dbConnection = new SQLiteConnection(DbPath))
+            {
+                dbConnection.Open();
+
+                var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql };
+                reader = createConfigsTableCommand.ExecuteScalar();
+
+                dbConnection.Close();
+            }
+
+            return reader;
+        }
+
+        #endregion
+
+        #region Table Initialization
+
+        private void CreateConfigsTableIfNotExists()
         {
             const string createConfigsTableSql = @"CREATE TABLE IF NOT EXISTS [configs] ( 
                                     [name] TEXT  NULL,
@@ -55,40 +105,32 @@ namespace ATTrafficAnalayzer.VolumeModel
 
                                     PRIMARY KEY (name)
                                 )";
-
-            var createConfigsTableCommand = new SQLiteCommand(dbConnection) {CommandText = createConfigsTableSql};
-            createConfigsTableCommand.ExecuteNonQuery();
+            ExecuteNonQuery(createConfigsTableSql);
         }
 
-        private static void CreateApproachesTableIfNotExists(SQLiteConnection dbConnection)
+        private void CreateApproachesTableIfNotExists()
         {
-
-
             const string createApproachesTableSql = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
                                     [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                                     [approach] TEXT  NULL
-
                                 )";
-
-            var createApproachesTableCommand = new SQLiteCommand(dbConnection) {CommandText = createApproachesTableSql};
-            createApproachesTableCommand.ExecuteNonQuery();
+            ExecuteNonQuery(createApproachesTableSql);
         }
 
-        private static void CreateVolumesTableIfNotExists(SQLiteConnection dbConnection)
+        private void CreateVolumesTableIfNotExists()
         {
             const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
                                     [dateTime] DATETIME DEFAULT CURRENT_TIMESTAMP NULL, 
                                     [intersection] INTEGER  NULL,
                                     [detector] INTEGER  NULL,
                                     [volume] INTEGER  NULL,
+
                                     PRIMARY KEY ( dateTime, intersection, detector)
-                                    
                                 )";
-
-            var createVolumesTableCommand = new SQLiteCommand(dbConnection) {CommandText = createVolumesTableSql};
-            createVolumesTableCommand.ExecuteNonQuery();
+            ExecuteNonQuery(createVolumesTableSql);
         }
-
+   
+        #endregion
 
         #region Volume Related Methods
 
@@ -164,13 +206,10 @@ namespace ATTrafficAnalayzer.VolumeModel
                                     }
                                     catch (SQLiteException e)
                                     {
-
                                         if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
-
                                             alreadyLoaded = true;
                                         }
-
                                         break;
                                     }
                                 }
