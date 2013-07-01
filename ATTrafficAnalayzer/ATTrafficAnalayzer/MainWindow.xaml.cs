@@ -14,10 +14,8 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow
     {
-        enum Displays { Graph, Table };
-        Displays _display;
 
-        private VolumeDbHelper _dbHelper;
+ 
 
         public MainWindow ()
         {
@@ -29,11 +27,6 @@ namespace ATTrafficAnalayzer
             InitializeComponent();
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
-
-            _dbHelper = VolumeDbHelper.GetDbHelper();
-
-            //standardReportsListBox.ItemsSource = _dbHelper.GetConfigs ();
-            //standardReportsListBox.DisplayMemberPath = "name";
 
             mainContentControl.Content = new WelcomeScreen ();
         }
@@ -68,34 +61,37 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        //Changes the screen in the content part of the main windows
-        //Potentially could check if the new screen is an instance of one already being displayed??
         private void ChangeScreen (UserControl screen)
         {
             if (screen.GetType () != mainContentControl.Content.GetType ())
                 mainContentControl.Content = screen;
         }
 
-
         private void SwitchScreen (object sender, RoutedEventArgs e)
         {
             var settings = SettingsTray.DataContext as SettingsTray;
-            //Get selection
-            //var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-            //var selectedItem = selectedRow.Row["name"] as string;
-            if (sender.Equals(GraphButton))
+            //Get selected Configuration
+            var selectedItem = ReportList.GetSelectedConfiguration();
+            if (selectedItem != null)
             {
-                //ChangeScreen(new VsGraph(settings, selectedItem));
+                if (sender.Equals(GraphButton))
+                {
+                    ChangeScreen(new VsGraph(settings, selectedItem));
+                }
+                else if (sender.Equals(TableButton))
+                {
+                    ChangeScreen(new VsTable(settings, selectedItem));
+                }
             }
-            else if (sender.Equals(TableButton))
+            else
             {
-                //ChangeScreen(new VsTable(settings, selectedItem));
-            }        
+                MessageBox.Show("Select a report from the list on the left");
+            }
         }
 
         
 
-        private void Image_MouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void HomeImageMouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             ChangeScreen (new WelcomeScreen ());
         }
@@ -124,6 +120,20 @@ namespace ATTrafficAnalayzer
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+        {
+            if (args.New)
+            {
+                var reportConfigurationScreen = new ReportConfigurationScreen();
+                reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                ChangeScreen(reportConfigurationScreen);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
     }

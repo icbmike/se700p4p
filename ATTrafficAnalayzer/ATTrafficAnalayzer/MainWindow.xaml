@@ -69,7 +69,7 @@
                            VerticalAlignment="Center"
                            Source="Resources/Images/home_icon.png"
                            Margin="5,0"
-                           MouseLeftButtonDown="Image_MouseLeftButtonDown" />
+                           MouseLeftButtonDown="HomeImageMouseLeftButtonDown" />
                     <Button Name="TableButton"
                             Content="Table"
                             Margin="10,0,1,0"
@@ -129,7 +129,9 @@
             </ToolBarPanel>
         </Canvas>
 
-        <ta.Views:ReportList></ta.Views:ReportList>
+        <ta.Views:ReportList
+            x:Name="ReportList"
+            EditConfigurationEvent="ReportList_OnEditConfigurationEvent"/>
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="mainContentControl"

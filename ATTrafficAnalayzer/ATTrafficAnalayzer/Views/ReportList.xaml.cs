@@ -26,14 +26,38 @@ namespace ATTrafficAnalayzer.Views
         {
             _volumeDbHelper =  VolumeDbHelper.GetDbHelper();
             InitializeComponent();
+            DataContext = this;
+            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
+            standardReportsListBox.DisplayMemberPath = "name";
         }
+
+        #region events
+
+        public delegate void EditConfigurationEventHandler(object sender, EditConfigurationEventHandlerArgs args);
+
+        public event EditConfigurationEventHandler EditConfigurationEvent; 
+        public class EditConfigurationEventHandlerArgs
+        {
+            public Boolean New { get; set; }
+            public string ConfigToBeEdited { get; set; }
+
+            public EditConfigurationEventHandlerArgs()
+            {
+                this.New = true;
+                ConfigToBeEdited = null;
+            }
+
+            public EditConfigurationEventHandlerArgs(string configToBeEdited)
+            {
+                this.New = false;
+                ConfigToBeEdited = configToBeEdited;
+            }
+        }
+        #endregion
 
         private void newBtn_Click(object sender, RoutedEventArgs e)
         {
-            //ChangeScreen(new ReportConfigurationScreen());
-            var reportConfigurationScreen = new ReportConfigurationScreen();
-            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
-            //ChangeScreen(reportConfigurationScreen);
+            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs());
         }
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
@@ -78,9 +102,20 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
+        public string GetSelectedConfiguration()
+        {
+            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            return selectedRow == null ? null : selectedRow.Row["name"] as string;
+        }
+
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-           // ChangeScreen(new ReportConfigurationScreen());
+            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
+        }
+
+        public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
+        {
+            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
         }
     }
 }
