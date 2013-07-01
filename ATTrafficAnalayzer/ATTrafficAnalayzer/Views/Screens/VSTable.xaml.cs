@@ -16,9 +16,6 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly SettingsTray _settings;
 
-        private int _interval;
-        private DateTime _startDate;
-        private DateTime _endDate;
         private VolumeDbHelper _volumeDbHelper;
         private ReportConfiguration _configuration;
 
