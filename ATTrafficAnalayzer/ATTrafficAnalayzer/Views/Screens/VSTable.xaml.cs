@@ -44,6 +44,21 @@ namespace ATTrafficAnalayzer.Views
                     ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
                     IsReadOnly = true
                 };
+                var label = new Label();
+                var labelText = approach.Name + " - Detectors: ";
+                for (var i = 0; i < approach.Detectors.Count; i++)
+                {
+                    if ((i + 1) == approach.Detectors.Count)
+                    {
+                        labelText += approach.Detectors[i];
+                    }
+                    else
+                    {
+                        labelText += approach.Detectors[i] + ", ";
+                    }
+                }
+                label.Content = labelText;
+                ContainerStackPanel.Children.Add(label);
                 ContainerStackPanel.Children.Add(dg);    
             }           
 
@@ -57,9 +72,12 @@ namespace ATTrafficAnalayzer.Views
             var vsDataTable = new DataTable();
 
             // Set column headings
-            for (var i = 1; i <= 12; i++)
+            for (var i = 0; i <= 12; i++)
             {
-                vsDataTable.Columns.Add(i.ToString(), typeof(string));
+                if (i == 0)
+                    vsDataTable.Columns.Add("_", typeof(string));
+                else
+                    vsDataTable.Columns.Add((i - 1).ToString(), typeof(string));
             }
 
             // List dates
@@ -88,10 +106,12 @@ namespace ATTrafficAnalayzer.Views
             for (var i = 0; i < 12; i++)
             {
                 var row = vsDataTable.NewRow();
-                for (var j = 0; j < 12; j++)
+                for (var j = 0; j < 13; j++)
                 {
-                   //row[j] = _volumeStore.GetVolume(intersection, detector, dates[i * 12 + j]);
-                   row[j] = approachVolumes[i*12 + j];
+                    if (j == 0)
+                        row[j] = ": " + _settings.Interval * i;
+                    else
+                        row[j] = approachVolumes[i * 12 + j];
                 }
                 vsDataTable.Rows.Add(row);
             }
