@@ -19,6 +19,24 @@ namespace ATTrafficAnalayzer.Views
         private int _selectedIntersection;
         readonly VolumeDbHelper _dbHelper;
 
+
+        #region events
+
+        public delegate void ConfigurationSavedEventHander(object sender, ConfigurationSavedEventArgs args);
+
+        public event ConfigurationSavedEventHander ConfigurationSaved;
+        public class ConfigurationSavedEventArgs
+        {
+            public string Name { get; set; }
+
+            public ConfigurationSavedEventArgs(string name)
+            {
+                Name = name;
+            }
+        } 
+
+        #endregion
+
         public int SelectedIntersection
         {
             get { return _selectedIntersection; }
@@ -156,6 +174,7 @@ namespace ATTrafficAnalayzer.Views
 
             _dbHelper.addConfiguration(new ReportConfiguration(configName, _selectedIntersection, approaches));
             _dbHelper.SyncDatabase();
+            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)

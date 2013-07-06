@@ -74,44 +74,46 @@
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Views\ApproachControl.xaml.cs">
+    <Compile Include="Views\Controls\ApproachControl.xaml.cs">
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\WindowSettings.cs" />
-    <Compile Include="VolumeModel\AbstractApproach.cs" />
-    <Compile Include="VolumeModel\Approach.cs" />
-    <Compile Include="VolumeModel\DateTimeRecord.cs" />
-    <Compile Include="IntervalConverter.cs" />
+    <Compile Include="Views\Controls\ReportList.xaml.cs">
+      <DependentUpon>ReportList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Configuration\AbstractApproach.cs" />
+    <Compile Include="Models\Configuration\Approach.cs" />
+    <Compile Include="Models\Volume\DateTimeRecord.cs" />
+    <Compile Include="Models\Settings\IntervalConverter.cs" />
     <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogResult.cs" />
     <Compile Include="ProgressDialog\ProgressDialogSettings.cs" />
-    <Compile Include="VolumeModel\RecordFactory.cs" />
-    <Compile Include="VolumeModel\RecordType.cs" />
-    <Compile Include="Views\ReportConfigurationScreen.xaml.cs">
+    <Compile Include="Models\Volume\RecordFactory.cs" />
+    <Compile Include="Models\Volume\RecordType.cs" />
+    <Compile Include="Views\Screens\ReportConfigurationScreen.xaml.cs">
       <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsTray.cs" />
-    <Compile Include="VolumeModel\Report.cs" />
-    <Compile Include="VolumeModel\ReportConfiguration.cs" />
-    <Compile Include="VolumeModel\VolumeDbHelper.cs" />
-    <Compile Include="VolumeModel\VolumeRecord.cs" />
-    <Compile Include="VolumeModel\VolumeStore.cs" />
-    <Compile Include="Views\VSGraph.xaml.cs">
+    <Compile Include="Models\Settings\SettingsTray.cs" />
+    <Compile Include="Models\Configuration\Report.cs" />
+    <Compile Include="Models\Configuration\ReportConfiguration.cs" />
+    <Compile Include="Models\DbHelper.cs" />
+    <Compile Include="Models\Volume\VolumeRecord.cs" />
+    <Compile Include="Views\Screens\VSGraph.xaml.cs">
       <DependentUpon>VSGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VSTable.xaml.cs">
+    <Compile Include="Views\Screens\VSTable.xaml.cs">
       <DependentUpon>VSTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WelcomeScreen.xaml.cs">
+    <Compile Include="Views\Screens\WelcomeScreen.xaml.cs">
       <DependentUpon>WelcomeScreen.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\ApproachControl.xaml">
+    <Page Include="Views\Controls\ApproachControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -119,7 +121,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -127,19 +129,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ReportConfigurationScreen.xaml">
+    <Page Include="Views\Screens\ReportConfigurationScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\VSGraph.xaml">
+    <Page Include="Views\Controls\ReportList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\VSTable.xaml">
+    <Page Include="Views\Screens\VSGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\WelcomeScreen.xaml">
+    <Page Include="Views\Screens\VSTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Screens\WelcomeScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

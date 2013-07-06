@@ -7,17 +7,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Height="800"
         xmlns:ta="clr-namespace:ATTrafficAnalayzer"
+        xmlns:ta.Views="clr-namespace:ATTrafficAnalayzer.Views"
         Width="1000"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Icon="Resources/Images/at-logo.png">
+        Icon="..\Resources\Images\at-logo.png">
 
     <DockPanel LastChildFill="True">
 
         <Canvas DockPanel.Dock="Top"
                 Height="100">
             <Canvas.Background>
-                <ImageBrush ImageSource="Resources/Images/at-banner.png" />
+                <ImageBrush ImageSource="..\Resources/Images/at-banner.png" />
             </Canvas.Background>
 
             <Menu Canvas.Top="20"
@@ -66,9 +67,9 @@
                          Loaded="MainToolbar_OnLoaded">
                     <Image Height="26.6666666666667"
                            VerticalAlignment="Center"
-                           Source="Resources/Images/home_icon.png"
+                           Source="..\Resources/Images/home_icon.png"
                            Margin="5,0"
-                           MouseLeftButtonDown="Image_MouseLeftButtonDown" />
+                           MouseLeftButtonDown="HomeImageMouseLeftButtonDown" />
                     <Button Name="TableButton"
                             Content="Table"
                             Margin="10,0,1,0"
@@ -128,88 +129,9 @@
             </ToolBarPanel>
         </Canvas>
 
-        <DockPanel LastChildFill="True"
-                   Margin="10"
-                   DockPanel.Dock="Left">
-            <Label Content="Report Browser"
-                   Height="28"
-                   Name="label1"
-                   Background="#428FBF"
-                   FontWeight="Normal"
-                   FontSize="14"
-                   Foreground="White"
-                   Padding="5"
-                   DockPanel.Dock="Top" />
-            <WrapPanel Name="stackPanel2"
-                       Orientation="Horizontal"
-                       DockPanel.Dock="Top">
-                <Button Content="_New"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,0,0"
-                        Name="newBtn"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        OpacityMask="{x:Null}"
-                        Click="newBtn_Click">
-                </Button>
-                <Button Content="_Edit"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,0,0"
-                        Name="editBtn"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="editBtn_Click">
-                </Button>
-                <Button Content="_Delete"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,0,0"
-                        Name="deleteBtn"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        Click="deleteBtn_Click">
-                    <Button.BorderBrush>
-                        <SolidColorBrush />
-                    </Button.BorderBrush>
-                </Button>
-                <Button Content="Rename"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,0,0"
-                        x:Name="renameBtn"
-                        VerticalAlignment="Top"
-                        Background="{x:Null}"
-                        BorderBrush="{x:Null}"
-                        Click="renameBtn_Click" />
-            </WrapPanel>
-
-            <TabControl HorizontalAlignment="Left"
-                        Name="tabControl1"
-                        TabStripPlacement="Bottom"
-                        DockPanel.Dock="Top">
-                <TabItem Header="Standard Reports"
-                         Name="standardReportsTab">
-                    <DockPanel LastChildFill="True">
-                        <ScrollBar Name="scrollBar1"
-                                   Width="20"
-                                   DockPanel.Dock="Right" />
-                        <ListView Name="standardReportsListBox"
-                                  DockPanel.Dock="Right" />
-                    </DockPanel>
-                </TabItem>
-                <TabItem Header="Special Reports"
-                         Name="specialReportsTab">
-                    <DockPanel LastChildFill="True">
-                        <ScrollBar Name="scrollBar2"
-                                   Width="20"
-                                   DockPanel.Dock="Right" />
-                        <ListView Name="specialReportsListBox"
-                                  ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
-                                  DockPanel.Dock="Right" />
-                    </DockPanel>
-                </TabItem>
-            </TabControl>
-        </DockPanel>
+        <ta.Views:ReportList
+            x:Name="ReportList"
+            EditConfigurationEvent="ReportList_OnEditConfigurationEvent"/>
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="mainContentControl"

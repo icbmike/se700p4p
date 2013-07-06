@@ -14,10 +14,8 @@ namespace ATTrafficAnalayzer
     /// </summary>
     public partial class MainWindow
     {
-        enum Displays { Graph, Table };
-        Displays _display;
 
-        private VolumeDbHelper _dbHelper;
+ 
 
         public MainWindow ()
         {
@@ -29,11 +27,6 @@ namespace ATTrafficAnalayzer
             InitializeComponent();
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
-
-            _dbHelper = VolumeDbHelper.GetDbHelper();
-
-            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs ();
-            standardReportsListBox.DisplayMemberPath = "name";
 
             mainContentControl.Content = new WelcomeScreen ();
         }
@@ -68,87 +61,37 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        //Changes the screen in the content part of the main windows
-        //Potentially could check if the new screen is an instance of one already being displayed??
         private void ChangeScreen (UserControl screen)
         {
             if (screen.GetType () != mainContentControl.Content.GetType ())
                 mainContentControl.Content = screen;
         }
 
-
         private void SwitchScreen (object sender, RoutedEventArgs e)
         {
             var settings = SettingsTray.DataContext as SettingsTray;
-            //Get selection
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-            var selectedItem = selectedRow.Row["name"] as string;
-            if (sender.Equals(GraphButton))
+            //Get selected Configuration
+            var selectedItem = ReportList.GetSelectedConfiguration();
+            if (selectedItem != null)
             {
-                ChangeScreen(new VsGraph(settings, selectedItem));
+                if (sender.Equals(GraphButton))
+                {
+                    ChangeScreen(new VsGraph(settings, selectedItem));
+                }
+                else if (sender.Equals(TableButton))
+                {
+                    ChangeScreen(new VsTable(settings, selectedItem));
+                }
             }
-            else if (sender.Equals(TableButton))
+            else
             {
-                ChangeScreen(new VsTable(settings, selectedItem));
-            }        
-        }
-
-        private void newBtn_Click (object sender, RoutedEventArgs e)
-        {
-            ChangeScreen (new ReportConfigurationScreen ());
-            var reportConfigurationScreen = new ReportConfigurationScreen();
-            standardReportsListBox.ItemsSource = _dbHelper.GetConfigs();
-            ChangeScreen(reportConfigurationScreen);
-        }
-
-        private void renameBtn_Click (object sender, RoutedEventArgs e)
-        {
-            var item = standardReportsListBox.SelectedItem.ToString ();
-            Console.WriteLine ("Rename: {0}", item);
-        }
-
-        private void deleteBtn_Click (object sender, RoutedEventArgs e)
-        {
-            //Get selection
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
-            var selectedItem = selectedRow.Row["name"] as string;
-
-            //Configure the message box to be displayed 
-            var messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
-            var caption = "Confirm delete";
-            var button = MessageBoxButton.OKCancel;
-            var icon = MessageBoxImage.Question;
-
-            //Display message box
-            var isConfirmedDeletion = MessageBox.Show (messageBoxText, caption, button, icon);
-
-            //Process message box results 
-            switch (isConfirmedDeletion)
-            {
-                case MessageBoxResult.OK:
-                    _dbHelper.RemoveConfig (selectedItem);
-
-                    messageBoxText = selectedItem + " was deleted";
-                    caption = "Delete successful";
-                    button = MessageBoxButton.OK;
-                    icon = MessageBoxImage.Information;
-                    MessageBox.Show (messageBoxText, caption, button, icon);
-
-                    Logger.Debug (selectedItem + " report deleted", "Reports panel");
-                    break;
-
-                case MessageBoxResult.Cancel:
-                    Logger.Debug (selectedItem + " report deletion was canceled", "Reports panel");
-                    break;
+                MessageBox.Show("Select a report from the list on the left");
             }
         }
 
-        private void editBtn_Click (object sender, RoutedEventArgs e)
-        {
-            ChangeScreen (new ReportConfigurationScreen ());
-        }
+        
 
-        private void Image_MouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void HomeImageMouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             ChangeScreen (new WelcomeScreen ());
         }
@@ -177,6 +120,20 @@ namespace ATTrafficAnalayzer
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+        {
+            if (args.New)
+            {
+                var reportConfigurationScreen = new ReportConfigurationScreen();
+                reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                ChangeScreen(reportConfigurationScreen);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
     }
