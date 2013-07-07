@@ -6,9 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
-using ATTrafficAnalayzer.Annotations;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
     /// Interaction logic for ApproachControl.xaml
