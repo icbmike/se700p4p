@@ -4,9 +4,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Data;
-using ATTrafficAnalayzer.VolumeModel;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Views.Screens
 {
 
     /// <summary>

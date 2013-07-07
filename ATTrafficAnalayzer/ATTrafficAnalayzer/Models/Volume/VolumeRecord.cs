@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Models.Volume
 {
     public class VolumeRecord
     {

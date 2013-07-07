@@ -5,7 +5,7 @@ using System.Linq;
 
 #endregion
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Models.Volume
 {
     public class RecordFactory
     {

@@ -1,4 +1,4 @@
-﻿namespace ATTrafficAnalayzer.VolumeModel
+﻿namespace ATTrafficAnalayzer.Models.Configuration
 {
     abstract class AbstractApproach
     {

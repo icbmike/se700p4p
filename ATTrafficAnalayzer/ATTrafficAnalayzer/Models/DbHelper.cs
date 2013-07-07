@@ -5,9 +5,11 @@ using System.Data.SQLite;
 using System.Data;
 using System.IO;
 using System.Windows;
+using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Volume;
 using Newtonsoft.Json.Linq;
 
-namespace ATTrafficAnalayzer.VolumeModel
+namespace ATTrafficAnalayzer.Models
 {
     class VolumeDbHelper
     {
