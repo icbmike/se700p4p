@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ATTrafficAnalayzer.VolumeModel
+namespace ATTrafficAnalayzer.Models.Configuration
 {
     class Report
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for WelcomeScreen.xaml

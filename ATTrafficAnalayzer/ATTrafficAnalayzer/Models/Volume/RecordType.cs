@@ -1,4 +1,4 @@
-﻿namespace ATTrafficAnalayzer
+﻿namespace ATTrafficAnalayzer.Models.Volume
 {
     public enum RecordType
     {

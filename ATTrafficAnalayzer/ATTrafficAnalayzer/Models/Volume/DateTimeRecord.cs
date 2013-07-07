@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Models.Volume
 {
     public class DateTimeRecord
     {

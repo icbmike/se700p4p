@@ -1,4 +1,4 @@
-﻿<Window x:Class="ATTrafficAnalayzer.MainWindow"
+﻿<Window x:Class="ATTrafficAnalayzer.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Auckland Transport Traffic Report Viewer"
@@ -8,6 +8,8 @@
         Height="800"
         xmlns:ta="clr-namespace:ATTrafficAnalayzer"
         xmlns:ta.Views="clr-namespace:ATTrafficAnalayzer.Views"
+        xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
+        xmlns:controls="clr-namespace:ATTrafficAnalayzer.Views.Controls"
         Width="1000"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
@@ -54,7 +56,7 @@
                           Canvas.Left="20"
                           Background="{x:Null}">
                 <ToolBarPanel.DataContext>
-                    <ta:SettingsTray />
+                    <settings:SettingsTray />
                 </ToolBarPanel.DataContext>
                 <ToolBar Name="mainToolbar"
                          Band="1"
@@ -114,7 +116,7 @@
                     <ComboBox Height="23"
                               Name="intervalComboBox"
                               Width="80"
-                              SelectedValue="{Binding Path=Interval, Converter={ta:IntervalConverter}}"
+                              SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
                               SelectedValuePath="Content"
                               SelectedIndex="1"
                               Foreground="Black"
@@ -129,7 +131,7 @@
             </ToolBarPanel>
         </Canvas>
 
-        <ta.Views:ReportList
+        <controls:ReportList
             x:Name="ReportList"
             EditConfigurationEvent="ReportList_OnEditConfigurationEvent"/>
 

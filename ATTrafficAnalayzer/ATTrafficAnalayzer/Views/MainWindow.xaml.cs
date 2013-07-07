@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using ATTrafficAnalayzer.Views;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Views.Controls;
+using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
+using ATTrafficAnalayzer.Views.Screens;
 using Microsoft.Win32;
-using Parago.Windows;
-using ATTrafficAnalayzer.VolumeModel;
-using System.Data;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
