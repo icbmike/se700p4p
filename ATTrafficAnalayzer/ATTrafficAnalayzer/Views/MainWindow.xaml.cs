@@ -1,73 +1,101 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using ATTrafficAnalayzer.Views;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Views.Controls;
+using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
+using ATTrafficAnalayzer.Views.Screens;
 using Microsoft.Win32;
-using Parago.Windows;
-using ATTrafficAnalayzer.VolumeModel;
-using System.Data;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-
- 
-
-        public MainWindow ()
+        public MainWindow()
         {
-            Logger.Clear ();
+            Logger.Clear();
 
-            InitializeComponent ();
+            InitializeComponent();
             DataContext = this;
-            
+
             InitializeComponent();
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
+        }
+        
+        private void BulkImport()
+        {
+            var messageBoxText = "There is currently no volume data in the database. Would you like to import this data now?";
+            const string caption = "Import Volume Store files";
+            const MessageBoxButton button = MessageBoxButton.YesNo;
+            const MessageBoxImage icon = MessageBoxImage.Question;
 
-            mainContentControl.Content = new WelcomeScreen ();
+            MessageBoxResult result;
+            while (true)
+            {
+                result = MessageBox.Show(messageBoxText, caption, button, icon);
+                messageBoxText = "Would you like to import another file?";
+
+                if (result.Equals(MessageBoxResult.Yes))
+                {
+                    ImportFile();
+                }
+                else
+                {
+                    break;
+                }
+
+            }
         }
 
-        private void fileImportMenuItem_Click (object sender, RoutedEventArgs e)
+        private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ImportFile();
+        }
+
+        private void ImportFile()
         {
             // Configure open file dialog box 
             var dlg = new OpenFileDialog
                 {
                     FileName = "",
-                    InitialDirectory = Environment.GetFolderPath (Environment.SpecialFolder.UserProfile),
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     DefaultExt = ".VS",
                     Filter = "Volume Store Files (.VS)|*.VS"
                 };
 
             // Show open file dialog box 
-            Nullable<bool> result = dlg.ShowDialog ();
+            Nullable<bool> result = dlg.ShowDialog();
+
+            
 
             // Process open file dialog box results 
             if (result == true)
             {
-                var res = ProgressDialog.Execute (this, "Importing VS File", (bw, we) =>
+                //TODO error at this point
+                var res = ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
                 {
-
-                    ProgressDialog.Report (bw, "Reading Files");
+                    ProgressDialog.Report(b, "Reading Files");
 
                     // Open document 
                     var filename = dlg.FileName;
-                    VolumeDbHelper.ImportFile (filename);
-                    //_volumeStore.readFile(bw, filename);
+                    DbHelper.ImportFile(filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
+            
         }
 
-        private void ChangeScreen (UserControl screen)
+        private void ChangeScreen(UserControl screen)
         {
-            if (screen.GetType () != mainContentControl.Content.GetType ())
+            if (screen.GetType() != mainContentControl.Content.GetType())
                 mainContentControl.Content = screen;
         }
 
-        private void SwitchScreen (object sender, RoutedEventArgs e)
+        private void SwitchScreen(object sender, RoutedEventArgs e)
         {
             var settings = SettingsTray.DataContext as SettingsTray;
             //Get selected Configuration
@@ -89,19 +117,17 @@ namespace ATTrafficAnalayzer
             }
         }
 
-        
-
-        private void HomeImageMouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void HomeImageMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            ChangeScreen (new WelcomeScreen ());
+            ChangeScreen(new WelcomeScreen());
         }
 
-        private void FileQuitMenuItem_OnClick (object sender, RoutedEventArgs e)
+        private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown ();
+            Application.Current.Shutdown();
         }
 
-        private void HelpAboutUsMenuItem_OnClick (object sender, RoutedEventArgs e)
+        private void HelpAboutUsMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             // Configure the message box to be displayed 
             const string messageBoxText = "Auckland Transport Traffic Report Viewer\n\n" +
@@ -110,13 +136,13 @@ namespace ATTrafficAnalayzer
             const MessageBoxButton button = MessageBoxButton.OK;
             const MessageBoxImage icon = MessageBoxImage.None;
 
-            MessageBox.Show (messageBoxText, caption, button, icon);
+            MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
-        private void MainToolbar_OnLoaded (object sender, RoutedEventArgs e)
+        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
         {
             var toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName ("OverflowGrid", toolBar) as FrameworkElement;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
@@ -135,6 +161,11 @@ namespace ATTrafficAnalayzer
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+                BulkImport();
         }
     }
 }

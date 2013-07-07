@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
-using ATTrafficAnalayzer.VolumeModel;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for VSGraph.xaml
@@ -18,14 +19,14 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly SettingsTray _settings;
         private readonly string _configName;
-        private VolumeDbHelper _dbHelper;
+        private DbHelper _dbHelper;
 
         public VsGraph(SettingsTray settings, string configName)
         {
             _settings = settings;
             _configName = configName;
             
-            _dbHelper = VolumeDbHelper.GetDbHelper();
+            _dbHelper = DbHelper.GetDbHelper();
 
             InitializeComponent();
           

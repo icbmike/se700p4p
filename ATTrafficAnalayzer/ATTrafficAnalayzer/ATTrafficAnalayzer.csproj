@@ -73,11 +73,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
+    <Compile Include="Models\DataTableHelper.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Controls\ApproachControl.xaml.cs">
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Core\WindowSettings.cs" />
+    <Compile Include="Views\Controls\Parago\WindowSettings.cs" />
     <Compile Include="Views\Controls\ReportList.xaml.cs">
       <DependentUpon>ReportList.xaml</DependentUpon>
     </Compile>
@@ -85,11 +86,11 @@
     <Compile Include="Models\Configuration\Approach.cs" />
     <Compile Include="Models\Volume\DateTimeRecord.cs" />
     <Compile Include="Models\Settings\IntervalConverter.cs" />
-    <Compile Include="ProgressDialog\ProgressDialog.xaml.cs">
+    <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProgressDialog\ProgressDialogResult.cs" />
-    <Compile Include="ProgressDialog\ProgressDialogSettings.cs" />
+    <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogResult.cs" />
+    <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogSettings.cs" />
     <Compile Include="Models\Volume\RecordFactory.cs" />
     <Compile Include="Models\Volume\RecordType.cs" />
     <Compile Include="Views\Screens\ReportConfigurationScreen.xaml.cs">
@@ -125,7 +126,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ProgressDialog\ProgressDialog.xaml">
+    <Page Include="Views\Controls\Parago\ProgressDialog\ProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -9,7 +9,7 @@
 //
 
 
-namespace Parago.Windows
+namespace ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog
 {
 	public class ProgressDialogSettings
 	{

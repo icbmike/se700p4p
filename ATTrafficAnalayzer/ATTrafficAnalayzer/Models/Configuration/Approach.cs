@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace ATTrafficAnalayzer.VolumeModel
+namespace ATTrafficAnalayzer.Models.Configuration
 {
     public class Approach
     {

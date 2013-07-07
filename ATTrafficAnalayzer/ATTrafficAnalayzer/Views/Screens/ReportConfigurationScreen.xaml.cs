@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
-using ATTrafficAnalayzer.VolumeModel;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Views.Controls;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for ReportConfigurationScreen.xaml
@@ -17,8 +18,9 @@ namespace ATTrafficAnalayzer.Views
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
         private int _selectedIntersection;
-        readonly VolumeDbHelper _dbHelper;
 
+        private readonly DbHelper _dbHelper;
+        private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
 
         #region events
 
@@ -61,8 +63,8 @@ namespace ATTrafficAnalayzer.Views
             _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
 
-            _dbHelper = VolumeDbHelper.GetDbHelper();
-            foreach (var detector in VolumeDbHelper.GetIntersections())
+            _dbHelper = DbHelper.GetDbHelper();
+            foreach (var detector in DbHelper.GetIntersections())
             {
                 _intersectionList.Add(detector);
             }
@@ -75,7 +77,7 @@ namespace ATTrafficAnalayzer.Views
         private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-            foreach (var detector in VolumeDbHelper.GetDetectorsAtIntersection(_selectedIntersection))
+            foreach (var detector in DbHelper.GetDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }
@@ -173,7 +175,7 @@ namespace ATTrafficAnalayzer.Views
             }
 
             _dbHelper.addConfiguration(new ReportConfiguration(configName, _selectedIntersection, approaches));
-            _dbHelper.SyncDatabase();
+            _dataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 

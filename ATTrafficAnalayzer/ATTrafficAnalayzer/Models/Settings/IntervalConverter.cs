@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace ATTrafficAnalayzer
+namespace ATTrafficAnalayzer.Models.Settings
 {
     class IntervalConverter : MarkupExtension, IValueConverter 
 

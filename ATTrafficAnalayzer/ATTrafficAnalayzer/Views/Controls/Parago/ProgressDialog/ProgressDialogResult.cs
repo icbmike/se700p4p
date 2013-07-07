@@ -11,7 +11,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Parago.Windows
+namespace ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog
 {
 	internal class ProgressDialogResult
 	{

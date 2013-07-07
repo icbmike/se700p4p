@@ -4,9 +4,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Data;
-using ATTrafficAnalayzer.VolumeModel;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Views.Screens
 {
 
     /// <summary>
@@ -16,17 +18,17 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly SettingsTray _settings;
 
-        private VolumeDbHelper _volumeDbHelper;
+        private DbHelper _dbHelper;
         private ReportConfiguration _configuration;
 
 
         public VsTable(SettingsTray settings, string configName)
         {
             _settings = settings;
-            _volumeDbHelper = VolumeDbHelper.GetDbHelper();
+            _dbHelper = DbHelper.GetDbHelper();
 
             //Retrieve the config for the supplied name
-            _configuration = _volumeDbHelper.GetConfiguration(configName);
+            _configuration = _dbHelper.GetConfiguration(configName);
 
             InitializeComponent();
 
@@ -91,12 +93,12 @@ namespace ATTrafficAnalayzer.Views
             {
                 if (approachVolumes.Count == 0)
                 {
-                    approachVolumes.AddRange(_volumeDbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                    approachVolumes.AddRange(_dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
                                                                   _settings.EndDate));
                 }
                 else
                 {
-                    List<int> detectorVolumes = _volumeDbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                    List<int> detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
                                                                   _settings.EndDate);
                     approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                 }

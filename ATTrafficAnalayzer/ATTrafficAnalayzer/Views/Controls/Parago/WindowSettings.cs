@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Parago.Windows.Controls
+namespace ATTrafficAnalayzer.Views.Controls.Parago
 {
 	public class WindowSettings
 	{

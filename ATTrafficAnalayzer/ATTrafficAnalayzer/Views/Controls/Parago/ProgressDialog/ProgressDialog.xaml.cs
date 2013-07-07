@@ -14,7 +14,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Parago.Windows
+namespace ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog
 {
 	public partial class ProgressDialog : Window
 	{

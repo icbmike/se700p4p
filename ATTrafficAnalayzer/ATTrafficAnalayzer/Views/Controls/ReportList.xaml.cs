@@ -1,34 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ATTrafficAnalayzer.VolumeModel;
+using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Views.Screens;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
     /// Interaction logic for ReportList.xaml
     /// </summary>
     public partial class ReportList : UserControl
     {
-        private VolumeDbHelper _volumeDbHelper;
+        private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
+
         public ReportList()
         {
-            _volumeDbHelper =  VolumeDbHelper.GetDbHelper();
             InitializeComponent();
             DataContext = this;
-            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
-            standardReportsListBox.DisplayMemberPath = "name";
+
+            var dv = _dataTableHelper.GetConfigDataView();
+            standardReportsTreeView.ItemsSource = dv;
+            standardReportsTreeView.DisplayMemberPath = "name";
         }
 
         #region events
@@ -62,14 +55,14 @@ namespace ATTrafficAnalayzer.Views
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
         {
-            var item = standardReportsListBox.SelectedItem.ToString();
+            var item = standardReportsTreeView.SelectedItem.ToString();
             Console.WriteLine("Rename: {0}", item);
         }
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            var selectedRow = standardReportsTreeView.SelectedItem as DataRowView;
             var selectedItem = selectedRow.Row["name"] as string;
 
             //Configure the message box to be displayed 
@@ -85,7 +78,8 @@ namespace ATTrafficAnalayzer.Views
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _volumeDbHelper.RemoveConfig(selectedItem);
+                    //TODO Fix now
+                    //_dataTableHelper.RemoveConfig(selectedItem);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -104,7 +98,7 @@ namespace ATTrafficAnalayzer.Views
 
         public string GetSelectedConfiguration()
         {
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            var selectedRow = standardReportsTreeView.SelectedItem as DataRowView;
             return selectedRow == null ? null : selectedRow.Row["name"] as string;
         }
 
@@ -115,7 +109,7 @@ namespace ATTrafficAnalayzer.Views
 
         public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
         {
-            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
+            standardReportsTreeView.ItemsSource = _dataTableHelper.GetConfigDataView();
         }
     }
 }
