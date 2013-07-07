@@ -27,8 +27,8 @@ namespace ATTrafficAnalayzer.Views
             _volumeDbHelper =  VolumeDbHelper.GetDbHelper();
             InitializeComponent();
             DataContext = this;
-            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
-            standardReportsListBox.DisplayMemberPath = "name";
+            standardReportsTreeView.ItemsSource = _volumeDbHelper.GetConfigs();
+            standardReportsTreeView.DisplayMemberPath = "name";
         }
 
         #region events
@@ -62,14 +62,14 @@ namespace ATTrafficAnalayzer.Views
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
         {
-            var item = standardReportsListBox.SelectedItem.ToString();
+            var item = standardReportsTreeView.SelectedItem.ToString();
             Console.WriteLine("Rename: {0}", item);
         }
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            var selectedRow = standardReportsTreeView.SelectedItem as DataRowView;
             var selectedItem = selectedRow.Row["name"] as string;
 
             //Configure the message box to be displayed 
@@ -104,7 +104,7 @@ namespace ATTrafficAnalayzer.Views
 
         public string GetSelectedConfiguration()
         {
-            var selectedRow = standardReportsListBox.SelectedItem as DataRowView;
+            var selectedRow = standardReportsTreeView.SelectedItem as DataRowView;
             return selectedRow == null ? null : selectedRow.Row["name"] as string;
         }
 
@@ -115,7 +115,7 @@ namespace ATTrafficAnalayzer.Views
 
         public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
         {
-            standardReportsListBox.ItemsSource = _volumeDbHelper.GetConfigs();
+            standardReportsTreeView.ItemsSource = _volumeDbHelper.GetConfigs();
         }
     }
 }

@@ -70,8 +70,19 @@
                     <ScrollBar Name="scrollBar1"
                                Width="20"
                                DockPanel.Dock="Right" />
-                    <ListView Name="standardReportsListBox"
-                              DockPanel.Dock="Right" />
+                    <TreeView Name="standardReportsTreeView"
+                              DockPanel.Dock="Right">
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Edit"
+                                          Click="editBtn_Click" />
+                                <MenuItem Header="Delete"
+                                          Click="deleteBtn_Click" />
+                                <MenuItem Header="Rename"
+                                          Click="renameBtn_Click" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
                 </DockPanel>
             </TabItem>
             <TabItem Header="Special Reports"
@@ -80,7 +91,7 @@
                     <ScrollBar Name="scrollBar2"
                                Width="20"
                                DockPanel.Dock="Right" />
-                    <ListView Name="specialReportsListBox"
+                    <TreeView Name="specialReportsTreeView"
                               ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
                               DockPanel.Dock="Right" />
                 </DockPanel>
