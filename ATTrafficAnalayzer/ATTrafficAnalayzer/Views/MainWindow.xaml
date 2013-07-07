@@ -13,7 +13,8 @@
         Width="1000"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Icon="..\Resources\Images\at-logo.png">
+        Icon="..\Resources\Images\at-logo.png"
+        Loaded="Window_Loaded">
 
     <DockPanel LastChildFill="True">
 

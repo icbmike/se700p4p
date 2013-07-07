@@ -18,7 +18,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
         private int _selectedIntersection;
-        readonly VolumeDbHelper _dbHelper;
+        readonly DbHelper _dbHelper;
 
 
         #region events
@@ -62,8 +62,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
 
-            _dbHelper = VolumeDbHelper.GetDbHelper();
-            foreach (var detector in VolumeDbHelper.GetIntersections())
+            _dbHelper = DbHelper.GetDbHelper();
+            foreach (var detector in DbHelper.GetIntersections())
             {
                 _intersectionList.Add(detector);
             }
@@ -76,7 +76,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-            foreach (var detector in VolumeDbHelper.GetDetectorsAtIntersection(_selectedIntersection))
+            foreach (var detector in DbHelper.GetDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }

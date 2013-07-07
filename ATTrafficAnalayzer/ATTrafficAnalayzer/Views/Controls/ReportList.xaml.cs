@@ -12,13 +12,13 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class ReportList : UserControl
     {
-        private VolumeDbHelper _volumeDbHelper;
+        private DbHelper _dbHelper;
         public ReportList()
         {
-            _volumeDbHelper =  VolumeDbHelper.GetDbHelper();
+            _dbHelper =  DbHelper.GetDbHelper();
             InitializeComponent();
             DataContext = this;
-            standardReportsTreeView.ItemsSource = _volumeDbHelper.GetConfigs();
+            standardReportsTreeView.ItemsSource = _dbHelper.GetConfigs();
             standardReportsTreeView.DisplayMemberPath = "name";
         }
 
@@ -76,7 +76,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _volumeDbHelper.RemoveConfig(selectedItem);
+                    _dbHelper.RemoveConfig(selectedItem);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -106,7 +106,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
         {
-            standardReportsTreeView.ItemsSource = _volumeDbHelper.GetConfigs();
+            standardReportsTreeView.ItemsSource = _dbHelper.GetConfigs();
         }
     }
 }

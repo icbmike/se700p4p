@@ -19,14 +19,14 @@ namespace ATTrafficAnalayzer.Views.Screens
     {
         private readonly SettingsTray _settings;
         private readonly string _configName;
-        private VolumeDbHelper _dbHelper;
+        private DbHelper _dbHelper;
 
         public VsGraph(SettingsTray settings, string configName)
         {
             _settings = settings;
             _configName = configName;
             
-            _dbHelper = VolumeDbHelper.GetDbHelper();
+            _dbHelper = DbHelper.GetDbHelper();
 
             InitializeComponent();
           

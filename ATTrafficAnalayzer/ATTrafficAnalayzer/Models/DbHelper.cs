@@ -11,29 +11,29 @@ using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
-    class VolumeDbHelper
+    class DbHelper
     {
         private const string DbPath = "Data Source=TAdb.db3";
 
         SQLiteDataAdapter _configsDataAdapter;
         private DataSet _configsDataSet = new DataSet();
-        private static VolumeDbHelper _instance;
+        private static DbHelper _instance;
         private static readonly object SyncLock = new object();
 
-        public static VolumeDbHelper GetDbHelper()
+        public static DbHelper GetDbHelper()
         {
             lock (SyncLock)
             {
                 if (_instance == null)
                 {
-                    _instance =  new VolumeDbHelper();
+                    _instance =  new DbHelper();
                 }
                 return _instance;    
             }
             
         }
 
-        private VolumeDbHelper()
+        private DbHelper()
         {
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
@@ -254,6 +254,25 @@ namespace ATTrafficAnalayzer.Models
             }
             conn.Close();
             return volume;
+        }
+
+        public static bool VolumesTableEmpty()
+        {
+            long reader;
+
+            using (var dbConnection = new SQLiteConnection(DbPath))
+            {
+                dbConnection.Open();
+
+                const string volumesNotEmptySql = "SELECT EXISTS(SELECT 1 FROM volumes LIMIT 1);";
+                var volumesNotEmptyCmd = new SQLiteCommand(dbConnection) { CommandText = volumesNotEmptySql };
+
+                reader = (Int64)volumesNotEmptyCmd.ExecuteScalar();
+
+                dbConnection.Close();
+            }
+
+            return !reader.Equals(1);
         }
 
         #endregion
