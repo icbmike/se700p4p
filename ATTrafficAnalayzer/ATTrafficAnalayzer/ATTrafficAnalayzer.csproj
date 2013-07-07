@@ -73,6 +73,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
+    <Compile Include="Models\DataTableHelper.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Controls\ApproachControl.xaml.cs">
       <DependentUpon>ApproachControl.xaml</DependentUpon>

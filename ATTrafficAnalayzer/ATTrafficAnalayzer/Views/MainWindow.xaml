@@ -6,8 +6,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Height="800"
-        xmlns:ta="clr-namespace:ATTrafficAnalayzer"
-        xmlns:ta.Views="clr-namespace:ATTrafficAnalayzer.Views"
         xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
         xmlns:controls="clr-namespace:ATTrafficAnalayzer.Views.Controls"
         Width="1000"
@@ -132,9 +130,8 @@
             </ToolBarPanel>
         </Canvas>
 
-        <controls:ReportList
-            x:Name="ReportList"
-            EditConfigurationEvent="ReportList_OnEditConfigurationEvent"/>
+        <controls:ReportList x:Name="ReportList"
+                             EditConfigurationEvent="ReportList_OnEditConfigurationEvent" />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="mainContentControl"

@@ -18,8 +18,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
         private int _selectedIntersection;
-        readonly DbHelper _dbHelper;
 
+        private readonly DbHelper _dbHelper;
+        private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
 
         #region events
 
@@ -174,7 +175,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             _dbHelper.addConfiguration(new ReportConfiguration(configName, _selectedIntersection, approaches));
-            _dbHelper.SyncDatabase();
+            _dataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 
