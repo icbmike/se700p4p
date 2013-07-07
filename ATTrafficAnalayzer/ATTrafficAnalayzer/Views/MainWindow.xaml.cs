@@ -25,11 +25,39 @@ namespace ATTrafficAnalayzer.Views
             InitializeComponent();
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
+        }
+        
+        private void BulkImport()
+        {
+            var messageBoxText = "There is currently no volume data in the database. Would you like to import this data now?";
+            const string caption = "Import Volume Store files";
+            const MessageBoxButton button = MessageBoxButton.YesNo;
+            const MessageBoxImage icon = MessageBoxImage.Question;
 
-            mainContentControl.Content = new WelcomeScreen();
+            MessageBoxResult result;
+            while (true)
+            {
+                result = MessageBox.Show(messageBoxText, caption, button, icon);
+                messageBoxText = "Would you like to import another file?";
+
+                if (result.Equals(MessageBoxResult.Yes))
+                {
+                    ImportFile();
+                }
+                else
+                {
+                    break;
+                }
+
+            }
         }
 
         private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ImportFile();
+        }
+
+        private void ImportFile()
         {
             // Configure open file dialog box 
             var dlg = new OpenFileDialog
@@ -43,20 +71,22 @@ namespace ATTrafficAnalayzer.Views
             // Show open file dialog box 
             Nullable<bool> result = dlg.ShowDialog();
 
+            
+
             // Process open file dialog box results 
             if (result == true)
             {
-                var res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) =>
+                //TODO error at this point
+                var res = ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
                 {
-
-                    ProgressDialog.Report(bw, "Reading Files");
+                    ProgressDialog.Report(b, "Reading Files");
 
                     // Open document 
                     var filename = dlg.FileName;
-                    VolumeDbHelper.ImportFile(filename);
-                    //_volumeStore.readFile(bw, filename);
+                    DbHelper.ImportFile(filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
+            
         }
 
         private void ChangeScreen(UserControl screen)
@@ -86,8 +116,6 @@ namespace ATTrafficAnalayzer.Views
                 MessageBox.Show("Select a report from the list on the left");
             }
         }
-
-
 
         private void HomeImageMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -133,6 +161,11 @@ namespace ATTrafficAnalayzer.Views
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+                BulkImport();
         }
     }
 }
