@@ -15,60 +15,57 @@ namespace ATTrafficAnalayzer.Views
     /// </summary>
     public partial class MainWindow
     {
-
- 
-
-        public MainWindow ()
+        public MainWindow()
         {
-            Logger.Clear ();
+            Logger.Clear();
 
-            InitializeComponent ();
+            InitializeComponent();
             DataContext = this;
-            
+
             InitializeComponent();
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
 
-            mainContentControl.Content = new WelcomeScreen ();
+            mainContentControl.Content = new WelcomeScreen();
         }
 
-        private void fileImportMenuItem_Click (object sender, RoutedEventArgs e)
+        private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box 
             var dlg = new OpenFileDialog
                 {
                     FileName = "",
-                    InitialDirectory = Environment.GetFolderPath (Environment.SpecialFolder.UserProfile),
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     DefaultExt = ".VS",
                     Filter = "Volume Store Files (.VS)|*.VS"
                 };
 
             // Show open file dialog box 
-            Nullable<bool> result = dlg.ShowDialog ();
+            Nullable<bool> result = dlg.ShowDialog();
 
             // Process open file dialog box results 
             if (result == true)
             {
-                var res = ProgressDialog.Execute (this, "Importing VS File", (bw, we) =>
+                var res = ProgressDialog.Execute(this, "Importing VS File", (bw, we) =>
                 {
 
-                    ProgressDialog.Report (bw, "Reading Files");
+                    ProgressDialog.Report(bw, "Reading Files");
 
                     // Open document 
                     var filename = dlg.FileName;
-                    VolumeDbHelper.ImportFile (filename);
+                    VolumeDbHelper.ImportFile(filename);
                     //_volumeStore.readFile(bw, filename);
                 }, ProgressDialogSettings.WithSubLabelAndCancel);
             }
         }
 
-        private void ChangeScreen (UserControl screen)
+        private void ChangeScreen(UserControl screen)
         {
-            if (screen.GetType () != mainContentControl.Content.GetType ())
+            if (screen.GetType() != mainContentControl.Content.GetType())
                 mainContentControl.Content = screen;
         }
 
-        private void SwitchScreen (object sender, RoutedEventArgs e)
+        private void SwitchScreen(object sender, RoutedEventArgs e)
         {
             var settings = SettingsTray.DataContext as SettingsTray;
             //Get selected Configuration
@@ -90,19 +87,19 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
-        
 
-        private void HomeImageMouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
+
+        private void HomeImageMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            ChangeScreen (new WelcomeScreen ());
+            ChangeScreen(new WelcomeScreen());
         }
 
-        private void FileQuitMenuItem_OnClick (object sender, RoutedEventArgs e)
+        private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown ();
+            Application.Current.Shutdown();
         }
 
-        private void HelpAboutUsMenuItem_OnClick (object sender, RoutedEventArgs e)
+        private void HelpAboutUsMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             // Configure the message box to be displayed 
             const string messageBoxText = "Auckland Transport Traffic Report Viewer\n\n" +
@@ -111,13 +108,13 @@ namespace ATTrafficAnalayzer.Views
             const MessageBoxButton button = MessageBoxButton.OK;
             const MessageBoxImage icon = MessageBoxImage.None;
 
-            MessageBox.Show (messageBoxText, caption, button, icon);
+            MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
-        private void MainToolbar_OnLoaded (object sender, RoutedEventArgs e)
+        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
         {
             var toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName ("OverflowGrid", toolBar) as FrameworkElement;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
