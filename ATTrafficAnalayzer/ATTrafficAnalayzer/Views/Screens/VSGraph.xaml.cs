@@ -21,6 +21,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly string _configName;
         private DbHelper _dbHelper;
 
+        private static Brush[] seriesColours = {Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black};
+
         public VsGraph(SettingsTray settings, string configName)
         {
             _settings = settings;
@@ -41,6 +43,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dates);
             datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
+            int brushCounter = 0;
             foreach (var approach in reportConfiguration.Approaches)
             {
                 var approachVolumes = new List<int>();
@@ -62,9 +65,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                 volumesDataSource.SetYMapping(y => y);
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
-                Plotter.AddLineGraph(compositeDataSource, new Pen(Brushes.Blue, 1),
-                  new CirclePointMarker { Size = 7.0, Fill = Brushes.Red },
+                
+                Plotter.AddLineGraph(compositeDataSource, new Pen(seriesColours[brushCounter % seriesColours.Count()], 1),
+                  new CirclePointMarker { Size = 7.0, Fill = seriesColours[(brushCounter + 1) % seriesColours.Count()] },
                   new PenDescription(approach.Name));
+                brushCounter++;
             }    
         }
     }
