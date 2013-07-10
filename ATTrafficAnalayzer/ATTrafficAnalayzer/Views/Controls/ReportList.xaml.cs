@@ -47,6 +47,20 @@ namespace ATTrafficAnalayzer.Views.Controls
                 ConfigToBeEdited = configToBeEdited;
             }
         }
+
+        public delegate void ExportConfigurationEventHandler(object sender, ExportConfigurationEventHandlerArgs args);
+
+        public event EditConfigurationEventHandler ExportEvent;
+        public class ExportConfigurationEventHandlerArgs
+        {
+            public string ConfigToBeExported { get; set; }
+
+            public ExportConfigurationEventHandlerArgs(string configToBeExported)
+            {
+                ConfigToBeExported = configToBeExported;
+            }
+        }
+
         #endregion
 
         private void newBtn_Click(object sender, RoutedEventArgs e)
@@ -113,6 +127,11 @@ namespace ATTrafficAnalayzer.Views.Controls
             
             standardReportsTreeView.ItemsSource = _dataTableHelper.GetConfigDataView();
             standardReportsTreeView.DisplayMemberPath = "name";
+        }
+
+        private void exportBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
     }
 }

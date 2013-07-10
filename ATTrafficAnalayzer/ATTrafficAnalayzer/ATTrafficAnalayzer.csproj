@@ -93,6 +93,7 @@
     <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogSettings.cs" />
     <Compile Include="Models\Volume\RecordFactory.cs" />
     <Compile Include="Models\Volume\RecordType.cs" />
+    <Compile Include="Views\CSVExporter.cs" />
     <Compile Include="Views\Screens\ReportConfigurationScreen.xaml.cs">
       <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
     </Compile>
