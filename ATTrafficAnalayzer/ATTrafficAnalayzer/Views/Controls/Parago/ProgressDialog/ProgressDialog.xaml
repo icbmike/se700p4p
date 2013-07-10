@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterOwner"
         Closing="OnClosing"
         ui:WindowSettings.HideCloseButton="True">
-	<Grid Margin="10">
+	<Grid Margin="5">
 		<TextBlock x:Name="TextLabel" Text="Loading..." TextTrimming="CharacterEllipsis" />
 		<TextBlock x:Name="SubTextLabel" Margin="0 18 0 0" Text="" FontStyle="Italic" Visibility="Collapsed" TextTrimming="CharacterEllipsis" />
 		<ProgressBar x:Name="ProgressBar" Margin="0 38 74 0" IsIndeterminate="True" />

@@ -58,12 +58,14 @@ namespace ATTrafficAnalayzer.Models
         {
             var configs = _configsDataTable.Rows;
             var rowToDelete = configs.Find(configToDelete);
+            Console.WriteLine("Deleting: " + rowToDelete["name"]);
             rowToDelete.Delete();
         }
 
         public void SyncConfigs()
         {
             _configsDataAdapter.Update(_configsDataTable);
+            _configsDataAdapter.Fill(_configsDataTable);
         }
 
         #endregion
