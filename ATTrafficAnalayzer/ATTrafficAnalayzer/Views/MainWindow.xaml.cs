@@ -166,5 +166,22 @@ namespace ATTrafficAnalayzer.Views
         {
                 BulkImport();
         }
+
+        private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+        {
+            var dlg = new SaveFileDialog()
+            {
+                FileName = "",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                DefaultExt = ".csv",
+                Filter = "CSV Files (.csv)|*.csv"
+            };
+
+            if (dlg.ShowDialog() == true)
+            {
+                var csvExporter = new CSVExporter(dlg.FileName, SettingsTray.DataContext as SettingsTray, args.ConfigToBeEdited);
+                csvExporter.DoExport();    
+            }          
+        }
     }
 }

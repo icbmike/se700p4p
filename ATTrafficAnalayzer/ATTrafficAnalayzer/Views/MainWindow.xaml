@@ -131,7 +131,8 @@
         </Canvas>
 
         <controls:ReportList x:Name="ReportList"
-                             EditConfigurationEvent="ReportList_OnEditConfigurationEvent" />
+                             EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
+                             ExportEvent="ReportList_OnExportEvent"/>
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="MainContentControl"

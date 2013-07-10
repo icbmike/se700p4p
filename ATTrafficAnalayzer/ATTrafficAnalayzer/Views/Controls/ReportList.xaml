@@ -80,6 +80,8 @@
                                           Click="deleteBtn_Click" />
                                 <MenuItem Header="Rename"
                                           Click="renameBtn_Click" />
+                                <MenuItem Header="Export to CSV"
+                                          Click="exportBtn_Click"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                     </TreeView>
