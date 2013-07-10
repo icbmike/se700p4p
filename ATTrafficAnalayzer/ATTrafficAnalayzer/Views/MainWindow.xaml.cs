@@ -24,6 +24,8 @@ namespace ATTrafficAnalayzer.Views
             InitializeComponent();
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
+
+            ChangeScreen(new WelcomeScreen());
         }
         
         private void BulkImport()
@@ -164,7 +166,7 @@ namespace ATTrafficAnalayzer.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-                BulkImport();
+              //  BulkImport();
         }
 
         private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
