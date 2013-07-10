@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Views.Screens;
+using System.Linq;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -16,7 +17,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public ReportList()
         {
-            InitializeComponent();
+            InitializeComponent();            
             DataContext = this;
 
             var dv = _dataTableHelper.GetConfigDataView();
@@ -79,7 +80,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 case MessageBoxResult.OK:
                     //TODO Fix now
-                    //_dataTableHelper.RemoveConfig(selectedItem);
+                    _dataTableHelper.RemoveConfig(selectedItem);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -109,7 +110,9 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
         {
+            
             standardReportsTreeView.ItemsSource = _dataTableHelper.GetConfigDataView();
+            standardReportsTreeView.DisplayMemberPath = "name";
         }
     }
 }

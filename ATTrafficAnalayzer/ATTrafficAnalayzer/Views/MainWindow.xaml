@@ -134,7 +134,7 @@
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent" />
 
         <ContentControl DockPanel.Dock="Right"
-                        x:Name="mainContentControl"
+                        x:Name="MainContentControl"
                         Background="White" />
 
     </DockPanel>

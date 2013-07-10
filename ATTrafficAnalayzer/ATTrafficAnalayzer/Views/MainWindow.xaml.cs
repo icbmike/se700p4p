@@ -18,8 +18,7 @@ namespace ATTrafficAnalayzer.Views
         public MainWindow()
         {
             Logger.Clear();
-
-            InitializeComponent();
+            
             DataContext = this;
 
             InitializeComponent();
@@ -91,8 +90,8 @@ namespace ATTrafficAnalayzer.Views
 
         private void ChangeScreen(UserControl screen)
         {
-            if (screen.GetType() != mainContentControl.Content.GetType())
-                mainContentControl.Content = screen;
+           // if (screen.GetType() != MainContentControl.Content.GetType())
+                MainContentControl.Content = screen;
         }
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
