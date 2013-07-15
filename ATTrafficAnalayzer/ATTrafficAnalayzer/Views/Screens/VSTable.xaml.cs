@@ -57,26 +57,37 @@ namespace ATTrafficAnalayzer.Views.Screens
                 // SUMMARY BOX
                 var summary = new TextBlock { TextWrapping = TextWrapping.NoWrap };
                 summary.Inlines.Add(string.Format("AM Peak: {0}\n", GetPeak(approach, 0, 12)));
-                summary.Inlines.Add(string.Format("PM Peak: {0}\n", GetPeak(approach, 0, 12)));
+                summary.Inlines.Add(string.Format("PM Peak: {0}\n", GetPeak(approach, 13, 24)));
                 ContainerStackPanel.Children.Add(summary);
 
                 // DATA GRID
-                var dg = new DataGrid
+                var dgAm = new DataGrid
                 {
-                    ItemsSource = GenerateVsTable(approach).AsDataView(),
+                    ItemsSource = GenerateVsTable(approach, 0, 12).AsDataView(),
                     Margin = new Thickness(10),
                     Width = Double.NaN,
                     Height = 280,
                     ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
                     IsReadOnly = true
                 };
-                ContainerStackPanel.Children.Add(dg);    
+                ContainerStackPanel.Children.Add(dgAm);
+
+                var dgPm = new DataGrid
+                {
+                    ItemsSource = GenerateVsTable(approach, 12, 24).AsDataView(),
+                    Margin = new Thickness(10),
+                    Width = Double.NaN,
+                    Height = 280,
+                    ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
+                    IsReadOnly = true
+                };
+                ContainerStackPanel.Children.Add(dgPm);
             }           
 
             Logger.Info("constructed view", "VS table");
         }
 
-        private DataTable GenerateVsTable(Approach approach)
+        private DataTable GenerateVsTable(Approach approach, int start, int end)
         {
 
             // Create a DataGrid
@@ -100,7 +111,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             var approachVolumes = GetApproachVolumesList(approach);
 
             // Get volume store data 12 hours
-            for (var i = 0; i < 12; i++)
+            for (var i = start; i < end; i++)
             {
                 var row = vsDataTable.NewRow();
                 for (var j = 0; j < 13; j++)
@@ -108,7 +119,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                     if (j == 0)
                         row[j] = ": " + _settings.Interval * i;
                     else
-                        row[j] = approachVolumes[i * 12 + j];
+                        row[j] = approachVolumes[i * 12 + j - 1];
                 }
                 vsDataTable.Rows.Add(row);
             }
@@ -143,9 +154,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             var peak = 0;
             var approachVolumes = GetApproachVolumesList(approach);
 
-            for (var i = 0; i < 12; i++)
+            for (var i = start; i < end; i++)
             {
-                for (var j = 1; j < 13; j++)
+                for (var j = 0; j < 12; j++)
                 {
                     if (approachVolumes[i * 12 + j] > peak)
                         peak = approachVolumes[i * 12 + j];
