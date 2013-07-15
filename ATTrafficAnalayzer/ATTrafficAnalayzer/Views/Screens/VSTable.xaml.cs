@@ -37,15 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var approach in _configuration.Approaches)
             {
-                var dg = new DataGrid
-                {
-                    ItemsSource = GenerateVsTable(approach).AsDataView(),
-                    Margin = new Thickness(10),
-                    Width = Double.NaN,
-                    Height = 280,
-                    ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
-                    IsReadOnly = true
-                };
+                // HEADING
                 var label = new Label();
                 var labelText = approach.Name + " - Detectors: ";
                 for (var i = 0; i < approach.Detectors.Count; i++)
@@ -61,15 +53,32 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
                 label.Content = labelText;
                 ContainerStackPanel.Children.Add(label);
+
+                // SUMMARY BOX
+                var summary = new TextBlock { TextWrapping = TextWrapping.NoWrap };
+                summary.Inlines.Add(string.Format("AM Peak: {0}\n", GetPeak(approach, 0, 12)));
+                summary.Inlines.Add(string.Format("PM Peak: {0}\n", GetPeak(approach, 0, 12)));
+                ContainerStackPanel.Children.Add(summary);
+
+                // DATA GRID
+                var dg = new DataGrid
+                {
+                    ItemsSource = GenerateVsTable(approach).AsDataView(),
+                    Margin = new Thickness(10),
+                    Width = Double.NaN,
+                    Height = 280,
+                    ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
+                    IsReadOnly = true
+                };
                 ContainerStackPanel.Children.Add(dg);    
             }           
 
             Logger.Info("constructed view", "VS table");
         }
 
-        public DataTable GenerateVsTable(Approach approach)
+        private DataTable GenerateVsTable(Approach approach)
         {
-            
+
             // Create a DataGrid
             var vsDataTable = new DataTable();
 
@@ -88,23 +97,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 dates.Add(date);
             }
-            var approachVolumes = new List<int>();
-            foreach (var detector in approach.Detectors)
-            {
-                if (approachVolumes.Count == 0)
-                {
-                    approachVolumes.AddRange(_dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
-                                                                  _settings.EndDate));
-                }
-                else
-                {
-                    List<int> detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
-                                                                  _settings.EndDate);
-                    approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
-                }
+            var approachVolumes = GetApproachVolumesList(approach);
 
-            }
-            // Get volume store data //12 hours
+            // Get volume store data 12 hours
             for (var i = 0; i < 12; i++)
             {
                 var row = vsDataTable.NewRow();
@@ -120,7 +115,44 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             return vsDataTable;
         }
-    
 
+        private List<int> GetApproachVolumesList(Approach approach)
+        {
+            var approachVolumes = new List<int>();
+            foreach (var detector in approach.Detectors)
+            {
+                if (approachVolumes.Count == 0)
+                {
+                    approachVolumes.AddRange(_dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                                                                  _settings.EndDate));
+                }
+                else
+                {
+                    var detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                                                                  _settings.EndDate);
+                    approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
+                }
+
+            }
+
+            return approachVolumes;
+        } 
+
+        private int GetPeak(Approach approach, int start, int end)
+        {
+            var peak = 0;
+            var approachVolumes = GetApproachVolumesList(approach);
+
+            for (var i = 0; i < 12; i++)
+            {
+                for (var j = 1; j < 13; j++)
+                {
+                    if (approachVolumes[i * 12 + j] > peak)
+                        peak = approachVolumes[i * 12 + j];
+                }
+            }
+
+            return peak;
+        }
     }
 }
