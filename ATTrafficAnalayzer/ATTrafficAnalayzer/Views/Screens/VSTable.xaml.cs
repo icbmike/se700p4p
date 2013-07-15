@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Data;
+using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -36,7 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 // HEADER
                 var header = new TextBlock { TextWrapping = TextWrapping.NoWrap };
-                header.Inlines.Add(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)));
+                header.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
                 ContainerStackPanel.Children.Add(header);
 
                 // DATA
@@ -50,7 +51,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void CreateVolumeDisplay(Approach approach, string heading, DataGrid dataGrid)
         {
             var description = new TextBlock { TextWrapping = TextWrapping.NoWrap };
-            description.Inlines.Add(heading);
+            description.Inlines.Add(new Italic(new Run(heading)));
             ContainerStackPanel.Children.Add(description);
             ContainerStackPanel.Children.Add(dataGrid);
         }
