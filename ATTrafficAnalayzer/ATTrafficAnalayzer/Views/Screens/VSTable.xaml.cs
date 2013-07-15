@@ -10,160 +10,145 @@ using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
-
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
     /// </summary>
     public partial class VsTable
     {
         private readonly SettingsTray _settings;
+        private readonly DbHelper _dbHelper;
+        private readonly ReportConfiguration _configuration;
 
-        private DbHelper _dbHelper;
-        private ReportConfiguration _configuration;
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="configName"></param>
         public VsTable(SettingsTray settings, string configName)
         {
             _settings = settings;
             _dbHelper = DbHelper.GetDbHelper();
-
-            //Retrieve the config for the supplied name
             _configuration = _dbHelper.GetConfiguration(configName);
 
             InitializeComponent();
 
-            var dateLabel = new Label { Content = string.Format("Day: {0} Time range: {1}", "", ""), Margin = new Thickness(10) };
-            ContainerStackPanel.Children.Add(dateLabel);
-
             foreach (var approach in _configuration.Approaches)
             {
-                // HEADING
-                var label = new Label();
-                var labelText = approach.Name + " - Detectors: ";
-                for (var i = 0; i < approach.Detectors.Count; i++)
-                {
-                    if ((i + 1) == approach.Detectors.Count)
-                    {
-                        labelText += approach.Detectors[i];
-                    }
-                    else
-                    {
-                        labelText += approach.Detectors[i] + ", ";
-                    }
-                }
-                label.Content = labelText;
-                ContainerStackPanel.Children.Add(label);
+                // HEADER
+                var header = new TextBlock { TextWrapping = TextWrapping.NoWrap };
+                header.Inlines.Add(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)));
+                ContainerStackPanel.Children.Add(header);
 
-                // SUMMARY BOX
-                var summary = new TextBlock { TextWrapping = TextWrapping.NoWrap };
-                summary.Inlines.Add(string.Format("AM Peak: {0}\n", GetPeak(approach, 0, 12)));
-                summary.Inlines.Add(string.Format("PM Peak: {0}\n", GetPeak(approach, 13, 24)));
-                ContainerStackPanel.Children.Add(summary);
-
-                // DATA GRID
-                var dgAm = new DataGrid
-                {
-                    ItemsSource = GenerateVsTable(approach, 0, 12).AsDataView(),
-                    Margin = new Thickness(10),
-                    Width = Double.NaN,
-                    Height = 280,
-                    ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
-                    IsReadOnly = true
-                };
-                ContainerStackPanel.Children.Add(dgAm);
-
-                var dgPm = new DataGrid
-                {
-                    ItemsSource = GenerateVsTable(approach, 12, 24).AsDataView(),
-                    Margin = new Thickness(10),
-                    Width = Double.NaN,
-                    Height = 280,
-                    ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
-                    IsReadOnly = true
-                };
-                ContainerStackPanel.Children.Add(dgPm);
+                // DATA
+                CreateVolumeDisplay(approach, string.Format("AM Peak: {0}\n", GetPeak(approach, 12, 0)), CreateVsTable(approach, 12, 0));
+                CreateVolumeDisplay(approach, string.Format("PM Peak: {0}\n", GetPeak(approach, 12, 12)), CreateVsTable(approach, 12, 12));
             }           
 
             Logger.Info("constructed view", "VS table");
         }
 
-        private DataTable GenerateVsTable(Approach approach, int start, int end)
+        private void CreateVolumeDisplay(Approach approach, string heading, DataGrid dataGrid)
         {
+            var description = new TextBlock { TextWrapping = TextWrapping.NoWrap };
+            description.Inlines.Add(heading);
+            ContainerStackPanel.Children.Add(description);
+            ContainerStackPanel.Children.Add(dataGrid);
+        }
 
-            // Create a DataGrid
+        /// <summary>
+        /// Create a Data Grid to display volume store data
+        /// </summary>
+        /// <param name="approach"></param>
+        /// <param name="limit">number of records</param>
+        /// <param name="offset">starting hour</param>
+        /// <returns>a datagrid to which displays the volume data</returns>
+        private DataGrid CreateVsTable(Approach approach, int limit, int offset)
+        {
+            return new DataGrid
+            {
+                ItemsSource = GenerateVsTable(approach, limit, offset).AsDataView(),
+                Margin = new Thickness(10),
+                Width = Double.NaN,
+                Height = 280,
+                ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
+                IsReadOnly = true
+            };
+        }
+
+        /// <summary>
+        /// Populate the Data Grid with volume data
+        /// </summary>
+        /// <param name="approach"></param>
+        /// <param name="limit">number of records</param>
+        /// <param name="offset">starting hour</param>
+        /// <returns>A DataTable which displays volume data</returns>
+        private DataTable GenerateVsTable(Approach approach, int limit, int offset)
+        {
             var vsDataTable = new DataTable();
 
-            // Set column headings
+            // Column headings
             for (var i = 0; i <= 12; i++)
-            {
-                if (i == 0)
-                    vsDataTable.Columns.Add("_", typeof(string));
-                else
-                    vsDataTable.Columns.Add((i - 1).ToString(), typeof(string));
-            }
+                vsDataTable.Columns.Add(i == 0 ? "-" : string.Format("{0} hours", i - 1), typeof(string));
 
             // List dates
             var dates = new List<DateTime>();
             for (var date = _settings.StartDate; date < _settings.EndDate; date = date.AddMinutes(_settings.Interval))
-            {
                 dates.Add(date);
-            }
-            var approachVolumes = GetApproachVolumesList(approach);
 
             // Get volume store data 12 hours
-            for (var i = start; i < end; i++)
+            var approachVolumes = GetVolumesList(approach);
+            for (var i = offset; i < offset + limit; i++)
             {
                 var row = vsDataTable.NewRow();
                 for (var j = 0; j < 13; j++)
                 {
                     if (j == 0)
-                        row[j] = ": " + _settings.Interval * i;
+                        row[j] = _settings.Interval * i + " mins";
                     else
                         row[j] = approachVolumes[i * 12 + j - 1];
                 }
                 vsDataTable.Rows.Add(row);
             }
 
+            //TODO totals
+
             return vsDataTable;
         }
 
-        private List<int> GetApproachVolumesList(Approach approach)
+        /// <summary>
+        /// Retrieve volume data
+        /// </summary>
+        /// <param name="approach"></param>
+        /// <returns>a list of volumes for a single day</returns>
+        private List<int> GetVolumesList(Approach approach)
         {
             var approachVolumes = new List<int>();
             foreach (var detector in approach.Detectors)
             {
                 if (approachVolumes.Count == 0)
                 {
-                    approachVolumes.AddRange(_dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
-                                                                  _settings.EndDate));
+                    approachVolumes.AddRange(_dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate, _settings.EndDate));
                 }
                 else
                 {
-                    var detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
-                                                                  _settings.EndDate);
+                    var detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate, _settings.EndDate);
                     approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                 }
-
             }
-
             return approachVolumes;
         } 
 
-        private int GetPeak(Approach approach, int start, int end)
+        /// <summary>
+        /// Find the peak values for a specified approach
+        /// </summary>
+        /// <param name="approach"></param>
+        /// <param name="limit">number of records</param>
+        /// <param name="offset">starting hour</param>
+        /// <returns>max volume record</returns>
+        private int GetPeak(Approach approach, int limit, int offset)
         {
-            var peak = 0;
-            var approachVolumes = GetApproachVolumesList(approach);
-
-            for (var i = start; i < end; i++)
-            {
-                for (var j = 0; j < 12; j++)
-                {
-                    if (approachVolumes[i * 12 + j] > peak)
-                        peak = approachVolumes[i * 12 + j];
-                }
-            }
-
-            return peak;
+            var volumesList = GetVolumesList(approach);
+            return volumesList.GetRange(offset * 12, limit * 12).Max();
         }
     }
 }
