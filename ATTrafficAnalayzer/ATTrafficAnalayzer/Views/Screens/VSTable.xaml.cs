@@ -114,15 +114,15 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             // Get volume store data 12 hours
             var approachVolumes = GetVolumesList(approach);
-            for (var i = 0; i < 12; i++)
+            for (var rowIndex = 0; rowIndex < 12; rowIndex++)
             {
                 var row = vsDataTable.NewRow();
-                for (var j = 0; j < limit + 1; j++)
+                for (var columnIndex = 0; columnIndex < limit + 1; columnIndex++)
                 {
-                    if (j == 0)
-                        row[j] = _settings.Interval * i + " mins";
+                    if (columnIndex == 0)
+                        row[columnIndex] = _settings.Interval * rowIndex + " mins";
                     else
-                        row[j] = approachVolumes[i * 12 + j + offset - 1];
+                        row[columnIndex] = approachVolumes[(offset + columnIndex - 1) * 12 + rowIndex];
                 }
                 vsDataTable.Rows.Add(row);
             }
