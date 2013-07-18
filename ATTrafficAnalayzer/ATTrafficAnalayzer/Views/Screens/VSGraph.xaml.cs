@@ -67,7 +67,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 
                 Plotter.AddLineGraph(compositeDataSource, new Pen(seriesColours[brushCounter % seriesColours.Count()], 1),
-                  new CirclePointMarker { Size = 7.0, Fill = seriesColours[(brushCounter + 1) % seriesColours.Count()] },
+                  new CirclePointMarker { Size = 0.0, Fill = seriesColours[(brushCounter ) % seriesColours.Count()] },
                   new PenDescription(approach.Name));
                 brushCounter++;
             }    
