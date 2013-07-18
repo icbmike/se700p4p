@@ -18,7 +18,6 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class VsGraph : UserControl
     {
         private readonly SettingsTray _settings;
-        private readonly string _configName;
         private DbHelper _dbHelper;
 
         private static Brush[] seriesColours = {Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black};
@@ -26,11 +25,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         public VsGraph(SettingsTray settings, string configName)
         {
             _settings = settings;
-            _configName = configName;
-            
             _dbHelper = DbHelper.GetDbHelper();
 
             InitializeComponent();
+
+            ScreenTitle.Content = configName;
           
             var ds = new List<DateTime>();
             for(var date = _settings.StartDate; date < _settings.EndDate; date = date.AddMinutes(_settings.Interval)){

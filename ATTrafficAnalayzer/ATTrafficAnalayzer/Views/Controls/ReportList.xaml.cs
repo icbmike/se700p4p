@@ -2,9 +2,8 @@
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
-using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Views.Screens;
-using System.Linq;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -13,16 +12,16 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class ReportList : UserControl
     {
-        private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
+        private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
 
         public ReportList()
         {
             InitializeComponent();            
             DataContext = this;
 
-            var dv = _dataTableHelper.GetConfigDataView();
-            standardReportsTreeView.ItemsSource = dv;
-            standardReportsTreeView.DisplayMemberPath = "name";
+            var dv = _reportsDataTableHelper.GetConfigDataView();
+            StandardReportsTreeView.ItemsSource = dv;
+            StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
         #region events
@@ -70,14 +69,14 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void renameBtn_Click(object sender, RoutedEventArgs e)
         {
-            var item = standardReportsTreeView.SelectedItem.ToString();
+            var item = StandardReportsTreeView.SelectedItem.ToString();
             Console.WriteLine("Rename: {0}", item);
         }
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            var selectedRow = standardReportsTreeView.SelectedItem as DataRowView;
+            var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
             var selectedItem = selectedRow.Row["name"] as string;
 
             //Configure the message box to be displayed 
@@ -93,8 +92,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    //TODO Fix now
-                    _dataTableHelper.RemoveConfig(selectedItem);
+                    _reportsDataTableHelper.RemoveConfig(selectedItem);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -113,7 +111,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public string GetSelectedConfiguration()
         {
-            var selectedRow = standardReportsTreeView.SelectedItem as DataRowView;
+            var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
             return selectedRow == null ? null : selectedRow.Row["name"] as string;
         }
 
@@ -125,8 +123,8 @@ namespace ATTrafficAnalayzer.Views.Controls
         public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
         {
             
-            standardReportsTreeView.ItemsSource = _dataTableHelper.GetConfigDataView();
-            standardReportsTreeView.DisplayMemberPath = "name";
+            StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetConfigDataView();
+            StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
         private void exportBtn_Click(object sender, RoutedEventArgs e)

@@ -9,18 +9,14 @@
 
     <ScrollViewer HorizontalAlignment="Left"
                   VerticalScrollBarVisibility="Auto">
-        <ScrollViewer.Background>
-            <SolidColorBrush Opacity="0.3"
-                             Color="{DynamicResource HighlightLight}" />
-        </ScrollViewer.Background>
         <StackPanel Name="ContainerStackPanel"
                     Margin="10"
                     x:FieldModifier="private">
-            <Label DockPanel.Dock="Top"
+            <Label Name="ScreenTitle"
+                   DockPanel.Dock="Top"
                    FontSize="18"
-                   Margin="10,0">
-                REPORT TITLE
-            </Label>
+                   Margin="10,0"
+                   x:FieldModifier="private" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

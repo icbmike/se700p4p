@@ -5,25 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="300"
+             Margin="10">
     <DockPanel LastChildFill="True"
                DockPanel.Dock="Left">
         <Label Content="Report Browser"
                Height="28"
-               Name="label1"
                Background="#428FBF"
                FontWeight="Normal"
                FontSize="14"
                Foreground="White"
                Padding="5"
                DockPanel.Dock="Top" />
-        <!--<WrapPanel Name="stackPanel2"
-                   Orientation="Horizontal"
+        <WrapPanel
+            Orientation="Horizontal"
                    DockPanel.Dock="Top">
             <Button Content="_New"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
-                    Name="newBtn"
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
@@ -33,7 +32,6 @@
             <Button Content="_Edit"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
-                    Name="editBtn"
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
@@ -42,7 +40,6 @@
             <Button Content="_Delete"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
-                    Name="deleteBtn"
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     Click="deleteBtn_Click">
@@ -53,25 +50,22 @@
             <Button Content="Rename"
                     HorizontalAlignment="Left"
                     Margin="0,0,0,0"
-                    x:Name="renameBtn"
                     VerticalAlignment="Top"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
                     Click="renameBtn_Click" />
-        </WrapPanel>-->
+        </WrapPanel>
 
         <TabControl HorizontalAlignment="Left"
-                    Name="tabControl1"
                     TabStripPlacement="Bottom"
                     DockPanel.Dock="Top">
-            <TabItem Header="Standard Reports"
-                     Name="standardReportsTab">
+            <TabItem Header="Standard Reports">
                 <DockPanel LastChildFill="True">
-                    <ScrollBar Name="scrollBar1"
-                               Width="20"
+                    <ScrollBar
+                        Width="20"
                                DockPanel.Dock="Right" />
-                    <TreeView Name="standardReportsTreeView"
-                              DockPanel.Dock="Right">
+                    <TreeView Name="StandardReportsTreeView"
+                              DockPanel.Dock="Right" x:FieldModifier="private">
                         <TreeView.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Edit"
@@ -87,14 +81,13 @@
                     </TreeView>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Special Reports"
-                     Name="specialReportsTab">
+            <TabItem Header="Special Reports">
                 <DockPanel LastChildFill="True">
-                    <ScrollBar Name="scrollBar2"
-                               Width="20"
+                    <ScrollBar
+                        Width="20"
                                DockPanel.Dock="Right" />
-                    <TreeView Name="specialReportsTreeView"
-                              ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
+                    <TreeView
+                        ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
                               DockPanel.Dock="Right" />
                 </DockPanel>
             </TabItem>

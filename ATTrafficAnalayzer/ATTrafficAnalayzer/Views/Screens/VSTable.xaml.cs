@@ -37,12 +37,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
+            ScreenTitle.Content = _configuration.ConfigName;
+
             foreach (var approach in _configuration.Approaches)
             {
                 var approachSummary = new TextBlock
                 {
                     TextWrapping = TextWrapping.NoWrap,
-                    Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                    Background = Brushes.GhostWhite,
                     Margin = new Thickness(20, 15, 20, 5),
                     Padding = new Thickness(5)
                 };

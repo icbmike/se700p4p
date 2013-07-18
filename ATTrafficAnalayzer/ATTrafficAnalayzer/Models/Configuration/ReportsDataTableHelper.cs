@@ -2,23 +2,23 @@
 using System.Data;
 using System.Data.SQLite;
 
-namespace ATTrafficAnalayzer.Models
+namespace ATTrafficAnalayzer.Models.Configuration
 {
-    class DataTableHelper
+    class ReportsDataTableHelper
     {
-        private static DataTableHelper _instance;
+        private static ReportsDataTableHelper _instance;
         private static readonly object SyncLock = new object();
-        public static DataTableHelper GetDataTableHelper()
+        public static ReportsDataTableHelper GetDataTableHelper()
         {
             lock (SyncLock)
             {
-                return _instance ?? (_instance = new DataTableHelper());
+                return _instance ?? (_instance = new ReportsDataTableHelper());
             }
         }
 
         private readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
-        private DataTableHelper()
+        private ReportsDataTableHelper()
         {
             //TODO fault here
             CreateConfigDataSet();
