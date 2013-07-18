@@ -42,7 +42,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 ContainerStackPanel.Children.Add(header);
 
                 // DATA
-                CreateVolumeDisplay(approach, string.Format("Combined Peak: {0}\n", GetPeak(approach, 24, 0)), CreateVsTable(approach, 24, 0));
+                CreateVolumeDisplay(approach, string.Format("Combined Peak: {0}\n", CalculatePeak(approach, 24, 0)), CreateVsTable(approach, 24, 0));
             }
 
             Logger.Info("constructed view", "VS table");
@@ -67,7 +67,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="approach"></param>
         /// <param name="limit">number of records</param>
-        /// <param name="offset">starting hour</param>
+        /// <param name="offset">starting column</param>
         /// <returns>a datagrid to which displays the volume data</returns>
         private DataGrid CreateVsTable(Approach approach, int limit, int offset)
         {
@@ -76,7 +76,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 ItemsSource = GenerateVsTable(approach, limit, offset).AsDataView(),
                 Margin = new Thickness(0),
                 Width = Double.NaN,
-                Height = 256,
+                Height = 270,
                 ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
                 IsReadOnly = true,
                 HeadersVisibility = DataGridHeadersVisibility.Column,
@@ -97,7 +97,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="approach"></param>
         /// <param name="limit">number of records</param>
-        /// <param name="offset">starting hour</param>
+        /// <param name="offset">starting column</param>
         /// <returns>A DataTable which displays volume data</returns>
         private DataTable GenerateVsTable(Approach approach, int limit, int offset)
         {
@@ -127,9 +127,33 @@ namespace ATTrafficAnalayzer.Views.Screens
                 vsDataTable.Rows.Add(row);
             }
 
-            //TODO totals
+            var totalsRow = vsDataTable.NewRow();
+            totalsRow[0] = "Total";
+            for (var j = 0; j < limit; j++)
+            {
+                totalsRow[j + 1] = CalculateColumnTotal(approachVolumes, j, vsDataTable.Rows.Count);
+            }
+            vsDataTable.Rows.Add(totalsRow);
 
             return vsDataTable;
+        }
+
+        /// <summary>
+        /// Calculates the total for each column in the datagrid
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="column"></param>
+        /// <param name="numberOfColumns"></param>
+        /// <param name="numberOfRows"></param>
+        /// <returns></returns>
+        private static int CalculateColumnTotal(List<int> data, int column, int numberOfRows)
+        {
+            var total = 0;
+            for (var i = 0; i < numberOfRows; i++)
+            {
+                total += data[i + column * numberOfRows];
+            }
+            return total;
         }
 
         /// <summary>
@@ -160,9 +184,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="approach"></param>
         /// <param name="limit">number of records</param>
-        /// <param name="offset">starting hour</param>
+        /// <param name="offset">starting column</param>
         /// <returns>max volume record</returns>
-        private int GetPeak(Approach approach, int limit, int offset)
+        private int CalculatePeak(Approach approach, int limit, int offset)
         {
             var volumesList = GetVolumesList(approach);
             return volumesList.GetRange(offset * 12, limit * 12).Max();
