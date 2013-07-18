@@ -5,10 +5,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
+using DataGrid = System.Windows.Controls.DataGrid;
+using DataGridCell = System.Windows.Controls.DataGridCell;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -44,7 +47,8 @@ namespace ATTrafficAnalayzer.Views.Screens
                     Padding = new Thickness(5)
                 };
                 approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
-                approachSummary.Inlines.Add(new Italic(new Run(string.Format("Combined Peak: {0}\n", CalculatePeak(approach, 24, 0)))));
+                approachSummary.Inlines.Add(new Italic(new Run(string.Format("AM Peak: {0}\n", CalculatePeak(approach, 12, 0)))));
+                approachSummary.Inlines.Add(new Italic(new Run(string.Format("PM Peak: {0}\n", CalculatePeak(approach, 12, 12)))));
                 ContainerStackPanel.Children.Add(approachSummary);
 
                 ContainerStackPanel.Children.Add(CreateVsTable(approach, 24, 0));
@@ -62,36 +66,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <returns>a datagrid to which displays the volume data</returns>
         private DataGrid CreateVsTable(Approach approach, int limit, int offset)
         {
-            return new DataGrid
-            {
-                ItemsSource = GenerateVsTable(approach, limit, offset).AsDataView(),
-                Margin = new Thickness(20, 5, 20, 10),
-                Width = Double.NaN,
-                Height = 270,
-                ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
-                IsReadOnly = true,
-                HeadersVisibility = DataGridHeadersVisibility.Column,
-                AreRowDetailsFrozen = true,
-                FrozenColumnCount = 1,
-                CanUserSortColumns = false,
-                CanUserResizeRows = false,
-                CanUserReorderColumns = false,
-                CanUserResizeColumns = false,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                SelectionMode = DataGridSelectionMode.Extended
-            };
-        }
+            // CREATE DATA TABLE
 
-        /// <summary>
-        /// Populate the Data Grid with volume data
-        /// </summary>
-        /// <param name="approach"></param>
-        /// <param name="limit">number of records</param>
-        /// <param name="offset">starting column</param>
-        /// <returns>A DataTable which displays volume data</returns>
-        private DataTable GenerateVsTable(Approach approach, int limit, int offset)
-        {
             var vsDataTable = new DataTable();
 
             // Column headings
@@ -120,13 +96,50 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var totalsRow = vsDataTable.NewRow();
             totalsRow[0] = "Total";
+            var maxRowValue = 0;
+            var maxRowIndex = new List<int>();
             for (var j = 0; j < limit; j++)
             {
-                totalsRow[j + 1] = CalculateColumnTotal(approachVolumes, j, vsDataTable.Rows.Count);
+                var total = CalculateColumnTotal(approachVolumes, j, vsDataTable.Rows.Count);
+                totalsRow[j + 1] = total;
+                if (total > maxRowValue)
+                {
+                    maxRowValue = total;
+                    maxRowIndex.Clear();
+                    maxRowIndex.Add(j + 1);
+                }
+                else if (maxRowValue == total)
+                {
+                    maxRowIndex.Add(j + 1);
+                }
             }
             vsDataTable.Rows.Add(totalsRow);
 
-            return vsDataTable;
+            var cellStyle = new Style(typeof(DataGridCell));
+            cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
+
+            var dataGrid = new DataGrid
+            {
+                ItemsSource = vsDataTable.AsDataView(),
+                Margin = new Thickness(20, 5, 20, 10),
+                Width = Double.NaN,
+                Height = 270,
+                ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
+                IsReadOnly = true,
+                HeadersVisibility = DataGridHeadersVisibility.Column,
+                AreRowDetailsFrozen = true,
+                FrozenColumnCount = 1,
+                CanUserSortColumns = false,
+                CanUserResizeRows = false,
+                CanUserReorderColumns = false,
+                CanUserResizeColumns = false,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                SelectionMode = DataGridSelectionMode.Extended,
+                CellStyle = cellStyle
+            };
+
+            return dataGrid;
         }
 
         /// <summary>
