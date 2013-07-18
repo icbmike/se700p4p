@@ -7,7 +7,6 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
     <DockPanel LastChildFill="True"
-               Margin="10"
                DockPanel.Dock="Left">
         <Label Content="Report Browser"
                Height="28"
@@ -18,7 +17,7 @@
                Foreground="White"
                Padding="5"
                DockPanel.Dock="Top" />
-        <WrapPanel Name="stackPanel2"
+        <!--<WrapPanel Name="stackPanel2"
                    Orientation="Horizontal"
                    DockPanel.Dock="Top">
             <Button Content="_New"
@@ -59,7 +58,7 @@
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
                     Click="renameBtn_Click" />
-        </WrapPanel>
+        </WrapPanel>-->
 
         <TabControl HorizontalAlignment="Left"
                     Name="tabControl1"
