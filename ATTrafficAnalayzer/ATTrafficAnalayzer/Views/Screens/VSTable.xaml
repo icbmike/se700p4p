@@ -7,19 +7,19 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
 
-    <ScrollViewer Margin="10"
-                  HorizontalAlignment="Left"
+    <ScrollViewer HorizontalAlignment="Left"
                   VerticalScrollBarVisibility="Auto">
         <ScrollViewer.Background>
-            <SolidColorBrush Color="#FF99B4D1"
-                             Opacity="0.3" />
+            <SolidColorBrush Opacity="0.3"
+                             Color="{DynamicResource HighlightLight}" />
         </ScrollViewer.Background>
         <StackPanel Name="ContainerStackPanel"
-                    Margin="10">
+                    Margin="10"
+                    x:FieldModifier="private">
             <Label DockPanel.Dock="Top"
                    FontSize="18"
                    Margin="10,0">
-                Volume Store - Table View
+                REPORT TITLE
             </Label>
         </StackPanel>
     </ScrollViewer>

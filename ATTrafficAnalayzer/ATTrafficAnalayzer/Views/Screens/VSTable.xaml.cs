@@ -36,30 +36,21 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var approach in _configuration.Approaches)
             {
-                // HEADER
-                var header = new TextBlock { TextWrapping = TextWrapping.NoWrap, Margin = new Thickness(20, 5, 20, 5)};
-                header.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
-                ContainerStackPanel.Children.Add(header);
+                var approachSummary = new TextBlock
+                {
+                    TextWrapping = TextWrapping.NoWrap,
+                    Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                    Margin = new Thickness(20, 15, 20, 5),
+                    Padding = new Thickness(5)
+                };
+                approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
+                approachSummary.Inlines.Add(new Italic(new Run(string.Format("Combined Peak: {0}\n", CalculatePeak(approach, 24, 0)))));
+                ContainerStackPanel.Children.Add(approachSummary);
 
-                // DATA
-                CreateVolumeDisplay(approach, string.Format("Combined Peak: {0}\n", CalculatePeak(approach, 24, 0)), CreateVsTable(approach, 24, 0));
+                ContainerStackPanel.Children.Add(CreateVsTable(approach, 24, 0));
             }
 
             Logger.Info("constructed view", "VS table");
-        }
-
-        private void CreateVolumeDisplay(Approach approach, string heading, DataGrid dataGrid)
-        {
-            var description = new TextBlock
-            {
-                TextWrapping = TextWrapping.NoWrap,
-                Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
-                Margin = new Thickness(20, 5, 20, 5),
-                Padding = new Thickness(5)
-            };
-            description.Inlines.Add(new Italic(new Run(heading)));
-            ContainerStackPanel.Children.Add(description);
-            ContainerStackPanel.Children.Add(dataGrid);
         }
 
         /// <summary>
@@ -74,7 +65,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             return new DataGrid
             {
                 ItemsSource = GenerateVsTable(approach, limit, offset).AsDataView(),
-                Margin = new Thickness(0),
+                Margin = new Thickness(20, 5, 20, 10),
                 Width = Double.NaN,
                 Height = 270,
                 ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
@@ -143,7 +134,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="data"></param>
         /// <param name="column"></param>
-        /// <param name="numberOfColumns"></param>
         /// <param name="numberOfRows"></param>
         /// <returns></returns>
         private static int CalculateColumnTotal(List<int> data, int column, int numberOfRows)
