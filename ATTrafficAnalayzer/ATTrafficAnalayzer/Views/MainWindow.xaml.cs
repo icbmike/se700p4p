@@ -76,7 +76,7 @@ namespace ATTrafficAnalayzer.Views
             // Process open file dialog box results 
             if (result == true)
             {
-                var settings = new ProgressDialogSettings(true, true, false);
+                var settings = new ProgressDialogSettings(true, false, false);
 
                 var res = ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
                     {
