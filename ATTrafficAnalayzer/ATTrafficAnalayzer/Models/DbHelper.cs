@@ -490,6 +490,30 @@ namespace ATTrafficAnalayzer.Models
             return volumes;
         }
 
+        public Boolean VolumesExist(int intersection, int detector, DateTime startDate, DateTime endDate)
+        {
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+            Boolean result;
+            using (var query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "SELECT volume " +
+                                    "FROM volumes " +
+                                    "WHERE intersection = @intersection " +
+                                    "AND detector = @detector " +
+                                    "AND (dateTime BETWEEN @startDate AND @endDate);";
+                query.Parameters.AddWithValue("@intersection", intersection);
+                query.Parameters.AddWithValue("@detector", detector);
+                query.Parameters.AddWithValue("@startDate", startDate);
+                query.Parameters.AddWithValue("@endDate", endDate);
+                var reader = query.ExecuteReader();
+                result = reader.HasRows;
+                
+            }
+            conn.Close();
+            return result;
+        }
+
         #endregion
 
         #region Configuration Related Methods
