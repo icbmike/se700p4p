@@ -73,19 +73,23 @@ namespace ATTrafficAnalayzer.Views
             Nullable<bool> result = dlg.ShowDialog();
 
             
-
             // Process open file dialog box results 
             if (result == true)
             {
-                //TODO error at this point
-                var res = ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
-                {
-                    ProgressDialog.Report(b, "Reading Files");
+                var settings = new ProgressDialogSettings(true, false, false);
 
+                var res = ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
+                    {
+                    
                     // Open document 
                     var filename = dlg.FileName;
-                    DbHelper.ImportFile(filename);
-                }, ProgressDialogSettings.WithSubLabelAndCancel);
+                    DbHelper.ImportFile(b, w, filename, (progress) => {
+                        ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File");
+                    });
+                  
+                    }, settings);
+
+               
             }
             
         }

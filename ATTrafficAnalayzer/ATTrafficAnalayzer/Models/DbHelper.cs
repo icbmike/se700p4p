@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Data.SQLite;
 using System.Data;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Windows;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Volume;
+using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
@@ -285,7 +287,7 @@ namespace ATTrafficAnalayzer.Models
 
         #region Volume Related Methods
 
-        public static void ImportFile(string filename)
+        public static void ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress)
         {
             //Open the db connection
             var dbConnection = new SQLiteConnection(DbPath);
@@ -314,7 +316,10 @@ namespace ATTrafficAnalayzer.Models
                             //The record size is stored in two bytes, little endian
 
                         index += 2;
-
+                        int progress = (int)(((float)index / sizeInBytes) * 100);
+                        updateProgress(progress);
+                        
+                        
                         byte[] record;
                         if (recordSize%2 == 0) //Records with odd record length have a trailing null byte.
                         {
@@ -360,8 +365,9 @@ namespace ATTrafficAnalayzer.Models
                                         if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
                                             alreadyLoaded = true;
+                                            break;
                                         }
-                                        break;
+                                        
                                     }
                                 }
                                 break;
@@ -630,5 +636,6 @@ namespace ATTrafficAnalayzer.Models
         }
 
         #endregion
+
     }
 }
