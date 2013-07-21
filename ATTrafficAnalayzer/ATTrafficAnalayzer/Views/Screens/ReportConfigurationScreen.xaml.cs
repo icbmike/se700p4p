@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Views.Controls;
+using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -57,14 +58,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             set { _detectorList = value; }
         }
 
-        public ReportConfigurationScreen()
+        public ReportConfigurationScreen(SettingsTray settings)
         {
             DataContext = this;
             _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
 
             _dbHelper = DbHelper.GetDbHelper();
-            foreach (var detector in DbHelper.GetIntersections())
+            foreach (var detector in DbHelper.GetIntersections(settings.StartDate, settings.EndDate))
             {
                 _intersectionList.Add(detector);
             }

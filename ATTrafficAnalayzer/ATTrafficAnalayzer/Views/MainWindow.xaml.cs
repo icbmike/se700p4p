@@ -162,9 +162,18 @@ namespace ATTrafficAnalayzer.Views
         {
             if (args.New)
             {
-                var reportConfigurationScreen = new ReportConfigurationScreen();
-                reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
-                ChangeScreen(reportConfigurationScreen);
+                var settings = SettingsTray.DataContext as SettingsTray;
+                if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
+                {
+
+                    var reportConfigurationScreen = new ReportConfigurationScreen(SettingsTray.DataContext as SettingsTray);
+                    reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                    ChangeScreen(reportConfigurationScreen);
+                }
+                else
+                {
+                    MessageBox.Show("You haven't imported volume data for the selected date range");
+                }
             }
             else
             {
