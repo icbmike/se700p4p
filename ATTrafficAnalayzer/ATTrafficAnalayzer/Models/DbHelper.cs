@@ -287,7 +287,7 @@ namespace ATTrafficAnalayzer.Models
 
         #region Volume Related Methods
 
-        public static void ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename)
+        public static void ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> del)
         {
             //Open the db connection
             var dbConnection = new SQLiteConnection(DbPath);
@@ -317,9 +317,7 @@ namespace ATTrafficAnalayzer.Models
 
                         index += 2;
                         int progress = (int)(((float)index / sizeInBytes) * 100);
-                       
-                        Console.WriteLine("index: " + index + " size in bytes: " + sizeInBytes + " progress: " + progress);
-                        ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File");
+                        del(progress);
                         
                         
                         byte[] record;

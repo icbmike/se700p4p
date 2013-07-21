@@ -83,7 +83,9 @@ namespace ATTrafficAnalayzer.Views
                     
                     // Open document 
                     var filename = dlg.FileName;
-                    DbHelper.ImportFile(b, w, filename);
+                    DbHelper.ImportFile(b, w, filename, (progress) => {
+                        ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File");
+                    });
                   
                     }, settings);
 
