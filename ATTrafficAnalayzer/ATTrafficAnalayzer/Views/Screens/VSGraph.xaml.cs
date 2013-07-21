@@ -48,6 +48,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 var approachVolumes = new List<int>();
                 foreach (var detector in approach.Detectors)
                 {
+
                     if (approachVolumes.Count == 0)
                     {
                         approachVolumes.AddRange(_dbHelper.GetVolumes(intersection, detector, settings.StartDate,

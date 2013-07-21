@@ -346,7 +346,7 @@ namespace ATTrafficAnalayzer.Models
 
                                     cmd.Parameters.Clear();
 
-                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime);
+                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5)); //Make up for the fact that volumes are offset ahead 5 minutes
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
                                     cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
@@ -378,14 +378,16 @@ namespace ATTrafficAnalayzer.Models
             fs.Close();
         }
 
-        public static List<int> GetIntersections()
+        public static List<int> GetIntersections(DateTime startDate, DateTime endDate)
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
             var intersections = new List<int>();
             using (var query = new SQLiteCommand(conn))
             {
-                query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
+                query.CommandText = "SELECT DISTINCT intersection FROM volumes WHERE (dateTime BETWEEN @startDate AND @endDate);";
+                query.Parameters.AddWithValue("@startDate", startDate);
+                query.Parameters.AddWithValue("@endDate", endDate);
                 var reader = query.ExecuteReader();
 
                 while (reader.Read())
@@ -397,7 +399,7 @@ namespace ATTrafficAnalayzer.Models
             return intersections;
         }
 
-        public static List<int> GetDetectorsAtIntersection(int intersection)
+        public List<int> GetDetectorsAtIntersection(int intersection)
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
@@ -488,6 +490,26 @@ namespace ATTrafficAnalayzer.Models
             conn.Close();
 
             return volumes;
+        }
+
+        public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate)
+        {
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+            Boolean result;
+            using (var query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "SELECT volume " +
+                                    "FROM volumes " +
+                                    "WHERE (dateTime BETWEEN @startDate AND @endDate);";
+                query.Parameters.AddWithValue("@startDate", startDate);
+                query.Parameters.AddWithValue("@endDate", endDate);
+                var reader = query.ExecuteReader();
+                result = reader.HasRows;
+                
+            }
+            conn.Close();
+            return result;
         }
 
         #endregion
