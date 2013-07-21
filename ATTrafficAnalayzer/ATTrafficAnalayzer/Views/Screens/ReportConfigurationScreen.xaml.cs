@@ -77,7 +77,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-            foreach (var detector in DbHelper.GetDetectorsAtIntersection(_selectedIntersection))
+            
+            foreach (var detector in _dbHelper.GetDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }

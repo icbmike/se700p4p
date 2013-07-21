@@ -346,7 +346,7 @@ namespace ATTrafficAnalayzer.Models
 
                                     cmd.Parameters.Clear();
 
-                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime);
+                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5)); //Make up for the fact that volumes are offset ahead 5 minutes
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
                                     cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
@@ -397,7 +397,7 @@ namespace ATTrafficAnalayzer.Models
             return intersections;
         }
 
-        public static List<int> GetDetectorsAtIntersection(int intersection)
+        public List<int> GetDetectorsAtIntersection(int intersection)
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
@@ -490,7 +490,7 @@ namespace ATTrafficAnalayzer.Models
             return volumes;
         }
 
-        public Boolean VolumesExist(int intersection, int detector, DateTime startDate, DateTime endDate)
+        public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate)
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
@@ -499,11 +499,7 @@ namespace ATTrafficAnalayzer.Models
             {
                 query.CommandText = "SELECT volume " +
                                     "FROM volumes " +
-                                    "WHERE intersection = @intersection " +
-                                    "AND detector = @detector " +
-                                    "AND (dateTime BETWEEN @startDate AND @endDate);";
-                query.Parameters.AddWithValue("@intersection", intersection);
-                query.Parameters.AddWithValue("@detector", detector);
+                                    "WHERE (dateTime BETWEEN @startDate AND @endDate);";
                 query.Parameters.AddWithValue("@startDate", startDate);
                 query.Parameters.AddWithValue("@endDate", endDate);
                 var reader = query.ExecuteReader();

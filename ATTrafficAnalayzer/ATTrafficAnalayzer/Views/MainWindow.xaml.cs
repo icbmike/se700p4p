@@ -99,22 +99,30 @@ namespace ATTrafficAnalayzer.Views
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
             var settings = SettingsTray.DataContext as SettingsTray;
-            //Get selected Configuration
-            var selectedItem = ReportList.GetSelectedConfiguration();
-            if (selectedItem != null)
+
+            if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
             {
-                if (sender.Equals(GraphButton))
+                //Get selected Configuration
+                var selectedItem = ReportList.GetSelectedConfiguration();
+                if (selectedItem != null)
                 {
-                    ChangeScreen(new VsGraph(settings, selectedItem));
+                    if (sender.Equals(GraphButton))
+                    {
+                        ChangeScreen(new VsGraph(settings, selectedItem));
+                    }
+                    else if (sender.Equals(TableButton))
+                    {
+                        ChangeScreen(new VsTable(settings, selectedItem));
+                    }
                 }
-                else if (sender.Equals(TableButton))
+                else
                 {
-                    ChangeScreen(new VsTable(settings, selectedItem));
+                    MessageBox.Show("Select a report from the list on the left");
                 }
             }
             else
             {
-                MessageBox.Show("Select a report from the list on the left");
+                MessageBox.Show("You haven't imported volume data for the selected date range");
             }
         }
 
