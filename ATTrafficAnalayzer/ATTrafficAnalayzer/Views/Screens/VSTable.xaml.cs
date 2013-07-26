@@ -25,17 +25,17 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private int _approachTotal;
 
-        private int _approachMaxValue = 0;
-        private int AM_max_value = 0;
-        private int PM_max_value = 0;
-        private int AM_peak_value = 0;
-        private int PM_peak_value = 0;
+        public struct Measurement
+        {
+            public int Value;
+            public List<string> Approaches;
+        }
 
-        private List<string> approach_max_name = new List<string>();
-        private List<string> AM_max_approach = new List<string>();
-        private List<string> PM_max_approach = new List<string>();
-        private List<string> AM_peak_approach = new List<string>();
-        private List<string> PM_peak_approach = new List<string>();
+        private Measurement _maxTotal;
+        private readonly Measurement _maxAm;
+        private readonly Measurement _maxPm;
+        private readonly Measurement _peakHourAm;
+        private readonly Measurement _peakHourPm;
 
         /// <summary>
         /// 
@@ -51,6 +51,17 @@ namespace ATTrafficAnalayzer.Views.Screens
             InitializeComponent();
 
             ScreenTitle.Content = _configuration.ConfigName;
+
+            _maxTotal.Value = 0;
+            _maxTotal.Approaches = new List<string>();
+            _maxAm.Value = 0;
+            _maxAm.Approaches = new List<string>();
+            _maxPm.Value = 0;
+            _maxPm.Approaches = new List<string>();
+            _peakHourAm.Value = 0;
+            _peakHourAm.Approaches = new List<string>();
+            _peakHourPm.Value = 0;
+            _peakHourPm.Approaches = new List<string>();
 
             foreach (var approach in _configuration.Approaches)
             {
@@ -68,28 +79,10 @@ namespace ATTrafficAnalayzer.Views.Screens
                 ContainerStackPanel.Children.Add(CreateVsTable(approach, 24, 0));
 
                 var amPeak = CalculatePeak(approach, 12, 0);
-                if (amPeak > AM_max_value)
-                {
-                    AM_max_value = amPeak;
-                    AM_max_approach.Clear();
-                    AM_max_approach.Add(approach.Name);
-                }
-                else if (amPeak == AM_max_value)
-                {
-                    AM_max_approach.Add(approach.Name);
-                }
+                _maxAm = CheckIfMax(_maxAm, amPeak, approach.Name);
 
                 var pmPeak = CalculatePeak(approach, 12, 12);
-                if (pmPeak > PM_max_value)
-                {
-                    PM_max_value = pmPeak;
-                    PM_max_approach.Clear();
-                    PM_max_approach.Add(approach.Name);
-                }
-                else if (pmPeak == PM_max_value)
-                {
-                    PM_max_approach.Add(approach.Name);
-                }
+                _maxPm = CheckIfMax(_maxPm, pmPeak, approach.Name);
 
                 approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
                 approachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles\n", amPeak)));
@@ -98,11 +91,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} @ {1} vehicles\n", string.Join(", ", approach_max_name), _approachMaxValue)));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} @ {1} vehicles\n", string.Join(", ", AM_max_approach), AM_max_value)));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} @ {1} vehicles\n", string.Join(", ", PM_max_approach), PM_max_value)));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} @ {1} vehicles\n", string.Join(", ", AM_peak_approach), AM_peak_value)));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} @ {1} vehicles", string.Join(", ", PM_peak_approach), PM_peak_value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} @ {1} vehicles\n", string.Join(", ", _maxTotal.Approaches), _maxTotal.Value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} @ {1} vehicles\n", string.Join(", ", _maxAm.Approaches), _maxAm.Value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} @ {1} vehicles\n", string.Join(", ", _maxPm.Approaches), _maxPm.Value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} @ {1} vehicles\n", string.Join(", ", _peakHourAm.Approaches), _peakHourAm.Value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} @ {1} vehicles", string.Join(", ", _peakHourPm.Approaches), _peakHourPm.Value)));
 
             Logger.Info("constructed view", "VS table");
         }
@@ -166,16 +159,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
             vsDataTable.Rows.Add(totalsRow);
 
-            if (_approachTotal > _approachMaxValue)
-            {
-                _approachMaxValue = _approachTotal;
-                approach_max_name.Clear();
-                approach_max_name.Add(approach.Name);
-            }
-            else if (_approachTotal == _approachMaxValue)
-            {
-                approach_max_name.Add(approach.Name);
-            }
+            _maxTotal = CheckIfMax(_maxTotal, _approachTotal, approach.Name);
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
@@ -256,6 +240,28 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var volumesList = GetVolumesList(approach);
             return volumesList.GetRange(offset * 12, limit * 12).Max();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measurement"></param>
+        /// <param name="value"></param>
+        /// <param name="approachName"></param>
+        /// <returns></returns>
+        private static Measurement CheckIfMax(Measurement measurement, int value, string approachName)
+        {
+            if (value > measurement.Value)
+            {
+                measurement.Value = value;
+                measurement.Approaches.Clear();
+                measurement.Approaches.Add(approachName);
+            }
+            else if (value == measurement.Value)
+            {
+                measurement.Approaches.Add(approachName);
+            }
+            return measurement;
         }
     }
 }

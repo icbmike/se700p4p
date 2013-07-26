@@ -8,7 +8,7 @@ namespace ATTrafficAnalayzer.Models.Settings
 
     {
 
-        private static IntervalConverter _converter = null;
+        private static IntervalConverter _converter;
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             if (_converter == null)
