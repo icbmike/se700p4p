@@ -8,7 +8,6 @@ using System.IO;
 using System.Windows;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Volume;
-using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
