@@ -11,51 +11,39 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
             <RowDefinition
                 Height="55" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition
-                Width="*" />
-            <ColumnDefinition
-                Width="*" />
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        
-        <ListBox
-            Grid.Column="0"
-            Grid.Row="0"
-            HorizontalAlignment="Stretch"
-            Name="recentStandardReportsListBox"
-            VerticalAlignment="Stretch"
-            Margin="10,10,10,5" />
-        <Button
-            Grid.Column="1"
-            Grid.Row="1"
-            Content="New Special Report"
-            HorizontalAlignment="Stretch"
-            Name="button2"
-            VerticalAlignment="Stretch"
-            Margin="10,5,10,10"
-            Style="{StaticResource AtButtonStyle}"/>
-       
 
-        <ListBox
-            Grid.Column="1"
+        <Label
+            Grid.Column="0"
             Grid.Row="0"
-            HorizontalAlignment="Stretch"
-            Name="recentSpecialReportsListBox"
-            VerticalAlignment="Stretch"
-            Margin="10,10,10,5"/>
-        <Button
+            FontSize="23"
+            FontWeight="Bold"
+            Content="Dates that you have imported volume information for"/>
+        <ListBox
             Grid.Column="0"
             Grid.Row="1"
-            Content="New Standard Report"
             HorizontalAlignment="Stretch"
-            Name="button1"
+            Name="ImportedDatesList"
+            VerticalAlignment="Stretch"
+            Margin="10,10,10,5"
+            ItemStringFormat="D" Grid.ColumnSpan="2"/>
+        <Button
+            Grid.Column="1"
+            Grid.Row="2"
+            Content="Import Data"
+            Click="ImportButtonClick"
+            HorizontalAlignment="Stretch"
+            Name="ImportButton"
             VerticalAlignment="Stretch"
             Margin="10,5,10,10"
             Style="{StaticResource AtButtonStyle}"/>
-        
+
     </Grid>
 </UserControl>

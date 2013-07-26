@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
+using ATTrafficAnalayzer.Models;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -8,31 +10,33 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class WelcomeScreen : UserControl
     {
-        public WelcomeScreen()
+
+        #region events
+
+        public delegate void ImportRequestEventHandler(object sender, RoutedEventArgs e);
+
+        public event ImportRequestEventHandler ImportRequested;
+
+        #endregion
+
+
+        public WelcomeScreen(ImportRequestEventHandler handler)
         {
             InitializeComponent();
+            ImportRequested += handler;
+            DbHelper helper = DbHelper.GetDbHelper();
 
-            var recentStandardReports = new List<string>
-                {
-                    "Recent Standard Report 1",
-                    "Recent Standard Report 2",
-                    "Recent Standard Report 3",
-                    "Recent Standard Report 4",
-                    "Recent Standard Report 5"
-                };
-            recentStandardReportsListBox.ItemsSource = recentStandardReports;
+            var importedDates = helper.GetImportedDates();
+            ImportedDatesList.ItemsSource = importedDates;
 
-            var recentSpecialReports = new List<string>
-                {
-                    "Recent Special Report 1",
-                    "Recent Special Report 2",
-                    "Recent Special Report 3",
-                    "Recent Special Report 4",
-                    "Recent Special Report 5"
-                };
-            recentSpecialReportsListBox.ItemsSource = recentSpecialReports;
 
             Logger.Info("constructed view", "homescreen");
         }
+
+        private void ImportButtonClick(object sender, RoutedEventArgs e)
+        {
+            ImportRequested(this, e);
+        }
+
     }
 }

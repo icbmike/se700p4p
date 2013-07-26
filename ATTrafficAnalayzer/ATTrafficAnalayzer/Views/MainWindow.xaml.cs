@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views
             startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
 
-            ChangeScreen(new WelcomeScreen());
+            ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
         }
         
         private void BulkImport()
@@ -132,7 +132,7 @@ namespace ATTrafficAnalayzer.Views
 
         private void HomeImageMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            ChangeScreen(new WelcomeScreen());
+            ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
         }
 
         private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)

@@ -636,5 +636,24 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
+        public List<DateTime> GetImportedDates()
+        {
+            var importedDates = new List<DateTime>();
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText = "SELECT DISTINCT strftime('%Y-%m-%d', dateTime) FROM volumes ORDER BY DATE(dateTime) ASC;";
+                    var reader = query.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        importedDates.Add(reader.GetDateTime(0));
+                    }
+                }
+            }
+            return importedDates;
+        }
     }
 }
