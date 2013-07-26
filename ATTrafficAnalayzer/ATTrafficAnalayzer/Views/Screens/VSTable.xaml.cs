@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
@@ -24,6 +23,20 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly DbHelper _dbHelper;
         private readonly ReportConfiguration _configuration;
 
+        private int _approachTotal;
+
+        private int _approachMaxValue = 0;
+        private int AM_max_value = 0;
+        private int PM_max_value = 0;
+        private int AM_peak_value = 0;
+        private int PM_peak_value = 0;
+
+        private List<string> approach_max_name = new List<string>();
+        private List<string> AM_max_approach = new List<string>();
+        private List<string> PM_max_approach = new List<string>();
+        private List<string> AM_peak_approach = new List<string>();
+        private List<string> PM_peak_approach = new List<string>();
+
         /// <summary>
         /// 
         /// </summary>
@@ -41,6 +54,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var approach in _configuration.Approaches)
             {
+                _approachTotal = 0;
+
                 var approachSummary = new TextBlock
                 {
                     TextWrapping = TextWrapping.NoWrap,
@@ -48,13 +63,46 @@ namespace ATTrafficAnalayzer.Views.Screens
                     Margin = new Thickness(20, 15, 20, 5),
                     Padding = new Thickness(5)
                 };
-                approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
-                approachSummary.Inlines.Add(new Italic(new Run(string.Format("AM Peak: {0}\n", CalculatePeak(approach, 12, 0)))));
-                approachSummary.Inlines.Add(new Italic(new Run(string.Format("PM Peak: {0}\n", CalculatePeak(approach, 12, 12)))));
+                
                 ContainerStackPanel.Children.Add(approachSummary);
-
                 ContainerStackPanel.Children.Add(CreateVsTable(approach, 24, 0));
+
+                var amPeak = CalculatePeak(approach, 12, 0);
+                if (amPeak > AM_max_value)
+                {
+                    AM_max_value = amPeak;
+                    AM_max_approach.Clear();
+                    AM_max_approach.Add(approach.Name);
+                }
+                else if (amPeak == AM_max_value)
+                {
+                    AM_max_approach.Add(approach.Name);
+                }
+
+                var pmPeak = CalculatePeak(approach, 12, 12);
+                if (pmPeak > PM_max_value)
+                {
+                    PM_max_value = pmPeak;
+                    PM_max_approach.Clear();
+                    PM_max_approach.Add(approach.Name);
+                }
+                else if (pmPeak == PM_max_value)
+                {
+                    PM_max_approach.Add(approach.Name);
+                }
+
+                approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
+                approachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles\n", amPeak)));
+                approachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles\n", pmPeak)));
+                approachSummary.Inlines.Add(new Run(string.Format("Total volume: {0} vehicles\n", _approachTotal)));
             }
+
+            OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} @ {1} vehicles\n", string.Join(", ", approach_max_name), _approachMaxValue)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} @ {1} vehicles\n", string.Join(", ", AM_max_approach), AM_max_value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} @ {1} vehicles\n", string.Join(", ", PM_max_approach), PM_max_value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} @ {1} vehicles\n", string.Join(", ", AM_peak_approach), AM_peak_value)));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} @ {1} vehicles", string.Join(", ", PM_peak_approach), PM_peak_value)));
 
             Logger.Info("constructed view", "VS table");
         }
@@ -104,6 +152,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 var total = CalculateColumnTotal(approachVolumes, j, vsDataTable.Rows.Count);
                 totalsRow[j + 1] = total;
+                _approachTotal += total;
                 if (total > maxRowValue)
                 {
                     maxRowValue = total;
@@ -116,6 +165,17 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
             }
             vsDataTable.Rows.Add(totalsRow);
+
+            if (_approachTotal > _approachMaxValue)
+            {
+                _approachMaxValue = _approachTotal;
+                approach_max_name.Clear();
+                approach_max_name.Add(approach.Name);
+            }
+            else if (_approachTotal == _approachMaxValue)
+            {
+                approach_max_name.Add(approach.Name);
+            }
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
@@ -138,7 +198,8 @@ namespace ATTrafficAnalayzer.Views.Screens
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 SelectionMode = DataGridSelectionMode.Extended,
-                CellStyle = cellStyle
+                CellStyle = cellStyle,
+                FontSize = 11
             };
 
             return dataGrid;

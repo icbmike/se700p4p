@@ -13,10 +13,14 @@
                     Margin="10"
                     x:FieldModifier="private">
             <Label Name="ScreenTitle"
-                   DockPanel.Dock="Top"
                    FontSize="18"
                    Margin="10,0"
                    x:FieldModifier="private" />
+            <TextBlock Name="OverallSummaryTextBlock"
+                       Visibility="Visible"
+                       Background="Aquamarine"
+                       Margin="20,15,20,10"
+                       Padding="5" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
