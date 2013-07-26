@@ -28,7 +28,8 @@
             HorizontalAlignment="Stretch"
             Name="recentStandardReportsListBox"
             VerticalAlignment="Stretch"
-            Margin="10,10,10,5" />
+            Margin="10,10,10,5"
+            ItemStringFormat="D"/>
         <Button
             Grid.Column="1"
             Grid.Row="1"

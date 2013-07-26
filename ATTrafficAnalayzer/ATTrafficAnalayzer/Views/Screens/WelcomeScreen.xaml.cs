@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using ATTrafficAnalayzer.Models;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -12,15 +13,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             InitializeComponent();
 
-            var recentStandardReports = new List<string>
-                {
-                    "Recent Standard Report 1",
-                    "Recent Standard Report 2",
-                    "Recent Standard Report 3",
-                    "Recent Standard Report 4",
-                    "Recent Standard Report 5"
-                };
-            recentStandardReportsListBox.ItemsSource = recentStandardReports;
+            DbHelper helper = DbHelper.GetDbHelper();
+
+            var importedDates = helper.GetImportedDates();
+            recentStandardReportsListBox.ItemsSource = importedDates;
 
             var recentSpecialReports = new List<string>
                 {
