@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -73,6 +72,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// 
         /// </summary>
         /// <param name="approach"></param>
+        /// <param name="day"></param>
         /// <returns></returns>
         private ApproachTableDisplay CreateApproachDisplay(Approach approach, int day)
         {
