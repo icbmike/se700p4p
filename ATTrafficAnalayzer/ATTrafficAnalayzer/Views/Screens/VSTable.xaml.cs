@@ -8,6 +8,7 @@ using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
+using ATTrafficAnalayzer.Views.Controls;
 using DataGrid = System.Windows.Controls.DataGrid;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 
@@ -44,26 +45,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var approach in _configuration.Approaches)
             {
-                var approachSummary = new TextBlock
-                {
-                    TextWrapping = TextWrapping.NoWrap,
-                    Background = Brushes.GhostWhite,
-                    Margin = new Thickness(20, 15, 20, 5),
-                    Padding = new Thickness(5)
-                };
+                ContainerStackPanel.Children.Add(CreateApproachDisplay(approach));
 
-                ContainerStackPanel.Children.Add(approachSummary);
-                ContainerStackPanel.Children.Add(CreateVsTable(24, 0, approach));
-                
-                approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
-                approachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));
-                approachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles @ {1}\n", approach.PmPeak.GetValue(), approach.PmPeak.GetApproachesAsString())));
-                approachSummary.Inlines.Add(new Run(string.Format("Total volume: {0} vehicles\n", approach.GetTotal())));
-
+                _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                 _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
                 _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
-                _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
-
                 _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(), string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
                 _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(), string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
             }
@@ -80,38 +66,25 @@ namespace ATTrafficAnalayzer.Views.Screens
 
 
         /// <summary>
-        /// Create a Data Grid to display volume store data
+        /// 
         /// </summary>
-        /// <param name="limit">number of records</param>
-        /// <param name="offset">starting column</param>
         /// <param name="approach"></param>
-        /// <returns>a datagrid to which displays the volume data</returns>
-        private DataGrid CreateVsTable(int limit, int offset, Approach approach)
+        /// <returns></returns>
+        private ApproachTableDisplay CreateApproachDisplay(Approach approach)
         {
+            var approachDisplay = new ApproachTableDisplay();
+
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
+            approachDisplay.ApproachDataGrid.ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0).AsDataView();
+            approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
 
-            return new DataGrid
-            {
-                ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, limit, offset).AsDataView(),
-                Margin = new Thickness(20, 5, 20, 10),
-                Width = Double.NaN,
-                Height = 270,
-                ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star),
-                IsReadOnly = true,
-                HeadersVisibility = DataGridHeadersVisibility.Column,
-                AreRowDetailsFrozen = true,
-                FrozenColumnCount = 1,
-                CanUserSortColumns = false,
-                CanUserResizeRows = false,
-                CanUserReorderColumns = false,
-                CanUserResizeColumns = false,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                SelectionMode = DataGridSelectionMode.Extended,
-                CellStyle = cellStyle,
-                FontSize = 11
-            };
+            approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
+            approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));
+            approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles @ {1}\n", approach.PmPeak.GetValue(), approach.PmPeak.GetApproachesAsString())));
+            approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("Total volume: {0} vehicles\n", approach.GetTotal())));
+
+            return approachDisplay;
         }
     }
 }

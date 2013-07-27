@@ -79,6 +79,9 @@
     <Compile Include="Views\Controls\ApproachControl.xaml.cs">
       <DependentUpon>ApproachControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\ApproachTableDisplay.xaml.cs">
+      <DependentUpon>ApproachTableDisplay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\Parago\WindowSettings.cs" />
     <Compile Include="Views\Controls\ReportList.xaml.cs">
       <DependentUpon>ReportList.xaml</DependentUpon>
@@ -113,6 +116,10 @@
       <DependentUpon>WelcomeScreen.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\Controls\ApproachControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\ApproachTableDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

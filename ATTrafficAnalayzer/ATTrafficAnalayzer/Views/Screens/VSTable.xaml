@@ -7,8 +7,7 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
 
-    <ScrollViewer HorizontalAlignment="Left"
-                  VerticalScrollBarVisibility="Auto">
+    <ScrollViewer HorizontalContentAlignment="Stretch">
         <StackPanel Name="ContainerStackPanel"
                     Margin="10"
                     x:FieldModifier="private">
