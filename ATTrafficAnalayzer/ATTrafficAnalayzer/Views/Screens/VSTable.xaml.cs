@@ -1,7 +1,5 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
@@ -9,7 +7,6 @@ using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
-using DataGrid = System.Windows.Controls.DataGrid;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -19,11 +16,11 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class VsTable
     {
-        private Measurement _maxTotal = new Measurement();
-        private Measurement _maxAm = new Measurement();
-        private Measurement _maxPm = new Measurement();
-        private Measurement _peakHourAm = new Measurement();
-        private Measurement _peakHourPm = new Measurement();
+        private readonly Measurement _maxTotal = new Measurement();
+        private readonly Measurement _maxAm = new Measurement();
+        private readonly Measurement _maxPm = new Measurement();
+        private readonly Measurement _peakHourAm = new Measurement();
+        private readonly Measurement _peakHourPm = new Measurement();
 
         private readonly SettingsTray _settings;
         private readonly ReportConfiguration _configuration;
@@ -55,11 +52,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} @ {1} vehicles\n", string.Join(", ", _maxTotal.GetApproachesAsString()), _maxTotal.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} @ {1} vehicles\n", string.Join(", ", _maxAm.GetApproachesAsString()), _maxAm.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} @ {1} vehicles\n", string.Join(", ", _maxPm.GetApproachesAsString()), _maxPm.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} @ {1} vehicles\n", string.Join(", ", _peakHourAm.GetApproachesAsString()), _peakHourAm.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} @ {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} with {1} vehicles\n", string.Join(", ", _maxTotal.GetApproachesAsString()), _maxTotal.GetValue())));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} with {1} vehicles\n", string.Join(", ", _maxAm.GetApproachesAsString()), _maxAm.GetValue())));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} with {1} vehicles\n", string.Join(", ", _maxPm.GetApproachesAsString()), _maxPm.GetValue())));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} with {1} vehicles\n", string.Join(", ", _peakHourAm.GetApproachesAsString()), _peakHourAm.GetValue())));
+            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} with {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
 
             Logger.Info("constructed view", "VS table");
         }

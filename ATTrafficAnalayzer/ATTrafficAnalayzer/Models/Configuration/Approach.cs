@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public Measurement AmPeak = new Measurement();
         public Measurement PmPeak = new Measurement();
-        private int _approachTotal = 0;
+        private int _approachTotal;
 
         public string Name { get; set; }
         public List<int> Detectors { get; set; }
@@ -101,7 +101,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
             // Column headings
             for (var i = offset; i <= offset + limit; i++)
-                dataTable.Columns.Add(i == 0 ? "-" : String.Format("{0} hrs", i - 1), typeof(string));
+                dataTable.Columns.Add(i == 0 ? "Time" : String.Format("{0} hrs", i - 1), typeof(string));
 
             // List dates
             var dates = new List<DateTime>();
@@ -131,9 +131,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 totalsRow[j + 1] = total;
                 _approachTotal += total;
                 if (j < limit/2)
-                    AmPeak.CheckIfMax(total, j.ToString() + " hours");
+                    AmPeak.CheckIfMax(total, j + " hrs");
                 else
-                    PmPeak.CheckIfMax(total, j.ToString() + " hours");
+                    PmPeak.CheckIfMax(total, j + " hrs");
             }
             dataTable.Rows.Add(totalsRow);
 
