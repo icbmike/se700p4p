@@ -7,16 +7,20 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
 
-    <ScrollViewer HorizontalAlignment="Left"
-                  VerticalScrollBarVisibility="Auto">
+    <ScrollViewer HorizontalContentAlignment="Stretch">
         <StackPanel Name="ContainerStackPanel"
                     Margin="10"
                     x:FieldModifier="private">
             <Label Name="ScreenTitle"
-                   DockPanel.Dock="Top"
-                   FontSize="18"
-                   Margin="10,0"
-                   x:FieldModifier="private" />
+                   FontSize="28"
+                   Margin="20,0"
+                   x:FieldModifier="private"
+                   FontWeight="Bold" />
+            <TextBlock Name="OverallSummaryTextBlock"
+                       Visibility="Visible"
+                       Background="Aquamarine"
+                       Margin="20,15,20,10"
+                       Padding="5" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

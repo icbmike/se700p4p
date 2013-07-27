@@ -9,28 +9,29 @@
              d:DesignWidth="300">
     <DockPanel LastChildFill="True">
 
-        <Label Name="ScreenTitle"
-               Margin="10,10,10,5"
-               DockPanel.Dock="Top"
-               FontSize="18"
-               x:FieldModifier="private" />
-
-        <d3:ChartPlotter Margin="0 0 15 15"
+        <d3:ChartPlotter Margin="20, 20, 40, 20"
                          DockPanel.Dock="Top"
-                         Name="Plotter">
+                         Name="Plotter" >
             <d3:ChartPlotter.HorizontalAxis>
-                <d3:HorizontalDateTimeAxis Name="dateAxis" />
+                <d3:HorizontalDateTimeAxis Name="DateAxis" />
             </d3:ChartPlotter.HorizontalAxis>
             <d3:ChartPlotter.VerticalAxis>
-                <d3:VerticalIntegerAxis Name="countAxis" />
+                <d3:VerticalIntegerAxis Name="CountAxis" />
             </d3:ChartPlotter.VerticalAxis>
 
-            <d3:Header FontFamily="Helvetica"
-                       Content="A GRAPH TITLE" />
+            <d3:Header Name="ScreenTitle"
+                       FontFamily="Helvetica"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20" />
             <d3:VerticalAxisTitle FontFamily="Arial"
-                                  Content="Count" />
+                                  Content="Traffic Volume (vehicles)"
+                                  Margin="0,0,20,0"
+                                  FontSize="20" />
             <d3:HorizontalAxisTitle FontFamily="Arial"
-                                    Content="Date" />
+                                    Content="Time / Date"
+                                    Margin="0,20,0,0"
+                                    FontSize="20" />
         </d3:ChartPlotter>
 
     </DockPanel>

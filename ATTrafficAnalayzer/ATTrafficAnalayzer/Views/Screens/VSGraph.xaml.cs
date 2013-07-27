@@ -41,7 +41,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             var intersection = reportConfiguration.Intersection;
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dates);
-            datesDataSource.SetXMapping(x => dateAxis.ConvertToDouble(x));
+            datesDataSource.SetXMapping(x => DateAxis.ConvertToDouble(x));
             int brushCounter = 0;
             foreach (var approach in reportConfiguration.Approaches)
             {
