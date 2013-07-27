@@ -54,18 +54,18 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 ContainerStackPanel.Children.Add(approachSummary);
                 ContainerStackPanel.Children.Add(CreateVsTable(24, 0, approach));
-
-                var amPeak = approach.GetAmPeak();
-                var pmPeak = approach.GetPmPeak();
                 
                 approachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
-                approachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles\n", amPeak)));
-                approachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles\n", pmPeak)));
+                approachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));
+                approachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles @ {1}\n", approach.PmPeak.GetValue(), approach.PmPeak.GetApproachesAsString())));
                 approachSummary.Inlines.Add(new Run(string.Format("Total volume: {0} vehicles\n", approach.GetTotal())));
 
-                _maxAm.CheckIfMax(amPeak, approach.Name);
-                _maxPm.CheckIfMax(pmPeak, approach.Name);
+                _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
+                _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
                 _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
+
+                _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(), string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
+                _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(), string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
             }
 
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));

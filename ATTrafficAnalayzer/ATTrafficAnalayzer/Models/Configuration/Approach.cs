@@ -12,10 +12,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
     {
         private readonly DbHelper _dbHelper;
 
-        private int _amPeak = 100;
-        private int _pmPeak = 200;
+        public Measurement AmPeak = new Measurement();
+        public Measurement PmPeak = new Measurement();
         private int _approachTotal = 0;
-        private Measurement _peakHour = new Measurement();
 
         public string Name { get; set; }
         public List<int> Detectors { get; set; }
@@ -131,7 +130,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 var total = CalculateColumnTotal(approachVolumes, j, dataTable.Rows.Count);
                 totalsRow[j + 1] = total;
                 _approachTotal += total;
-                _peakHour.CheckIfMax(total, j.ToString());
+                if (j < limit/2)
+                    AmPeak.CheckIfMax(total, j.ToString() + " hours");
+                else
+                    PmPeak.CheckIfMax(total, j.ToString() + " hours");
             }
             dataTable.Rows.Add(totalsRow);
 
@@ -174,24 +176,6 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public int GetTotal()
         {
             return _approachTotal;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public int GetAmPeak()
-        {
-            return _amPeak;
-        }
-                       
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public int GetPmPeak()
-        {
-            return _pmPeak;
         }
     }
 }

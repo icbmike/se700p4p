@@ -2,7 +2,7 @@
 
 namespace ATTrafficAnalayzer.Models.Volume
 {
-    class Measurement
+    public class Measurement
     {
         private int _value;
         private readonly List<string> _approaches = new List<string>();
