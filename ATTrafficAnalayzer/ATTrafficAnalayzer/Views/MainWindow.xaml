@@ -26,7 +26,6 @@
                   Canvas.Left="20"
                   Background="{x:Null}">
                 <MenuItem Header="_File"
-                          DockPanel.Dock="Top"
                           FontSize="16"
                           Foreground="White">
                     <MenuItem Name="FileImportMenuItem"
@@ -40,7 +39,6 @@
                               Foreground="Black" />
                 </MenuItem>
                 <MenuItem Header="_Help"
-                          DockPanel.Dock="Top"
                           FontSize="16"
                           Foreground="White">
                     <MenuItem Name="HelpAboutUsMenuItem"
@@ -57,7 +55,7 @@
                 <ToolBarPanel.DataContext>
                     <settings:SettingsTray />
                 </ToolBarPanel.DataContext>
-                <ToolBar Name="mainToolbar"
+                <ToolBar Name="MainToolbar"
                          Band="1"
                          BandIndex="1"
                          VerticalContentAlignment="Stretch"
@@ -90,7 +88,7 @@
                            FontSize="16">
                         Start Date:
                     </Label>
-                    <DatePicker Name="startDatePicker"
+                    <DatePicker Name="StartDatePicker"
                                 Background="White"
                                 SelectedDate="{Binding StartDate}"
                                 FontSize="16"
@@ -101,7 +99,7 @@
                            FontSize="16">
                         End Date:
                     </Label>
-                    <DatePicker Name="endDatePicker"
+                    <DatePicker Name="EndDatePicker"
                                 Background="White"
                                 SelectedDate="{Binding EndDate}"
                                 FontSize="16"
@@ -113,14 +111,13 @@
                         Interval:
                     </Label>
                     <ComboBox Height="23"
-                              Name="intervalComboBox"
+                              Name="IntervalComboBox"
                               Width="80"
                               SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
                               SelectedValuePath="Content"
                               SelectedIndex="1"
                               Foreground="Black"
                               FontSize="16">
-                        <ComboBoxItem>1 min</ComboBoxItem>
                         <ComboBoxItem>5 min</ComboBoxItem>
                         <ComboBoxItem>15 min</ComboBoxItem>
                         <ComboBoxItem>30 min</ComboBoxItem>
