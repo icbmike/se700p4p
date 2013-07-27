@@ -42,7 +42,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var approach in _configuration.Approaches)
             {
-                ContainerStackPanel.Children.Add(CreateApproachDisplay(approach));
+                ContainerStackPanel.Children.Add(CreateApproachDisplay(approach, 0));
 
                 _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                 _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -67,13 +67,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="approach"></param>
         /// <returns></returns>
-        private ApproachTableDisplay CreateApproachDisplay(Approach approach)
+        private ApproachTableDisplay CreateApproachDisplay(Approach approach, int day)
         {
             var approachDisplay = new ApproachTableDisplay();
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
-            approachDisplay.ApproachDataGrid.ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0).AsDataView();
+            approachDisplay.ApproachDataGrid.ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day).AsDataView();
             approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
 
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));

@@ -22,8 +22,8 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            startDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-            endDatePicker.SelectedDate = new DateTime(2013, 3, 12);
+            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+            EndDatePicker.SelectedDate = new DateTime(2013, 3, 12);
 
             ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
         }

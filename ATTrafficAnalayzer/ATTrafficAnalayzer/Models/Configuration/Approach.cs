@@ -73,18 +73,18 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// Retrieve volume data
         /// </summary>
         /// <returns>list of volumes</returns>
-        public List<int> GetVolumesList(int intersection, DateTime startDate, DateTime endDate)
+        public List<int> GetVolumesList(int intersection, DateTime startDate, int day)
         {
             var volumes = new List<int>();
             foreach (var detector in Detectors)
             {
                 if (volumes.Count == 0)
                 {
-                    volumes.AddRange(_dbHelper.GetVolumes(intersection, detector, startDate, endDate));
+                    volumes.AddRange(_dbHelper.GetVolumes(intersection, detector, startDate.AddDays(day), startDate.AddDays(day + 1)));
                 }
                 else
                 {
-                    var detectorVolumes = _dbHelper.GetVolumes(intersection, detector, startDate, endDate);
+                    var detectorVolumes = _dbHelper.GetVolumes(intersection, detector, startDate, startDate.AddDays(1));
                     volumes = volumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                 }
             }
@@ -95,7 +95,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// 
         /// </summary>
         /// <returns></returns>
-        public DataTable GetDataTable(SettingsTray settings, int intersection, int limit, int offset)
+        public DataTable GetDataTable(SettingsTray settings, int intersection, int limit, int offset, int day)
         {
             var dataTable = new DataTable();
 
@@ -109,16 +109,23 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 dates.Add(date);
 
             // Get volume store data 12 hours
-            var approachVolumes = GetVolumesList(intersection, settings.StartDate, settings.EndDate);
-            for (var rowIndex = 0; rowIndex < 12; rowIndex++)
+            var approachVolumes = GetVolumesList(intersection, settings.StartDate, day);
+            for (var rowIndex = 0; rowIndex < 60; rowIndex += settings.Interval)
             {
                 var row = dataTable.NewRow();
                 for (var columnIndex = 0; columnIndex < limit + 1; columnIndex++)
                 {
                     if (columnIndex == 0)
-                        row[columnIndex] = settings.Interval * rowIndex + " mins";
+                        row[columnIndex] = rowIndex + " mins";
                     else
-                        row[columnIndex] = approachVolumes[(offset + columnIndex - 1) * 12 + rowIndex];
+                    {
+                        var cellValue = 0;
+                        for (var i = 0; i < settings.Interval / 5; i++)
+                        {
+                            cellValue += approachVolumes[(offset + columnIndex - 1) * 12 + rowIndex / 5 + i];
+                        }
+                        row[columnIndex] = cellValue;
+                    }
                 }
                 dataTable.Rows.Add(row);
             }
@@ -127,10 +134,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
             totalsRow[0] = "Total";
             for (var j = 0; j < limit; j++)
             {
-                var total = CalculateColumnTotal(approachVolumes, j, dataTable.Rows.Count);
+                var total = CalculateColumnTotal(approachVolumes, j, 12);
                 totalsRow[j + 1] = total;
                 _approachTotal += total;
-                if (j < limit/2)
+                if (j < limit / 2)
                     AmPeak.CheckIfMax(total, j + " hrs");
                 else
                     PmPeak.CheckIfMax(total, j + " hrs");
