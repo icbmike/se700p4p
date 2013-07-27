@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace ATTrafficAnalayzer.Views.Controls
+﻿namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
     /// Interaction logic for ApproachTableDisplay.xaml
