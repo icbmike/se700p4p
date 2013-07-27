@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -40,15 +41,21 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             ScreenTitle.Content = _configuration.ConfigName;
 
-            foreach (var approach in _configuration.Approaches)
+            var timeSpan = _settings.EndDate - _settings.StartDate;
+            for (var day = 0; day < timeSpan.TotalDays; day++)
             {
-                ContainerStackPanel.Children.Add(CreateApproachDisplay(approach, 0));
+                foreach (var approach in _configuration.Approaches)
+                {
+                    ContainerStackPanel.Children.Add(CreateApproachDisplay(approach, day));
 
-                _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
-                _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
-                _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
-                _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(), string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
-                _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(), string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
+                    _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
+                    _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
+                    _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
+                    _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(),
+                        string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
+                    _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(),
+                        string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
+                }
             }
 
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
