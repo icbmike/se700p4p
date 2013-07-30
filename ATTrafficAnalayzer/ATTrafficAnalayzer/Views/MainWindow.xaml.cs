@@ -118,6 +118,10 @@ namespace ATTrafficAnalayzer.Views
                     {
                         ChangeScreen(new VsTable(settings, selectedItem));
                     }
+                    else if (sender.Equals(FaultsButton))
+                    {
+                        ChangeScreen(new VsFaultsReport(settings selectedItem));
+                    }
                 }
                 else
                 {

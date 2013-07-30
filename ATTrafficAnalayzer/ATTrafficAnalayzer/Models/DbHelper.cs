@@ -363,8 +363,9 @@ namespace ATTrafficAnalayzer.Models
                                     {
                                         if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
-                                            alreadyLoaded = true;
-                                            break;
+                                            Logger.Error("DBHELPER" , e.ToString() + "\nDetector: " + detector + "\nIntersection: " + volumeRecord.IntersectionNumber + "\nDate Time: " + currentDateTime.DateTime);
+                                            ////alreadyLoaded = true;
+                                            //break;
                                         }
                                         
                                     }

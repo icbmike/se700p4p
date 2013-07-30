@@ -79,10 +79,17 @@
                     <Button Name="GraphButton"
                             Click="SwitchScreen"
                             Style="{StaticResource AtToolbarButtonStyle}"
-                            Margin="1,0,10,0"
+                            Margin="1,0,1,0"
                             Content="Graph"
                             Width="70">
                     </Button>
+                    <Button Name="FaultsButton"
+                            Click="SwitchScreen"
+                            Style="{StaticResource AtToolbarButtonStyle}"
+                            Margin="1,0,10,0"
+                            Content="Faults"
+                            Width="70"
+                            />
                     <Label Margin="10,0,4,0"
                            Foreground="White"
                            FontSize="16">
