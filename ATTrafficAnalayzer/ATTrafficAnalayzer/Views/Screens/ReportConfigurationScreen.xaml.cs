@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,14 +8,13 @@ using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Views.Controls;
-using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for ReportConfigurationScreen.xaml
     /// </summary>
-    public partial class ReportConfigurationScreen : UserControl
+    public partial class ReportConfigurationScreen
     {
         private ObservableCollection<int> _detectorList;
         private List<int> _intersectionList;
@@ -58,17 +58,15 @@ namespace ATTrafficAnalayzer.Views.Screens
             set { _detectorList = value; }
         }
 
-        public ReportConfigurationScreen(SettingsTray settings)
+        public ReportConfigurationScreen()
         {
             DataContext = this;
             _intersectionList = new List<int>();
             _detectorList = new ObservableCollection<int>();
 
             _dbHelper = DbHelper.GetDbHelper();
-            foreach (var detector in DbHelper.GetIntersections(settings.StartDate, settings.EndDate))
-            {
-                _intersectionList.Add(detector);
-            }
+            foreach (var intersection in DbHelper.GetIntersections())
+                _intersectionList.Add(intersection);
 
             InitializeComponent();
 
@@ -88,17 +86,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listview = sender as ListView;
-            var items = new List<int>();
 
+            Debug.Assert(listview != null, "listview != null");
             if (listview.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            foreach (int x in listview.SelectedItems)
-            {
-                items.Add(x);
-            }
+            var items = listview.SelectedItems.Cast<int>().ToList();
 
             var data = new DataObject();
             data.SetData("source", listview);
@@ -111,13 +106,15 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var source = e.Data.GetData("source") as ListView;
             var items = e.Data.GetData("items") as List<int>;
+            Debug.Assert(source != null, "source != null");
             var dragSourceList = source.ItemsSource as ObservableCollection<int>;
 
-            if (source != DetectorListView)
+            if (!Equals(source, DetectorListView))
             {
+                Debug.Assert(items != null, "items != null");
                 foreach (var item in items)
                 {
-                    (source.ItemsSource as ObservableCollection<int>).Remove(item);
+                    ((ObservableCollection<int>) source.ItemsSource).Remove(item);
                 }
             }
 
@@ -126,6 +123,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             Approaches.Children.Add(approach);
 
 
+            Debug.Assert(dragSourceList != null, "dragSourceList != null");
             if (dragSourceList.Count == 0)
             {
                 if (e.Data.GetDataPresent("approach"))
@@ -173,6 +171,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             for (var i = 1; i < Approaches.Children.Count; i++)
             {
                 var appCtrl = Approaches.Children[i] as ApproachControl;
+                Debug.Assert(appCtrl != null, "appCtrl != null");
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 

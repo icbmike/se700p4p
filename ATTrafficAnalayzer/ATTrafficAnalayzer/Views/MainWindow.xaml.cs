@@ -170,7 +170,7 @@ namespace ATTrafficAnalayzer.Views
                 if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
                 {
 
-                    var reportConfigurationScreen = new ReportConfigurationScreen(SettingsTray.DataContext as SettingsTray);
+                    var reportConfigurationScreen = new ReportConfigurationScreen();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                     ChangeScreen(reportConfigurationScreen);
                 }
