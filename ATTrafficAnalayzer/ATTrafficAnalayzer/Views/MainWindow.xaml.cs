@@ -96,7 +96,6 @@ namespace ATTrafficAnalayzer.Views
 
         private void ChangeScreen(UserControl screen)
         {
-           // if (screen.GetType() != MainContentControl.Content.GetType())
                 MainContentControl.Content = screen;
         }
 
@@ -118,6 +117,12 @@ namespace ATTrafficAnalayzer.Views
                     {
                         ChangeScreen(new VsTable(settings, selectedItem));
                     }
+
+                }
+
+                if (sender.Equals(FaultsButton))
+                {
+                    ChangeScreen(new VsFaultsReport(settings));
                 }
                 else
                 {

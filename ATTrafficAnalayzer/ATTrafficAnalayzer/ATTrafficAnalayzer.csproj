@@ -106,6 +106,9 @@
     <Compile Include="Models\Configuration\ReportConfiguration.cs" />
     <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
+    <Compile Include="Views\Screens\VsFaultsReport.xaml.cs">
+      <DependentUpon>VsFaultsReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Screens\VSGraph.xaml.cs">
       <DependentUpon>VSGraph.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\ReportList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Screens\VsFaultsReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

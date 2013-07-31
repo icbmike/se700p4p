@@ -61,12 +61,26 @@ namespace ATTrafficAnalayzer.Models
 
         private static SQLiteDataAdapter GetDataAdapter(string sql)
         {
-            var dbConnection = new SQLiteConnection(DbPath);
 
+            return GetDataAdapter(sql, null);
+        }
+
+        private static SQLiteDataAdapter GetDataAdapter(string sql, Dictionary<string, object> parameters)
+        {
+
+            var dbConnection = new SQLiteConnection(DbPath);
             dbConnection.Open();
 
             var command = new SQLiteCommand(dbConnection) { CommandText = sql };
-            SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
+
+            if (parameters != null)
+            {
+                foreach (var parameterName in parameters.Keys)
+                {
+                    command.Parameters.AddWithValue(parameterName, parameters[parameterName]);
+                }
+            }
+            var dataAdapter = new SQLiteDataAdapter(command);
 
             dbConnection.Close();
 
@@ -362,8 +376,9 @@ namespace ATTrafficAnalayzer.Models
                                     {
                                         if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
-                                            alreadyLoaded = true;
-                                            break;
+                                            Logger.Error("DBHELPER" , e.ToString() + "\nDetector: " + detector + "\nIntersection: " + volumeRecord.IntersectionNumber + "\nDate Time: " + currentDateTime.DateTime);
+                                            ////alreadyLoaded = true;
+                                            //break;
                                         }
                                         
                                     }
@@ -650,6 +665,12 @@ namespace ATTrafficAnalayzer.Models
                 }
             }
             return importedDates;
+        }
+
+        public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate)
+        {
+            var sql = "SELECT DISTINCT intersection, detector FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate) ORDER BY intersection, detector";
+            return GetDataAdapter(sql, new Dictionary<string, object> { {"@startDate" , startDate}, {"@endDate" , endDate}});
         }
     }
 }
