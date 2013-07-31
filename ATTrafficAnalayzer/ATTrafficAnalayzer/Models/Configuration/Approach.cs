@@ -70,21 +70,24 @@ namespace ATTrafficAnalayzer.Models.Configuration
         }
 
         /// <summary>
-        /// Retrieve volume data
+        /// 
         /// </summary>
-        /// <returns>list of volumes</returns>
-        public List<int> GetVolumesList(int intersection, DateTime startDate, int day)
+        /// <param name="intersection"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public List<int> GetVolumesList(int intersection, DateTime startDate, DateTime endDate)
         {
             var volumes = new List<int>();
             foreach (var detector in Detectors)
             {
                 if (volumes.Count == 0)
                 {
-                    volumes.AddRange(_dbHelper.GetVolumes(intersection, detector, startDate.AddDays(day), startDate.AddDays(day + 1)));
+                    volumes.AddRange(_dbHelper.GetVolumes(intersection, detector, startDate, endDate));
                 }
                 else
                 {
-                    var detectorVolumes = _dbHelper.GetVolumes(intersection, detector, startDate, startDate.AddDays(1));
+                    var detectorVolumes = _dbHelper.GetVolumes(intersection, detector, startDate, endDate);
                     volumes = volumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                 }
             }
@@ -109,7 +112,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 dates.Add(date);
 
             // Get volume store data 12 hours
-            var approachVolumes = GetVolumesList(intersection, settings.StartDate, day);
+            var approachVolumes = GetVolumesList(intersection, settings.StartDate.AddDays(day), settings.StartDate.AddDays(day + 1));
             for (var rowIndex = 0; rowIndex < 60; rowIndex += settings.Interval)
             {
                 var row = dataTable.NewRow();
