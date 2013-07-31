@@ -115,7 +115,7 @@
                               Width="80"
                               SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
                               SelectedValuePath="Content"
-                              SelectedIndex="1"
+                              SelectedIndex="0"
                               Foreground="Black"
                               FontSize="16">
                         <ComboBoxItem>5 min</ComboBoxItem>

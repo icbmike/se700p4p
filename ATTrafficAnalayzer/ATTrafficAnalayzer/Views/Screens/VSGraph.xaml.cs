@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class VsGraph
     {
-        private static readonly Brush[] SeriesColours = {Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black};
+        private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
 
         public VsGraph(SettingsTray settings, string configName)
         {
@@ -26,16 +26,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
-            ScreenTitle.Content = configName;             
-          
+            ScreenTitle.Content = configName;
+
             // List dates
             var dateList = new List<DateTime>();
             for (var date = settingsTray.StartDate;
                 date < settingsTray.EndDate;
                 date = date.AddMinutes(settingsTray.Interval))
-            {
                 dateList.Add(date);
-            }
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
             datesDataSource.SetXMapping(x => DateAxis.ConvertToDouble(x));
@@ -44,16 +42,30 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var approach in reportConfiguration.Approaches)
             {
                 var approachVolumes = approach.GetVolumesList(intersection, settingsTray.StartDate, settingsTray.EndDate);
-                
-                var volumesDataSource = new EnumerableDataSource<int>(approachVolumes.ToArray());
+
+                var compressedVolumes = new int[dateList.Count];
+                var valuesPerCell = settings.Interval/5;
+                for (var j = 0; j < dateList.Count; j++)
+                {
+                    var cellValue = 0;
+                  
+                    for (var i = 0; i < settings.Interval/5; i++)
+                    {
+                        cellValue += approachVolumes[i + valuesPerCell * j];
+                    }
+                    compressedVolumes[j] = cellValue;
+                }
+
+                var volumesDataSource = new EnumerableDataSource<int>(compressedVolumes);
+
                 volumesDataSource.SetYMapping(y => y);
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
-                
+
                 Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
-                  new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter ) % SeriesColours.Count()] },
+                  new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name));
                 brushCounter++;
-            }    
+            }
         }
     }
 }
