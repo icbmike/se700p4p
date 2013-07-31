@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
@@ -14,63 +13,59 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    
-    public partial class VsGraph : UserControl
+    public partial class VsGraph
     {
-        private readonly SettingsTray _settings;
-        private DbHelper _dbHelper;
-
-        private static Brush[] seriesColours = {Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black};
+        private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
 
         public VsGraph(SettingsTray settings, string configName)
         {
-            _settings = settings;
-            _dbHelper = DbHelper.GetDbHelper();
+            var settingsTray = settings;
+            var dbHelper = DbHelper.GetDbHelper();
+            var reportConfiguration = dbHelper.GetConfiguration(configName);
+            var intersection = reportConfiguration.Intersection;
 
             InitializeComponent();
 
             ScreenTitle.Content = configName;
-          
-            var ds = new List<DateTime>();
-            for(var date = _settings.StartDate; date < _settings.EndDate; date = date.AddMinutes(_settings.Interval)){
-                ds.Add(date);
-            }
 
-            var dates = ds.ToArray(); 
-            var reportConfiguration = _dbHelper.GetConfiguration(configName);
-            var intersection = reportConfiguration.Intersection;
+            // List dates
+            var dateList = new List<DateTime>();
+            for (var date = settingsTray.StartDate;
+                date < settingsTray.EndDate;
+                date = date.AddMinutes(settingsTray.Interval))
+                dateList.Add(date);
 
-            var datesDataSource = new EnumerableDataSource<DateTime>(dates);
+            var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
             datesDataSource.SetXMapping(x => DateAxis.ConvertToDouble(x));
-            int brushCounter = 0;
+
+            var brushCounter = 0;
             foreach (var approach in reportConfiguration.Approaches)
             {
-                var approachVolumes = new List<int>();
-                foreach (var detector in approach.Detectors)
-                {
+                var approachVolumes = approach.GetVolumesList(intersection, settingsTray.StartDate, settingsTray.EndDate);
 
-                    if (approachVolumes.Count == 0)
+                var compressedVolumes = new int[dateList.Count];
+                var valuesPerCell = settings.Interval/5;
+                for (var j = 0; j < dateList.Count; j++)
+                {
+                    var cellValue = 0;
+                  
+                    for (var i = 0; i < settings.Interval/5; i++)
                     {
-                        approachVolumes.AddRange(_dbHelper.GetVolumes(intersection, detector, settings.StartDate,
-                                                                      settings.EndDate));
+                        cellValue += approachVolumes[i + valuesPerCell * j];
                     }
-                    else
-                    {
-                        List<int> detectorVolumes = _dbHelper.GetVolumes(intersection, detector, settings.StartDate, settings.EndDate);
-                        approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
-                    }
+                    compressedVolumes[j] = cellValue;
                 }
-                
-                var volumesDataSource = new EnumerableDataSource<int>(approachVolumes.ToArray());
+
+                var volumesDataSource = new EnumerableDataSource<int>(compressedVolumes);
+
                 volumesDataSource.SetYMapping(y => y);
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
-                
-                Plotter.AddLineGraph(compositeDataSource, new Pen(seriesColours[brushCounter % seriesColours.Count()], 1),
-                  new CirclePointMarker { Size = 0.0, Fill = seriesColours[(brushCounter ) % seriesColours.Count()] },
+                Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
+                  new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name));
                 brushCounter++;
-            }    
+            }
         }
     }
 }

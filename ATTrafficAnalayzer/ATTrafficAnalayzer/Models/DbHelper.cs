@@ -485,7 +485,8 @@ namespace ATTrafficAnalayzer.Models
                 query.Parameters.AddWithValue("@intersection", intersection);
                 query.Parameters.AddWithValue("@detector", detector);
                 query.Parameters.AddWithValue("@startDate", startDate);
-                query.Parameters.AddWithValue("@endDate", endDate);
+                //TODO change between to exclude upper limit instead of subtracting a second from endDate
+                query.Parameters.AddWithValue("@endDate", endDate.AddSeconds(-1));
                 var reader = query.ExecuteReader();
                 while (reader.Read())
                 {
