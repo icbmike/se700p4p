@@ -61,13 +61,12 @@ namespace ATTrafficAnalayzer.Models
 
         private static SQLiteDataAdapter GetDataAdapter(string sql)
         {
-            SQLiteDataAdapter dataAdapter;
             var dbConnection = new SQLiteConnection(DbPath);
 
             dbConnection.Open();
 
             var command = new SQLiteCommand(dbConnection) { CommandText = sql };
-            dataAdapter = new SQLiteDataAdapter(command);
+            SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
 
             dbConnection.Close();
 
@@ -383,22 +382,18 @@ namespace ATTrafficAnalayzer.Models
             fs.Close();
         }
 
-        public static List<int> GetIntersections(DateTime startDate, DateTime endDate)
+        public static List<int> GetIntersections()
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
             var intersections = new List<int>();
             using (var query = new SQLiteCommand(conn))
             {
-                query.CommandText = "SELECT DISTINCT intersection FROM volumes WHERE (dateTime BETWEEN @startDate AND @endDate);";
-                query.Parameters.AddWithValue("@startDate", startDate);
-                query.Parameters.AddWithValue("@endDate", endDate);
+                query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
                 var reader = query.ExecuteReader();
 
                 while (reader.Read())
-                {
                     intersections.Add(reader.GetInt32(0));
-                }
             }
             conn.Close();
             return intersections;
