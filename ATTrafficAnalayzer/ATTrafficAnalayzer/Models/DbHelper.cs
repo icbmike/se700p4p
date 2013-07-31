@@ -61,12 +61,24 @@ namespace ATTrafficAnalayzer.Models
 
         private static SQLiteDataAdapter GetDataAdapter(string sql)
         {
+            return GetDataAdapter(sql, null);
+        }
+
+        private static SQLiteDataAdapter GetDataAdapter(string sql, Dictionary<string, object> parameters)
+        {
             SQLiteDataAdapter dataAdapter;
             var dbConnection = new SQLiteConnection(DbPath);
 
             dbConnection.Open();
 
             var command = new SQLiteCommand(dbConnection) { CommandText = sql };
+            if (parameters != null)
+            {
+                foreach (var parameterName in parameters.Keys)
+                {
+                    command.Parameters.AddWithValue(parameterName, parameters[parameterName]);
+                }
+            }
             dataAdapter = new SQLiteDataAdapter(command);
 
             dbConnection.Close();
@@ -655,6 +667,12 @@ namespace ATTrafficAnalayzer.Models
                 }
             }
             return importedDates;
+        }
+
+        public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate)
+        {
+            var sql = "SELECT DISTINCT intersection, detector FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate) ORDER BY intersection, detector";
+            return GetDataAdapter(sql, new Dictionary<string, object> { {"@startDate" , startDate}, {"@endDate" , endDate}});
         }
     }
 }

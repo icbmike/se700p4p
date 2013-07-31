@@ -1,5 +1,9 @@
-﻿using System;
+﻿using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -19,9 +23,26 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class VsFaultsReport : UserControl
     {
-        public VsFaultsReport()
+        private SettingsTray settings;
+        private DbHelper dbHelper;
+
+        public VsFaultsReport(SettingsTray settings)
         {
+            this.settings = settings;
+            this.dbHelper = DbHelper.GetDbHelper();
             InitializeComponent();
+            FillGrid();
+        
         }
+
+        private void FillGrid()
+        {
+
+            var dataAdapter = dbHelper.GetFaultsDataAdapter(settings.StartDate, settings.EndDate);
+            var dataTable = new DataTable();
+            dataAdapter.Fill(dataTable);
+            FaultsDataGrid.ItemsSource = dataTable.AsDataView();
+        }
+
     }
 }
