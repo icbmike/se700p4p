@@ -8,6 +8,7 @@ using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
 using DataGridCell = System.Windows.Controls.DataGridCell;
+using System;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -22,7 +23,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly Measurement _peakHourAm = new Measurement();
         private readonly Measurement _peakHourPm = new Measurement();
 
-        private readonly SettingsTray _settings;
+        private SettingsTray _settings;
+        private DateTime startDate;
+        private DateTime endDate;
+        private int interval;
+
         private readonly ReportConfiguration _configuration;
 
         /// <summary>
@@ -34,18 +39,43 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var dbHelper = DbHelper.GetDbHelper();
             _configuration = dbHelper.GetConfiguration(configName);
-            _settings = settings;
+
+            this._settings = settings;
+            this.startDate = settings.StartDate;
+            this.endDate = settings.EndDate;
+            this.interval = settings.Interval;
 
             InitializeComponent();
 
             ScreenTitle.Content = _configuration.ConfigName;
 
-            var timeSpan = _settings.EndDate - _settings.StartDate;
+            RenderTable();
+            
+        }
+
+
+        private void RenderTable()
+        {
+            //Clear all the things!
+            ApproachesStackPanel.Children.Clear();
+
+            _maxAm.ClearApproaches();
+            _maxPm.ClearApproaches();
+            _maxTotal.ClearApproaches();
+            _peakHourAm.ClearApproaches();
+            _peakHourPm.ClearApproaches(); 
+
+            OverallSummaryTextBlock.Inlines.Clear();
+            
+            //Add all the things!
+
+            var timeSpan = endDate - startDate;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
                 {
-                    ContainerStackPanel.Children.Add(CreateApproachDisplay(approach, day));
+
+                    ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, day));
 
                     _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                     _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -66,7 +96,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Logger.Info("constructed view", "VS table");
         }
-
 
         /// <summary>
         /// 
@@ -93,7 +122,18 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
-            throw new System.NotImplementedException();
+
+            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
+            {
+                //RenderTable() is a time consuming operation.
+                //We dont want to do it if we don't have to.
+
+                startDate = args.startDate;
+                endDate = args.endDate;
+                interval = args.interval;
+
+                RenderTable();
+            }
         }
     }
 }

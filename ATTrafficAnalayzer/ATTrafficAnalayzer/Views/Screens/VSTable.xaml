@@ -21,6 +21,9 @@
                        Background="Aquamarine"
                        Margin="20,15,20,10"
                        Padding="5" />
+
+            <StackPanel Name="ApproachesStackPanel" />
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>
