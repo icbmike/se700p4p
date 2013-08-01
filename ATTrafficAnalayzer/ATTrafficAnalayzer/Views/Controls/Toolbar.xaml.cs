@@ -66,6 +66,9 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
+
+            Console.WriteLine(toolbarPanel.DataContext);
+
             if (sender.Equals(GraphButton))
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Graph));

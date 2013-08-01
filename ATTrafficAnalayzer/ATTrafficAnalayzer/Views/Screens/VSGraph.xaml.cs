@@ -16,23 +16,40 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class VsGraph
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
+        
+        private string configName;
+        private DateTime startDate;
+        private DateTime endDate;
+        private int interval;
+        private List<LineAndMarker<MarkerPointsGraph>> series;
+
 
         public VsGraph(SettingsTray settings, string configName)
         {
-            var settingsTray = settings;
+            this.startDate = settings.StartDate;
+            this.endDate = settings.EndDate;
+            this.interval = settings.Interval;
+
+            this.configName = configName;
+            InitializeComponent();
+
+            ScreenTitle.Content = configName;
+            this.series = new List<LineAndMarker<MarkerPointsGraph>>();
+            InitializeGraph();
+
+        }
+
+        public void InitializeGraph()
+        {
             var dbHelper = DbHelper.GetDbHelper();
             var reportConfiguration = dbHelper.GetConfiguration(configName);
             var intersection = reportConfiguration.Intersection;
 
-            InitializeComponent();
-
-            ScreenTitle.Content = configName;
-
             // List dates
             var dateList = new List<DateTime>();
-            for (var date = settingsTray.StartDate;
-                date < settingsTray.EndDate;
-                date = date.AddMinutes(settingsTray.Interval))
+            for (var date = startDate;
+                date < endDate;
+                date = date.AddMinutes(interval))
                 dateList.Add(date);
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
@@ -41,15 +58,15 @@ namespace ATTrafficAnalayzer.Views.Screens
             var brushCounter = 0;
             foreach (var approach in reportConfiguration.Approaches)
             {
-                var approachVolumes = approach.GetVolumesList(intersection, settingsTray.StartDate, settingsTray.EndDate);
+                var approachVolumes = approach.GetVolumesList(intersection, startDate, endDate);
 
                 var compressedVolumes = new int[dateList.Count];
-                var valuesPerCell = settings.Interval/5;
+                var valuesPerCell = interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
                 {
                     var cellValue = 0;
-                  
-                    for (var i = 0; i < settings.Interval/5; i++)
+
+                    for (var i = 0; i < interval / 5; i++)
                     {
                         cellValue += approachVolumes[i + valuesPerCell * j];
                     }
@@ -61,18 +78,24 @@ namespace ATTrafficAnalayzer.Views.Screens
                 volumesDataSource.SetYMapping(y => y);
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
-                Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
+               series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
-                  new PenDescription(approach.Name));
+                  new PenDescription(approach.Name)));
                 brushCounter++;
             }
         }
 
-
-
-        internal void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
         {
-            throw new NotImplementedException();
+
+            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
+            {
+                foreach (var graph in series)
+                {
+                    Plotter.Children.Remove(graph.LineGraph);
+                    Plotter.Children.Remove(graph.MarkerGraph);
+                }
+            }
         }
     }
 }
