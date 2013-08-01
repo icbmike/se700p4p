@@ -35,12 +35,21 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             ScreenTitle.Content = configName;
             this.series = new List<LineAndMarker<MarkerPointsGraph>>();
-            InitializeGraph();
+            
+            //Display the graph
+            RenderGraph();
 
         }
 
-        public void InitializeGraph()
+        private void RenderGraph()
         {
+            //Clear anything that's already on the graph
+            foreach (var graph in series)
+            {
+                Plotter.Children.Remove(graph.LineGraph);
+                Plotter.Children.Remove(graph.MarkerGraph);
+            }
+
             var dbHelper = DbHelper.GetDbHelper();
             var reportConfiguration = dbHelper.GetConfiguration(configName);
             var intersection = reportConfiguration.Intersection;
@@ -90,11 +99,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
             {
-                foreach (var graph in series)
-                {
-                    Plotter.Children.Remove(graph.LineGraph);
-                    Plotter.Children.Remove(graph.MarkerGraph);
-                }
+                //InitializeGraph() is a time consuming operation.
+                //We dont want to do it if we don't have to.
+
+                startDate = args.startDate;
+                endDate = args.endDate;
+                interval = args.interval;
+
+                RenderGraph();
             }
         }
     }
