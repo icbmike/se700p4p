@@ -6,9 +6,8 @@
              xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
              mc:Ignorable="d" >
 
-    <ToolBarPanel Name="SettingsTray"
-                          
-                          Background="{x:Null}">
+    <ToolBarPanel Name="toolbarPanel"      
+        Background="{x:Null}">
         <ToolBarPanel.DataContext>
             <settings:SettingsTray />
         </ToolBarPanel.DataContext>
@@ -19,7 +18,9 @@
                          HorizontalContentAlignment="Stretch"
                          Foreground="White"
                          ToolBarTray.IsLocked="True"
-                         Background="{x:Null}">
+                         Background="{x:Null}"
+                 Loaded="MainToolbar_OnLoaded"
+                 >
             <Image Height="26.6666666666667"
                            VerticalAlignment="Center"
                            Source="../../Resources/Images/home_icon.png"

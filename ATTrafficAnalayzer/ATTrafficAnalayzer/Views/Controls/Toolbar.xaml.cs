@@ -29,7 +29,8 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public class ScreenChangeEventHandlerArgs
         {
-            public enum ScreenButton{
+            public enum ScreenButton
+            {
                 Graph, Table, Faults
             }
 
@@ -60,7 +61,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             EndDatePicker.SelectedDate = new DateTime(2013, 3, 12);
-         
+
         }
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
@@ -82,15 +83,30 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender.Equals(StartDatePicker))
-                if(EndDatePicker != null)
+                if (EndDatePicker != null)
                     EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
-            if(DateRangeChanged != null)
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (SettingsTray.DataContext as SettingsTray).Interval));
+            if (DateRangeChanged != null)
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (toolbarPanel.DataContext as SettingsTray).Interval));
         }
 
         private void HomeImageMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
 
         }
+        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
+
+        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
+
+        public SettingsTray SettingsTray { get { return toolbarPanel.DataContext as SettingsTray; } }
     }
 }

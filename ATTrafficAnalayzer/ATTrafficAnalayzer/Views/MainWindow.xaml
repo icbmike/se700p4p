@@ -50,7 +50,8 @@
 
             <controls:Toolbar Canvas.Top="60"
                           Canvas.Left="20"
-                          x:Name="SettingsToolbar"/>
+                          x:Name="SettingsToolbar"
+                          ScreenChanged="SwitchScreen"/>
         </Canvas>
 
         <controls:ReportList x:Name="ReportList"

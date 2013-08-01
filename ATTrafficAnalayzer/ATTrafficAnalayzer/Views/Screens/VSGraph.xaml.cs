@@ -67,5 +67,12 @@ namespace ATTrafficAnalayzer.Views.Screens
                 brushCounter++;
             }
         }
+
+
+
+        internal void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

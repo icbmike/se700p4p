@@ -90,5 +90,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             return approachDisplay;
         }
+
+        internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

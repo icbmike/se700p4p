@@ -44,5 +44,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
         }
 
+
+        internal void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
