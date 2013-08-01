@@ -22,9 +22,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-            EndDatePicker.SelectedDate = new DateTime(2013, 3, 12);
-
+           
             ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
         }
         
@@ -88,8 +86,7 @@ namespace ATTrafficAnalayzer.Views
                     });
                   
                     }, settings);
-
-               
+        
             }
             
         }
@@ -99,41 +96,41 @@ namespace ATTrafficAnalayzer.Views
                 MainContentControl.Content = screen;
         }
 
-        private void SwitchScreen(object sender, RoutedEventArgs e)
-        {
-            var settings = SettingsTray.DataContext as SettingsTray;
+        //private void SwitchScreen(object sender, RoutedEventArgs e)
+        //{
+        //    var settings = SettingsTray.DataContext as SettingsTray;
 
-            if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
-            {
-                //Get selected Configuration
-                var selectedItem = ReportList.GetSelectedConfiguration();
-                if (selectedItem != null)
-                {
-                    if (sender.Equals(GraphButton))
-                    {
-                        ChangeScreen(new VsGraph(settings, selectedItem));
-                    }
-                    else if (sender.Equals(TableButton))
-                    {
-                        ChangeScreen(new VsTable(settings, selectedItem));
-                    }
+        //    if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
+        //    {
+        //        //Get selected Configuration
+        //        var selectedItem = ReportList.GetSelectedConfiguration();
+        //        if (selectedItem != null)
+        //        {
+        //            if (sender.Equals(GraphButton))
+        //            {
+        //                ChangeScreen(new VsGraph(settings, selectedItem));
+        //            }
+        //            else if (sender.Equals(TableButton))
+        //            {
+        //                ChangeScreen(new VsTable(settings, selectedItem));
+        //            }
 
-                }
+        //        }
 
-                if (sender.Equals(FaultsButton))
-                {
-                    ChangeScreen(new VsFaultsReport(settings));
-                }
-                else
-                {
-                    MessageBox.Show("Select a report from the list on the left");
-                }
-            }
-            else
-            {
-                MessageBox.Show("You haven't imported volume data for the selected date range");
-            }
-        }
+        //        if (sender.Equals(FaultsButton))
+        //        {
+        //            ChangeScreen(new VsFaultsReport(settings));
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("Select a report from the list on the left");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("You haven't imported volume data for the selected date range");
+        //    }
+        //}
 
         private void HomeImageMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

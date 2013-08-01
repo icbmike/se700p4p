@@ -97,6 +97,9 @@
     <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogSettings.cs" />
     <Compile Include="Models\Volume\RecordFactory.cs" />
     <Compile Include="Models\Volume\RecordType.cs" />
+    <Compile Include="Views\Controls\Toolbar.xaml.cs">
+      <DependentUpon>Toolbar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CSVExporter.cs" />
     <Compile Include="Views\Screens\ReportConfigurationScreen.xaml.cs">
       <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
@@ -123,6 +126,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\ApproachTableDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Toolbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
