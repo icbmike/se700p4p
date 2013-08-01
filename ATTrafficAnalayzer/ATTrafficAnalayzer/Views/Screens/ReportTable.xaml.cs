@@ -48,10 +48,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
-            RenderTable();
+            Render();
         }
 
-        private void RenderTable()
+        public void Render()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {
@@ -155,14 +155,14 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _endDate = args.EndDate;
                 _interval = args.Interval;
 
-                RenderTable();
+                Render();
             }
         }
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
         {
             _configuration = _dbHelper.GetConfiguration(args.ReportName);
-            RenderTable();
+            Render();
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;

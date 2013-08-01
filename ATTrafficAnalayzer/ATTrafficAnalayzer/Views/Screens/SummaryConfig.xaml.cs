@@ -24,7 +24,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
             SummaryDataGrid.DataContext = this;
-
         }
 
         public ObservableCollection<SummaryRow> Rows { get; set; }

@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Data;
+using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
-using System;
-using System.Data;
 using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -20,15 +20,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
-
             _dbHelper = DbHelper.GetDbHelper();
+
             InitializeComponent();
-            
-            FillGrid();
-        
+            Render();
         }
 
-        private void FillGrid()
+        public void Render()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
@@ -39,15 +37,18 @@ namespace ATTrafficAnalayzer.Views.Screens
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
         }
 
-        internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
+        #region Event Handlers
 
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+
+        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
             if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate))
             {
                 _startDate = args.StartDate;
                 _endDate = args.EndDate;
 
-                FillGrid();
+                Render();
             }
         }
 
@@ -56,11 +57,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             throw new NotImplementedException();
         }
 
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
-
-        void IView.DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
-            DateRangeChangedHandler(sender, args);
-        }
+        #endregion
     }
 }

@@ -30,7 +30,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _screenTitle = configName;
 
             InitializeComponent();
-            RenderTable();
+            Render();
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
@@ -38,7 +38,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _amPeakHour = args.AmPeakHour;
             _pmPeakHour = args.PmPeakHour;
 
-            RenderTable();
+            Render();
         }
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
@@ -48,7 +48,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
-        private void RenderTable()
+        public void Render()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {

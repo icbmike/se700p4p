@@ -8,6 +8,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     {
         void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args);
         void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args);
+        void Render();
 
         event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }

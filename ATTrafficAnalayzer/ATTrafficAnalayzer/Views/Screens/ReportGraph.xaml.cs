@@ -40,10 +40,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
 
-            RenderGraph();
+            Render();
         }
 
-        private void RenderGraph()
+        public void Render()
         {
             var dbHelper = DbHelper.GetDbHelper();
             var configuation = dbHelper.GetConfiguration(_configName);
@@ -176,14 +176,14 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _endDate = args.EndDate;
                 _interval = args.Interval;
 
-                RenderGraph();
+                Render();
             }
         }
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
         {
             _configName = args.ReportName;
-            RenderGraph();
+            Render();
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
