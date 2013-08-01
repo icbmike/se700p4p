@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ATTrafficAnalayzer.Models.Settings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,10 +57,10 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public Toolbar()
         {
+            InitializeComponent();
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             EndDatePicker.SelectedDate = new DateTime(2013, 3, 12);
-
-            InitializeComponent();
+         
         }
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
@@ -80,9 +81,16 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender.equals(StartDatePicker))
-                EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
-            DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate, EndDatePicker.SelectedDate, IntervalComboBox.SelectedValue);
+            if (sender.Equals(StartDatePicker))
+                if(EndDatePicker != null)
+                    EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+            if(DateRangeChanged != null)
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (SettingsTray.DataContext as SettingsTray).Interval));
+        }
+
+        private void HomeImageMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

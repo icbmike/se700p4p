@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-           
+            
             ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
         }
         
@@ -166,12 +166,12 @@ namespace ATTrafficAnalayzer.Views
 
         private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
         {
+            /*
             if (args.New)
             {
                 var settings = SettingsTray.DataContext as SettingsTray;
                 if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
                 {
-
                     var reportConfigurationScreen = new ReportConfigurationScreen();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                     ChangeScreen(reportConfigurationScreen);
@@ -185,15 +185,17 @@ namespace ATTrafficAnalayzer.Views
             {
                 throw new NotImplementedException();
             }
+        */
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
               //  BulkImport();
         }
-
+        
         private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
         {
+            /*
             var dlg = new SaveFileDialog()
             {
                 FileName = "",
@@ -207,6 +209,8 @@ namespace ATTrafficAnalayzer.Views
                 var csvExporter = new CSVExporter(dlg.FileName, SettingsTray.DataContext as SettingsTray, args.ConfigToBeEdited);
                 csvExporter.DoExport();    
             }          
+             */
         }
+         
     }
 }

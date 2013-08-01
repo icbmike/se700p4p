@@ -50,12 +50,13 @@
 
             <controls:Toolbar Canvas.Top="60"
                           Canvas.Left="20"
-                              Name="Toolbar"/>
+                          x:Name="SettingsToolbar"/>
         </Canvas>
 
         <controls:ReportList x:Name="ReportList"
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
-                             ExportEvent="ReportList_OnExportEvent"/>
+                             ExportEvent="ReportList_OnExportEvent" 
+                             />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="MainContentControl"

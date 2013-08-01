@@ -19,8 +19,7 @@
                          HorizontalContentAlignment="Stretch"
                          Foreground="White"
                          ToolBarTray.IsLocked="True"
-                         Background="{x:Null}"
-                         Loaded="MainToolbar_OnLoaded">
+                         Background="{x:Null}">
             <Image Height="26.6666666666667"
                            VerticalAlignment="Center"
                            Source="../../Resources/Images/home_icon.png"
