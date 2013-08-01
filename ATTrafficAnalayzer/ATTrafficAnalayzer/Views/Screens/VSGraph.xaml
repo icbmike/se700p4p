@@ -7,8 +7,16 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <DockPanel LastChildFill="True">
+    <Grid>
+        <Grid.ColumnDefinitions >
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition />    
+        </Grid.RowDefinitions>
+        
         <d3:ChartPlotter Margin="20, 20, 40, 20"
                          DockPanel.Dock="Top"
                          Name="Plotter" >
@@ -33,6 +41,12 @@
                                     Margin="0,20,0,0"
                                     FontSize="20" />
         </d3:ChartPlotter>
-
-    </DockPanel>
+        <StackPanel>
+            <CheckBox />
+            <CheckBox />
+            <CheckBox />
+            <CheckBox />
+            <CheckBox />
+        </StackPanel>
+    </Grid>
 </UserControl>
