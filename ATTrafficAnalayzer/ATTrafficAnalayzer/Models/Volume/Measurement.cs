@@ -44,5 +44,10 @@ namespace ATTrafficAnalayzer.Models.Volume
         {
             return _value;
         }
+
+        public void ClearApproaches()
+        {
+            _approaches.Clear();
+        }
     }
 }
