@@ -22,10 +22,14 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            
-            ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
+            var welcomeScreen = new WelcomeScreen(fileImportMenuItem_Click);
+            ImportCompleted += welcomeScreen.ImportCompletedHandler;
+            ChangeScreen(welcomeScreen);
         }
-        
+
+        public delegate void ImportCompletedHandler(object sender);
+        public event ImportCompletedHandler ImportCompleted;
+
         private void BulkImport()
         {
             var messageBoxText = "There is currently no volume data in the database. Would you like to import this data now?";
@@ -84,8 +88,11 @@ namespace ATTrafficAnalayzer.Views
                     DbHelper.ImportFile(b, w, filename, (progress) => {
                         ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File");
                     });
-                  
-                    }, settings);     
+
+                    b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
+
+                    }, settings);
+               
             }
             
         }
@@ -162,8 +169,6 @@ namespace ATTrafficAnalayzer.Views
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
-   
-
         private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
         {
             
@@ -174,6 +179,7 @@ namespace ATTrafficAnalayzer.Views
                 {
                     var reportConfigurationScreen = new ReportConfigurationScreen();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                    ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                     ChangeScreen(reportConfigurationScreen);
                 }
                 else

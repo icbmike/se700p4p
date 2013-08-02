@@ -17,7 +17,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class ReportConfigurationScreen
     {
         private ObservableCollection<int> _detectorList;
-        private List<int> _intersectionList;
+        private ObservableCollection<int> _intersectionList;
         private int _selectedIntersection;
 
         private readonly DbHelper _dbHelper;
@@ -46,7 +46,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             set { _selectedIntersection = value; }
         }
 
-        public List<int> IntersectionList
+        public ObservableCollection<int> IntersectionList
         {
             get { return _intersectionList; }
             set { _intersectionList = value; }
@@ -61,7 +61,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         public ReportConfigurationScreen()
         {
             DataContext = this;
-            _intersectionList = new List<int>();
+            _intersectionList = new ObservableCollection<int>();
             _detectorList = new ObservableCollection<int>();
 
             _dbHelper = DbHelper.GetDbHelper();
@@ -192,6 +192,14 @@ namespace ATTrafficAnalayzer.Views.Screens
                     break;
                 }
             }
+        }
+
+        internal void ImportCompletedHandler(object sender)
+        {
+            //Refresh combobox list
+            _intersectionList.Clear();
+            foreach (var intersection in DbHelper.GetIntersections())
+                _intersectionList.Add(intersection);
         }
     }
 }

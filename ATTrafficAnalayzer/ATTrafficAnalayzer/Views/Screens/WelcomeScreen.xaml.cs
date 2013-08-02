@@ -29,21 +29,21 @@ namespace ATTrafficAnalayzer.Views.Screens
            
             var bw = new BackgroundWorker();
 
-            bw.DoWork += bw_DoWork;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.DoWork += DoWorkHandler;
+            bw.RunWorkerCompleted += WorkerCompletedHandler;
             bw.RunWorkerAsync();
 
             Logger.Info("constructed view", "homescreen");
         }
 
-        void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void WorkerCompletedHandler(object sender, RunWorkerCompletedEventArgs e)
         {
             ImportedDatesList.ItemsSource = e.Result as List<DateTime>;
             ProgressBar.Visibility = System.Windows.Visibility.Collapsed;
             ImportedDatesList.Visibility = System.Windows.Visibility.Visible;
         }
 
-        void bw_DoWork(object sender, DoWorkEventArgs e)
+        private void DoWorkHandler(object sender, DoWorkEventArgs e)
         {
             DbHelper helper = DbHelper.GetDbHelper();
             var importedDates = helper.GetImportedDates();
@@ -55,5 +55,16 @@ namespace ATTrafficAnalayzer.Views.Screens
             ImportRequested(this, e);
         }
 
+
+        internal void ImportCompletedHandler(object sender)
+        {
+            var bw = new BackgroundWorker();
+            ProgressBar.Visibility = System.Windows.Visibility.Visible;
+            ImportedDatesList.Visibility = System.Windows.Visibility.Collapsed;
+
+            bw.DoWork += DoWorkHandler;
+            bw.RunWorkerCompleted += WorkerCompletedHandler;
+            bw.RunWorkerAsync();
+        }
     }
 }
