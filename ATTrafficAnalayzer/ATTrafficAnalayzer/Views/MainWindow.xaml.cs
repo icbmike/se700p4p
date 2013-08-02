@@ -22,8 +22,9 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            
-            ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
+            var welcomeScreen = new WelcomeScreen(fileImportMenuItem_Click);
+            ImportCompleted += welcomeScreen.ImportCompletedHandler;
+            ChangeScreen(welcomeScreen);
         }
 
         public delegate void ImportCompletedHandler(object sender);
@@ -167,8 +168,6 @@ namespace ATTrafficAnalayzer.Views
 
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
-
-   
 
         private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
         {
