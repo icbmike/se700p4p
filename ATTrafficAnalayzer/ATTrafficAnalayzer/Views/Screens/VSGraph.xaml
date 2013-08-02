@@ -7,15 +7,26 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <DockPanel LastChildFill="True">
+    <Grid>
+        <Grid.ColumnDefinitions >
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
         <d3:ChartPlotter Margin="20, 20, 40, 20"
-                         DockPanel.Dock="Top"
+                         Grid.Row="0"
+                         Grid.RowSpan="2"
+                         Grid.Column="0"
                          Name="Plotter" >
             <d3:ChartPlotter.HorizontalAxis>
                 <d3:HorizontalDateTimeAxis Name="DateAxis" />
             </d3:ChartPlotter.HorizontalAxis>
-            
+
             <d3:ChartPlotter.VerticalAxis>
                 <d3:VerticalIntegerAxis Name="CountAxis" />
             </d3:ChartPlotter.VerticalAxis>
@@ -25,17 +36,28 @@
                        FontSize="30"
                        FontWeight="Bold"
                        Margin="0,0,0,20" />
-            
+
             <d3:VerticalAxisTitle FontFamily="Arial"
                                   Content="Traffic Volume (vehicles)"
                                   Margin="0,0,20,0"
                                   FontSize="20" />
-            
+
             <d3:HorizontalAxisTitle FontFamily="Arial"
                                     Content="Time / Date"
                                     Margin="0,20,0,0"
                                     FontSize="20" />
         </d3:ChartPlotter>
+        <Label Content="Toggle series" Grid.Row="0"
+               Margin="20, 20, 40, 20"
+               Grid.Column="1"
+               FontSize="23"
+     />
+        <StackPanel
+            Name="ToggleContainer"
+            Margin="20, 20, 40, 20"
+            Grid.Row="1"
+            Grid.Column="1">
 
-    </DockPanel>
+        </StackPanel>
+    </Grid>
 </UserControl>

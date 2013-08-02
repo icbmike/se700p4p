@@ -7,6 +7,8 @@ using ATTrafficAnalayzer.Models.Settings;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -49,6 +51,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                 Plotter.Children.Remove(graph.LineGraph);
                 Plotter.Children.Remove(graph.MarkerGraph);
             }
+            //Clear the checkboxes
+            ToggleContainer.Children.Clear();
+            
+            //Clear the series
+            series.Clear();
 
             var dbHelper = DbHelper.GetDbHelper();
             var reportConfiguration = dbHelper.GetConfiguration(configName);
@@ -67,8 +74,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             var brushCounter = 0;
             foreach (var approach in reportConfiguration.Approaches)
             {
+                //Get volume info from db
                 var approachVolumes = approach.GetVolumesList(intersection, startDate, endDate);
-
+                
                 var compressedVolumes = new int[dateList.Count];
                 var valuesPerCell = interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
@@ -87,16 +95,44 @@ namespace ATTrafficAnalayzer.Views.Screens
                 volumesDataSource.SetYMapping(y => y);
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
+                //Add the series to the graph
                series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name)));
                 brushCounter++;
+
+                //Add toggle checkboxes
+                var checkbox = new CheckBox();
+                checkbox.Content = new Label() { Content = approach.Name, Margin = new Thickness(0,-5,0,0) };
+                checkbox.IsChecked = true;
+                checkbox.Checked += checkbox_Checked;
+                checkbox.Unchecked += checkbox_Checked;
+                ToggleContainer.Children.Add(checkbox);
+            }
+        }
+
+        void checkbox_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+
+            //Get the index of the checkbox that has been checked
+            var index = ToggleContainer.Children.IndexOf(checkbox);
+                
+            //See if it's checked
+            if (checkbox.IsChecked.Value)
+            {
+                Plotter.Children.Add(series[index].LineGraph);
+                Plotter.Children.Add(series[index].MarkerGraph);
+            }
+            else          
+            {
+                Plotter.Children.Remove(series[index].LineGraph);
+                Plotter.Children.Remove(series[index].MarkerGraph);
             }
         }
 
         public void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
         {
-            Console.WriteLine("CALLED");
 
             if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
             {
