@@ -9,6 +9,7 @@ using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
 using System.Windows.Controls;
 using System.Windows;
+using System.Globalization;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -37,7 +38,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             ScreenTitle.Content = configName;
             this.series = new List<LineAndMarker<MarkerPointsGraph>>();
-            
+
+            Plotter.Children.Remove(Plotter.KeyboardNavigation);
+            Plotter.Children.Remove(Plotter.MouseNavigation);
+
             //Display the graph
             RenderGraph();
 
@@ -70,7 +74,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
             datesDataSource.SetXMapping(x => DateAxis.ConvertToDouble(x));
-
+            
             var brushCounter = 0;
             foreach (var approach in reportConfiguration.Approaches)
             {

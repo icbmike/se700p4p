@@ -24,7 +24,7 @@
                          Grid.Column="0"
                          Name="Plotter" >
             <d3:ChartPlotter.HorizontalAxis>
-                <d3:HorizontalDateTimeAxis Name="DateAxis" />
+                <d3:HorizontalDateTimeAxis Name="DateAxis"/>
             </d3:ChartPlotter.HorizontalAxis>
 
             <d3:ChartPlotter.VerticalAxis>
