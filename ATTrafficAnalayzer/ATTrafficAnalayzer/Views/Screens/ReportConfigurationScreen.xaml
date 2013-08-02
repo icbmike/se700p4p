@@ -22,7 +22,7 @@
 
         <ComboBox Grid.Row="1"
                   Grid.Column="0"
-                  ItemsSource="{Binding IntersectionList}"
+                  ItemsSource="{Binding IntersectionList, Mode=TwoWay}"
                   SelectedValue="{Binding SelectedIntersection}"
                   SelectionChanged="OnIntersectionSelectionChanged"
                   Margin="10,10,0,0"
