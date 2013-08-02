@@ -10,15 +10,16 @@
     <Grid>
         <Grid.ColumnDefinitions >
             <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition />    
+            <RowDefinition />
         </Grid.RowDefinitions>
-        
+
         <d3:ChartPlotter Margin="20, 20, 40, 20"
-                         DockPanel.Dock="Top"
+                         Grid.Row="0"
+                         Grid.Column="0"
                          Name="Plotter" >
             <d3:ChartPlotter.HorizontalAxis>
                 <d3:HorizontalDateTimeAxis Name="DateAxis" />
@@ -41,12 +42,12 @@
                                     Margin="0,20,0,0"
                                     FontSize="20" />
         </d3:ChartPlotter>
-        <StackPanel>
-            <CheckBox />
-            <CheckBox />
-            <CheckBox />
-            <CheckBox />
-            <CheckBox />
+        <StackPanel
+            Margin="20, 20, 40, 20"
+            Grid.Row="0"
+            Grid.Column="1">
+            <Label Content="Toggle series" />
+            
         </StackPanel>
     </Grid>
 </UserControl>
