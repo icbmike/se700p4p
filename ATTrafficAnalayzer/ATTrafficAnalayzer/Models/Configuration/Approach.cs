@@ -94,6 +94,11 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return volumes;
         }
 
+        public void ResetMeasurements()
+        {
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -135,6 +140,11 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
             var totalsRow = dataTable.NewRow();
             totalsRow[0] = "Total";
+
+            AmPeak.ClearApproaches();
+            PmPeak.ClearApproaches();
+            _approachTotal = 0;
+
             for (var j = 0; j < limit; j++)
             {
                 var total = CalculateColumnTotal(approachVolumes, j, 12);

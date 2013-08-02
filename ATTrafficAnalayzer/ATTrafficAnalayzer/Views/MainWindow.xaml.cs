@@ -22,9 +22,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-            EndDatePicker.SelectedDate = new DateTime(2013, 3, 12);
-
+            
             ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
         }
         
@@ -87,9 +85,7 @@ namespace ATTrafficAnalayzer.Views
                         ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File");
                     });
                   
-                    }, settings);
-
-               
+                    }, settings);     
             }
             
         }
@@ -99,35 +95,44 @@ namespace ATTrafficAnalayzer.Views
                 MainContentControl.Content = screen;
         }
 
-        private void SwitchScreen(object sender, RoutedEventArgs e)
+        private void SwitchScreen(object sender, Toolbar.ScreenChangeEventHandlerArgs args)
         {
-            var settings = SettingsTray.DataContext as SettingsTray;
-
-            if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
+            if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
             {
-                //Get selected Configuration
-                var selectedItem = ReportList.GetSelectedConfiguration();
-                if (selectedItem != null)
-                {
-                    if (sender.Equals(GraphButton))
-                    {
-                        ChangeScreen(new VsGraph(settings, selectedItem));
-                    }
-                    else if (sender.Equals(TableButton))
-                    {
-                        ChangeScreen(new VsTable(settings, selectedItem));
-                    }
 
-                }
-
-                if (sender.Equals(FaultsButton))
+                if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Faults))
                 {
-                    ChangeScreen(new VsFaultsReport(settings));
+                    var faultsScreen = new VsFaultsReport(SettingsToolbar.SettingsTray);
+                    SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
+                    ChangeScreen(faultsScreen);
+
                 }
                 else
                 {
-                    MessageBox.Show("Select a report from the list on the left");
+                    //Get selected Configuration
+                    var selectedItem = ReportList.GetSelectedConfiguration();
+                    if (selectedItem != null)
+                    {
+                        if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Graph))
+                        {
+                            var graphScreen = new VsGraph(SettingsToolbar.SettingsTray, selectedItem);
+                            SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
+                            ChangeScreen(graphScreen);
+                        }
+                        else if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Table))
+                        {
+                            var tableScreen = new VsTable(SettingsToolbar.SettingsTray, selectedItem);
+                            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                            ChangeScreen(tableScreen);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Select a report from the list on the left");
+                    }
                 }
+                
+                
             }
             else
             {
@@ -157,24 +162,16 @@ namespace ATTrafficAnalayzer.Views
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
-        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            var toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
-            if (overflowGrid != null)
-            {
-                overflowGrid.Visibility = Visibility.Collapsed;
-            }
-        }
+   
 
         private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
         {
+            
             if (args.New)
             {
-                var settings = SettingsTray.DataContext as SettingsTray;
-                if (DbHelper.GetDbHelper().VolumesExistForDateRange(settings.StartDate, settings.EndDate))
+                
+                if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                 {
-
                     var reportConfigurationScreen = new ReportConfigurationScreen();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                     ChangeScreen(reportConfigurationScreen);
@@ -188,15 +185,18 @@ namespace ATTrafficAnalayzer.Views
             {
                 throw new NotImplementedException();
             }
+        
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-              //  BulkImport();
+            if (DbHelper.VolumesTableEmpty())
+                BulkImport();
         }
-
+        
         private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
         {
+            
             var dlg = new SaveFileDialog()
             {
                 FileName = "",
@@ -207,9 +207,11 @@ namespace ATTrafficAnalayzer.Views
 
             if (dlg.ShowDialog() == true)
             {
-                var csvExporter = new CSVExporter(dlg.FileName, SettingsTray.DataContext as SettingsTray, args.ConfigToBeEdited);
+                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited);
                 csvExporter.DoExport();    
             }          
+             
         }
+         
     }
 }

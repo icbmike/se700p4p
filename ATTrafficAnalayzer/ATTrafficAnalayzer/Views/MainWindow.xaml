@@ -48,95 +48,16 @@
                 </MenuItem>
             </Menu>
 
-            <ToolBarPanel Name="SettingsTray"
-                          Canvas.Top="60"
+            <controls:Toolbar Canvas.Top="60"
                           Canvas.Left="20"
-                          Background="{x:Null}">
-                <ToolBarPanel.DataContext>
-                    <settings:SettingsTray />
-                </ToolBarPanel.DataContext>
-                <ToolBar Name="MainToolbar"
-                         Band="1"
-                         BandIndex="1"
-                         VerticalContentAlignment="Stretch"
-                         HorizontalContentAlignment="Stretch"
-                         Foreground="White"
-                         ToolBarTray.IsLocked="True"
-                         Background="{x:Null}"
-                         Loaded="MainToolbar_OnLoaded">
-                    <Image Height="26.6666666666667"
-                           VerticalAlignment="Center"
-                           Source="..\Resources/Images/home_icon.png"
-                           Margin="5,0"
-                           MouseLeftButtonDown="HomeImageMouseLeftButtonDown" />
-                    <Button Name="TableButton"
-                            Content="Table"
-                            Margin="10,0,1,0"
-                            Click="SwitchScreen"
-                            Width="70"
-                            Style="{StaticResource AtToolbarButtonStyle}">
-                    </Button>
-                    <Button Name="GraphButton"
-                            Click="SwitchScreen"
-                            Style="{StaticResource AtToolbarButtonStyle}"
-                            Margin="1,0,1,0"
-                            Content="Graph"
-                            Width="70">
-                    </Button>
-                    <Button Name="FaultsButton"
-                            Click="SwitchScreen"
-                            Style="{StaticResource AtToolbarButtonStyle}"
-                            Margin="1,0,10,0"
-                            Content="Faults"
-                            Width="70"
-                            />
-                    <Label Margin="10,0,4,0"
-                           Foreground="White"
-                           FontSize="16">
-                        Start Date:
-                    </Label>
-                    <DatePicker Name="StartDatePicker"
-                                Background="White"
-                                SelectedDate="{Binding StartDate}"
-                                FontSize="16"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
-                    <Label Margin="20,0,0,0"
-                           Foreground="#FFF6F6F6"
-                           FontSize="16">
-                        End Date:
-                    </Label>
-                    <DatePicker Name="EndDatePicker"
-                                Background="White"
-                                SelectedDate="{Binding EndDate}"
-                                FontSize="16"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
-                    <Label Margin="20,0,0,0"
-                           Foreground="White"
-                           FontSize="16">
-                        Interval:
-                    </Label>
-                    <ComboBox Height="23"
-                              Name="IntervalComboBox"
-                              Width="80"
-                              SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
-                              SelectedValuePath="Content"
-                              SelectedIndex="0"
-                              Foreground="Black"
-                              FontSize="16">
-                        <ComboBoxItem>5 min</ComboBoxItem>
-                        <ComboBoxItem>15 min</ComboBoxItem>
-                        <ComboBoxItem>30 min</ComboBoxItem>
-                        <ComboBoxItem>60 min</ComboBoxItem>
-                    </ComboBox>
-                </ToolBar>
-            </ToolBarPanel>
+                          x:Name="SettingsToolbar"
+                          ScreenChanged="SwitchScreen"/>
         </Canvas>
 
         <controls:ReportList x:Name="ReportList"
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
-                             ExportEvent="ReportList_OnExportEvent"/>
+                             ExportEvent="ReportList_OnExportEvent" 
+                             />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="MainContentControl"

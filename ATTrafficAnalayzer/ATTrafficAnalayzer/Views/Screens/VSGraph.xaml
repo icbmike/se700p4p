@@ -24,6 +24,7 @@
             <d3:ChartPlotter.HorizontalAxis>
                 <d3:HorizontalDateTimeAxis Name="DateAxis" />
             </d3:ChartPlotter.HorizontalAxis>
+            
             <d3:ChartPlotter.VerticalAxis>
                 <d3:VerticalIntegerAxis Name="CountAxis" />
             </d3:ChartPlotter.VerticalAxis>
@@ -33,10 +34,12 @@
                        FontSize="30"
                        FontWeight="Bold"
                        Margin="0,0,0,20" />
+            
             <d3:VerticalAxisTitle FontFamily="Arial"
                                   Content="Traffic Volume (vehicles)"
                                   Margin="0,0,20,0"
                                   FontSize="20" />
+            
             <d3:HorizontalAxisTitle FontFamily="Arial"
                                     Content="Time / Date"
                                     Margin="0,20,0,0"

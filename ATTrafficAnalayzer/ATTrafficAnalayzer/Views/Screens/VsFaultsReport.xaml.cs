@@ -23,26 +23,43 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class VsFaultsReport : UserControl
     {
-        private SettingsTray settings;
         private DbHelper dbHelper;
+        private DateTime endDate;
+        private DateTime startDate;
 
         public VsFaultsReport(SettingsTray settings)
         {
-            this.settings = settings;
+            this.startDate = settings.StartDate;
+            this.endDate = settings.EndDate;
+
             this.dbHelper = DbHelper.GetDbHelper();
             InitializeComponent();
+            
             FillGrid();
         
         }
 
         private void FillGrid()
         {
-
-            var dataAdapter = dbHelper.GetFaultsDataAdapter(settings.StartDate, settings.EndDate);
+            var dataAdapter = dbHelper.GetFaultsDataAdapter(startDate, endDate);
             var dataTable = new DataTable();
             dataAdapter.Fill(dataTable);
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
         }
 
+        internal void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+
+            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate))
+            {
+                //InitializeGraph() is a time consuming operation.
+                //We dont want to do it if we don't have to.
+
+                startDate = args.startDate;
+                endDate = args.endDate;
+
+                FillGrid();
+            }
+        }
     }
 }
