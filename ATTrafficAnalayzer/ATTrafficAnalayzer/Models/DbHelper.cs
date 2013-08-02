@@ -669,7 +669,7 @@ namespace ATTrafficAnalayzer.Models
 
         public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate)
         {
-            var sql = "SELECT DISTINCT intersection, detector FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate) ORDER BY intersection, detector";
+            var sql = "SELECT intersection, group_concat(detector) FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate) GROUP BY intersection";
             return GetDataAdapter(sql, new Dictionary<string, object> { {"@startDate" , startDate}, {"@endDate" , endDate}});
         }
     }
