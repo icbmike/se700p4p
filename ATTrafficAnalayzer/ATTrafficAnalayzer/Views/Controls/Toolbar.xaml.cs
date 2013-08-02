@@ -27,6 +27,8 @@ namespace ATTrafficAnalayzer.Views.Controls
         public event ScreenChangeEventHandler ScreenChanged;
         public event DateRangeChangedEventHandler DateRangeChanged;
 
+        private Boolean startModifyingEnd = false;
+
         public class ScreenChangeEventHandlerArgs
         {
             public enum ScreenButton
@@ -60,7 +62,6 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-            EndDatePicker.SelectedDate = new DateTime(2013, 3, 12);
 
         }
 
@@ -85,11 +86,36 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             if (sender.Equals(StartDatePicker))
+            {
+                Console.WriteLine("Start date picker...");
                 if (EndDatePicker != null)
-                    EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+                {
+                    Console.WriteLine("true");
+                    startModifyingEnd = true;
+                    var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+                    EndDatePicker.SelectedDate = newDate;
+                    
+                }
+
+            }
+            else if (sender.Equals(EndDatePicker))
+            {
+                Console.WriteLine("End date picker...");
+                if (startModifyingEnd)
+                {
+                    Console.WriteLine("false");
+                    startModifyingEnd = false;
+                    return;
+                }
+            }
+
             if (DateRangeChanged != null)
+            {
+                Console.WriteLine("Firing the actual event");
                 DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (toolbarPanel.DataContext as SettingsTray).Interval));
+            }
         }
 
         private void HomeImageMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -96,6 +96,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
         {
+            Console.WriteLine("CALLED");
 
             if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
             {

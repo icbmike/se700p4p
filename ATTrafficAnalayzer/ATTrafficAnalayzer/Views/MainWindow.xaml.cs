@@ -184,7 +184,8 @@ namespace ATTrafficAnalayzer.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            BulkImport();
+            if (DbHelper.VolumesTableEmpty())
+                BulkImport();
         }
         
         private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
