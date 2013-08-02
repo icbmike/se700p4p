@@ -99,34 +99,40 @@ namespace ATTrafficAnalayzer.Views
         {
             if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
             {
-                //Get selected Configuration
-                var selectedItem = ReportList.GetSelectedConfiguration();
-                if (selectedItem != null)
-                {
-                    if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Graph))
-                    {
-                        var graphScreen = new VsGraph(SettingsToolbar.SettingsTray, selectedItem);
-                        SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
-                        ChangeScreen(graphScreen);
-                    }
-                    else if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Table))
-                    {
-                        var tableScreen = new VsTable(SettingsToolbar.SettingsTray, selectedItem);
-                        SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                        ChangeScreen(tableScreen);
-                    }
-                }
 
                 if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Faults))
                 {
                     var faultsScreen = new VsFaultsReport(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
+
                 }
                 else
                 {
-                    MessageBox.Show("Select a report from the list on the left");
+                    //Get selected Configuration
+                    var selectedItem = ReportList.GetSelectedConfiguration();
+                    if (selectedItem != null)
+                    {
+                        if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Graph))
+                        {
+                            var graphScreen = new VsGraph(SettingsToolbar.SettingsTray, selectedItem);
+                            SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
+                            ChangeScreen(graphScreen);
+                        }
+                        else if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Table))
+                        {
+                            var tableScreen = new VsTable(SettingsToolbar.SettingsTray, selectedItem);
+                            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                            ChangeScreen(tableScreen);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Select a report from the list on the left");
+                    }
                 }
+                
+                
             }
             else
             {
