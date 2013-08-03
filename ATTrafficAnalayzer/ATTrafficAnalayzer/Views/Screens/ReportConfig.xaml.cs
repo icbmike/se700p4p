@@ -203,8 +203,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
-
-
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)

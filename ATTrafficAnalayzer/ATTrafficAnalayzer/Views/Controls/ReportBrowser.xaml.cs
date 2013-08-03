@@ -27,13 +27,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void PopulateListView()
         {
-            StandardReportsTreeView.ItemsSource =
-                _mode.Equals(Mode.Report)
-
-                    ? _reportsDataTableHelper.GetRegularReportDataView()
-                    : _reportsDataTableHelper.GetMonthlySummaryDataView();
-
-
+            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _reportsDataTableHelper.GetRegularReportDataView() : _reportsDataTableHelper.GetMonthlySummaryDataView();
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 

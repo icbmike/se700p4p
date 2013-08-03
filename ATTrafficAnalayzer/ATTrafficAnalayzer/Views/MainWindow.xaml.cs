@@ -27,7 +27,7 @@ namespace ATTrafficAnalayzer.Views
             var homeScreen = new Home();
             homeScreen.ImportRequested += FileImportMenuItem_Click;
 
-            SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
+            SettingsToolbar.ModeChanged += ReportBrowser.ModeChangedHandler;
             SettingsToolbar.ModeChanged += SettingsToolbar_OnModeChanged;
             ImportCompleted += homeScreen.ImportCompletedHandler;
 
@@ -48,23 +48,23 @@ namespace ATTrafficAnalayzer.Views
         }
         private void RemoveHandlers(IView iView)
         {
-            ReportList.ReportChanged -= iView.ReportChangedHandler;
+            ReportBrowser.ReportChanged -= iView.ReportChangedHandler;
             SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
             iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
         }
         private void RemoveHandlers(IConfigScreen iConfigScreen)
         {
-            iConfigScreen.ConfigurationSaved -= ReportList.ConfigurationSavedEventHandler;
+            iConfigScreen.ConfigurationSaved -= ReportBrowser.ConfigurationSavedEventHandler;
             iConfigScreen.ConfigurationSaved -= IConfigScreen_ConfigurationSaved;
 
         }
 
         private void ChangeScreen(UserControl screen)
         {
-            if (MainContentControl.Content != null)
-                RemoveHandlers(MainContentControl.Content);
+            if (ScreenContentControl.Content != null)
+                RemoveHandlers(ScreenContentControl.Content);
 
-            MainContentControl.Content = screen;
+            ScreenContentControl.Content = screen;
         }
 
         private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
@@ -74,7 +74,7 @@ namespace ATTrafficAnalayzer.Views
             switch (_mode)
             {
                 case Mode.Home:
-                    ReportList.Visibility = Visibility.Collapsed;
+                    ReportBrowser.Visibility = Visibility.Collapsed;
                     var homeScreen = new Home();
                     homeScreen.ImportRequested += FileImportMenuItem_Click;
                     homeScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
@@ -82,48 +82,51 @@ namespace ATTrafficAnalayzer.Views
                     break;
 
                 case Mode.Report:
-                    ReportList.Visibility = Visibility.Visible;
-                    if (ReportList.GetSelectedConfiguration() == null)
+                    ReportBrowser.Visibility = Visibility.Visible;
+                    if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
                         ChangeScreen(new ReportConfig());
                         MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else if (args.View.Equals(Toolbar.View.Graph))
                     {
-                        var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
-                        ReportList.ReportChanged += graphScreen.ReportChangedHandler;
+                        ReportBrowser.ReportChanged += graphScreen.ReportChangedHandler;
                         graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(graphScreen);
                     }
                     else if (args.View.Equals(Toolbar.View.Table))
                     {
-                        var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                        ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                        ReportBrowser.ReportChanged += tableScreen.ReportChangedHandler;
                         tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(tableScreen);
                     }
                     break;
 
                 case Mode.Summary:
-                    ReportList.Visibility = Visibility.Visible;
-                    if (ReportList.GetSelectedConfiguration() == null)
+                    ReportBrowser.Visibility = Visibility.Visible;
+                    if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
-                        ChangeScreen(new SummaryConfig());
+                        var summaryConfigScreen = new SummaryConfig();
+                        summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        ChangeScreen(summaryConfigScreen);
                         MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else
                     {
                         var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
-                            ReportList.GetSelectedConfiguration());
+                            ReportBrowser.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
+                        ReportBrowser.ReportChanged += summaryScreen.ReportChangedHandler;
                         ChangeScreen(summaryScreen);
                     }
                     break;
 
                 case Mode.Faults:
-                    ReportList.Visibility = Visibility.Collapsed;
+                    ReportBrowser.Visibility = Visibility.Collapsed;
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     faultsScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
@@ -222,7 +225,7 @@ namespace ATTrafficAnalayzer.Views
 
         #region File Exporting
 
-        private void ReportList_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
+        private void ReportBrowser_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
             var dlg = new SaveFileDialog
             {
@@ -260,7 +263,7 @@ namespace ATTrafficAnalayzer.Views
                                           "Created by Michael Little and Andrew Luey";
             const string caption = "About Us";
             const MessageBoxButton button = MessageBoxButton.OK;
-            const MessageBoxImage icon = MessageBoxImage.None;
+            const MessageBoxImage icon = MessageBoxImage.Information;
 
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
@@ -278,17 +281,16 @@ namespace ATTrafficAnalayzer.Views
             ChangeScreen(homeScreen);
         }
 
-        private void ReportList_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
+        private void ReportBrowser_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
             if (args.New)
             {
                 if (_mode.Equals(Mode.Report))
                 {
-                    if (DbHelper.GetDbHelper()
-                                .VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    if (DbHelper.GetDbHelper().VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                     {
                         var reportConfigurationScreen = new ReportConfig();
-                        reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                        reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
 
                         ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
@@ -304,14 +306,13 @@ namespace ATTrafficAnalayzer.Views
                     if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
                     {
                         var monthlySummary = new SummaryConfig();
-                        monthlySummary.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                        monthlySummary.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         ChangeScreen(monthlySummary);
                     }
                     else
                     {
                         MessageBox.Show("You haven't imported volume data for the selected month");
                     }
-
                 }
             }
             else
@@ -319,7 +320,7 @@ namespace ATTrafficAnalayzer.Views
                 //Open relevant config screen
                 var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
 
-                reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                 reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
 
                 ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
@@ -333,12 +334,14 @@ namespace ATTrafficAnalayzer.Views
             {
                 var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
                 SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
+                ReportBrowser.ReportChanged += reportTableScreen.ReportChangedHandler;
                 ChangeScreen(reportTableScreen);
             }
             else if (_mode.Equals(Mode.Summary))
             {
                 var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name);
                 SettingsToolbar.DateRangeChanged += summaryTableScreen.DateRangeChangedHandler;
+                ReportBrowser.ReportChanged += summaryTableScreen.ReportChangedHandler;
                 ChangeScreen(summaryTableScreen);
             }
         }
