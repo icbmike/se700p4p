@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
-
+                                                             
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
 

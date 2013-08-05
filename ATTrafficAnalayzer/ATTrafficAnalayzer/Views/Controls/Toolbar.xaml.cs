@@ -11,20 +11,37 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class Toolbar
     {
+        public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
+
+        public Toolbar()
+        {
+            InitializeComponent();
+            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+        }
+
+        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        #region Screen refreshing
 
         public delegate void ScreenChangeEventHandler(object sender, ScreenChangeEventHandlerArgs args);
-        public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
-
         public event ScreenChangeEventHandler ScreenChanged;
-        public event DateRangeChangedEventHandler DateRangeChanged;
-
-        private Boolean _startModifyingEnd;
 
         public class ScreenChangeEventHandlerArgs
         {
             public enum ScreenButton
             {
-                Graph, Table, Faults, Home
+                Graph,
+                Table,
+                Faults,
+                Home
             }
 
             public ScreenChangeEventHandlerArgs(ScreenButton button)
@@ -35,31 +52,8 @@ namespace ATTrafficAnalayzer.Views.Controls
             public ScreenButton Button { get; set; }
         }
 
-        public class DateRangeChangedEventHandlerArgs
-        {
-            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
-            {
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.interval = interval;
-            }
-
-            public DateTime startDate { get; set; }
-            public DateTime endDate { get; set; }
-            public int interval { get; set; }
-        }
-
-        public Toolbar()
-        {
-            InitializeComponent();
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-        }
-
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
-
-            Console.WriteLine(ToolbarPanel.DataContext);
-
             if (sender.Equals(GraphButton))
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Graph));
@@ -78,9 +72,34 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
+        #endregion
+
+        #region Date refreshing
+
+        private Boolean _startModifyingEnd;
+
+        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
+        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
+
+        public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
+        public event DateRangeChangedEventHandler DateRangeChanged;
+
+        public class DateRangeChangedEventHandlerArgs
+        {
+            public DateTime startDate { get; set; }
+            public DateTime endDate { get; set; }
+            public int interval { get; set; }
+
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
+            {
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.interval = interval;
+            }
+        }
+
         private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             if (sender.Equals(StartDatePicker))
             {
                 Console.WriteLine("Start date picker...");
@@ -90,9 +109,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                     _startModifyingEnd = true;
                     var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
                     EndDatePicker.SelectedDate = newDate;
-                    
                 }
-
             }
             else if (sender.Equals(EndDatePicker))
             {
@@ -112,24 +129,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
-        private void HomeImageMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            var toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
-            if (overflowGrid != null)
-            {
-                overflowGrid.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
-
-        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
-
-        public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
+        #endregion
     }
 }
