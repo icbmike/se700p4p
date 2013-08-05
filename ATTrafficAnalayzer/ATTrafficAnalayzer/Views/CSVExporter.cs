@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -14,7 +13,7 @@ namespace ATTrafficAnalayzer.Views
         private readonly string _outputFilename;
         private readonly SettingsTray _settings;
         private DbHelper _dbHelper;
-        private ReportConfiguration _configuration;
+        private Report _configuration;
 
         public CSVExporter(String outputFilename, SettingsTray settings, string configName)
         {

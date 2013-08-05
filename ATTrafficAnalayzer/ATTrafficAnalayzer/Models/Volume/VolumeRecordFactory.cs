@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ATTrafficAnalayzer.Models.Volume
 {
-    public class RecordFactory
+    public class VolumeRecordFactory
     {
         public static DateTimeRecord CreateDateTimeRecord(byte[] recordBytes)
         {
@@ -67,21 +67,21 @@ namespace ATTrafficAnalayzer.Models.Volume
             return newRecord;
         }
 
-        public static RecordType CheckRecordType(byte[] recordBytes)
+        public static VolumeRecordType CheckRecordType(byte[] recordBytes)
         {
             //Get the first four bytes and sum them, if the sum is zero, it is a comment record
             var firstFourBytes = recordBytes.Take(4).ToArray();
             var sum = firstFourBytes.Sum(x => (int) x); //Using LINQ, casting individual bytes to ints
-            if (sum == 0) return RecordType.Comment;
+            if (sum == 0) return VolumeRecordType.Comment;
 
             //If the first two bytes sum to zero and it is not a comment record then it is a datetime record
             var firstTwoBytes = recordBytes.Take(2).ToArray();
             sum = firstTwoBytes.Sum(x => (int) x);
-            if (sum == 0) return RecordType.Datetime;
+            if (sum == 0) return VolumeRecordType.Datetime;
 
             //Otherwise it is a volume record
 
-            return RecordType.Volume;
+            return VolumeRecordType.Volume;
         }
 
         private static bool GetBit(byte b, int pos)

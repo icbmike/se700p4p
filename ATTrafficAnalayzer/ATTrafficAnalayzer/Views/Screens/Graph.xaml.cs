@@ -17,7 +17,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class VsGraph
+    public partial class Graph
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
         
@@ -28,7 +28,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private List<LineAndMarker<MarkerPointsGraph>> series;
 
 
-        public VsGraph(SettingsTray settings, string configName)
+        public Graph(SettingsTray settings, string configName)
         {
             startDate = settings.StartDate;
             endDate = settings.EndDate;

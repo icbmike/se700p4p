@@ -1,33 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models.Configuration
 {
-    class Report
+    public class Report
     {
-        private String _name;
-        private List<AbstractApproach> _approaches = new List<AbstractApproach>();
+        public List<Approach> Approaches { get; set; }
+        public string ConfigName { get; set; }
+        public int Intersection { get; set; }
 
-        public String Name {
-            get { return _name; }
-            set { _name = value; }
+        public Report(string configName, int intersection, List<Approach> approaches)
+        {
+            ConfigName = configName;
+            Intersection = intersection;
+            Approaches = approaches;
         }
 
-        public List<AbstractApproach> Approaches
+        public JObject ToJson()
         {
-            get { return _approaches; }
-            set { _approaches = value; }
-        }
+            var json = new JObject { { "intersection", Intersection } };
+            var array = new JArray();
+            json.Add("approaches", array); // Add an empty array that will be filled in later with approach IDs once we know them
 
-        public Report(String name)
-        {
-            _name = name;
-        }
-
-        public Report(String name, List<AbstractApproach> approaches)
-        {
-            _name = name;
-            _approaches = approaches;
+            return json;
         }
     }
 }

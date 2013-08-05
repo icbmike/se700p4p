@@ -15,27 +15,27 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
     /// </summary>
-    public partial class VsTable
+    public partial class Table
     {
-        private readonly Measurement _maxTotal = new Measurement();
-        private readonly Measurement _maxAm = new Measurement();
-        private readonly Measurement _maxPm = new Measurement();
-        private readonly Measurement _peakHourAm = new Measurement();
-        private readonly Measurement _peakHourPm = new Measurement();
+        private readonly VolumeMetric _maxTotal = new VolumeMetric();
+        private readonly VolumeMetric _maxAm = new VolumeMetric();
+        private readonly VolumeMetric _maxPm = new VolumeMetric();
+        private readonly VolumeMetric _peakHourAm = new VolumeMetric();
+        private readonly VolumeMetric _peakHourPm = new VolumeMetric();
 
         private readonly SettingsTray _settings;
         private DateTime _startDate;
         private DateTime _endDate;
         private int _interval;
 
-        private readonly ReportConfiguration _configuration;
+        private readonly Report _configuration;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="configName"></param>
-        public VsTable(SettingsTray settings, string configName)
+        public Table(SettingsTray settings, string configName)
         {
             var dbHelper = DbHelper.GetDbHelper();
             _configuration = dbHelper.GetConfiguration(configName);
@@ -103,9 +103,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="approach"></param>
         /// <param name="day"></param>
         /// <returns></returns>
-        private ApproachTableDisplay CreateApproachDisplay(Approach approach, int day)
+        private TableApproachDisplay CreateApproachDisplay(Approach approach, int day)
         {
-            var approachDisplay = new ApproachTableDisplay();
+            var approachDisplay = new TableApproachDisplay();
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));

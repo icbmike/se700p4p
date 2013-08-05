@@ -74,17 +74,17 @@
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
     <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
-    <Compile Include="Models\Volume\Measurement.cs" />
+    <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Views\Controls\ApproachControl.xaml.cs">
-      <DependentUpon>ApproachControl.xaml</DependentUpon>
+    <Compile Include="Views\Controls\ConfigApproachBox.xaml.cs">
+      <DependentUpon>ConfigApproachBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\ApproachTableDisplay.xaml.cs">
-      <DependentUpon>ApproachTableDisplay.xaml</DependentUpon>
+    <Compile Include="Views\Controls\TableApproachDisplay.xaml.cs">
+      <DependentUpon>TableApproachDisplay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\Parago\WindowSettings.cs" />
-    <Compile Include="Views\Controls\ReportList.xaml.cs">
-      <DependentUpon>ReportList.xaml</DependentUpon>
+    <Compile Include="Views\Controls\ReportBrowser.xaml.cs">
+      <DependentUpon>ReportBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Configuration\AbstractApproach.cs" />
     <Compile Include="Models\Configuration\Approach.cs" />
@@ -95,37 +95,37 @@
     </Compile>
     <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogResult.cs" />
     <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogSettings.cs" />
-    <Compile Include="Models\Volume\RecordFactory.cs" />
-    <Compile Include="Models\Volume\RecordType.cs" />
+    <Compile Include="Models\Volume\VolumeRecordFactory.cs" />
+    <Compile Include="Models\Volume\VolumeRecordType.cs" />
     <Compile Include="Views\Controls\Toolbar.xaml.cs">
       <DependentUpon>Toolbar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CSVExporter.cs" />
-    <Compile Include="Views\Screens\ReportConfigurationScreen.xaml.cs">
-      <DependentUpon>ReportConfigurationScreen.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Config.xaml.cs">
+      <DependentUpon>Config.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Settings\SettingsTray.cs" />
+    <Compile Include="Models\Configuration\DeprecatedReport.cs" />
     <Compile Include="Models\Configuration\Report.cs" />
-    <Compile Include="Models\Configuration\ReportConfiguration.cs" />
     <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
-    <Compile Include="Views\Screens\VsFaultsReport.xaml.cs">
-      <DependentUpon>VsFaultsReport.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Faults.xaml.cs">
+      <DependentUpon>Faults.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\VSGraph.xaml.cs">
-      <DependentUpon>VSGraph.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Graph.xaml.cs">
+      <DependentUpon>Graph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\VSTable.xaml.cs">
-      <DependentUpon>VSTable.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Table.xaml.cs">
+      <DependentUpon>Table.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\WelcomeScreen.xaml.cs">
-      <DependentUpon>WelcomeScreen.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\Controls\ApproachControl.xaml">
+    <Page Include="Views\Controls\ConfigApproachBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\ApproachTableDisplay.xaml">
+    <Page Include="Views\Controls\TableApproachDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -149,27 +149,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Screens\ReportConfigurationScreen.xaml">
+    <Page Include="Views\Screens\Config.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\ReportList.xaml">
+    <Page Include="Views\Controls\ReportBrowser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\VsFaultsReport.xaml">
+    <Page Include="Views\Screens\Faults.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\VSGraph.xaml">
+    <Page Include="Views\Screens\Graph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\VSTable.xaml">
+    <Page Include="Views\Screens\Table.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\WelcomeScreen.xaml">
+    <Page Include="Views\Screens\Home.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -201,12 +201,19 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\Add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\home_icon.png" />
     <Resource Include="Resources\Images\at-banner.png" />
     <Resource Include="Resources\Images\at-logo.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_020_home.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_030_pencil.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_432_plus.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_016_bin.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_443_floppy_disk.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_388_exit.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_358_file_import.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_036_file.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_359_file_export.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_418_disk_import.png" />
+    <Resource Include="Resources\Images\plus-hd.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
