@@ -23,10 +23,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly Measurement _peakHourAm = new Measurement();
         private readonly Measurement _peakHourPm = new Measurement();
 
-        private SettingsTray _settings;
-        private DateTime startDate;
-        private DateTime endDate;
-        private int interval;
+        private readonly SettingsTray _settings;
+        private DateTime _startDate;
+        private DateTime _endDate;
+        private int _interval;
 
         private readonly ReportConfiguration _configuration;
 
@@ -41,9 +41,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             _configuration = dbHelper.GetConfiguration(configName);
 
             _settings = settings;
-            startDate = settings.StartDate;
-            endDate = settings.EndDate;
-            interval = settings.Interval;
+            _startDate = settings.StartDate;
+            _endDate = settings.EndDate;
+            _interval = settings.Interval;
 
             InitializeComponent();
 
@@ -69,7 +69,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             
             //Add all the things!
 
-            var timeSpan = endDate - startDate;
+            var timeSpan = _endDate - _startDate;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
@@ -109,8 +109,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
-            approachDisplay.ApproachDataGrid.ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day).AsDataView();
             approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
+            approachDisplay.ApproachDataGrid.ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day).AsDataView();
 
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
             approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));
@@ -123,14 +123,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
+            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate) || !args.interval.Equals(_interval))
             {
                 //RenderTable() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                startDate = args.startDate;
-                endDate = args.endDate;
-                interval = args.interval;
+                _startDate = args.startDate;
+                _endDate = args.endDate;
+                _interval = args.interval;
 
                 RenderTable();
             }
