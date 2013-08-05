@@ -201,15 +201,19 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\Add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\home_icon.png" />
     <Resource Include="Resources\Images\at-banner.png" />
     <Resource Include="Resources\Images\at-logo.png" />
-    <Resource Include="Resources\Images\glyphicons_030_pencil.png" />
-    <Resource Include="Resources\Images\glyphicons_432_plus.png" />
-    <Resource Include="Resources\Images\glyphicons_433_minus.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_020_home.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_030_pencil.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_432_plus.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_016_bin.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_443_floppy_disk.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_388_exit.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_358_file_import.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_036_file.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_359_file_export.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_418_disk_import.png" />
+    <Resource Include="Resources\Images\plus-hd.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

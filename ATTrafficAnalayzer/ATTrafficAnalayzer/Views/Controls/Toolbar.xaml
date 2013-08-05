@@ -21,12 +21,16 @@
                  Background="{x:Null}"
                  Loaded="MainToolbar_OnLoaded">
 
-            <Image x:Name="HomeImage"
-                   Height="26.6666666666667"
-                   VerticalAlignment="Center"
-                   Source="../../Resources/Images/home_icon.png"
-                   Margin="5,0"
-                   MouseLeftButtonDown="SwitchScreen" />
+            <Button Name="HomeButton"
+                    Margin="5,0"
+                    Click="SwitchScreen"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource AtToolbarButtonStyle}"
+                    MouseLeftButtonDown="SwitchScreen"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
+            </Button>
 
             <Button Name="TableButton"
                     Content="Table"

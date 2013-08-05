@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Windows;
-using System.Windows.Controls;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Views.Screens;
 
@@ -10,7 +9,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// <summary>
     /// Interaction logic for ReportList.xaml
     /// </summary>
-    public partial class ReportList : UserControl
+    public partial class ReportList
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
 

@@ -62,7 +62,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Table));
             }
-            else if (sender.Equals(HomeImage))
+            else if (sender.Equals(HomeButton))
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Home));
             }

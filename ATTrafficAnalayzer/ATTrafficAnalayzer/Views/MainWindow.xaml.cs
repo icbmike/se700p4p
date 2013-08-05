@@ -145,7 +145,7 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
-        private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void FileExitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }

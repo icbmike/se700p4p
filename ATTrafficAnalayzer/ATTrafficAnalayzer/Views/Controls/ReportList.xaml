@@ -4,95 +4,65 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="300"
-             d:DesignWidth="300"
-             Margin="10">
+             Width="200"
+             d:DesignHeight="1100"
+             d:DesignWidth="200">
     <DockPanel LastChildFill="True">
-        <Label Content="Report Browser"
-               Height="28"
-               Background="#428FBF"
-               FontWeight="Normal"
-               FontSize="14"
-               Foreground="White"
-               Padding="5"
-               DockPanel.Dock="Top" />
-        <WrapPanel Orientation="Horizontal"
-                   DockPanel.Dock="Top">
-            <Button HorizontalAlignment="Left"
-                    Margin="3"
-                    VerticalAlignment="Top"
+
+        <DockPanel DockPanel.Dock="Top"
+                   Background="#428FBF"
+                   Height="32">
+            <Label Content="Report Browser"
+                   FontWeight="Normal"
+                   FontSize="14"
+                   Foreground="White"
+                   Padding="5"
+                   DockPanel.Dock="Left" />
+            <Button HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}"
                     Click="newBtn_Click"
                     Foreground="{x:Null}"
-                    Height="20"
-                    Width="20">
-                <Button.Background>
-                    <ImageBrush ImageSource="/ATTrafficAnalayzer;component/Resources/Images/glyphicons_432_plus.png"
-                                Stretch="Uniform" />
-                </Button.Background>
+                    DockPanel.Dock="Right"
+                    Margin="6"
+                    Background="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_432_plus.png" />
             </Button>
-            <Button HorizontalAlignment="Left"
-                    Margin="3"
-                    VerticalAlignment="Top"
-                    BorderBrush="{x:Null}"
-                    Click="editBtn_Click"
-                    Foreground="{x:Null}"
-                    Height="20"
-                    Width="20">
-                <Button.Background>
-                    <ImageBrush ImageSource="/ATTrafficAnalayzer;component/Resources/Images/glyphicons_030_pencil.png"
-                                Stretch="Uniform" />
-                </Button.Background>
-            </Button>
-            <Button HorizontalAlignment="Left"
-                    Margin="3"
-                    VerticalAlignment="Top"
-                    Click="removeBtn_Click"
-                    Foreground="{x:Null}"
-                    BorderBrush="{x:Null}"
-                    Height="20"
-                    Width="20">
-                <Button.Background>
-                    <ImageBrush ImageSource="/ATTrafficAnalayzer;component/Resources/Images/glyphicons_433_minus.png"
-                                Stretch="Uniform" />
-                </Button.Background>
-            </Button>
-        </WrapPanel>
+        </DockPanel>
 
-        <TabControl HorizontalAlignment="Left"
-                    TabStripPlacement="Bottom"
-                    DockPanel.Dock="Top">
-            <TabItem Header="Standard Reports">
-                <DockPanel LastChildFill="True">
-                    <ScrollBar Width="20"
-                               DockPanel.Dock="Right" />
-                    <TreeView Name="StandardReportsTreeView"
-                              DockPanel.Dock="Right"
-                              x:FieldModifier="private">
-                        <TreeView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="_New"
-                                          Click="newBtn_Click" />
-                                <MenuItem Header="_Edit"
-                                          Click="editBtn_Click" />
-                                <MenuItem Header="_Remove"
-                                          Click="removeBtn_Click" />
-                                <MenuItem Header="_Export"
-                                          Click="exportBtn_Click" />
-                            </ContextMenu>
-                        </TreeView.ContextMenu>
-                    </TreeView>
-                </DockPanel>
-            </TabItem>
-            <TabItem Header="Special Reports">
-                <DockPanel LastChildFill="True">
-                    <ScrollBar Width="20"
-                               DockPanel.Dock="Right" />
-                    <TreeView ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
-                              DockPanel.Dock="Right" />
-                </DockPanel>
-            </TabItem>
-        </TabControl>
+        <DockPanel LastChildFill="True"
+                   DockPanel.Dock="Top">
+            <ScrollBar Width="20"
+                       DockPanel.Dock="Right" />
+            <TreeView Name="StandardReportsTreeView"
+                      DockPanel.Dock="Right"
+                      x:FieldModifier="private"
+                      BorderBrush="{x:Null}">
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="_Edit"
+                                  Click="editBtn_Click">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Export"
+                                  Click="exportBtn_Click">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Remove"
+                                  Click="removeBtn_Click">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+            </TreeView>
+        </DockPanel>
+
     </DockPanel>
 </UserControl>
