@@ -207,6 +207,9 @@
     <Resource Include="Resources\Images\home_icon.png" />
     <Resource Include="Resources\Images\at-banner.png" />
     <Resource Include="Resources\Images\at-logo.png" />
+    <Resource Include="Resources\Images\glyphicons_030_pencil.png" />
+    <Resource Include="Resources\Images\glyphicons_432_plus.png" />
+    <Resource Include="Resources\Images\glyphicons_433_minus.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

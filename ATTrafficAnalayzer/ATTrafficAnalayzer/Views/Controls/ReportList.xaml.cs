@@ -67,13 +67,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs());
         }
 
-        private void renameBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var item = StandardReportsTreeView.SelectedItem.ToString();
-            Console.WriteLine("Rename: {0}", item);
-        }
-
-        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        private void removeBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
             var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;

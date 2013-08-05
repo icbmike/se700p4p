@@ -7,8 +7,7 @@
              d:DesignHeight="300"
              d:DesignWidth="300"
              Margin="10">
-    <DockPanel LastChildFill="True"
-               DockPanel.Dock="Left">
+    <DockPanel LastChildFill="True">
         <Label Content="Report Browser"
                Height="28"
                Background="#428FBF"
@@ -17,43 +16,48 @@
                Foreground="White"
                Padding="5"
                DockPanel.Dock="Top" />
-        <WrapPanel
-            Orientation="Horizontal"
+        <WrapPanel Orientation="Horizontal"
                    DockPanel.Dock="Top">
-            <Button Content="_New"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,0,0"
+            <Button HorizontalAlignment="Left"
+                    Margin="3"
                     VerticalAlignment="Top"
-                    Background="{x:Null}"
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}"
-                    Click="newBtn_Click">
+                    Click="newBtn_Click"
+                    Foreground="{x:Null}"
+                    Height="20"
+                    Width="20">
+                <Button.Background>
+                    <ImageBrush ImageSource="/ATTrafficAnalayzer;component/Resources/Images/glyphicons_432_plus.png"
+                                Stretch="Uniform" />
+                </Button.Background>
             </Button>
-            <Button Content="_Edit"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,0,0"
+            <Button HorizontalAlignment="Left"
+                    Margin="3"
                     VerticalAlignment="Top"
-                    Background="{x:Null}"
                     BorderBrush="{x:Null}"
-                    Click="editBtn_Click">
+                    Click="editBtn_Click"
+                    Foreground="{x:Null}"
+                    Height="20"
+                    Width="20">
+                <Button.Background>
+                    <ImageBrush ImageSource="/ATTrafficAnalayzer;component/Resources/Images/glyphicons_030_pencil.png"
+                                Stretch="Uniform" />
+                </Button.Background>
             </Button>
-            <Button Content="_Delete"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,0,0"
+            <Button HorizontalAlignment="Left"
+                    Margin="3"
                     VerticalAlignment="Top"
-                    Background="{x:Null}"
-                    Click="deleteBtn_Click">
-                <Button.BorderBrush>
-                    <SolidColorBrush />
-                </Button.BorderBrush>
-            </Button>
-            <Button Content="Rename"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,0,0"
-                    VerticalAlignment="Top"
-                    Background="{x:Null}"
+                    Click="removeBtn_Click"
+                    Foreground="{x:Null}"
                     BorderBrush="{x:Null}"
-                    Click="renameBtn_Click" />
+                    Height="20"
+                    Width="20">
+                <Button.Background>
+                    <ImageBrush ImageSource="/ATTrafficAnalayzer;component/Resources/Images/glyphicons_433_minus.png"
+                                Stretch="Uniform" />
+                </Button.Background>
+            </Button>
         </WrapPanel>
 
         <TabControl HorizontalAlignment="Left"
@@ -61,20 +65,20 @@
                     DockPanel.Dock="Top">
             <TabItem Header="Standard Reports">
                 <DockPanel LastChildFill="True">
-                    <ScrollBar
-                        Width="20"
+                    <ScrollBar Width="20"
                                DockPanel.Dock="Right" />
                     <TreeView Name="StandardReportsTreeView"
-                              DockPanel.Dock="Right" x:FieldModifier="private">
+                              DockPanel.Dock="Right"
+                              x:FieldModifier="private">
                         <TreeView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Edit"
+                                <MenuItem Header="_New"
+                                          Click="newBtn_Click" />
+                                <MenuItem Header="_Edit"
                                           Click="editBtn_Click" />
-                                <MenuItem Header="Delete"
-                                          Click="deleteBtn_Click" />
-                                <MenuItem Header="Rename"
-                                          Click="renameBtn_Click" />
-                                <MenuItem Header="Export to CSV"
+                                <MenuItem Header="_Remove"
+                                          Click="removeBtn_Click" />
+                                <MenuItem Header="_Export"
                                           Click="exportBtn_Click" />
                             </ContextMenu>
                         </TreeView.ContextMenu>
@@ -83,11 +87,9 @@
             </TabItem>
             <TabItem Header="Special Reports">
                 <DockPanel LastChildFill="True">
-                    <ScrollBar
-                        Width="20"
+                    <ScrollBar Width="20"
                                DockPanel.Dock="Right" />
-                    <TreeView
-                        ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
+                    <TreeView ItemsSource="{Binding Path=SpecialReports, Mode=TwoWay}"
                               DockPanel.Dock="Right" />
                 </DockPanel>
             </TabItem>
