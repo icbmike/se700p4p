@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -29,10 +30,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public VsFaultsReport(SettingsTray settings)
         {
-            this.startDate = settings.StartDate;
-            this.endDate = settings.EndDate;
+            startDate = settings.StartDate;
+            endDate = settings.EndDate;
 
-            this.dbHelper = DbHelper.GetDbHelper();
+            dbHelper = DbHelper.GetDbHelper();
             InitializeComponent();
             
             FillGrid();
@@ -47,7 +48,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
         }
 
-        internal void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
             if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate))

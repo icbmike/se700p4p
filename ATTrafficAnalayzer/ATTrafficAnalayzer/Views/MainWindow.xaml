@@ -6,7 +6,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Height="800"
-        xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
         xmlns:controls="clr-namespace:ATTrafficAnalayzer.Views.Controls"
         Width="1000"
         WindowStartupLocation="CenterScreen"
@@ -49,15 +48,14 @@
             </Menu>
 
             <controls:Toolbar Canvas.Top="60"
-                          Canvas.Left="20"
-                          x:Name="SettingsToolbar"
-                          ScreenChanged="SwitchScreen"/>
+                              Canvas.Left="20"
+                              x:Name="SettingsToolbar"
+                              ScreenChanged="SwitchScreen" />
         </Canvas>
 
         <controls:ReportList x:Name="ReportList"
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
-                             ExportEvent="ReportList_OnExportEvent" 
-                             />
+                             ExportEvent="ReportList_OnExportEvent" />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="MainContentControl"

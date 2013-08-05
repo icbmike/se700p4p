@@ -36,13 +36,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
             public EditConfigurationEventHandlerArgs()
             {
-                this.New = true;
+                New = true;
                 ConfigToBeEdited = null;
             }
 
             public EditConfigurationEventHandlerArgs(string configToBeEdited)
             {
-                this.New = false;
+                New = false;
                 ConfigToBeEdited = configToBeEdited;
             }
         }

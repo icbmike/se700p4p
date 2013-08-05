@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Views
                         }
                         else
                         {
-                            List<int> detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                            var detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
                                                                           _settings.EndDate);
                             approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                         }
@@ -65,7 +65,7 @@ namespace ATTrafficAnalayzer.Views
                     }
 
                     //The row headings
-                    for (int i = 0; i <= 12; i++)
+                    for (var i = 0; i <= 12; i++)
                     {
                         if (i == 0)
                         {

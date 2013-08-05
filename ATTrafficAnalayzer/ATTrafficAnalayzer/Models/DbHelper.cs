@@ -328,7 +328,7 @@ namespace ATTrafficAnalayzer.Models
                             //The record size is stored in two bytes, little endian
 
                         index += 2;
-                        int progress = (int)(((float)index / sizeInBytes) * 100);
+                        var progress = (int)(((float)index / sizeInBytes) * 100);
                         updateProgress(progress);
                         
                         
@@ -483,7 +483,7 @@ namespace ATTrafficAnalayzer.Models
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
-            List<int> volumes = new List<int>();
+            var volumes = new List<int>();
 
             using (var query = new SQLiteCommand(conn))
             {
@@ -589,7 +589,7 @@ namespace ATTrafficAnalayzer.Models
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
 
-            foreach (Approach approach in config.Approaches)
+            foreach (var approach in config.Approaches)
             {
                 //INSERT APPROACHES INTO TABLE
                 using (var query = new SQLiteCommand(conn))
@@ -609,7 +609,7 @@ namespace ATTrafficAnalayzer.Models
             }
 
             //INSERT REPORT CONFIGURATION INTO TABLE
-            using (SQLiteCommand query = new SQLiteCommand(conn))
+            using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
                 query.Parameters.AddWithValue("@name", config.ConfigName);

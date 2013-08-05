@@ -23,7 +23,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             get { return _approachName; }
             set { 
                 _approachName = value;
-                if (null != this.PropertyChanged)
+                if (null != PropertyChanged)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("ApproachName"));
                 }
@@ -108,7 +108,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             
             var sortedDetectors = Detectors.OrderBy(x => x).ToList();
             Detectors.Clear();
-            foreach (int i in sortedDetectors)
+            foreach (var i in sortedDetectors)
             {
                 Detectors.Add(i);
             }

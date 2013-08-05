@@ -1,94 +1,94 @@
 ﻿<UserControl x:Class="ATTrafficAnalayzer.Views.Controls.Toolbar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
-             mc:Ignorable="d" >
+             mc:Ignorable="d">
 
-    <ToolBarPanel Name="toolbarPanel"      
-        Background="{x:Null}">
+    <ToolBarPanel Name="ToolbarPanel"
+                  Background="{x:Null}">
         <ToolBarPanel.DataContext>
             <settings:SettingsTray />
         </ToolBarPanel.DataContext>
         <ToolBar Name="MainToolbar"
-                         Band="1"
-                         BandIndex="1"
-                         VerticalContentAlignment="Stretch"
-                         HorizontalContentAlignment="Stretch"
-                         Foreground="White"
-                         ToolBarTray.IsLocked="True"
-                         Background="{x:Null}"
-                 Loaded="MainToolbar_OnLoaded"
-                 >
-            <Image Height="26.6666666666667"
-                           VerticalAlignment="Center"
-                           Source="../../Resources/Images/home_icon.png"
-                           Margin="5,0"
-                           MouseLeftButtonDown="HomeImageMouseLeftButtonDown" />
+                 Band="1"
+                 BandIndex="1"
+                 VerticalContentAlignment="Stretch"
+                 HorizontalContentAlignment="Stretch"
+                 Foreground="White"
+                 ToolBarTray.IsLocked="True"
+                 Background="{x:Null}"
+                 Loaded="MainToolbar_OnLoaded">
+
+            <Image x:Name="HomeImage"
+                   Height="26.6666666666667"
+                   VerticalAlignment="Center"
+                   Source="../../Resources/Images/home_icon.png"
+                   Margin="5,0"
+                   MouseLeftButtonDown="SwitchScreen" />
+
             <Button Name="TableButton"
-                            Content="Table"
-                            Margin="10,0,1,0"
-                            Click="SwitchScreen"
-                            Width="70"
-                            Style="{StaticResource AtToolbarButtonStyle}">
-            </Button>
+                    Content="Table"
+                    Margin="10,0,1,0"
+                    Click="SwitchScreen"
+                    Width="70"
+                    Style="{StaticResource AtToolbarButtonStyle}" />
             <Button Name="GraphButton"
-                            Click="SwitchScreen"
-                            Style="{StaticResource AtToolbarButtonStyle}"
-                            Margin="1,0,1,0"
-                            Content="Graph"
-                            Width="70">
-            </Button>
+                    Click="SwitchScreen"
+                    Style="{StaticResource AtToolbarButtonStyle}"
+                    Margin="1,0,1,0"
+                    Content="Graph"
+                    Width="70" />
             <Button Name="FaultsButton"
-                            Click="SwitchScreen"
-                            Style="{StaticResource AtToolbarButtonStyle}"
-                            Margin="1,0,10,0"
-                            Content="Faults"
-                            Width="70"
-                            />
+                    Click="SwitchScreen"
+                    Style="{StaticResource AtToolbarButtonStyle}"
+                    Margin="1,0,10,0"
+                    Content="Faults"
+                    Width="70" />
+
             <Label Margin="10,0,4,0"
-                           Foreground="White"
-                           FontSize="16">
-                Start Date:
-            </Label>
+                   Foreground="White"
+                   FontSize="16"
+                   Content="Start Date:" />
             <DatePicker Name="StartDatePicker"
-                                Background="White"
-                                SelectedDate="{Binding StartDate}"
-                                FontSize="16"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" SelectedDateChanged="DateOrInverval_SelectionChanged"
-                                />
+                        Background="White"
+                        SelectedDate="{Binding StartDate}"
+                        FontSize="16"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        SelectedDateChanged="DateOrInverval_SelectionChanged" />
             <Label Margin="20,0,0,0"
-                           Foreground="#FFF6F6F6"
-                           FontSize="16">
-                End Date:
-            </Label>
+                   Foreground="#FFF6F6F6"
+                   FontSize="16"
+                   Content="End Date:" />
             <DatePicker Name="EndDatePicker"
-                                Background="White"
-                                SelectedDate="{Binding EndDate}"
-                                FontSize="16"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" SelectedDateChanged="DateOrInverval_SelectionChanged" />
+                        Background="White"
+                        SelectedDate="{Binding EndDate}"
+                        FontSize="16"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        SelectedDateChanged="DateOrInverval_SelectionChanged" />
+
             <Label Margin="20,0,0,0"
-                           Foreground="White"
-                           FontSize="16">
-                Interval:
-            </Label>
+                   Foreground="White"
+                   FontSize="16"
+                   Content="Interval" />
             <ComboBox Height="23"
-                              Name="IntervalComboBox"
-                              Width="80"
-                              SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
-                              SelectedValuePath="Content"
-                              SelectedIndex="0"
-                              Foreground="Black"
-                              FontSize="16" SelectionChanged="DateOrInverval_SelectionChanged">
+                      Name="IntervalComboBox"
+                      Width="80"
+                      SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
+                      SelectedValuePath="Content"
+                      SelectedIndex="0"
+                      Foreground="Black"
+                      FontSize="16"
+                      SelectionChanged="DateOrInverval_SelectionChanged">
                 <ComboBoxItem>5 min</ComboBoxItem>
                 <ComboBoxItem>15 min</ComboBoxItem>
                 <ComboBoxItem>30 min</ComboBoxItem>
                 <ComboBoxItem>60 min</ComboBoxItem>
             </ComboBox>
+
         </ToolBar>
     </ToolBarPanel>
-
 </UserControl>

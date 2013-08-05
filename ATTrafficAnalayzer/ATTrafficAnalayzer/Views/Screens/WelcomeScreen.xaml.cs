@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using System.ComponentModel;
 using System;
@@ -10,7 +9,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for WelcomeScreen.xaml
     /// </summary>
-    public partial class WelcomeScreen : UserControl
+    public partial class WelcomeScreen
     {
 
         #region events
@@ -39,13 +38,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void WorkerCompletedHandler(object sender, RunWorkerCompletedEventArgs e)
         {
             ImportedDatesList.ItemsSource = e.Result as List<DateTime>;
-            ProgressBar.Visibility = System.Windows.Visibility.Collapsed;
-            ImportedDatesList.Visibility = System.Windows.Visibility.Visible;
+            ProgressBar.Visibility = Visibility.Collapsed;
+            ImportedDatesList.Visibility = Visibility.Visible;
         }
 
         private void DoWorkHandler(object sender, DoWorkEventArgs e)
         {
-            DbHelper helper = DbHelper.GetDbHelper();
+            var helper = DbHelper.GetDbHelper();
             var importedDates = helper.GetImportedDates();
             e.Result = importedDates;
         }
@@ -59,8 +58,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         internal void ImportCompletedHandler(object sender)
         {
             var bw = new BackgroundWorker();
-            ProgressBar.Visibility = System.Windows.Visibility.Visible;
-            ImportedDatesList.Visibility = System.Windows.Visibility.Collapsed;
+            ProgressBar.Visibility = Visibility.Visible;
+            ImportedDatesList.Visibility = Visibility.Collapsed;
 
             bw.DoWork += DoWorkHandler;
             bw.RunWorkerCompleted += WorkerCompletedHandler;

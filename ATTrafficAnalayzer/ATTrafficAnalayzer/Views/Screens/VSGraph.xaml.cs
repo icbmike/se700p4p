@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Views.Controls;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
@@ -29,15 +30,15 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public VsGraph(SettingsTray settings, string configName)
         {
-            this.startDate = settings.StartDate;
-            this.endDate = settings.EndDate;
-            this.interval = settings.Interval;
+            startDate = settings.StartDate;
+            endDate = settings.EndDate;
+            interval = settings.Interval;
 
             this.configName = configName;
             InitializeComponent();
 
             ScreenTitle.Content = configName;
-            this.series = new List<LineAndMarker<MarkerPointsGraph>>();
+            series = new List<LineAndMarker<MarkerPointsGraph>>();
 
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
@@ -135,7 +136,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        public void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
             if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))

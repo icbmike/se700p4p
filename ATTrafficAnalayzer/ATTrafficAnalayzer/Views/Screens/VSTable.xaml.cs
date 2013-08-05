@@ -40,10 +40,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             var dbHelper = DbHelper.GetDbHelper();
             _configuration = dbHelper.GetConfiguration(configName);
 
-            this._settings = settings;
-            this.startDate = settings.StartDate;
-            this.endDate = settings.EndDate;
-            this.interval = settings.Interval;
+            _settings = settings;
+            startDate = settings.StartDate;
+            endDate = settings.EndDate;
+            interval = settings.Interval;
 
             InitializeComponent();
 

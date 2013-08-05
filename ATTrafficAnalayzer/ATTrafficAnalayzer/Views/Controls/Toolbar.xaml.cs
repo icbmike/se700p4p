@@ -1,24 +1,15 @@
 ﻿using ATTrafficAnalayzer.Models.Settings;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
     /// Interaction logic for Toolbar.xaml
     /// </summary>
-    public partial class Toolbar : UserControl
+    public partial class Toolbar
     {
 
         public delegate void ScreenChangeEventHandler(object sender, ScreenChangeEventHandlerArgs args);
@@ -27,21 +18,21 @@ namespace ATTrafficAnalayzer.Views.Controls
         public event ScreenChangeEventHandler ScreenChanged;
         public event DateRangeChangedEventHandler DateRangeChanged;
 
-        private Boolean startModifyingEnd = false;
+        private Boolean _startModifyingEnd;
 
         public class ScreenChangeEventHandlerArgs
         {
             public enum ScreenButton
             {
-                Graph, Table, Faults
+                Graph, Table, Faults, Home
             }
 
             public ScreenChangeEventHandlerArgs(ScreenButton button)
             {
-                this.button = button;
+                Button = button;
             }
 
-            public ScreenButton button { get; set; }
+            public ScreenButton Button { get; set; }
         }
 
         public class DateRangeChangedEventHandlerArgs
@@ -62,13 +53,12 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-
         }
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
 
-            Console.WriteLine(toolbarPanel.DataContext);
+            Console.WriteLine(ToolbarPanel.DataContext);
 
             if (sender.Equals(GraphButton))
             {
@@ -77,6 +67,10 @@ namespace ATTrafficAnalayzer.Views.Controls
             else if (sender.Equals(TableButton))
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Table));
+            }
+            else if (sender.Equals(HomeImage))
+            {
+                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Home));
             }
             else
             {
@@ -93,7 +87,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                 if (EndDatePicker != null)
                 {
                     Console.WriteLine("true");
-                    startModifyingEnd = true;
+                    _startModifyingEnd = true;
                     var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
                     EndDatePicker.SelectedDate = newDate;
                     
@@ -103,10 +97,10 @@ namespace ATTrafficAnalayzer.Views.Controls
             else if (sender.Equals(EndDatePicker))
             {
                 Console.WriteLine("End date picker...");
-                if (startModifyingEnd)
+                if (_startModifyingEnd)
                 {
                     Console.WriteLine("false");
-                    startModifyingEnd = false;
+                    _startModifyingEnd = false;
                     return;
                 }
             }
@@ -114,7 +108,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (DateRangeChanged != null)
             {
                 Console.WriteLine("Firing the actual event");
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (toolbarPanel.DataContext as SettingsTray).Interval));
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
             }
         }
 
@@ -136,6 +130,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
 
-        public SettingsTray SettingsTray { get { return toolbarPanel.DataContext as SettingsTray; } }
+        public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
     }
 }
