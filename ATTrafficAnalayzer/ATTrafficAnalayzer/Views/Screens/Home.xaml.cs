@@ -7,9 +7,9 @@ using System;
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
-    /// Interaction logic for WelcomeScreen.xaml
+    /// Interaction logic for Home.xaml
     /// </summary>
-    public partial class WelcomeScreen
+    public partial class Home
     {
 
         #region events
@@ -21,7 +21,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         #endregion
 
 
-        public WelcomeScreen(ImportRequestEventHandler handler)
+        public Home(ImportRequestEventHandler handler)
         {
             InitializeComponent();
             ImportRequested += handler;

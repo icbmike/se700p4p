@@ -21,7 +21,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            var welcomeScreen = new WelcomeScreen(fileImportMenuItem_Click);
+            var welcomeScreen = new Home(fileImportMenuItem_Click);
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
@@ -103,32 +103,32 @@ namespace ATTrafficAnalayzer.Views
 
                 if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Faults))
                 {
-                    var faultsScreen = new VsFaultsReport(SettingsToolbar.SettingsTray);
+                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
 
                 }
                 else
                 {
-                    //Get selected Configuration
+                    //Get selected Config
                     var selectedItem = ReportList.GetSelectedConfiguration();
                     if (selectedItem != null)
                     {
                         if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Graph))
                         {
-                            var graphScreen = new VsGraph(SettingsToolbar.SettingsTray, selectedItem);
+                            var graphScreen = new Graph(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
                             ChangeScreen(graphScreen);
                         }
                         else if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Table))
                         {
-                            var tableScreen = new VsTable(SettingsToolbar.SettingsTray, selectedItem);
+                            var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                             ChangeScreen(tableScreen);
                         }
                         else if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Home))
                         {
-                            ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
+                            ChangeScreen(new Home(fileImportMenuItem_Click));
                         }
                     }
                     else
@@ -162,7 +162,7 @@ namespace ATTrafficAnalayzer.Views
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
-        private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+        private void ReportList_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
 
             if (args.New)
@@ -170,7 +170,7 @@ namespace ATTrafficAnalayzer.Views
 
                 if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                 {
-                    var reportConfigurationScreen = new ReportConfigurationScreen();
+                    var reportConfigurationScreen = new Config();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                     ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                     ChangeScreen(reportConfigurationScreen);
@@ -193,7 +193,7 @@ namespace ATTrafficAnalayzer.Views
                 BulkImport();
         }
 
-        private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+        private void ReportList_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
 
             var dlg = new SaveFileDialog

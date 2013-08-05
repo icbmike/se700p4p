@@ -345,16 +345,16 @@ namespace ATTrafficAnalayzer.Models
                         }
 
                         //Find out what kind of data we have
-                        var recordType = RecordFactory.CheckRecordType(record);
+                        var recordType = VolumeRecordFactory.CheckRecordType(record);
 
                         //Construct the appropriate record type
                         switch (recordType)
                         {
-                            case RecordType.Datetime:
-                                currentDateTime = RecordFactory.CreateDateTimeRecord(record);
+                            case VolumeRecordType.Datetime:
+                                currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
                                 break;
-                            case RecordType.Volume:
-                                var volumeRecord = RecordFactory.CreateVolumeRecord(record, recordSize);
+                            case VolumeRecordType.Volume:
+                                var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
 
                                 foreach (var detector in volumeRecord.GetDetectors())
                                 {
@@ -530,7 +530,7 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
-        #region Configuration Related Methods
+        #region Config Related Methods
 
         public SQLiteDataAdapter GetConfigsDataAdapter()
         {
@@ -538,7 +538,7 @@ namespace ATTrafficAnalayzer.Models
             return GetDataAdapter(getCongifsSql);
         }
 
-        public ReportConfiguration GetConfiguration(string name)
+        public Report GetConfiguration(string name)
         {
             Console.WriteLine(name);
             var conn = new SQLiteConnection(DbPath);
@@ -576,13 +576,13 @@ namespace ATTrafficAnalayzer.Models
                     }
                 }
                 conn.Close();
-                return new ReportConfiguration(name, (int) configJson["intersection"], approaches);
+                return new Report(name, (int) configJson["intersection"], approaches);
             }
             conn.Close();
             return null;
         }
 
-        public void addConfiguration(ReportConfiguration config)
+        public void addConfiguration(Report config)
         {
 
             var configJson = config.ToJson();

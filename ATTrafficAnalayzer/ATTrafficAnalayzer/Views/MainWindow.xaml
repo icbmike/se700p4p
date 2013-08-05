@@ -101,7 +101,7 @@
                               ScreenChanged="SwitchScreen" />
         </Canvas>
 
-        <controls:ReportList x:Name="ReportList"
+        <controls:ReportBrowser x:Name="ReportList"
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
                              ExportEvent="ReportList_OnExportEvent" />
 

@@ -7,13 +7,13 @@ using ATTrafficAnalayzer.Views.Screens;
 namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for ReportList.xaml
+    /// Interaction logic for ReportBrowser.xaml
     /// </summary>
-    public partial class ReportList
+    public partial class ReportBrowser
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
 
-        public ReportList()
+        public ReportBrowser()
         {
             InitializeComponent();            
             DataContext = this;
@@ -113,7 +113,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
 
-        public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
+        public void ConfigurationSavedEventHandler(object sender, Config.ConfigurationSavedEventArgs args)
         {
             
             StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetConfigDataView();

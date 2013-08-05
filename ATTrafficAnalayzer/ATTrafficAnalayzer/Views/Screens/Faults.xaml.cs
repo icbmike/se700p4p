@@ -8,15 +8,15 @@ using ATTrafficAnalayzer.Views.Controls;
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
-    /// Interaction logic for VsFaultsReport.xaml
+    /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class VsFaultsReport : UserControl
+    public partial class Faults
     {
         private DbHelper dbHelper;
         private DateTime endDate;
         private DateTime startDate;
 
-        public VsFaultsReport(SettingsTray settings)
+        public Faults(SettingsTray settings)
         {
             startDate = settings.StartDate;
             endDate = settings.EndDate;

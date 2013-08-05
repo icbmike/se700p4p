@@ -1,11 +1,11 @@
 ﻿namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for ApproachTableDisplay.xaml
+    /// Interaction logic for TableApproachDisplay.xaml
     /// </summary>
-    public partial class ApproachTableDisplay
+    public partial class TableApproachDisplay
     {
-        public ApproachTableDisplay()
+        public TableApproachDisplay()
         {
             InitializeComponent();
         }

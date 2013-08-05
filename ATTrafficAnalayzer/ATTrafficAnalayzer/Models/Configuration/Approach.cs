@@ -12,8 +12,8 @@ namespace ATTrafficAnalayzer.Models.Configuration
     {
         private readonly DbHelper _dbHelper;
 
-        public Measurement AmPeak = new Measurement();
-        public Measurement PmPeak = new Measurement();
+        public VolumeMetric AmPeak = new VolumeMetric();
+        public VolumeMetric PmPeak = new VolumeMetric();
         private int _approachTotal;
 
         public string Name { get; set; }
