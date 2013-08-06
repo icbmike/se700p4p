@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
-                                                             
+
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
 
@@ -172,6 +172,8 @@ namespace ATTrafficAnalayzer.Views
                 {
                     var reportConfigurationScreen = new Config();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                    reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+
                     ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                     ChangeScreen(reportConfigurationScreen);
                 }
@@ -185,6 +187,13 @@ namespace ATTrafficAnalayzer.Views
                 throw new NotImplementedException();
             }
 
+        }
+
+        void reportConfigurationScreen_ConfigurationSaved(object sender, Config.ConfigurationSavedEventArgs args)
+        {
+            var tableScreen = new Table(SettingsToolbar.SettingsTray, args.Name);
+            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+            ChangeScreen(tableScreen);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
