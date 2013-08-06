@@ -124,5 +124,24 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
+
+        public delegate void SelectedReportChangeEventHandler(object sender, SelectedReporChangeEventHandlerArgs args);
+        public event SelectedReportChangeEventHandler ReportChanged;
+
+        public class SelectedReporChangeEventHandlerArgs
+        {
+            public string ReportName { get; set; }
+
+            public SelectedReporChangeEventHandlerArgs(string reportName)
+            {
+                ReportName = reportName;
+            }
+        }
+
+        private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (ReportChanged != null)
+                ReportChanged(this, new SelectedReporChangeEventHandlerArgs(GetSelectedConfiguration()));
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
-
+        
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
 
@@ -101,7 +101,7 @@ namespace ATTrafficAnalayzer.Views
             if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
             {
 
-                if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Faults))
+                if (args.Button.Equals(Toolbar.ScreenButton.Faults))
                 {
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
@@ -114,19 +114,21 @@ namespace ATTrafficAnalayzer.Views
                     var selectedItem = ReportList.GetSelectedConfiguration();
                     if (selectedItem != null)
                     {
-                        if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Graph))
+                        if (args.Button.Equals(Toolbar.ScreenButton.Graph))
                         {
                             var graphScreen = new Graph(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
+                            ReportList.ReportChanged += graphScreen.ReportChangedHandler;
                             ChangeScreen(graphScreen);
                         }
-                        else if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Table))
+                        else if (args.Button.Equals(Toolbar.ScreenButton.Table))
                         {
                             var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                            ReportList.ReportChanged += tableScreen.ReportChangedHandler;
                             ChangeScreen(tableScreen);
                         }
-                        else if (args.Button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Home))
+                        else if (args.Button.Equals(Toolbar.ScreenButton.Home))
                         {
                             ChangeScreen(new Home(fileImportMenuItem_Click));
                         }

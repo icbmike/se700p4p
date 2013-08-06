@@ -28,7 +28,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DateTime _endDate;
         private int _interval;
 
-        private readonly Report _configuration;
+        private Report _configuration;
+
+        readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
         /// <summary>
         /// 
@@ -37,8 +39,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="configName"></param>
         public Table(SettingsTray settings, string configName)
         {
-            var dbHelper = DbHelper.GetDbHelper();
-            _configuration = dbHelper.GetConfiguration(configName);
+            _configuration = _dbHelper.GetConfiguration(configName);
 
             _settings = settings;
             _startDate = settings.StartDate;
@@ -47,15 +48,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
-            ScreenTitle.Content = _configuration.ConfigName;
-
             RenderTable();
-            
         }
 
 
         private void RenderTable()
         {
+            ScreenTitle.Content = _configuration.ConfigName;
+
             //Clear all the things!
             ApproachesStackPanel.Children.Clear();
 
@@ -134,6 +134,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 RenderTable();
             }
+        }
+
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        {
+            _configuration = _dbHelper.GetConfiguration(args.ReportName);
+            RenderTable();
         }
     }
 }

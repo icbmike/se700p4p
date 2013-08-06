@@ -151,5 +151,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                 RenderGraph();
             }
         }
+
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        {
+            configName = args.ReportName;
+            RenderGraph();
+        }
     }
 }

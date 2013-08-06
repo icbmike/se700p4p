@@ -31,19 +31,21 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Screen refreshing
 
+        private ScreenButton currentMode = ScreenButton.Home;
+
+        public enum ScreenButton
+        {
+            Graph,
+            Table,
+            Faults,
+            Home
+        }
+
         public delegate void ScreenChangeEventHandler(object sender, ScreenChangeEventHandlerArgs args);
         public event ScreenChangeEventHandler ScreenChanged;
 
         public class ScreenChangeEventHandlerArgs
         {
-            public enum ScreenButton
-            {
-                Graph,
-                Table,
-                Faults,
-                Home
-            }
-
             public ScreenChangeEventHandlerArgs(ScreenButton button)
             {
                 Button = button;
@@ -56,19 +58,19 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (sender.Equals(GraphButton))
             {
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Graph));
+                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Graph));
             }
             else if (sender.Equals(TableButton))
             {
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Table));
+                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Table));
             }
             else if (sender.Equals(HomeButton))
             {
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Home));
+                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
             }
             else
             {
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenChangeEventHandlerArgs.ScreenButton.Faults));
+                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));
             }
         }
 
