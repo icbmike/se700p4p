@@ -25,26 +25,59 @@ namespace ATTrafficAnalayzer.Views
 
             InitializeComponent();
             var homeScreen = new Home();
-            homeScreen.ImportRequested += fileImportMenuItem_Click;
+            homeScreen.ImportRequested += FileImportMenuItem_Click;
 
             SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
-            SettingsToolbar.ModeChanged += SettingsToolbarOnModeChanged;
+            SettingsToolbar.ModeChanged += SettingsToolbar_OnModeChanged;
             ImportCompleted += homeScreen.ImportCompletedHandler;
 
             ChangeScreen(homeScreen);
             _mode = Mode.Report;
         }
 
-        private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
+        #region Screen Switching
+
+        private void RemoveHandlers(object screen)
+        {
+            if (screen as IConfigScreen != null)
+                RemoveHandlers(screen as IConfigScreen);
+            else if (screen as IView != null)
+                RemoveHandlers(screen as IView);
+            else
+                MessageBox.Show("Somethings has gone horribly wrong");
+        }
+        private void RemoveHandlers(IView iView)
+        {
+            ReportList.ReportChanged -= iView.ReportChangedHandler;
+            SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
+            iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
+        }
+        private void RemoveHandlers(IConfigScreen iConfigScreen)
+        {
+            iConfigScreen.ConfigurationSaved -= ReportList.ConfigurationSavedEventHandler;
+            iConfigScreen.ConfigurationSaved -= IConfigScreen_ConfigurationSaved;
+
+        }
+
+        private void ChangeScreen(UserControl screen)
+        {
+            if (MainContentControl.Content != null)
+                RemoveHandlers(MainContentControl.Content);
+
+            MainContentControl.Content = screen;
+        }
+
+        private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _mode = args.Mode;
 
             switch (_mode)
             {
-                case Mode.Dashboard:
+                case Mode.Home:
                     ReportList.Visibility = Visibility.Collapsed;
                     var homeScreen = new Home();
-                    homeScreen.ImportRequested += fileImportMenuItem_Click;
+                    homeScreen.ImportRequested += FileImportMenuItem_Click;
+                    homeScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                     ChangeScreen(homeScreen);
                     break;
 
@@ -93,13 +126,24 @@ namespace ATTrafficAnalayzer.Views
                     ReportList.Visibility = Visibility.Collapsed;
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
+                    faultsScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                     ChangeScreen(faultsScreen);
                     break;
             }
         }
 
+        #endregion
+
+        #region File Importing
+
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DbHelper.VolumesTableEmpty())
+                BulkImport();
+        }
 
         private void BulkImport()
         {
@@ -118,11 +162,6 @@ namespace ATTrafficAnalayzer.Views
                 else
                     break;
             }
-        }
-
-        private void fileImportMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            ImportFile();
         }
 
         private void ImportFile()
@@ -165,7 +204,7 @@ namespace ATTrafficAnalayzer.Views
                                                                        policy = dialog.SelectedPolicy;
                                                                        waitForInput = false;
                                                                    }), null);
-                                                               while (waitForInput) ;
+                                                               while (waitForInput) { }
 
                                                                return policy;
                                                            });
@@ -179,49 +218,34 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
-        private void ChangeScreen(UserControl screen)
-        {
-            if (MainContentControl.Content != null) RemoveHandlers(MainContentControl.Content);
-            MainContentControl.Content = screen;
-        }
+        #endregion
 
-        private void RemoveHandlers(object screen)
-        {
+        #region File Exporting
 
-            if (screen as IConfigScreen != null)
+        private void ReportList_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
+        {
+            var dlg = new SaveFileDialog
             {
-                RemoveHandlers(screen as IConfigScreen);
-            }
-            else if (screen as IView != null)
+                FileName = "",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                DefaultExt = ".csv",
+                Filter = "CSV Files (.csv)|*.csv"
+            };
+
+            if (dlg.ShowDialog() == true)
             {
-                RemoveHandlers(screen as IView);
-            }
-            else
-            {
-                MessageBox.Show("Somethings has gone horribly wrong");
+                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited);
+                csvExporter.DoExport();
             }
         }
-        private void RemoveHandlers(IView iView)
+
+        #endregion
+
+        #region Menu Event Handlers
+
+        private void FileImportMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ReportList.ReportChanged -= iView.ReportChangedHandler;
-            SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
-            iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
-        }
-        private void RemoveHandlers(IConfigScreen iConfigScreen)
-        {
-            iConfigScreen.ConfigurationSaved -= ReportList.ConfigurationSavedEventHandler;
-            iConfigScreen.ConfigurationSaved -= reportConfigurationScreen_ConfigurationSaved;
-
-        }
-
-        private void OnVolumeDateCountsDontMatch(IView sender)
-        {
-            MessageBox.Show("You don't have volume data imported for the range you specified");
-
-            var homeScreen = new Home();
-            homeScreen.ImportRequested += fileImportMenuItem_Click;
-            ChangeScreen(homeScreen);
-
+            ImportFile();
         }
 
         private void FileExitMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -241,6 +265,19 @@ namespace ATTrafficAnalayzer.Views
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
+        #endregion
+
+        #region Other Event Handlers
+
+        private void OnVolumeDateCountsDontMatch(IView sender)
+        {
+            MessageBox.Show("You don't have volume data imported for the range you specified");
+
+            var homeScreen = new Home();
+            homeScreen.ImportRequested += FileImportMenuItem_Click;
+            ChangeScreen(homeScreen);
+        }
+
         private void ReportList_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
             if (args.New)
@@ -252,7 +289,7 @@ namespace ATTrafficAnalayzer.Views
                     {
                         var reportConfigurationScreen = new ReportConfig();
                         reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
-                        reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+                        reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
 
                         ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                         ChangeScreen(reportConfigurationScreen);
@@ -283,45 +320,29 @@ namespace ATTrafficAnalayzer.Views
                 var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
 
                 reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
-                reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+                reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
 
                 ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                 ChangeScreen(reportConfigurationScreen);
             }
-
         }
 
-        void reportConfigurationScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
+        void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
         {
-            var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
-            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-            ChangeScreen(tableScreen);
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (DbHelper.VolumesTableEmpty())
-                BulkImport();
-        }
-
-        private void ReportList_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
-        {
-
-            var dlg = new SaveFileDialog
+            if (_mode.Equals(Mode.Report))
             {
-                FileName = "",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                DefaultExt = ".csv",
-                Filter = "CSV Files (.csv)|*.csv"
-            };
-
-            if (dlg.ShowDialog() == true)
-            {
-                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited);
-                csvExporter.DoExport();
+                var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
+                SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
+                ChangeScreen(reportTableScreen);
             }
-
+            else if (_mode.Equals(Mode.Summary))
+            {
+                var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name);
+                SettingsToolbar.DateRangeChanged += summaryTableScreen.DateRangeChangedHandler;
+                ChangeScreen(summaryTableScreen);
+            }
         }
 
+        #endregion
     }
 }

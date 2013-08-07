@@ -5,19 +5,13 @@ namespace ATTrafficAnalayzer.Models.Volume
 {
     public class VolumeRecord
     {
-        private int _intersectionNumber;
+        public int IntersectionNumber { get; set; }
 
-
-        public int IntersectionNumber
-        {
-            get { return _intersectionNumber; }
-            set { _intersectionNumber = value; }
-        }
-        private Dictionary<int, int> _detectorVolumeDict;
+        private readonly Dictionary<int, int> _detectorVolumeDict;
 
         public VolumeRecord(int intersectionNumber)
         {
-            _intersectionNumber = intersectionNumber;
+            IntersectionNumber = intersectionNumber;
             _detectorVolumeDict = new Dictionary<int, int>();
         }
         

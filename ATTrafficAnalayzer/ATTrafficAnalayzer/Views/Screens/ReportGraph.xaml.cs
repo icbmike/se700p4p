@@ -4,14 +4,12 @@ using System.Linq;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Properties;
 using ATTrafficAnalayzer.Views.Controls;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
 using System.Windows.Controls;
 using System.Windows;
-using System.Globalization;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -26,7 +24,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DateTime _startDate;
         private DateTime _endDate;
         private int _interval;
-        private readonly List<LineAndMarker<MarkerPointsGraph>> series;
+        private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
 
 
         public ReportGraph(SettingsTray settings, string configName)
@@ -38,7 +36,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
-            series = new List<LineAndMarker<MarkerPointsGraph>>();
+            _series = new List<LineAndMarker<MarkerPointsGraph>>();
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
 
@@ -67,7 +65,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             var intersection = configuation.Intersection;
 
             //Clear anything that's already on the graph
-            foreach (var graph in series)
+            foreach (var graph in _series)
             {
                 Plotter.Children.Remove(graph.LineGraph);
                 Plotter.Children.Remove(graph.MarkerGraph);
@@ -76,7 +74,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             ToggleContainer.Children.Clear();
             
             //Clear the series
-            series.Clear();
+            _series.Clear();
 
             // List dates
             var dateList = new List<DateTime>();
@@ -121,15 +119,17 @@ namespace ATTrafficAnalayzer.Views.Screens
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
                 //Add the series to the graph
-               series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
+               _series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name)));
                 brushCounter++;
 
                 //Add toggle checkboxes
-                var checkbox = new CheckBox();
-                checkbox.Content = new Label() { Content = approach.Name, Margin = new Thickness(0,-5,0,0) };
-                checkbox.IsChecked = true;
+                var checkbox = new CheckBox
+                {
+                    Content = new Label {Content = approach.Name, Margin = new Thickness(0, -5, 0, 0)},
+                    IsChecked = true
+                };
                 checkbox.Checked += checkbox_Checked;
                 checkbox.Unchecked += checkbox_Checked;
                 ToggleContainer.Children.Add(checkbox);
@@ -154,13 +154,13 @@ namespace ATTrafficAnalayzer.Views.Screens
             //See if it's checked
             if (checkbox.IsChecked.Value)
             {
-                Plotter.Children.Add(series[index].LineGraph);
-                Plotter.Children.Add(series[index].MarkerGraph);
+                Plotter.Children.Add(_series[index].LineGraph);
+                Plotter.Children.Add(_series[index].MarkerGraph);
             }
             else          
             {
-                Plotter.Children.Remove(series[index].LineGraph);
-                Plotter.Children.Remove(series[index].MarkerGraph);
+                Plotter.Children.Remove(_series[index].LineGraph);
+                Plotter.Children.Remove(_series[index].MarkerGraph);
             }
         }
 

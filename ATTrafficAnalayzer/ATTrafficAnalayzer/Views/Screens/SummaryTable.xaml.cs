@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing.Text;
 using System.Windows;
 using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
@@ -15,7 +14,6 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class SummaryTable : IView
     {
-        private readonly SettingsTray _settings;
         private readonly DateTime _startDate;
         private readonly DateTime _endDate;
         private int _amPeakHour = 8;
@@ -27,7 +25,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         public SummaryTable(SettingsTray settings, string configName)
         {
             _summaryConfig = _dbHelper.GetSummaryConfig(configName);
-            _settings = settings;
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
             _screenTitle = configName;
@@ -46,7 +43,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;

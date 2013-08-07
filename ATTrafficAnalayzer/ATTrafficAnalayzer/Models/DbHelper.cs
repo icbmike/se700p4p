@@ -5,13 +5,10 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Media;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Screens;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
@@ -90,7 +87,7 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>An Integer containing the number of rows updated.</returns>
         private static int ExecuteNonQuery(string sql)
         {
-            var rowsUpdated = 0;
+            int rowsUpdated;
 
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
@@ -218,11 +215,9 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>A boolean true or false to signify success or failure.</returns>
         private static bool ClearDb()
         {
-            DataTable tables;
-
             try
             {
-                tables = GetDataTable("select NAME from SQLITE_MASTER where type='table' order by NAME;");
+                var tables = GetDataTable("select NAME from SQLITE_MASTER where type='table' order by NAME;");
                 foreach (DataRow table in tables.Rows)
                 {
                     ClearTable(table["NAME"].ToString());
@@ -404,11 +399,7 @@ namespace ATTrafficAnalayzer.Models
                                                 alreadyLoaded = true;
                                                 break;
                                             }
-                                            else
-                                            {
-
-                                                continuing = true;
-                                            }
+                                            continuing = true;
                                         }
                                     }
                                 }
@@ -576,7 +567,7 @@ namespace ATTrafficAnalayzer.Models
                                     "WHERE (datetime BETWEEN @startDate AND @endDate);";
                 query.Parameters.AddWithValue("@startDate", startDate);
                 query.Parameters.AddWithValue("@endDate", endDate);
-                var reader = query.ExecuteReader();;
+                var reader = query.ExecuteReader();
                 result = reader.HasRows;
             }
             conn.Close();
@@ -664,7 +655,7 @@ namespace ATTrafficAnalayzer.Models
             return null;
         }
 
-        public void addConfiguration(Report config)
+        public void AddConfiguration(Report config)
         {
             var configJson = config.ToJson();
             var conn = new SQLiteConnection(DbPath);
@@ -713,7 +704,7 @@ namespace ATTrafficAnalayzer.Models
             {
                 dbConnection.Open();
 
-                var configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
+                const string configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
                 var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql };
 
                 configExistsQuery.Parameters.AddWithValue("@configName", configName);

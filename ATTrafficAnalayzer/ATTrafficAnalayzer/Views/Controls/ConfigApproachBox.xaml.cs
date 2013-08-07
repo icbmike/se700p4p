@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     public partial class ConfigApproachBox : Border, INotifyPropertyChanged
     {
         private ObservableCollection<int> _detectors;
-        private WrapPanel _container;
+        private readonly WrapPanel _container;
         private string _approachName;
 
         public string ApproachName
@@ -54,7 +54,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
 
         }
-        public ConfigApproachBox(WrapPanel container, List<int> detectors, String name) : this(container, detectors)
+        public ConfigApproachBox(WrapPanel container, IEnumerable<int> detectors, String name) : this(container, detectors)
         {
             ApproachName = name;
         }

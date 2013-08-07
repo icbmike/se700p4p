@@ -12,8 +12,8 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly string _outputFilename;
         private readonly SettingsTray _settings;
-        private DbHelper _dbHelper;
-        private Report _configuration;
+        private readonly DbHelper _dbHelper;
+        private readonly Report _configuration;
 
         public CSVExporter(String outputFilename, SettingsTray settings, string configName)
         {

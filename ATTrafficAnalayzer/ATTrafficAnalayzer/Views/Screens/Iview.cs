@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using ATTrafficAnalayzer.Views.Controls;
+﻿using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {

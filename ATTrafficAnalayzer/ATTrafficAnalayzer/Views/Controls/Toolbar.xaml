@@ -89,7 +89,7 @@
                         Padding="6, 3"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        SelectedDateChanged="DateOrInverval_SelectionChanged"
+                        SelectedDateChanged="DateAndInterval_SelectionChanged"
                         SelectedDateFormat="Long" />
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
@@ -107,7 +107,7 @@
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        SelectedDateChanged="DateOrInverval_SelectionChanged"
+                        SelectedDateChanged="DateAndInterval_SelectionChanged"
                         SelectedDateFormat="Long" />
 
             <!--Report config-->
@@ -128,7 +128,7 @@
                       FontSize="14"
                       HorizontalContentAlignment="Center"
                       VerticalContentAlignment="Center"
-                      SelectionChanged="DateOrInverval_SelectionChanged">
+                      SelectionChanged="DateAndInterval_SelectionChanged">
                 <ComboBoxItem>5 min</ComboBoxItem>
                 <ComboBoxItem>15 min</ComboBoxItem>
                 <ComboBoxItem>30 min</ComboBoxItem>
@@ -151,7 +151,7 @@
                       FontSize="14"
                       HorizontalContentAlignment="Center"
                       VerticalContentAlignment="Center"
-                      SelectionChanged="SummaryPeakComboBox_SelectionChanged">
+                      SelectionChanged="SummaryControls_SelectionChanged">
                 <ComboBoxItem>Midnight</ComboBoxItem>
                 <ComboBoxItem>1 AM</ComboBoxItem>
                 <ComboBoxItem>2 AM</ComboBoxItem>
@@ -180,7 +180,7 @@
                       Padding="6, 0"
                       HorizontalContentAlignment="Center"
                       VerticalContentAlignment="Center"
-                      SelectionChanged="SummaryPeakComboBox_SelectionChanged">
+                      SelectionChanged="SummaryControls_SelectionChanged">
                 <ComboBoxItem>Midday</ComboBoxItem>
                 <ComboBoxItem>1 PM</ComboBoxItem>
                 <ComboBoxItem>2 PM</ComboBoxItem>

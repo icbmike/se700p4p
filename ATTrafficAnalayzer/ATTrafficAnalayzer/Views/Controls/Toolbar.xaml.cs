@@ -1,5 +1,4 @@
-﻿using ATTrafficAnalayzer.Models.Configuration;
-using ATTrafficAnalayzer.Models.Settings;
+﻿using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,8 +14,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public enum View { Table, Graph }
         private static View _view = View.Table;
-        private static Mode _mode = Mode.Dashboard;
-
+        private static Mode _mode = Mode.Home;
 
         public Toolbar()
         {
@@ -28,7 +26,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             ModeChanged += SwitchToolbar;
         }
 
-        #region Mode/view switching events
+        #region Mode/View Switching Events Handlers
 
         public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
         public event ModeChangedEventHandler ModeChanged;
@@ -57,7 +55,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void SwitchMode(object sender, RoutedEventArgs e)
         {
             if (sender.Equals(HomeButton))
-                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Dashboard));
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Home));
             else if (sender.Equals(RegularReportsButton))
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Report));
             else if (sender.Equals(MonthlySummaryButton))
@@ -77,7 +75,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void SwitchToolbar(object sender, ModeChangedEventHandlerArgs e)
         {
             // Date pickers
-            var isHomeMode = e.Mode.Equals(Mode.Dashboard);
+            var isHomeMode = e.Mode.Equals(Mode.Home);
             StartDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
             StartDatePicker.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
             EndDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
@@ -100,13 +98,11 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #endregion
 
-        #region View parameter events
+        #region Toolbar Event Handlers
 
         public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
         public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
         public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
-
-        private Boolean _startModifyingEnd;
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
@@ -118,6 +114,14 @@ namespace ATTrafficAnalayzer.Views.Controls
             public int PmPeakHour { get; set; }
             public int Interval { get; set; }
 
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int amPeakHour, int pmPeakHour)
+            {
+                StartDate = startDate;
+                EndDate = endDate;
+                AmPeakHour = amPeakHour;
+                PmPeakHour = pmPeakHour;
+            }
+            
             public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
             {
                 StartDate = startDate;
@@ -130,17 +134,11 @@ namespace ATTrafficAnalayzer.Views.Controls
                 StartDate = startDate;
                 EndDate = endDate;
             }
-
-            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int amPeakHour, int pmPeakHour)
-            {
-                StartDate = startDate;
-                EndDate = endDate;
-                AmPeakHour = amPeakHour;
-                PmPeakHour = pmPeakHour;
-            }
         }
 
-        private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private Boolean _startModifyingEnd;
+
+        private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender.Equals(StartDatePicker))
             {
@@ -166,6 +164,17 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
+        private void SummaryControls_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DateRangeChanged != null)
+            {
+                DateRangeChanged(this,
+                    new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value,
+                        EndDatePicker.SelectedDate.Value, SummaryAmPeakComboBox.SelectedIndex,
+                        SummaryPmPeakComboBox.SelectedIndex));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -180,17 +189,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void SummaryPeakComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DateRangeChanged != null)
-            {
-                DateRangeChanged(this,
-                    new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value,
-                        EndDatePicker.SelectedDate.Value, SummaryAmPeakComboBox.SelectedIndex,
-                        SummaryPmPeakComboBox.SelectedIndex));
             }
         }
     }

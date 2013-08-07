@@ -28,7 +28,7 @@
                           FontSize="16"
                           Foreground="White">
                     <MenuItem Name="FileImportMenuItem"
-                              Click="fileImportMenuItem_Click"
+                              Click="FileImportMenuItem_Click"
                               Foreground="Black"
                               Header="_Import data">
                         <MenuItem.Icon>

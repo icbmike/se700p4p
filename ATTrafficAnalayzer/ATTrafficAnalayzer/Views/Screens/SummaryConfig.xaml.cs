@@ -12,7 +12,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class SummaryConfig : IConfigScreen
     {
         private readonly DbHelper _dbHelper;
-        private bool _isNewConfig = true;
+        private const bool IsNewConfig = true;
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
 
@@ -59,7 +59,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_isNewConfig)
+            if (IsNewConfig)
             {
                 var configTextBox = (TextBox)sender;
 

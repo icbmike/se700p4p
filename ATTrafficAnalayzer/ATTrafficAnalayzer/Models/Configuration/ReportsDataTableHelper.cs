@@ -29,8 +29,8 @@ namespace ATTrafficAnalayzer.Models.Configuration
         private SQLiteDataAdapter _regularReportsDataAdapter;
         private SQLiteDataAdapter _monthlySummaryDataAdapter;
 
-        private DataTable _regularReportsDataTable = new DataTable();
-        private DataTable _monthlySummaryDataTable = new DataTable();
+        private readonly DataTable _regularReportsDataTable = new DataTable();
+        private readonly DataTable _monthlySummaryDataTable = new DataTable();
 
         private void CreateConfigDataSet()
         {

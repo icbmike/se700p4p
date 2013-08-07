@@ -8,9 +8,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 {
     public class SummaryRow
     {
-
-        private bool _isValid;
-
         public SummaryRow()
         {
             DetectorsIn = new List<int>();
@@ -31,13 +28,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public ObservableCollection<int> Intersections
         {
-            get
-            {
-                if (_intersections == null)
-                {
-                    _intersections = new ObservableCollection<int>(DbHelper.GetIntersections());
-                }
-                return _intersections;
+            get {
+                return _intersections ?? (_intersections = new ObservableCollection<int>(DbHelper.GetIntersections()));
             }
         }
 

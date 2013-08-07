@@ -24,8 +24,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private readonly DbHelper _dbHelper;
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
-        private bool isNewConfig = true;
-        private string oldName;
+        private readonly bool _isNewConfig = true;
+        private readonly string _oldName;
 
         public int SelectedIntersection
         {
@@ -81,8 +81,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             SelectedIntersection = config.Intersection;
-            isNewConfig = false;
-            oldName = configToBeEdited;
+            _isNewConfig = false;
+            _oldName = configToBeEdited;
             ConfigNameTextBox.Text = configToBeEdited;
         }
 
@@ -184,10 +184,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (!isNewConfig)
+            if (!_isNewConfig)
             {
                 //Delete the previous config before inserting the new one
-                _reportsDataTableHelper.RemoveConfig(oldName, Mode.Report);
+                _reportsDataTableHelper.RemoveConfig(_oldName, Mode.Report);
             }
 
             var configName = ConfigNameTextBox.Text;
@@ -200,7 +200,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
-            _dbHelper.addConfiguration(new Report(configName, SelectedIntersection, approaches));
+            _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
 
@@ -209,7 +209,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if (isNewConfig)
+            if (_isNewConfig)
             {
                 var configTextBox = (TextBox)sender;
 

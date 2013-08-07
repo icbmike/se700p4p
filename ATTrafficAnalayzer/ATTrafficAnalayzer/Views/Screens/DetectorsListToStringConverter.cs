@@ -38,7 +38,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             //What the model sees
             var str = value as String;
-            return str.Split(new[] { ", " }, StringSplitOptions.None).Select(s => int.Parse(s)).ToList();
+            return str.Split(new[] { ", " }, StringSplitOptions.None).Select(int.Parse).ToList();
         }
 
     }
