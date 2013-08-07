@@ -38,6 +38,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             Graph,
             Table,
             Faults,
+            Summary,
             Home
         }
 
@@ -67,6 +68,10 @@ namespace ATTrafficAnalayzer.Views.Controls
             else if (sender.Equals(HomeButton))
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
+            }
+            else if (sender.Equals(SummaryButton))
+            {
+                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Summary));
             }
             else
             {

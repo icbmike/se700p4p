@@ -115,6 +115,9 @@
     <Compile Include="Views\Screens\Graph.xaml.cs">
       <DependentUpon>Graph.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Screens\Summary.xaml.cs">
+      <DependentUpon>Summary.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Screens\Table.xaml.cs">
       <DependentUpon>Table.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Screens\Graph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Screens\Summary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -108,6 +108,11 @@ namespace ATTrafficAnalayzer.Views
                     ChangeScreen(faultsScreen);
 
                 }
+                else if (args.Button.Equals(Toolbar.ScreenButton.Summary))
+                {
+                    var summaryScreen = new Summary();
+                    ChangeScreen(summaryScreen);
+                }
                 else
                 {
                     //Get selected Config
