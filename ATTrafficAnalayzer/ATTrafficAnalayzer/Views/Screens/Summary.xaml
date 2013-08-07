@@ -9,12 +9,10 @@
 
     <ScrollViewer HorizontalContentAlignment="Stretch">
         <StackPanel Margin="10">
-            <Label Name="ScreenTitle"
-                   FontSize="28"
+            <Label FontSize="28"
                    Margin="20,0"
-                   x:FieldModifier="private"
                    FontWeight="Bold"
-                   Content="Hello"/>
+                   Content="Traffic Volume Summary" />
             <TextBlock Name="OverallSummaryTextBlock"
                        Visibility="Visible"
                        Background="Aquamarine"
