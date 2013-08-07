@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Data;
 using System.Windows;
-using System.Windows.Controls;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for ReportList.xaml
+    /// Interaction logic for ReportBrowser.xaml
     /// </summary>
-    public partial class ReportList : UserControl
+    public partial class ReportBrowser
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
 
-        public ReportList()
+        public ReportBrowser()
         {
             InitializeComponent();            
             DataContext = this;
@@ -36,13 +35,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
             public EditConfigurationEventHandlerArgs()
             {
-                this.New = true;
+                New = true;
                 ConfigToBeEdited = null;
             }
 
             public EditConfigurationEventHandlerArgs(string configToBeEdited)
             {
-                this.New = false;
+                New = false;
                 ConfigToBeEdited = configToBeEdited;
             }
         }
@@ -67,13 +66,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs());
         }
 
-        private void renameBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var item = StandardReportsTreeView.SelectedItem.ToString();
-            Console.WriteLine("Rename: {0}", item);
-        }
-
-        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        private void removeBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
             var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
@@ -120,7 +113,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
 
-        public void ConfigurationSavedEventHandler(object sender, ReportConfigurationScreen.ConfigurationSavedEventArgs args)
+        public void ConfigurationSavedEventHandler(object sender, Config.ConfigurationSavedEventArgs args)
         {
             
             StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetConfigDataView();
@@ -130,6 +123,25 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void exportBtn_Click(object sender, RoutedEventArgs e)
         {
             ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
+        }
+
+        public delegate void SelectedReportChangeEventHandler(object sender, SelectedReporChangeEventHandlerArgs args);
+        public event SelectedReportChangeEventHandler ReportChanged;
+
+        public class SelectedReporChangeEventHandlerArgs
+        {
+            public string ReportName { get; set; }
+
+            public SelectedReporChangeEventHandlerArgs(string reportName)
+            {
+                ReportName = reportName;
+            }
+        }
+
+        private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (ReportChanged != null)
+                ReportChanged(this, new SelectedReporChangeEventHandlerArgs(GetSelectedConfiguration()));
         }
     }
 }

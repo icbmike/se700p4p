@@ -10,9 +10,9 @@ using System.Collections.ObjectModel;
 namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for ApproachControl.xaml
+    /// Interaction logic for ConfigApproachBox.xaml
     /// </summary>
-    public partial class ApproachControl : Border, INotifyPropertyChanged
+    public partial class ConfigApproachBox : Border, INotifyPropertyChanged
     {
         private ObservableCollection<int> _detectors;
         private WrapPanel _container;
@@ -23,7 +23,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             get { return _approachName; }
             set { 
                 _approachName = value;
-                if (null != this.PropertyChanged)
+                if (null != PropertyChanged)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("ApproachName"));
                 }
@@ -36,7 +36,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             set { _detectors = value; }
         }
 
-        public ApproachControl(WrapPanel container, IEnumerable<int> detectors)
+        public ConfigApproachBox(WrapPanel container, IEnumerable<int> detectors)
         {
             DataContext = this;
             _container = container;
@@ -54,7 +54,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
 
         }
-        public ApproachControl(WrapPanel container, List<int> detectors, String name) : this(container, detectors)
+        public ConfigApproachBox(WrapPanel container, List<int> detectors, String name) : this(container, detectors)
         {
             ApproachName = name;
         }
@@ -108,7 +108,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             
             var sortedDetectors = Detectors.OrderBy(x => x).ToList();
             Detectors.Clear();
-            foreach (int i in sortedDetectors)
+            foreach (var i in sortedDetectors)
             {
                 Detectors.Add(i);
             }
@@ -117,7 +117,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 if (e.Data.GetDataPresent("approach"))
                 {
-                    _container.Children.Remove(e.Data.GetData("approach") as ApproachControl);
+                    _container.Children.Remove(e.Data.GetData("approach") as ConfigApproachBox);
                 }
             }
 

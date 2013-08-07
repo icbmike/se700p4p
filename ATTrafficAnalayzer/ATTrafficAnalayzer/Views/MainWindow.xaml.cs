@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
@@ -18,15 +17,15 @@ namespace ATTrafficAnalayzer.Views
         public MainWindow()
         {
             Logger.Clear();
-            
+
             DataContext = this;
 
             InitializeComponent();
-            var welcomeScreen = new WelcomeScreen(fileImportMenuItem_Click);
+            var welcomeScreen = new Home(fileImportMenuItem_Click);
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
-
+        
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
 
@@ -37,10 +36,9 @@ namespace ATTrafficAnalayzer.Views
             const MessageBoxButton button = MessageBoxButton.YesNo;
             const MessageBoxImage icon = MessageBoxImage.Question;
 
-            MessageBoxResult result;
             while (true)
             {
-                result = MessageBox.Show(messageBoxText, caption, button, icon);
+                var result = MessageBox.Show(messageBoxText, caption, button, icon);
                 messageBoxText = "Would you like to import another file?";
 
                 if (result.Equals(MessageBoxResult.Yes))
@@ -72,34 +70,30 @@ namespace ATTrafficAnalayzer.Views
                 };
 
             // Show open file dialog box 
-            Nullable<bool> result = dlg.ShowDialog();
+            var result = dlg.ShowDialog();
 
-            
+
             // Process open file dialog box results 
             if (result == true)
             {
                 var settings = new ProgressDialogSettings(true, false, false);
 
-                var res = ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
-                    {
-                    
+                ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
+                {
+
                     // Open document 
                     var filename = dlg.FileName;
-                    DbHelper.ImportFile(b, w, filename, (progress) => {
-                        ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File");
-                    });
+                    DbHelper.ImportFile(b, w, filename, progress => ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"));
 
                     b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
-                    }, settings);
-               
+                }, settings);
             }
-            
         }
 
         private void ChangeScreen(UserControl screen)
         {
-                MainContentControl.Content = screen;
+            MainContentControl.Content = screen;
         }
 
         private void SwitchScreen(object sender, Toolbar.ScreenChangeEventHandlerArgs args)
@@ -107,30 +101,36 @@ namespace ATTrafficAnalayzer.Views
             if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
             {
 
-                if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Faults))
+                if (args.Button.Equals(Toolbar.ScreenButton.Faults))
                 {
-                    var faultsScreen = new VsFaultsReport(SettingsToolbar.SettingsTray);
+                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
 
                 }
                 else
                 {
-                    //Get selected Configuration
+                    //Get selected Config
                     var selectedItem = ReportList.GetSelectedConfiguration();
                     if (selectedItem != null)
                     {
-                        if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Graph))
+                        if (args.Button.Equals(Toolbar.ScreenButton.Graph))
                         {
-                            var graphScreen = new VsGraph(SettingsToolbar.SettingsTray, selectedItem);
+                            var graphScreen = new Graph(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
+                            ReportList.ReportChanged += graphScreen.ReportChangedHandler;
                             ChangeScreen(graphScreen);
                         }
-                        else if (args.button.Equals(Toolbar.ScreenChangeEventHandlerArgs.ScreenButton.Table))
+                        else if (args.Button.Equals(Toolbar.ScreenButton.Table))
                         {
-                            var tableScreen = new VsTable(SettingsToolbar.SettingsTray, selectedItem);
+                            var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                            ReportList.ReportChanged += tableScreen.ReportChangedHandler;
                             ChangeScreen(tableScreen);
+                        }
+                        else if (args.Button.Equals(Toolbar.ScreenButton.Home))
+                        {
+                            ChangeScreen(new Home(fileImportMenuItem_Click));
                         }
                     }
                     else
@@ -138,8 +138,8 @@ namespace ATTrafficAnalayzer.Views
                         MessageBox.Show("Select a report from the list on the left");
                     }
                 }
-                
-                
+
+
             }
             else
             {
@@ -147,12 +147,7 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
-        private void HomeImageMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            ChangeScreen(new WelcomeScreen(fileImportMenuItem_Click));
-        }
-
-        private void FileQuitMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void FileExitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
@@ -169,16 +164,18 @@ namespace ATTrafficAnalayzer.Views
             MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
-        private void ReportList_OnEditConfigurationEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+        private void ReportList_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
-            
+
             if (args.New)
             {
-                
+
                 if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                 {
-                    var reportConfigurationScreen = new ReportConfigurationScreen();
+                    var reportConfigurationScreen = new Config();
                     reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                    reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+
                     ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                     ChangeScreen(reportConfigurationScreen);
                 }
@@ -191,7 +188,14 @@ namespace ATTrafficAnalayzer.Views
             {
                 throw new NotImplementedException();
             }
-        
+
+        }
+
+        void reportConfigurationScreen_ConfigurationSaved(object sender, Config.ConfigurationSavedEventArgs args)
+        {
+            var tableScreen = new Table(SettingsToolbar.SettingsTray, args.Name);
+            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+            ChangeScreen(tableScreen);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -199,11 +203,11 @@ namespace ATTrafficAnalayzer.Views
             if (DbHelper.VolumesTableEmpty())
                 BulkImport();
         }
-        
-        private void ReportList_OnExportEvent(object sender, ReportList.EditConfigurationEventHandlerArgs args)
+
+        private void ReportList_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
-            
-            var dlg = new SaveFileDialog()
+
+            var dlg = new SaveFileDialog
             {
                 FileName = "",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -214,10 +218,10 @@ namespace ATTrafficAnalayzer.Views
             if (dlg.ShowDialog() == true)
             {
                 var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited);
-                csvExporter.DoExport();    
-            }          
-             
+                csvExporter.DoExport();
+            }
+
         }
-         
+
     }
 }

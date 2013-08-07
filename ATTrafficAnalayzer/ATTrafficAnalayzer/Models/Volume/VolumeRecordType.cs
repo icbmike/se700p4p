@@ -1,6 +1,6 @@
 ﻿namespace ATTrafficAnalayzer.Models.Volume
 {
-    public enum RecordType
+    public enum VolumeRecordType
     {
         Comment,
         Datetime,

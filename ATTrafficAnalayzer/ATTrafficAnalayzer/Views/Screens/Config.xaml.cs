@@ -12,9 +12,9 @@ using ATTrafficAnalayzer.Views.Controls;
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
-    /// Interaction logic for ReportConfigurationScreen.xaml
+    /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class ReportConfigurationScreen
+    public partial class Config
     {
         private ObservableCollection<int> _detectorList;
         private ObservableCollection<int> _intersectionList;
@@ -58,7 +58,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             set { _detectorList = value; }
         }
 
-        public ReportConfigurationScreen()
+        public Config()
         {
             DataContext = this;
             _intersectionList = new ObservableCollection<int>();
@@ -118,7 +118,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
             }
 
-            var approach = new ApproachControl(Approaches, items) { Margin = new Thickness(20, 20, 0, 0) };
+            var approach = new ConfigApproachBox(Approaches, items) { Margin = new Thickness(20, 20, 0, 0) };
 
             Approaches.Children.Add(approach);
 
@@ -128,7 +128,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 if (e.Data.GetDataPresent("approach"))
                 {
-                    Approaches.Children.Remove(e.Data.GetData("approach") as ApproachControl);
+                    Approaches.Children.Remove(e.Data.GetData("approach") as ConfigApproachBox);
                 }
             }
 
@@ -143,7 +143,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var detector in _detectorList)
             {
-                var newApproach = new ApproachControl(Approaches, null, string.Format("Group {0}", detector)) { Margin = new Thickness(20, 20, 0, 0) };
+                var newApproach = new ConfigApproachBox(Approaches, null, string.Format("Group {0}", detector)) { Margin = new Thickness(20, 20, 0, 0) };
                 newApproach.AddDetector(detector);
                 Approaches.Children.Add(newApproach);
             }
@@ -155,7 +155,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 Approaches.Children.RemoveAt(1);
             }
-            var newApproach = new ApproachControl(Approaches, null, "All Detectors") { Margin = new Thickness(20, 20, 0, 0) };
+            var newApproach = new ConfigApproachBox(Approaches, null, "All Detectors") { Margin = new Thickness(20, 20, 0, 0) };
             Approaches.Children.Add(newApproach);
             foreach (var detector in _detectorList)
             {
@@ -170,21 +170,21 @@ namespace ATTrafficAnalayzer.Views.Screens
             var approaches = new List<Approach>();
             for (var i = 1; i < Approaches.Children.Count; i++)
             {
-                var appCtrl = Approaches.Children[i] as ApproachControl;
+                var appCtrl = Approaches.Children[i] as ConfigApproachBox;
                 Debug.Assert(appCtrl != null, "appCtrl != null");
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
-            _dbHelper.addConfiguration(new ReportConfiguration(configName, _selectedIntersection, approaches));
+            _dbHelper.addConfiguration(new Report(configName, _selectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
-            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName)); 
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
             var configTextBox = (TextBox) sender;
 
-            for (var count=1; ; count++)
+            for (var count=1; ; count++)                             
             {
                 if (!_dbHelper.ConfigExists("Report " + count))
                 {

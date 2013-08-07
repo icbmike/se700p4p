@@ -5,10 +5,9 @@
         mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Height="800"
-        xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
+        Height="1200"
         xmlns:controls="clr-namespace:ATTrafficAnalayzer.Views.Controls"
-        Width="1000"
+        Width="1920"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         Icon="..\Resources\Images\at-logo.png"
@@ -19,7 +18,7 @@
         <Canvas DockPanel.Dock="Top"
                 Height="100">
             <Canvas.Background>
-                <ImageBrush ImageSource="..\Resources/Images/at-banner.png" />
+                <ImageBrush ImageSource="/Resources/Images/at-banner.png" />
             </Canvas.Background>
 
             <Menu Canvas.Top="20"
@@ -29,35 +28,82 @@
                           FontSize="16"
                           Foreground="White">
                     <MenuItem Name="FileImportMenuItem"
-                              Header="_Import"
                               Click="fileImportMenuItem_Click"
-                              Foreground="Black" />
+                              Foreground="Black"
+                              Header="_Import data">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_418_disk_import.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator />
-                    <MenuItem Name="FileQuitMenuItem"
-                              Header="_Quit"
-                              Click="FileQuitMenuItem_OnClick"
-                              Foreground="Black" />
+                    <MenuItem Name="FileExitMenuItem"
+                              Header="_Exit"
+                              Click="FileExitMenuItem_OnClick"
+                              Foreground="Black">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_388_exit.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Report"
+                          FontSize="16"
+                          Foreground="White">
+                    <MenuItem Name="ReportNewMenuItem"
+                              Foreground="Black"
+                              Header="_New report">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_036_file.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Name="ReportEditMenuItem"
+                              Header="_Edit report"
+                              Foreground="Black">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Name="ReportRemoveMenuItem"
+                              Header="_Remove report"
+                              Foreground="Black">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Name="ReportImportMenuItem"
+                              Foreground="Black"
+                              Header="_Import report">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_358_file_import.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Name="ReportExportMenuItem"
+                              Foreground="Black"
+                              Header="_Export report">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Help"
                           FontSize="16"
                           Foreground="White">
                     <MenuItem Name="HelpAboutUsMenuItem"
-                              Header="_About Us"
+                              Header="_About Traffic Reporter"
                               Click="HelpAboutUsMenuItem_OnClick"
                               Foreground="Black" />
                 </MenuItem>
             </Menu>
 
-            <controls:Toolbar Canvas.Top="60"
-                          Canvas.Left="20"
-                          x:Name="SettingsToolbar"
-                          ScreenChanged="SwitchScreen"/>
+            <controls:Toolbar Canvas.Top="55"
+                              Canvas.Left="20"
+                              x:Name="SettingsToolbar"
+                              ScreenChanged="SwitchScreen" />
         </Canvas>
 
-        <controls:ReportList x:Name="ReportList"
+        <controls:ReportBrowser x:Name="ReportList"
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
-                             ExportEvent="ReportList_OnExportEvent" 
-                             />
+                             ExportEvent="ReportList_OnExportEvent" />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="MainContentControl"

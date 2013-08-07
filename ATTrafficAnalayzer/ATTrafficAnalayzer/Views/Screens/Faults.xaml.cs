@@ -1,38 +1,27 @@
 ﻿using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
-    /// Interaction logic for VsFaultsReport.xaml
+    /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class VsFaultsReport : UserControl
+    public partial class Faults
     {
         private DbHelper dbHelper;
         private DateTime endDate;
         private DateTime startDate;
 
-        public VsFaultsReport(SettingsTray settings)
+        public Faults(SettingsTray settings)
         {
-            this.startDate = settings.StartDate;
-            this.endDate = settings.EndDate;
+            startDate = settings.StartDate;
+            endDate = settings.EndDate;
 
-            this.dbHelper = DbHelper.GetDbHelper();
+            dbHelper = DbHelper.GetDbHelper();
             InitializeComponent();
             
             FillGrid();
@@ -47,7 +36,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
         }
 
-        internal void DateRangeChangedHandler(object sender, Controls.Toolbar.DateRangeChangedEventHandlerArgs args)
+        internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
             if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate))

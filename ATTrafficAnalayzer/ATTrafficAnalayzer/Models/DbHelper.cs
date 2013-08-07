@@ -328,7 +328,7 @@ namespace ATTrafficAnalayzer.Models
                             //The record size is stored in two bytes, little endian
 
                         index += 2;
-                        int progress = (int)(((float)index / sizeInBytes) * 100);
+                        var progress = (int)(((float)index / sizeInBytes) * 100);
                         updateProgress(progress);
                         
                         
@@ -345,16 +345,16 @@ namespace ATTrafficAnalayzer.Models
                         }
 
                         //Find out what kind of data we have
-                        var recordType = RecordFactory.CheckRecordType(record);
+                        var recordType = VolumeRecordFactory.CheckRecordType(record);
 
                         //Construct the appropriate record type
                         switch (recordType)
                         {
-                            case RecordType.Datetime:
-                                currentDateTime = RecordFactory.CreateDateTimeRecord(record);
+                            case VolumeRecordType.Datetime:
+                                currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
                                 break;
-                            case RecordType.Volume:
-                                var volumeRecord = RecordFactory.CreateVolumeRecord(record, recordSize);
+                            case VolumeRecordType.Volume:
+                                var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
 
                                 foreach (var detector in volumeRecord.GetDetectors())
                                 {
@@ -483,7 +483,7 @@ namespace ATTrafficAnalayzer.Models
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
-            List<int> volumes = new List<int>();
+            var volumes = new List<int>();
 
             using (var query = new SQLiteCommand(conn))
             {
@@ -530,7 +530,7 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
-        #region Configuration Related Methods
+        #region Config Related Methods
 
         public SQLiteDataAdapter GetConfigsDataAdapter()
         {
@@ -538,7 +538,7 @@ namespace ATTrafficAnalayzer.Models
             return GetDataAdapter(getCongifsSql);
         }
 
-        public ReportConfiguration GetConfiguration(string name)
+        public Report GetConfiguration(string name)
         {
             Console.WriteLine(name);
             var conn = new SQLiteConnection(DbPath);
@@ -576,20 +576,20 @@ namespace ATTrafficAnalayzer.Models
                     }
                 }
                 conn.Close();
-                return new ReportConfiguration(name, (int) configJson["intersection"], approaches);
+                return new Report(name, (int) configJson["intersection"], approaches);
             }
             conn.Close();
             return null;
         }
 
-        public void addConfiguration(ReportConfiguration config)
+        public void addConfiguration(Report config)
         {
 
             var configJson = config.ToJson();
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
 
-            foreach (Approach approach in config.Approaches)
+            foreach (var approach in config.Approaches)
             {
                 //INSERT APPROACHES INTO TABLE
                 using (var query = new SQLiteCommand(conn))
@@ -609,7 +609,7 @@ namespace ATTrafficAnalayzer.Models
             }
 
             //INSERT REPORT CONFIGURATION INTO TABLE
-            using (SQLiteCommand query = new SQLiteCommand(conn))
+            using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
                 query.Parameters.AddWithValue("@name", config.ConfigName);

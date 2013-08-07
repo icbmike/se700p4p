@@ -24,7 +24,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
             CreateConfigDataSet();
         }
 
-        #region Configuration Related Methods
+        #region Config Related Methods
 
         private SQLiteDataAdapter _configsDataAdapter;
         private DataTable _configsDataTable = new DataTable();
