@@ -8,9 +8,8 @@
              d:DesignWidth="1720">
 
     <ScrollViewer HorizontalContentAlignment="Stretch">
-        <StackPanel Name="ContainerStackPanel"
-                    Margin="10"
-                    x:FieldModifier="private">
+        <StackPanel
+            Margin="10">
             <Label Name="ScreenTitle"
                    FontSize="28"
                    Margin="20,0"

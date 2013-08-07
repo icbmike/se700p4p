@@ -647,6 +647,8 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
+        #region Miscellaneous
+
         public List<DateTime> GetImportedDates()
         {
             var importedDates = new List<DateTime>();
@@ -669,8 +671,12 @@ namespace ATTrafficAnalayzer.Models
 
         public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate)
         {
-            var sql = "SELECT intersection, group_concat(detector) FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate) GROUP BY intersection";
+            const string sql = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
+                               "FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate)" +
+                               "GROUP BY intersection";
             return GetDataAdapter(sql, new Dictionary<string, object> { {"@startDate" , startDate}, {"@endDate" , endDate}});
         }
+
+        #endregion
     }
 }

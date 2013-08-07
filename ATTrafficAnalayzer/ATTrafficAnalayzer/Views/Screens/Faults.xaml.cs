@@ -2,7 +2,6 @@
 using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Data;
-using System.Windows.Controls;
 using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -12,16 +11,16 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class Faults
     {
-        private DbHelper dbHelper;
-        private DateTime endDate;
-        private DateTime startDate;
+        private readonly DbHelper _dbHelper;
+        private DateTime _endDate;
+        private DateTime _startDate;
 
         public Faults(SettingsTray settings)
         {
-            startDate = settings.StartDate;
-            endDate = settings.EndDate;
+            _startDate = settings.StartDate;
+            _endDate = settings.EndDate;
 
-            dbHelper = DbHelper.GetDbHelper();
+            _dbHelper = DbHelper.GetDbHelper();
             InitializeComponent();
             
             FillGrid();
@@ -30,7 +29,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void FillGrid()
         {
-            var dataAdapter = dbHelper.GetFaultsDataAdapter(startDate, endDate);
+            var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate);
             var dataTable = new DataTable();
             dataAdapter.Fill(dataTable);
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
@@ -39,13 +38,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate))
+            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate))
             {
                 //InitializeGraph() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                startDate = args.startDate;
-                endDate = args.endDate;
+                _startDate = args.startDate;
+                _endDate = args.endDate;
 
                 FillGrid();
             }

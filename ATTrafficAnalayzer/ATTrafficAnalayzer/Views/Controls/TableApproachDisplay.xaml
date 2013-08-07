@@ -6,7 +6,9 @@
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="1680">
+    
     <StackPanel>
+        
         <TextBlock x:Name="ApproachSummary"
                    Visibility="Visible"
                    Margin="20,15,20,5"
@@ -16,6 +18,7 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}" />
             </TextBlock.Background>
         </TextBlock>
+        
         <DataGrid Name="ApproachDataGrid"
                   Margin="20,5,20,10"
                   IsReadOnly="True"
@@ -31,5 +34,6 @@
                   AreRowDetailsFrozen="True"
                   RowHeaderWidth="0"
                   ColumnWidth="*" />
+        
     </StackPanel>
 </UserControl>

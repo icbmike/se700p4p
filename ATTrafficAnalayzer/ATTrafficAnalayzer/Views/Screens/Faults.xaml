@@ -6,22 +6,33 @@
              mc:Ignorable="d"
              d:DesignHeight="1100"
              d:DesignWidth="1720">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
 
-        <Label Grid.Column="0"
-               Grid.Row="0"
-               FontSize="23"
-               FontWeight="Bold"
-               Content="Suspected Faulty Loops" />
+    <ScrollViewer HorizontalContentAlignment="Stretch">
+        <StackPanel Margin="20">
 
-        <DataGrid AutoGenerateColumns="True"
-                  Grid.Column="0"
-                  Grid.Row="1"
-                  Name="FaultsDataGrid" />
+            <Label FontSize="28"
+                   Margin="20,0"
+                   FontWeight="Bold"
+                   Content="Faulty Detectors" />
 
-    </Grid>
+            <DataGrid AutoGenerateColumns="True"
+                      Name="FaultsDataGrid"
+                      IsReadOnly="True"
+                      FrozenColumnCount="1"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="False"
+                      ScrollViewer.CanContentScroll="False"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Disabled"
+                      FontSize="11"
+                      HorizontalContentAlignment="Stretch"
+                      AreRowDetailsFrozen="True"
+                      RowHeaderWidth="0"
+                      VerticalAlignment="Top"
+                      ColumnWidth="Auto"
+                      Margin="20"/>
+
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
