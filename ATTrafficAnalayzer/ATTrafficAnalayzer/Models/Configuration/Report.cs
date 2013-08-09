@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models.Configuration
@@ -24,5 +25,14 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
             return json;
         }
+
+        public DataTable GetSummaryTable()
+        {
+            var dataTable = new DataTable();
+
+            return dataTable;
+
+        }
+
     }
 }
