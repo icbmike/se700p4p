@@ -9,7 +9,7 @@
 
     <ScrollViewer HorizontalContentAlignment="Stretch">
         <StackPanel Margin="10">
-            
+
             <Label FontSize="28"
                    Margin="20,0"
                    FontWeight="Bold"
@@ -18,8 +18,19 @@
                    Margin="20,0"
                    Name="DateLabel" />
 
-            <StackPanel Name="ApproachesStackPanel"
-                        Margin="20,15,20,10" />
+            <DataGrid Name="SummaryDataGrid"
+                      Margin="25"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="True"
+                      ScrollViewer.CanContentScroll="False"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Disabled"
+                      FontSize="12"
+                      HorizontalContentAlignment="Stretch"
+                      AreRowDetailsFrozen="False"
+                      RowHeaderWidth="0"
+                      ColumnWidth="*" />
 
         </StackPanel>
     </ScrollViewer>

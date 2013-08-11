@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -60,29 +57,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void FillSummary()
         {
-            ApproachesStackPanel.Children.Clear();
-
             ScreenTitle.Content = _configuration.ConfigName;
-            DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(), _endDate.Date.ToShortDateString());
+            DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
+                _endDate.Date.ToShortDateString());
 
-            ApproachesStackPanel.Children.Add(CreateApproachSummary());
-        }
-
-        private DataGrid CreateApproachSummary()
-        {
-            return new DataGrid
-            {
-                Margin = new Thickness(5),
-                CanUserReorderColumns = false,
-                CanUserSortColumns = true,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                FontSize = 11,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                AreRowDetailsFrozen = false,
-                RowHeaderWidth = 0,
-                ItemsSource = _configuration.GetSummaryTable().AsDataView()
-            };
+            SummaryDataGrid.ItemsSource = _configuration.GetSummaryTable().AsDataView();
         }
     }
 }
