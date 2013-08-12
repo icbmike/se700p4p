@@ -60,9 +60,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Screen refreshing
 
-        private ScreenButton currentScreen = ScreenButton.Home;
-        private Mode currentMode = Mode.RegularReports;
-
         public enum ScreenButton
         {
             Graph,

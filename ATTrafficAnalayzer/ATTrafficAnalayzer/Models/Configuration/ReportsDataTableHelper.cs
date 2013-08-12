@@ -28,7 +28,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         #region Config Related Methods
 
         private DbDataAdapter _regularReportsDataAdapter;
-        private SQLiteDataAdapter _monthlySummaryDataAdapter;
+        private DbDataAdapter _monthlySummaryDataAdapter;
 
         private DataTable _regularReportsDataTable = new DataTable();
         private DataTable _monthlySummaryDataTable = new DataTable();

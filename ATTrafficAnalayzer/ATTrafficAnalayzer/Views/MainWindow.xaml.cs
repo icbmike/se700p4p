@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
@@ -14,6 +15,8 @@ namespace ATTrafficAnalayzer.Views
     /// </summary>
     public partial class MainWindow
     {
+        private Mode _selectedMode;
+
         public MainWindow()
         {
             Logger.Clear();
@@ -23,10 +26,16 @@ namespace ATTrafficAnalayzer.Views
             InitializeComponent();
             var welcomeScreen = new Home(fileImportMenuItem_Click);
             SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
+            SettingsToolbar.ModeChanged += SettingsToolbarOnModeChanged;
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
-        
+
+        private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
+        {
+            _selectedMode = args.SelectedMode;
+        }
+
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
 
