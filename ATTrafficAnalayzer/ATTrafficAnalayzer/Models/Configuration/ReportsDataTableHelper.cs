@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 
 namespace ATTrafficAnalayzer.Models.Configuration
@@ -26,7 +27,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         #region Config Related Methods
 
-        private SQLiteDataAdapter _regularReportsDataAdapter;
+        private DbDataAdapter _regularReportsDataAdapter;
         private SQLiteDataAdapter _monthlySummaryDataAdapter;
 
         private DataTable _regularReportsDataTable = new DataTable();
@@ -37,7 +38,6 @@ namespace ATTrafficAnalayzer.Models.Configuration
             //Regular reports
             _regularReportsDataAdapter = _dbHelper.GetConfigsDataAdapter();
             _regularReportsDataAdapter.Fill(_regularReportsDataTable);
-            new SQLiteCommandBuilder(_regularReportsDataAdapter); // WHAT IS THIS LINE FOR?
             _regularReportsDataTable.PrimaryKey = new[] { _regularReportsDataTable.Columns["name"] };
 
             //Monthly Summaries
