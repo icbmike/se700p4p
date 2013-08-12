@@ -11,10 +11,11 @@
     <ScrollViewer HorizontalContentAlignment="Stretch">
         <StackPanel Margin="10">
 
-            <Label FontSize="28"
+            <TextBox FontSize="28"
                    Margin="20,0"
                    FontWeight="Bold"
-                   Name="ScreenTitle" />
+                   Name="ConfigNameTextBox" />
+            
             <Label FontSize="16"
                    Margin="20,0"
                    Name="DateLabel" />
@@ -59,7 +60,8 @@
                     
                 </DataGrid.Columns>
             </DataGrid>
-
+        <Button Content="Save Summary Configuration"
+                Click="ButtonBase_OnClick"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

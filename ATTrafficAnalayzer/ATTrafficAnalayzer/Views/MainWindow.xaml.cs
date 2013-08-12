@@ -139,7 +139,7 @@ namespace ATTrafficAnalayzer.Views
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Summary))
                         {
-                            var summaryScreen = new SummaryConfig(SettingsToolbar.SettingsTray, selectedItem);
+                            var summaryScreen = new SummaryConfig();
                             SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
                             ReportList.ReportChanged += summaryScreen.ReportChangedHandler;
                             ChangeScreen(summaryScreen);
@@ -206,7 +206,7 @@ namespace ATTrafficAnalayzer.Views
                 {
                     if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
                     {
-                        var monthlySummary = new SummaryConfig(SettingsToolbar.SettingsTray, "New Monthly Summary");
+                        var monthlySummary = new SummaryConfig();
                         ChangeScreen(monthlySummary);
                     }
                     else

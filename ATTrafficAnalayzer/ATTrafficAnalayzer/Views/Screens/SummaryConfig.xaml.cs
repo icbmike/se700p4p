@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using ATTrafficAnalayzer.Models;
@@ -24,13 +25,29 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DateTime _startDate;
         private Report _configuration;
 
-        public SummaryConfig(SettingsTray settings, string configName)
+
+        #region events
+
+        public delegate void ConfigurationSavedEventHander(object sender, ConfigurationSavedEventArgs args);
+
+        public event ConfigurationSavedEventHander ConfigurationSaved;
+        public class ConfigurationSavedEventArgs
         {
-            _configName = configName;
-            _startDate = settings.StartDate;
-            _endDate = settings.EndDate;
+            public string Name { get; set; }
+
+            public ConfigurationSavedEventArgs(string name)
+            {
+                Name = name;
+            }
+        }
+
+        #endregion
+
+        public SummaryConfig()
+        {
+            
             _dbHelper = DbHelper.GetDbHelper();
-            _configuration = _dbHelper.GetConfiguration(configName);
+
             Rows = new ObservableCollection<SummaryRow>();
 
             InitializeComponent();
@@ -70,7 +87,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void FillSummary()
         {
-            ScreenTitle.Content = _configName;
             DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
                 _endDate.Date.ToShortDateString());
 
@@ -81,6 +97,15 @@ namespace ATTrafficAnalayzer.Views.Screens
                 IntersectionOut = 4013,
                 RouteName = "FROM SAINT HELIERS TO HOWICK"});
        
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var configName = ConfigNameTextBox.Text;
+
+            //Do save
+            //Fire saved event
+            if(ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
     }
 
