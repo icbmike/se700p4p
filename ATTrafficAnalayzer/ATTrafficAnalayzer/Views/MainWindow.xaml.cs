@@ -106,7 +106,6 @@ namespace ATTrafficAnalayzer.Views
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
-
                 }
                 else
                 {
@@ -127,6 +126,13 @@ namespace ATTrafficAnalayzer.Views
                             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                             ReportList.ReportChanged += tableScreen.ReportChangedHandler;
                             ChangeScreen(tableScreen);
+                        }
+                        else if (args.Button.Equals(Toolbar.ScreenButton.Summary))
+                        {
+                            var summaryScreen = new SummaryConfig(SettingsToolbar.SettingsTray, selectedItem);
+                            SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
+                            ReportList.ReportChanged += summaryScreen.ReportChangedHandler;
+                            ChangeScreen(summaryScreen);
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Home))
                         {

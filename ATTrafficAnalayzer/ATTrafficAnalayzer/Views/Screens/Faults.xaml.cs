@@ -40,9 +40,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate))
             {
-                //InitializeGraph() is a time consuming operation.
-                //We dont want to do it if we don't have to.
-
                 _startDate = args.startDate;
                 _endDate = args.endDate;
 

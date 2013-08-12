@@ -197,5 +197,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
         {
             return _approachTotal;
         }
+
+        public string GetDetectorsAsString()
+        {
+            return String.Join(", ", Detectors);
+        }
     }
 }
