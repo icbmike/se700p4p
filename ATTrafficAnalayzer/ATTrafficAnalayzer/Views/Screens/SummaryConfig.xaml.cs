@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Windows.Data;
+using System.Windows.Markup;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -29,6 +35,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
             SummaryDataGrid.DataContext = this;
+
             FillSummary();
         }
 
@@ -67,21 +74,65 @@ namespace ATTrafficAnalayzer.Views.Screens
             DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
                 _endDate.Date.ToShortDateString());
 
-            Rows.Add(new SummaryRow(){  DetectorsIn = "1, 2, 3", 
-                                        DetectorsOut = "4, 5",
-                                        IntersectionIn = 4012,
-                                        IntersectionOut = 4013,
-                                        RouteName = "FROM SAINT HELIERS TO HOWICK"});
+            Rows.Add(new SummaryRow
+                {  DetectorsIn = {1, 2, 3}, 
+                DetectorsOut = {4, 5},
+                IntersectionIn = 4012,
+                IntersectionOut = 4013,
+                RouteName = "FROM SAINT HELIERS TO HOWICK"});
+       
         }
     }
 
     public class SummaryRow
     {
+        public SummaryRow()
+        {
+            DetectorsIn = new List<int>();
+            DetectorsOut = new List<int>();
+        }
         public string RouteName { get; set; }
         public int IntersectionIn { get; set; }
         public int IntersectionOut { get; set; }
-        public string DetectorsIn { get; set; }
-        public string DetectorsOut { get; set; }
+        public List<int> DetectorsIn { get; set; }
+        public List<int> DetectorsOut { get; set; }
 
+    }
+
+    public class DetectorsListToStringConverter : MarkupExtension, IValueConverter
+    {
+        private static DetectorsListToStringConverter _converter;
+        
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return _converter ?? (_converter = new DetectorsListToStringConverter());
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //What the GUI sees
+            var list = value as List<int>;
+            Console.WriteLine("LIST: " + list);
+            var sb = new StringBuilder();
+            for (int i = 0; i < list.Count; i++)
+            {
+                sb.Append(list[i]);
+                if (i < list.Count - 1)
+                {
+                    sb.Append(", ");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+           //What the model sees
+            var str = value as String;
+            Console.WriteLine("STR" + str);
+            return str.Split(new[] {", "}, StringSplitOptions.None).Select(s => int.Parse(s)).ToList();
+        }
+    
     }
 }

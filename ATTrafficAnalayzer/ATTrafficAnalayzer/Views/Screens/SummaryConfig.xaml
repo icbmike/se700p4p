@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:screens="clr-namespace:ATTrafficAnalayzer.Views.Screens"
              mc:Ignorable="d"
              d:DesignHeight="1100"
              d:DesignWidth="1720">
@@ -20,6 +21,7 @@
 
             <DataGrid Name="SummaryDataGrid"
                       Margin="25"
+                      AutoGenerateColumns="False"
                       CanUserReorderColumns="False"
                       CanUserResizeColumns="False"
                       CanUserSortColumns="True"
@@ -36,22 +38,24 @@
                     <DataGridTextColumn 
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Route Name" Binding="{Binding RouteName}" />
+                    
                     <DataGridTextColumn Binding="{Binding IntersectionIn}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Intersection" />
-                    <DataGridTextColumn Binding="{Binding DetectorsIn}"
+
+                    <DataGridTextColumn Binding="{Binding DetectorsIn, Converter={screens:DetectorsListToStringConverter}}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Detectors" />
                     
                     <DataGridTextColumn Binding="{Binding IntersectionOut}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Intersection" />
-                    <DataGridTextColumn Binding="{Binding DetectorsOut}"
+                  
+                    <DataGridTextColumn Binding="{Binding DetectorsOut, Converter={screens:DetectorsListToStringConverter}}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Detectors" />
                     
                 </DataGrid.Columns>
-                
             </DataGrid>
 
         </StackPanel>
