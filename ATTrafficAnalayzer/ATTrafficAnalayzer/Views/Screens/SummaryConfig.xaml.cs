@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -24,16 +25,15 @@ namespace ATTrafficAnalayzer.Views.Screens
             _endDate = settings.EndDate;
             _dbHelper = DbHelper.GetDbHelper();
             _configuration = _dbHelper.GetConfiguration(configName);
+            Rows = new ObservableCollection<SummaryRow>();
 
             InitializeComponent();
-
+            SummaryDataGrid.DataContext = this;
             FillSummary();
         }
 
-        public SummaryConfig()
-        {
-            // TODO: Complete member initialization
-        }
+
+        public ObservableCollection<SummaryRow> Rows { get; set; }
 
         internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
@@ -67,6 +67,21 @@ namespace ATTrafficAnalayzer.Views.Screens
             DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
                 _endDate.Date.ToShortDateString());
 
+            Rows.Add(new SummaryRow(){  DetectorsIn = "1, 2, 3", 
+                                        DetectorsOut = "4, 5",
+                                        IntersectionIn = 4012,
+                                        IntersectionOut = 4013,
+                                        RouteName = "FROM SAINT HELIERS TO HOWICK"});
         }
+    }
+
+    public class SummaryRow
+    {
+        public string RouteName { get; set; }
+        public int IntersectionIn { get; set; }
+        public int IntersectionOut { get; set; }
+        public string DetectorsIn { get; set; }
+        public string DetectorsOut { get; set; }
+
     }
 }

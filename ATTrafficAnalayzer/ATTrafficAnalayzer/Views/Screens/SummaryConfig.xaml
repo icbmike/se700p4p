@@ -30,22 +30,23 @@
                       HorizontalContentAlignment="Stretch"
                       AreRowDetailsFrozen="False"
                       RowHeaderWidth="0"
-                      ColumnWidth="*">
+                      ColumnWidth="*"
+                      ItemsSource="{Binding Rows}">
                 <DataGrid.Columns>
                     <DataGridTextColumn 
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Route Name" Binding="{Binding RouteName}" />
-                    <DataGridTextColumn Binding="{x:Null}"
+                    <DataGridTextColumn Binding="{Binding IntersectionIn}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Intersection" />
-                    <DataGridTextColumn Binding="{x:Null}"
+                    <DataGridTextColumn Binding="{Binding DetectorsIn}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Detectors" />
                     
-                    <DataGridTextColumn Binding="{x:Null}"
+                    <DataGridTextColumn Binding="{Binding IntersectionOut}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Intersection" />
-                    <DataGridTextColumn Binding="{x:Null}"
+                    <DataGridTextColumn Binding="{Binding DetectorsOut}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Detectors" />
                     
