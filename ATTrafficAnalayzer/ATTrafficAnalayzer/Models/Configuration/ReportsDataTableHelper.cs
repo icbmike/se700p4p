@@ -37,13 +37,13 @@ namespace ATTrafficAnalayzer.Models.Configuration
             //Regular reports
             _regularReportsDataAdapter = _dbHelper.GetConfigsDataAdapter();
             _regularReportsDataAdapter.Fill(_regularReportsDataTable);
+            new SQLiteCommandBuilder(_regularReportsDataAdapter); // WHAT IS THIS LINE FOR?
+            _regularReportsDataTable.PrimaryKey = new[] { _regularReportsDataTable.Columns["name"] };
 
-            new SQLiteCommandBuilder(_regularReportsDataAdapter);
-            var configsPrimaryKeys = new DataColumn[1];
-            configsPrimaryKeys[0] = _regularReportsDataTable.Columns["name"];
-            _regularReportsDataTable.PrimaryKey = configsPrimaryKeys;
-
-            //MonthlySummary
+            //Monthly Summaries
+            _monthlySummaryDataAdapter = _dbHelper.GetMonthlySummariesDataAdapter();
+            _monthlySummaryDataAdapter.Fill(_monthlySummaryDataTable);
+            _monthlySummaryDataTable.PrimaryKey = new[] { _monthlySummaryDataTable.Columns["name"] };
         }
 
         public DataView GetRegularReportDataView()
@@ -75,7 +75,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public DataView GetMonthlySummaryDataView()
         {
-            throw new NotImplementedException();
+            return _monthlySummaryDataTable.DefaultView;
         }
     }
 }

@@ -160,6 +160,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _selectedMode = args.SelectedMode;
+            PopulateListView();
 
         }
     }

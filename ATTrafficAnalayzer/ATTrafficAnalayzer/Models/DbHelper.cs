@@ -31,6 +31,7 @@ namespace ATTrafficAnalayzer.Models
             CreateVolumesTableIfNotExists();
             CreateApproachesTableIfNotExists();
             CreateConfigsTableIfNotExists();
+            CreateMonthlySummariesTableIfNotExists();
         }
 
         #region Helper functions
@@ -272,6 +273,17 @@ namespace ATTrafficAnalayzer.Models
                                 )";
             ExecuteNonQuery(createConfigsTableSql);
         }
+        private static void CreateMonthlySummariesTableIfNotExists()
+        {
+            const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [monthly_summaries] ( 
+                                    [name] TEXT  NULL,
+                                    [config] TEXT  NULL,
+                                    [last_used] DATETIME,
+
+                                    PRIMARY KEY ( name)
+                                )";
+            ExecuteNonQuery(createVolumesTableSql);
+        }
 
         private static void CreateApproachesTableIfNotExists()
         {
@@ -295,6 +307,7 @@ namespace ATTrafficAnalayzer.Models
             ExecuteNonQuery(createVolumesTableSql);
         }
 
+        
         #endregion
 
         #region Volume Related Methods
@@ -678,5 +691,10 @@ namespace ATTrafficAnalayzer.Models
         }
 
         #endregion
+
+        public SQLiteDataAdapter GetMonthlySummariesDataAdapter()
+        {
+            return GetDataAdapter("SELECT name FROM monthly_summaries");
+        }
     }
 }
