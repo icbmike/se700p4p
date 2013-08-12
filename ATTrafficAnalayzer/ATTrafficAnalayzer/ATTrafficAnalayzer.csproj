@@ -74,6 +74,7 @@
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
     <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
+    <Compile Include="Models\Settings\Mode.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Controls\ConfigApproachBox.xaml.cs">

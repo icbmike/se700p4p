@@ -25,15 +25,15 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (args.SelectedMode.Equals(Mode.MonthlySummary))
             {
                 //Remove the view Buttons
-                GraphButton.Visibility = Visibility.Collapsed;
-                TableButton.Visibility = Visibility.Collapsed;
-                FaultsButton.Visibility = Visibility.Collapsed;
+                GraphButton.Visibility = Visibility.Hidden;
+                TableButton.Visibility = Visibility.Hidden;
+                FaultsButton.Visibility = Visibility.Hidden;
                 
                 //Add summary Button
                 
                 //Remove End Date and Interval
-                EndDatePicker.Visibility = Visibility.Collapsed;
-                IntervalComboBox.Visibility = Visibility.Collapsed;
+                EndDatePicker.Visibility = Visibility.Hidden;
+                IntervalComboBox.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -59,9 +59,6 @@ namespace ATTrafficAnalayzer.Views.Controls
         }
 
         #region Screen refreshing
-
-        private ScreenButton currentScreen = ScreenButton.Home;
-        private Mode currentMode = Mode.RegularReports;
 
         public enum ScreenButton
         {
@@ -143,6 +140,11 @@ namespace ATTrafficAnalayzer.Views.Controls
         public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
         public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
 
+        public int Month
+        {
+            get { return StartDatePicker.SelectedDate.Value.Month; }
+        }
+
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
 
@@ -192,10 +194,5 @@ namespace ATTrafficAnalayzer.Views.Controls
         }
 
         #endregion
-
-        public enum Mode
-        {
-            MonthlySummary, RegularReports
-        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 
 namespace ATTrafficAnalayzer.Models.Configuration
@@ -20,29 +22,33 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         private ReportsDataTableHelper()
         {
-            //TODO fault here
             CreateConfigDataSet();
         }
 
         #region Config Related Methods
 
-        private SQLiteDataAdapter _configsDataAdapter;
-        private DataTable _configsDataTable = new DataTable();
+        private DbDataAdapter _regularReportsDataAdapter;
+        private DbDataAdapter _monthlySummaryDataAdapter;
+
+        private DataTable _regularReportsDataTable = new DataTable();
+        private DataTable _monthlySummaryDataTable = new DataTable();
 
         private void CreateConfigDataSet()
         {
-            _configsDataAdapter = _dbHelper.GetConfigsDataAdapter();
-            _configsDataAdapter.Fill(_configsDataTable);
+            //Regular reports
+            _regularReportsDataAdapter = _dbHelper.GetConfigsDataAdapter();
+            _regularReportsDataAdapter.Fill(_regularReportsDataTable);
+            _regularReportsDataTable.PrimaryKey = new[] { _regularReportsDataTable.Columns["name"] };
 
-            new SQLiteCommandBuilder(_configsDataAdapter);
-            var configsPrimaryKeys = new DataColumn[1];
-            configsPrimaryKeys[0] = _configsDataTable.Columns["name"];
-            _configsDataTable.PrimaryKey = configsPrimaryKeys;
+            //Monthly Summaries
+            _monthlySummaryDataAdapter = _dbHelper.GetMonthlySummariesDataAdapter();
+            _monthlySummaryDataAdapter.Fill(_monthlySummaryDataTable);
+            _monthlySummaryDataTable.PrimaryKey = new[] { _monthlySummaryDataTable.Columns["name"] };
         }
 
-        public DataView GetConfigDataView()
+        public DataView GetRegularReportDataView()
         {
-            return _configsDataTable.DefaultView;
+            return _regularReportsDataTable.DefaultView;
         }
 
         public void RemoveConfig(string configToDelete)
@@ -53,7 +59,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public void RemoveConfigFromDataSet(String configToDelete)
         {
-            var configs = _configsDataTable.Rows;
+            var configs = _regularReportsDataTable.Rows;
             var rowToDelete = configs.Find(configToDelete);
             Console.WriteLine("Deleting: " + rowToDelete["name"]);
             rowToDelete.Delete();
@@ -61,10 +67,15 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public void SyncConfigs()
         {
-            _configsDataAdapter.Update(_configsDataTable);
-            _configsDataAdapter.Fill(_configsDataTable);
+            _regularReportsDataAdapter.Update(_regularReportsDataTable);
+            _regularReportsDataAdapter.Fill(_regularReportsDataTable);
         }
 
         #endregion
+
+        public DataView GetMonthlySummaryDataView()
+        {
+            return _monthlySummaryDataTable.DefaultView;
+        }
     }
 }

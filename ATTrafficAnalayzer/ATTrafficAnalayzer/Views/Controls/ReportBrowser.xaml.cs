@@ -2,6 +2,7 @@
 using System.Data;
 using System.Windows;
 using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
@@ -12,13 +13,25 @@ namespace ATTrafficAnalayzer.Views.Controls
     public partial class ReportBrowser
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
+        private Mode _selectedMode;
 
         public ReportBrowser()
         {
-            InitializeComponent();            
+            InitializeComponent();
             DataContext = this;
+            _selectedMode = Mode.RegularReports;
 
-            var dv = _reportsDataTableHelper.GetConfigDataView();
+            PopulateListView();
+        }
+
+        private void PopulateListView()
+        {
+            var dv =
+                _selectedMode.Equals(Mode.RegularReports)
+
+                    ? _reportsDataTableHelper.GetRegularReportDataView()
+                    : _reportsDataTableHelper.GetMonthlySummaryDataView();
+
             StandardReportsTreeView.ItemsSource = dv;
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
@@ -27,7 +40,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public delegate void EditConfigurationEventHandler(object sender, EditConfigurationEventHandlerArgs args);
 
-        public event EditConfigurationEventHandler EditConfigurationEvent; 
+        public event EditConfigurationEventHandler EditConfigurationEvent;
         public class EditConfigurationEventHandlerArgs
         {
             public Boolean New { get; set; }
@@ -115,8 +128,8 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, Config.ConfigurationSavedEventArgs args)
         {
-            
-            StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetConfigDataView();
+
+            StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetRegularReportDataView();
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
@@ -142,6 +155,13 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (ReportChanged != null)
                 ReportChanged(this, new SelectedReporChangeEventHandlerArgs(GetSelectedConfiguration()));
+        }
+
+        public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
+        {
+            _selectedMode = args.SelectedMode;
+            PopulateListView();
+
         }
     }
 }

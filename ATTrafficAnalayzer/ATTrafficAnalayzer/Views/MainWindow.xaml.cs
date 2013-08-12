@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
@@ -14,6 +15,8 @@ namespace ATTrafficAnalayzer.Views
     /// </summary>
     public partial class MainWindow
     {
+        private Mode _selectedMode;
+
         public MainWindow()
         {
             Logger.Clear();
@@ -22,10 +25,17 @@ namespace ATTrafficAnalayzer.Views
 
             InitializeComponent();
             var welcomeScreen = new Home(fileImportMenuItem_Click);
+            SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
+            SettingsToolbar.ModeChanged += SettingsToolbarOnModeChanged;
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
-        
+
+        private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
+        {
+            _selectedMode = args.SelectedMode;
+        }
+
         public delegate void ImportCompletedHandler(object sender);
         public event ImportCompletedHandler ImportCompleted;
 
@@ -175,19 +185,35 @@ namespace ATTrafficAnalayzer.Views
 
             if (args.New)
             {
-
-                if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                if (_selectedMode.Equals(Mode.RegularReports))
                 {
-                    var reportConfigurationScreen = new Config();
-                    reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
-                    reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+                    if (DbHelper.GetDbHelper()
+                                .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    {
+                        var reportConfigurationScreen = new Config();
+                        reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                        reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
 
-                    ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                    ChangeScreen(reportConfigurationScreen);
+                        ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                        ChangeScreen(reportConfigurationScreen);
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected date range");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("You haven't imported volume data for the selected date range");
+                    if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
+                    {
+                        var monthlySummary = new SummaryConfig(SettingsToolbar.SettingsTray, "New Monthly Summary");
+                        ChangeScreen(monthlySummary);
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected month");
+                    }
+                    
                 }
             }
             else
