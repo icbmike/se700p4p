@@ -66,6 +66,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             ScreenTitle.Content = _configName;
             DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
                 _endDate.Date.ToShortDateString());
+
         }
     }
 }

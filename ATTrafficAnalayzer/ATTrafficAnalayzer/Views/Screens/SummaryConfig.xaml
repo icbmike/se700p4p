@@ -32,28 +32,25 @@
                       RowHeaderWidth="0"
                       ColumnWidth="*">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{x:Null}"
+                    <DataGridTextColumn 
                                         ClipboardContentBinding="{x:Null}"
-                                        Header="Route Name" />
+                                        Header="Route Name" Binding="{Binding RouteName}" />
                     <DataGridTextColumn Binding="{x:Null}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Intersection" />
                     <DataGridTextColumn Binding="{x:Null}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Detectors" />
-                    <DataGridTextColumn Binding="{x:Null}"
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Inbound Dividing Factor" />
+                    
                     <DataGridTextColumn Binding="{x:Null}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Intersection" />
                     <DataGridTextColumn Binding="{x:Null}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Detectors" />
-                    <DataGridTextColumn Binding="{x:Null}"
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Outbound Dividing Factor" />
+                    
                 </DataGrid.Columns>
+                
             </DataGrid>
 
         </StackPanel>
