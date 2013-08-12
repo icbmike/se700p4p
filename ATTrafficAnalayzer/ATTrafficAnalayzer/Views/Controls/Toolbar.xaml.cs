@@ -17,6 +17,35 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+            ModeChanged += Toolbar_ModeChanged;
+        }
+
+        private void Toolbar_ModeChanged(object sender, ModeChangedEventHandlerArgs args)
+        {
+            if (args.SelectedMode.Equals(Mode.MonthlySummary))
+            {
+                //Remove the view Buttons
+                GraphButton.Visibility = Visibility.Collapsed;
+                TableButton.Visibility = Visibility.Collapsed;
+                FaultsButton.Visibility = Visibility.Collapsed;
+                
+                //Add summary Button
+                
+                //Remove End Date and Interval
+                EndDatePicker.Visibility = Visibility.Collapsed;
+                IntervalComboBox.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                //Add the view Buttons
+                GraphButton.Visibility = Visibility.Collapsed;
+                TableButton.Visibility = Visibility.Collapsed;
+                FaultsButton.Visibility = Visibility.Collapsed;
+
+                //Add End Date and Interval
+                EndDatePicker.Visibility = Visibility.Collapsed;
+                IntervalComboBox.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
@@ -31,7 +60,8 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Screen refreshing
 
-        private ScreenButton currentMode = ScreenButton.Home;
+        private ScreenButton currentScreen = ScreenButton.Home;
+        private Mode currentMode = Mode.RegularReports;
 
         public enum ScreenButton
         {
@@ -69,7 +99,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
             }
-            else if (sender.Equals(SummaryButton))
+            else if (sender.Equals(MonthlySummaryButton))
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Summary));
             }
@@ -79,7 +109,32 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
+        private void SwitchMode(object sender, RoutedEventArgs e)
+        {
+             ModeChanged(this, new ModeChangedEventHandlerArgs(sender.Equals(MonthlySummaryButton) ? Mode.MonthlySummary : Mode.RegularReports));
+        }
+
         #endregion
+
+
+        public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
+
+        public event ModeChangedEventHandler ModeChanged;
+
+        public class ModeChangedEventHandlerArgs
+        {
+            private readonly Mode _mode;
+
+            public ModeChangedEventHandlerArgs(Mode mode)
+            {
+                _mode = mode;
+            }
+
+            public Mode SelectedMode
+            {
+                get { return _mode; }
+            }
+        }
 
         #region Date refreshing
 
@@ -137,5 +192,10 @@ namespace ATTrafficAnalayzer.Views.Controls
         }
 
         #endregion
+
+        public enum Mode
+        {
+            MonthlySummary, RegularReports
+        }
     }
 }
