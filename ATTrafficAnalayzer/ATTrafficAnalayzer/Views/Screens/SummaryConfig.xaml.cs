@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -10,14 +9,14 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class Summary
+    public partial class SummaryConfig
     {
         private readonly DbHelper _dbHelper;
         private DateTime _endDate;
         private DateTime _startDate;
         private Report _configuration;
 
-        public Summary(SettingsTray settings, string configName)
+        public SummaryConfig(SettingsTray settings, string configName)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
@@ -60,8 +59,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             ScreenTitle.Content = _configuration.ConfigName;
             DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
                 _endDate.Date.ToShortDateString());
-
-            SummaryDataGrid.ItemsSource = _configuration.GetSummaryTable().AsDataView();
         }
     }
 }

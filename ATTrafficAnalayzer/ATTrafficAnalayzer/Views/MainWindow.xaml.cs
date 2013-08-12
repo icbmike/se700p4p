@@ -129,7 +129,7 @@ namespace ATTrafficAnalayzer.Views
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Summary))
                         {
-                            var summaryScreen = new Summary(SettingsToolbar.SettingsTray, selectedItem);
+                            var summaryScreen = new SummaryConfig(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
                             ReportList.ReportChanged += summaryScreen.ReportChangedHandler;
                             ChangeScreen(summaryScreen);
