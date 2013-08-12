@@ -696,5 +696,10 @@ namespace ATTrafficAnalayzer.Models
         {
             return GetDataAdapter("SELECT name FROM monthly_summaries");
         }
+
+        public bool VolumesExistForMonth(int month)
+        {
+            return true; //Needs to be implemented
+        }
     }
 }

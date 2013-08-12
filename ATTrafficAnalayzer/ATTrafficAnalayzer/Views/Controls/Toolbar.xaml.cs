@@ -140,6 +140,11 @@ namespace ATTrafficAnalayzer.Views.Controls
         public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
         public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
 
+        public int Month
+        {
+            get { return StartDatePicker.SelectedDate.Value.Month; }
+        }
+
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
 

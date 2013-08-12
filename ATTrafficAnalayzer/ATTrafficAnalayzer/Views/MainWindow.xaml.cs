@@ -185,19 +185,35 @@ namespace ATTrafficAnalayzer.Views
 
             if (args.New)
             {
-
-                if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                if (_selectedMode.Equals(Mode.RegularReports))
                 {
-                    var reportConfigurationScreen = new Config();
-                    reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
-                    reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+                    if (DbHelper.GetDbHelper()
+                                .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    {
+                        var reportConfigurationScreen = new Config();
+                        reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                        reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
 
-                    ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                    ChangeScreen(reportConfigurationScreen);
+                        ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                        ChangeScreen(reportConfigurationScreen);
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected date range");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("You haven't imported volume data for the selected date range");
+                    if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
+                    {
+                        var monthlySummary = new SummaryConfig(SettingsToolbar.SettingsTray, "New Monthly Summary");
+                        ChangeScreen(monthlySummary);
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected month");
+                    }
+                    
                 }
             }
             else
