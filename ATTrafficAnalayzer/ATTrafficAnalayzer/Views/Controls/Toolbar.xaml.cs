@@ -38,13 +38,13 @@ namespace ATTrafficAnalayzer.Views.Controls
             else
             {
                 //Add the view Buttons
-                GraphButton.Visibility = Visibility.Collapsed;
-                TableButton.Visibility = Visibility.Collapsed;
-                FaultsButton.Visibility = Visibility.Collapsed;
+                GraphButton.Visibility = Visibility.Visible;
+                TableButton.Visibility = Visibility.Visible;
+                FaultsButton.Visibility = Visibility.Visible;
 
                 //Add End Date and Interval
-                EndDatePicker.Visibility = Visibility.Collapsed;
-                IntervalComboBox.Visibility = Visibility.Collapsed;
+                EndDatePicker.Visibility = Visibility.Visible;
+                IntervalComboBox.Visibility = Visibility.Visible;
             }
         }
 
