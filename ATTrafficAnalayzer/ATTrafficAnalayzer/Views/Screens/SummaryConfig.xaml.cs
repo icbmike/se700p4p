@@ -91,6 +91,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
         }
+
         public string RouteName { get; set; }
         public int IntersectionIn { get; set; }
         public int IntersectionOut { get; set; }

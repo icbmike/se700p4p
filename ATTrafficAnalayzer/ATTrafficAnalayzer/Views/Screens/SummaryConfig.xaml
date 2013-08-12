@@ -39,7 +39,8 @@
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Route Name" Binding="{Binding RouteName}" />
                     
-                    <DataGridTextColumn Binding="{Binding IntersectionIn}"
+                    <DataGridComboBoxColumn 
+                                        ItemsSource="{Binding IntersectionIn}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Intersection" />
 
@@ -47,7 +48,8 @@
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Detectors" />
                     
-                    <DataGridTextColumn Binding="{Binding IntersectionOut}"
+                    <DataGridComboBoxColumn
+                                        ItemsSource="{Binding IntersectionOut}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Intersection" />
                   
