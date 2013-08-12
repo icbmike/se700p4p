@@ -22,6 +22,7 @@ namespace ATTrafficAnalayzer.Views
 
             InitializeComponent();
             var welcomeScreen = new Home(fileImportMenuItem_Click);
+            SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
         }
