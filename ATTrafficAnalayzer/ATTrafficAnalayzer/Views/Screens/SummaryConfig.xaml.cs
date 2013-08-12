@@ -19,33 +19,17 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class SummaryConfig
     {
-        private readonly string _configName;
         private readonly DbHelper _dbHelper;
         private DateTime _endDate;
         private DateTime _startDate;
-        private Report _configuration;
-
 
         #region events
 
-        public delegate void ConfigurationSavedEventHander(object sender, ConfigurationSavedEventArgs args);
-
         public event ConfigurationSavedEventHander ConfigurationSaved;
-        public class ConfigurationSavedEventArgs
-        {
-            public string Name { get; set; }
-
-            public ConfigurationSavedEventArgs(string name)
-            {
-                Name = name;
-            }
-        }
-
         #endregion
 
         public SummaryConfig()
         {
-            
             _dbHelper = DbHelper.GetDbHelper();
 
             Rows = new ObservableCollection<SummaryRow>();
@@ -56,34 +40,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             FillSummary();
         }
 
-
         public ObservableCollection<SummaryRow> Rows { get; set; }
-
-        internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
-            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate))
-            {
-                _startDate = args.startDate;
-                _endDate = args.endDate;
-            }
-            FillSummary();
-        }
-
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
-        {
-            _configuration = _dbHelper.GetConfiguration(args.ReportName);
-            FillSummary();
-        }
-
-        internal void ReportChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
-            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate))
-            {
-                _startDate = args.startDate;
-                _endDate = args.endDate;
-            }
-            FillSummary();
-        }
 
         private void FillSummary()
         {
@@ -91,12 +48,14 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _endDate.Date.ToShortDateString());
 
             Rows.Add(new SummaryRow
-                {  DetectorsIn = {1, 2, 3}, 
-                DetectorsOut = {4, 5},
-                IntersectionIn = 4012,
-                IntersectionOut = 4013,
-                RouteName = "FROM SAINT HELIERS TO HOWICK"});
-       
+                {
+                    DetectorsIn = { 1, 2, 3 },
+                    DetectorsOut = { 4, 5 },
+                    IntersectionIn = 4012,
+                    IntersectionOut = 4013,
+                    RouteName = "FROM SAINT HELIERS TO HOWICK"
+                });
+
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -105,7 +64,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             //Do save
             //Fire saved event
-            if(ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+            if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
     }
 
@@ -128,7 +87,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public class DetectorsListToStringConverter : MarkupExtension, IValueConverter
     {
         private static DetectorsListToStringConverter _converter;
-        
+
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return _converter ?? (_converter = new DetectorsListToStringConverter());
@@ -154,11 +113,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-           //What the model sees
+            //What the model sees
             var str = value as String;
             Console.WriteLine("STR" + str);
-            return str.Split(new[] {", "}, StringSplitOptions.None).Select(s => int.Parse(s)).ToList();
+            return str.Split(new[] { ", " }, StringSplitOptions.None).Select(s => int.Parse(s)).ToList();
         }
-    
+
     }
 }

@@ -26,13 +26,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void PopulateListView()
         {
-            var dv =
+            StandardReportsTreeView.ItemsSource = 
                 _selectedMode.Equals(Mode.RegularReports)
 
                     ? _reportsDataTableHelper.GetRegularReportDataView()
                     : _reportsDataTableHelper.GetMonthlySummaryDataView();
 
-            StandardReportsTreeView.ItemsSource = dv;
+            
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
@@ -126,11 +126,9 @@ namespace ATTrafficAnalayzer.Views.Controls
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
 
-        public void ConfigurationSavedEventHandler(object sender, Config.ConfigurationSavedEventArgs args)
+        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
-
-            StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetRegularReportDataView();
-            StandardReportsTreeView.DisplayMemberPath = "name";
+            PopulateListView();
         }
 
         private void exportBtn_Click(object sender, RoutedEventArgs e)
