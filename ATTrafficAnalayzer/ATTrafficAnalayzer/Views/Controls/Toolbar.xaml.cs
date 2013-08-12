@@ -96,10 +96,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
             }
-            else if (sender.Equals(MonthlySummaryButton))
-            {
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Summary));
-            }
             else
             {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));

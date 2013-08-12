@@ -16,7 +16,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class SummaryConfig
+    public partial class SummaryConfig : IView
     {
         private readonly string _configName;
         private readonly DbHelper _dbHelper;
@@ -52,11 +52,18 @@ namespace ATTrafficAnalayzer.Views.Screens
             FillSummary();
         }
 
+        void IView.DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            DateRangeChangedHandler(sender, args);
+        }
+
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
         {
             _configuration = _dbHelper.GetConfiguration(args.ReportName);
             FillSummary();
         }
+
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
         internal void ReportChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {

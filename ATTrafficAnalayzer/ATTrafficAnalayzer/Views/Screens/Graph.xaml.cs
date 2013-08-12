@@ -17,7 +17,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class Graph
+    public partial class Graph : IView
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
         
@@ -157,5 +157,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             configName = args.ReportName;
             RenderGraph();
         }
+
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
 }

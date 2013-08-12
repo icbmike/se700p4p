@@ -101,7 +101,7 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
-        private void ChangeScreen(UserControl screen)
+        private void ChangeScreen(IView screen)
         {
             MainContentControl.Content = screen;
         }
@@ -132,9 +132,18 @@ namespace ATTrafficAnalayzer.Views
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Table))
                         {
-                            var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
-                            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                            ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                            IView tableScreen;
+                            if (_selectedMode.Equals(Mode.RegularReports))
+                            {
+                                tableScreen
+                                    = new Summary();
+                            }
+                            else
+                            {
+                                tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
+                                SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                                ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                            }
                             ChangeScreen(tableScreen);
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Summary))
@@ -213,7 +222,7 @@ namespace ATTrafficAnalayzer.Views
                     {
                         MessageBox.Show("You haven't imported volume data for the selected month");
                     }
-                    
+
                 }
             }
             else

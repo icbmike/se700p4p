@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class Config
+    public partial class Config : IView
     {
         private ObservableCollection<int> _detectorList;
         private ObservableCollection<int> _intersectionList;
@@ -201,5 +201,17 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var intersection in DbHelper.GetIntersections())
                 _intersectionList.Add(intersection);
         }
+
+        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
 }

@@ -3,13 +3,14 @@ using System.Windows;
 using ATTrafficAnalayzer.Models;
 using System.ComponentModel;
 using System;
+using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for Home.xaml
     /// </summary>
-    public partial class Home
+    public partial class Home : IView
     {
 
         #region events
@@ -65,5 +66,17 @@ namespace ATTrafficAnalayzer.Views.Screens
             bw.RunWorkerCompleted += WorkerCompletedHandler;
             bw.RunWorkerAsync();
         }
+
+        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
 }

@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
     /// </summary>
-    public partial class Table
+    public partial class Table : IView
     {
         private readonly VolumeMetric _maxTotal = new VolumeMetric();
         private readonly VolumeMetric _maxAm = new VolumeMetric();
@@ -120,7 +120,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             return approachDisplay;
         }
 
-        internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
             if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate) || !args.interval.Equals(_interval))
@@ -141,5 +141,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _configuration = _dbHelper.GetConfiguration(args.ReportName);
             RenderTable();
         }
+
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
 }
