@@ -26,7 +26,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 //Remove the view Buttons
                 GraphButton.Visibility = Visibility.Hidden;
-                TableButton.Visibility = Visibility.Hidden;
                 FaultsButton.Visibility = Visibility.Hidden;
                 
                 //Add summary Button
@@ -39,7 +38,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 //Add the view Buttons
                 GraphButton.Visibility = Visibility.Visible;
-                TableButton.Visibility = Visibility.Visible;
                 FaultsButton.Visibility = Visibility.Visible;
 
                 //Add End Date and Interval
