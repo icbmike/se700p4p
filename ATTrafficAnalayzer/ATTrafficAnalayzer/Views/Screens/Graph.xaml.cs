@@ -77,11 +77,19 @@ namespace ATTrafficAnalayzer.Views.Screens
             datesDataSource.SetXMapping(x => DateAxis.ConvertToDouble(x));
             
             var brushCounter = 0;
+            var countsMatch = true;
             foreach (var approach in reportConfiguration.Approaches)
             {
                 //Get volume info from db
                 var approachVolumes = approach.GetVolumesList(intersection, startDate, endDate);
-                
+
+                //Check that we actually have volumes that we need
+                if (approachVolumes.Count / (interval / 5) != dateList.Count)
+                {
+                    countsMatch = false;
+                    break;
+                }
+
                 var compressedVolumes = new int[dateList.Count];
                 var valuesPerCell = interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
@@ -113,6 +121,14 @@ namespace ATTrafficAnalayzer.Views.Screens
                 checkbox.Checked += checkbox_Checked;
                 checkbox.Unchecked += checkbox_Checked;
                 ToggleContainer.Children.Add(checkbox);
+            }
+
+            if (!countsMatch)
+            {
+                if (VolumeDateCountsDontMatch != null)
+                {
+                    VolumeDateCountsDontMatch(this);
+                }
             }
         }
 
