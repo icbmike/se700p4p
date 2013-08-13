@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class Config
+    public partial class Config : IConfigScreen
     {
         private ObservableCollection<int> _detectorList;
         private ObservableCollection<int> _intersectionList;
@@ -25,18 +25,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #region events
 
-        public delegate void ConfigurationSavedEventHander(object sender, ConfigurationSavedEventArgs args);
-
-        public event ConfigurationSavedEventHander ConfigurationSaved;
-        public class ConfigurationSavedEventArgs
-        {
-            public string Name { get; set; }
-
-            public ConfigurationSavedEventArgs(string name)
-            {
-                Name = name;
-            }
-        } 
+       
 
         #endregion
 
@@ -201,5 +190,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var intersection in DbHelper.GetIntersections())
                 _intersectionList.Add(intersection);
         }
+
+        public event ConfigurationSavedEventHander ConfigurationSaved;
     }
 }

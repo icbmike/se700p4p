@@ -26,13 +26,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void PopulateListView()
         {
-            var dv =
+            StandardReportsTreeView.ItemsSource = 
                 _selectedMode.Equals(Mode.RegularReports)
 
                     ? _reportsDataTableHelper.GetRegularReportDataView()
                     : _reportsDataTableHelper.GetMonthlySummaryDataView();
 
-            StandardReportsTreeView.ItemsSource = dv;
+            
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
@@ -98,7 +98,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _reportsDataTableHelper.RemoveConfig(selectedItem);
+                    _reportsDataTableHelper.RemoveConfig(selectedItem, _selectedMode);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -126,11 +126,10 @@ namespace ATTrafficAnalayzer.Views.Controls
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
 
-        public void ConfigurationSavedEventHandler(object sender, Config.ConfigurationSavedEventArgs args)
+        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
-
-            StandardReportsTreeView.ItemsSource = _reportsDataTableHelper.GetRegularReportDataView();
-            StandardReportsTreeView.DisplayMemberPath = "name";
+            _reportsDataTableHelper.SyncConfigs();
+            PopulateListView();
         }
 
         private void exportBtn_Click(object sender, RoutedEventArgs e)

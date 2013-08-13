@@ -109,15 +109,18 @@
     <Compile Include="Models\Configuration\Report.cs" />
     <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
+    <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />
     <Compile Include="Views\Screens\Faults.xaml.cs">
       <DependentUpon>Faults.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Screens\Graph.xaml.cs">
       <DependentUpon>Graph.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Screens\IConfigScreen.cs" />
     <Compile Include="Views\Screens\SummaryConfig.xaml.cs">
       <DependentUpon>SummaryConfig.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Screens\SummaryRow.cs" />
     <Compile Include="Views\Screens\Table.xaml.cs">
       <DependentUpon>Table.xaml</DependentUpon>
     </Compile>

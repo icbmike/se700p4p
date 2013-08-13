@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Data.SQLite;
 using System.Data;
+using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Volume;
+using ATTrafficAnalayzer.Views.Screens;
 using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
@@ -18,13 +19,6 @@ namespace ATTrafficAnalayzer.Models
 
         private static DbHelper _instance;
         private static readonly object SyncLock = new object();
-        public static DbHelper GetDbHelper()
-        {
-            lock (SyncLock)
-            {
-                return _instance ?? (_instance = new DbHelper());
-            }
-        }
 
         private DbHelper()
         {
@@ -50,7 +44,7 @@ namespace ATTrafficAnalayzer.Models
                 dbConnection.Open();
 
                 var createConfigsTableCommand = new SQLiteCommand(dbConnection) {CommandText = sql};
-                var reader = createConfigsTableCommand.ExecuteReader();
+                SQLiteDataReader reader = createConfigsTableCommand.ExecuteReader();
                 dataTable.Load(reader);
                 reader.Close();
 
@@ -62,21 +56,19 @@ namespace ATTrafficAnalayzer.Models
 
         private static SQLiteDataAdapter GetDataAdapter(string sql)
         {
-
             return GetDataAdapter(sql, null);
         }
 
         private static SQLiteDataAdapter GetDataAdapter(string sql, Dictionary<string, object> parameters)
         {
-
             var dbConnection = new SQLiteConnection(DbPath);
             dbConnection.Open();
 
-            var command = new SQLiteCommand(dbConnection) { CommandText = sql };
+            var command = new SQLiteCommand(dbConnection) {CommandText = sql};
 
             if (parameters != null)
             {
-                foreach (var parameterName in parameters.Keys)
+                foreach (string parameterName in parameters.Keys)
                 {
                     command.Parameters.AddWithValue(parameterName, parameters[parameterName]);
                 }
@@ -95,7 +87,7 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>An Integer containing the number of rows updated.</returns>
         private static int ExecuteNonQuery(string sql)
         {
-            var rowsUpdated = 0;
+            int rowsUpdated = 0;
 
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
@@ -141,8 +133,8 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>A boolean true or false to signify success or failure.</returns>
         private static bool Update(String tableName, Dictionary<String, String> data, String where)
         {
-            var valuesToUpdate = "";
-            var returnCode = true;
+            string valuesToUpdate = "";
+            bool returnCode = true;
 
             if (data.Count >= 1)
             {
@@ -171,7 +163,7 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>A boolean true or false to signify success or failure.</returns>
         private static bool Delete(String tableName, String where)
         {
-            var returnCode = true;
+            bool returnCode = true;
             try
             {
                 ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1};", tableName, where));
@@ -191,9 +183,9 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>A boolean true or false to signify success or failure.</returns>
         private static bool Insert(String tableName, Dictionary<String, String> data)
         {
-            var columns = "";
-            var values = "";
-            var returnCode = true;
+            string columns = "";
+            string values = "";
+            bool returnCode = true;
 
             foreach (var val in data)
             {
@@ -273,6 +265,7 @@ namespace ATTrafficAnalayzer.Models
                                 )";
             ExecuteNonQuery(createConfigsTableSql);
         }
+
         private static void CreateMonthlySummariesTableIfNotExists()
         {
             const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [monthly_summaries] ( 
@@ -280,7 +273,7 @@ namespace ATTrafficAnalayzer.Models
                                     [config] TEXT  NULL,
                                     [last_used] DATETIME,
 
-                                    PRIMARY KEY ( name)
+                                    PRIMARY KEY (name)
                                 )";
             ExecuteNonQuery(createVolumesTableSql);
         }
@@ -307,7 +300,6 @@ namespace ATTrafficAnalayzer.Models
             ExecuteNonQuery(createVolumesTableSql);
         }
 
-        
         #endregion
 
         #region Volume Related Methods
@@ -324,27 +316,26 @@ namespace ATTrafficAnalayzer.Models
             var byteArray = new byte[sizeInBytes];
             fs.Read(byteArray, 0, sizeInBytes);
 
-            var alreadyLoaded = false;
+            bool alreadyLoaded = false;
 
             //Now decrypt it
-            var index = 0;
+            int index = 0;
             DateTimeRecord currentDateTime = null;
 
             using (var cmd = new SQLiteCommand(dbConnection))
             {
-                using (var transaction = dbConnection.BeginTransaction())
+                using (SQLiteTransaction transaction = dbConnection.BeginTransaction())
                 {
-
                     while (index < sizeInBytes) //seek through the byte array untill we reach the end
                     {
-                        var recordSize = byteArray[index] + byteArray[index + 1]*256;
-                            //The record size is stored in two bytes, little endian
+                        int recordSize = byteArray[index] + byteArray[index + 1]*256;
+                        //The record size is stored in two bytes, little endian
 
                         index += 2;
-                        var progress = (int)(((float)index / sizeInBytes) * 100);
+                        var progress = (int) (((float) index/sizeInBytes)*100);
                         updateProgress(progress);
-                        
-                        
+
+
                         byte[] record;
                         if (recordSize%2 == 0) //Records with odd record length have a trailing null byte.
                         {
@@ -358,7 +349,7 @@ namespace ATTrafficAnalayzer.Models
                         }
 
                         //Find out what kind of data we have
-                        var recordType = VolumeRecordFactory.CheckRecordType(record);
+                        VolumeRecordType recordType = VolumeRecordFactory.CheckRecordType(record);
 
                         //Construct the appropriate record type
                         switch (recordType)
@@ -367,16 +358,17 @@ namespace ATTrafficAnalayzer.Models
                                 currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
                                 break;
                             case VolumeRecordType.Volume:
-                                var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
+                                VolumeRecord volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
 
-                                foreach (var detector in volumeRecord.GetDetectors())
+                                foreach (int detector in volumeRecord.GetDetectors())
                                 {
                                     cmd.CommandText =
                                         "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
 
                                     cmd.Parameters.Clear();
 
-                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5)); //Make up for the fact that volumes are offset ahead 5 minutes
+                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5));
+                                        //Make up for the fact that volumes are offset ahead 5 minutes
                                     cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
                                     cmd.Parameters.AddWithValue("@detector", detector);
                                     cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
@@ -389,11 +381,13 @@ namespace ATTrafficAnalayzer.Models
                                     {
                                         if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
-                                            Logger.Error("DBHELPER" , e.ToString() + "\nDetector: " + detector + "\nIntersection: " + volumeRecord.IntersectionNumber + "\nDate Time: " + currentDateTime.DateTime);
+                                            Logger.Error("DBHELPER",
+                                                         e + "\nDetector: " + detector + "\nIntersection: " +
+                                                         volumeRecord.IntersectionNumber + "\nDate Time: " +
+                                                         currentDateTime.DateTime);
                                             ////alreadyLoaded = true;
                                             //break;
                                         }
-                                        
                                     }
                                 }
                                 break;
@@ -418,7 +412,7 @@ namespace ATTrafficAnalayzer.Models
             using (var query = new SQLiteCommand(conn))
             {
                 query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
-                var reader = query.ExecuteReader();
+                SQLiteDataReader reader = query.ExecuteReader();
 
                 while (reader.Read())
                     intersections.Add(reader.GetInt32(0));
@@ -436,7 +430,7 @@ namespace ATTrafficAnalayzer.Models
             {
                 query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
                 query.Parameters.AddWithValue("@intersection", intersection);
-                var reader = query.ExecuteReader();
+                SQLiteDataReader reader = query.ExecuteReader();
 
                 while (reader.Read())
                 {
@@ -454,7 +448,6 @@ namespace ATTrafficAnalayzer.Models
             int volume;
             using (var query = new SQLiteCommand(conn))
             {
-
                 query.CommandText =
                     "SELECT volume from volumes WHERE intersection = '@intersection' AND detector = '@detector' AND dateTime = '@dateTime';";
 
@@ -462,7 +455,7 @@ namespace ATTrafficAnalayzer.Models
                 query.Parameters.AddWithValue("@detector", intersection);
                 query.Parameters.AddWithValue("@dateTime", dateTime);
 
-                var reader = query.ExecuteReader();
+                SQLiteDataReader reader = query.ExecuteReader();
                 if (reader.RecordsAffected != 1)
                 {
                     throw new Exception("WHOAH");
@@ -510,7 +503,7 @@ namespace ATTrafficAnalayzer.Models
                 query.Parameters.AddWithValue("@startDate", startDate);
                 //TODO change between to exclude upper limit instead of subtracting a second from endDate
                 query.Parameters.AddWithValue("@endDate", endDate.AddSeconds(-1));
-                var reader = query.ExecuteReader();
+                SQLiteDataReader reader = query.ExecuteReader();
                 while (reader.Read())
                 {
                     volumes.Add(reader.GetInt32(0));
@@ -533,9 +526,8 @@ namespace ATTrafficAnalayzer.Models
                                     "WHERE (dateTime BETWEEN @startDate AND @endDate);";
                 query.Parameters.AddWithValue("@startDate", startDate);
                 query.Parameters.AddWithValue("@endDate", endDate);
-                var reader = query.ExecuteReader();
+                SQLiteDataReader reader = query.ExecuteReader();
                 result = reader.HasRows;
-                
             }
             conn.Close();
             return result;
@@ -563,7 +555,7 @@ namespace ATTrafficAnalayzer.Models
             {
                 query.CommandText = "SELECT config FROM configs WHERE name = @name;";
                 query.Parameters.AddWithValue("@name", name);
-                var reader = query.ExecuteReader();
+                SQLiteDataReader reader = query.ExecuteReader();
 
                 if (reader.Read())
                     configJson = JObject.Parse(reader.GetString(0));
@@ -571,14 +563,14 @@ namespace ATTrafficAnalayzer.Models
             if (configJson != null)
             {
                 var approaches = new List<Approach>();
-                foreach (var approachID in (JArray) configJson["approaches"])
+                foreach (JToken approachID in (JArray) configJson["approaches"])
                 {
                     using (var query = new SQLiteCommand(conn))
                     {
                         query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
                         query.Parameters.AddWithValue("@id", approachID);
 
-                        var reader = query.ExecuteReader();
+                        SQLiteDataReader reader = query.ExecuteReader();
                         JObject approachJson = null;
 
                         if (reader.Read())
@@ -597,12 +589,11 @@ namespace ATTrafficAnalayzer.Models
 
         public void addConfiguration(Report config)
         {
-
-            var configJson = config.ToJson();
+            JObject configJson = config.ToJson();
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
 
-            foreach (var approach in config.Approaches)
+            foreach (Approach approach in config.Approaches)
             {
                 //INSERT APPROACHES INTO TABLE
                 using (var query = new SQLiteCommand(conn))
@@ -629,7 +620,6 @@ namespace ATTrafficAnalayzer.Models
                 query.Parameters.AddWithValue("@config", configJson.ToString());
                 query.Parameters.AddWithValue("@last_used", DateTime.Today);
                 query.ExecuteNonQuery();
-
             }
         }
 
@@ -646,7 +636,7 @@ namespace ATTrafficAnalayzer.Models
             {
                 dbConnection.Open();
 
-                var configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
+                string configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
                 var configExistsQuery = new SQLiteCommand(dbConnection) {CommandText = configExistsSql};
 
                 configExistsQuery.Parameters.AddWithValue("@configName", configName);
@@ -671,8 +661,9 @@ namespace ATTrafficAnalayzer.Models
                 conn.Open();
                 using (var query = new SQLiteCommand(conn))
                 {
-                    query.CommandText = "SELECT DISTINCT strftime('%Y-%m-%d', dateTime) FROM volumes ORDER BY DATE(dateTime) ASC;";
-                    var reader = query.ExecuteReader();
+                    query.CommandText =
+                        "SELECT DISTINCT strftime('%Y-%m-%d', dateTime) FROM volumes ORDER BY DATE(dateTime) ASC;";
+                    SQLiteDataReader reader = query.ExecuteReader();
                     while (reader.Read())
                     {
                         importedDates.Add(reader.GetDateTime(0));
@@ -687,19 +678,46 @@ namespace ATTrafficAnalayzer.Models
             const string sql = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
                                "FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate)" +
                                "GROUP BY intersection";
-            return GetDataAdapter(sql, new Dictionary<string, object> { {"@startDate" , startDate}, {"@endDate" , endDate}});
+            return GetDataAdapter(sql, new Dictionary<string, object> {{"@startDate", startDate}, {"@endDate", endDate}});
         }
 
         #endregion
 
+        public static DbHelper GetDbHelper()
+        {
+            lock (SyncLock)
+            {
+                return _instance ?? (_instance = new DbHelper());
+            }
+        }
+
         public SQLiteDataAdapter GetMonthlySummariesDataAdapter()
         {
-            return GetDataAdapter("SELECT name FROM monthly_summaries");
+            return GetDataAdapter("SELECT name FROM monthly_summaries;");
         }
 
         public bool VolumesExistForMonth(int month)
         {
             return true; //Needs to be implemented
+        }
+
+        public void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows)
+        {
+            var config = new JArray{rows.Select(row => row.ToJson())};
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+
+                using (var command = new SQLiteCommand(conn))
+                {
+                    command.CommandText = "INSERT INTO monthly_summaries (name, config) VALUES (@name, @config);";
+                    command.Parameters.AddWithValue("@name", configName);
+                    command.Parameters.AddWithValue("@config", config.ToString());
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

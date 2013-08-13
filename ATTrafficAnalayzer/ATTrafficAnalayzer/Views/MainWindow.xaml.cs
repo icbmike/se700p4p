@@ -29,6 +29,7 @@ namespace ATTrafficAnalayzer.Views
             SettingsToolbar.ModeChanged += SettingsToolbarOnModeChanged;
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
+            _selectedMode = Mode.RegularReports;
         }
 
         private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
@@ -137,13 +138,6 @@ namespace ATTrafficAnalayzer.Views
                             ReportList.ReportChanged += tableScreen.ReportChangedHandler;
                             ChangeScreen(tableScreen);
                         }
-                        else if (args.Button.Equals(Toolbar.ScreenButton.Summary))
-                        {
-                            var summaryScreen = new SummaryConfig(SettingsToolbar.SettingsTray, selectedItem);
-                            SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
-                            ReportList.ReportChanged += summaryScreen.ReportChangedHandler;
-                            ChangeScreen(summaryScreen);
-                        }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Home))
                         {
                             ChangeScreen(new Home(fileImportMenuItem_Click));
@@ -206,7 +200,8 @@ namespace ATTrafficAnalayzer.Views
                 {
                     if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
                     {
-                        var monthlySummary = new SummaryConfig(SettingsToolbar.SettingsTray, "New Monthly Summary");
+                        var monthlySummary = new SummaryConfig();
+                        monthlySummary.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                         ChangeScreen(monthlySummary);
                     }
                     else
@@ -223,7 +218,7 @@ namespace ATTrafficAnalayzer.Views
 
         }
 
-        void reportConfigurationScreen_ConfigurationSaved(object sender, Config.ConfigurationSavedEventArgs args)
+        void reportConfigurationScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
         {
             var tableScreen = new Table(SettingsToolbar.SettingsTray, args.Name);
             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
