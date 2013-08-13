@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
         private Mode _selectedMode;
-        private bool _modeChanged;
+        private bool _modeHasChanged;
 
         public ReportBrowser()
         {
@@ -27,13 +27,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void PopulateListView()
         {
-            StandardReportsTreeView.ItemsSource = 
+            StandardReportsTreeView.ItemsSource =
                 _selectedMode.Equals(Mode.RegularReports)
 
                     ? _reportsDataTableHelper.GetRegularReportDataView()
                     : _reportsDataTableHelper.GetMonthlySummaryDataView();
 
-            
+
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
@@ -153,17 +153,17 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (ReportChanged != null && _modeChanged)
+            if (ReportChanged != null && !_modeHasChanged)
             {
                 ReportChanged(this, new SelectedReporChangeEventHandlerArgs(GetSelectedConfiguration()));
-                _modeChanged = false;
             }
+            _modeHasChanged = false;
         }
 
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _selectedMode = args.SelectedMode;
-            _modeChanged = true;
+            _modeHasChanged = true;
             PopulateListView();
 
         }
