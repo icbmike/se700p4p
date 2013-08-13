@@ -119,7 +119,9 @@ namespace ATTrafficAnalayzer.Views
                     ChangeScreen(faultsScreen);
                 }
                 else if (args.Button.Equals(Toolbar.ScreenButton.Home))
-                            ChangeScreen(new Home(fileImportMenuItem_Click));
+                {
+                    ChangeScreen(new Home(fileImportMenuItem_Click));
+                }
                 else
                 {
                     //Get selected Config
@@ -135,22 +137,19 @@ namespace ATTrafficAnalayzer.Views
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Table))
                         {
-                            IView tableScreen;
                             if (_selectedMode.Equals(Mode.RegularReports))
-                                tableScreen = new Summary();
-                            else
                             {
-                                tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
+                                var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
                                 SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                                 ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                                ChangeScreen(tableScreen);
                             }
-                            ChangeScreen(tableScreen as UserControl);
+                            else
+                            {
+                                var tableScreen = new Summary();
+                                ChangeScreen(tableScreen);
+                            }
                         }
-                    }
-                    //TODO Remove when config screen saves summary reports
-                    else if (args.Button.Equals(Toolbar.ScreenButton.Table))
-                    {
-                        ChangeScreen(new Summary());
                     }
                     else
                     {
