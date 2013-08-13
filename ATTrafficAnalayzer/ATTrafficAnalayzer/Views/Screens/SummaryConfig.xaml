@@ -41,18 +41,30 @@
                                         Header="Route Name" Binding="{Binding RouteName}" />
                     
                     <DataGridComboBoxColumn 
-                                        ItemsSource="{Binding IntersectionIn}"
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Inbound Intersection" />
+                                        SelectedValueBinding="{Binding Path=SelectedIntersectionIn}"
+                                        Header="Inbound Intersection" >
+                        <DataGridComboBoxColumn.EditingElementStyle>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="ItemsSource" Value="{Binding Path=Intersections}" />
+                                
+                            </Style>
+                        </DataGridComboBoxColumn.EditingElementStyle>
+                    </DataGridComboBoxColumn>
 
                     <DataGridTextColumn Binding="{Binding DetectorsIn, Converter={screens:DetectorsListToStringConverter}}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Detectors" />
                     
                     <DataGridComboBoxColumn
-                                        ItemsSource="{Binding IntersectionOut}"
+                                        SelectedValueBinding="{Binding SelectedIntersectionOut}"
                                         ClipboardContentBinding="{x:Null}"
-                                        Header="Outbound Intersection" />
+                                        Header="Outbound Intersection" >
+                        <DataGridComboBoxColumn.EditingElementStyle>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="ItemsSource" Value="{Binding Path=Intersections}" />
+                            </Style>
+                        </DataGridComboBoxColumn.EditingElementStyle>
+                    </DataGridComboBoxColumn>
                   
                     <DataGridTextColumn Binding="{Binding DetectorsOut, Converter={screens:DetectorsListToStringConverter}}"
                                         ClipboardContentBinding="{x:Null}"

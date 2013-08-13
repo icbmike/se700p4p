@@ -20,8 +20,6 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class SummaryConfig
     {
         private readonly DbHelper _dbHelper;
-        private DateTime _endDate;
-        private DateTime _startDate;
 
         #region events
 
@@ -44,15 +42,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void FillSummary()
         {
-            DateLabel.Content = string.Format("Dates: {0} - {1}", _startDate.ToShortDateString(),
-                _endDate.Date.ToShortDateString());
 
             Rows.Add(new SummaryRow
                 {
                     DetectorsIn = { 1, 2, 3 },
                     DetectorsOut = { 4, 5 },
-                    IntersectionIn = 4012,
-                    IntersectionOut = 4013,
                     RouteName = "FROM SAINT HELIERS TO HOWICK"
                 });
 
@@ -63,9 +57,17 @@ namespace ATTrafficAnalayzer.Views.Screens
             var configName = ConfigNameTextBox.Text;
 
             //Do save
+            foreach (var row in Rows)
+            {
+
+            }
+
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+
         }
+
+       
     }
 
     public class SummaryRow
@@ -75,10 +77,22 @@ namespace ATTrafficAnalayzer.Views.Screens
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
         }
+        private ObservableCollection<int> _intersections;
 
+        public ObservableCollection<int> Intersections
+        {
+            get
+            {
+                if (_intersections == null)
+                {
+                    _intersections = new ObservableCollection<int>(DbHelper.GetIntersections());
+                }
+                return _intersections;
+            }
+        }
         public string RouteName { get; set; }
-        public int IntersectionIn { get; set; }
-        public int IntersectionOut { get; set; }
+        public int SelectedIntersectionIn { get; set; }
+        public int SelectedIntersectionOut { get; set; }
         public List<int> DetectorsIn { get; set; }
         public List<int> DetectorsOut { get; set; }
 
@@ -97,7 +111,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             //What the GUI sees
             var list = value as List<int>;
-            Console.WriteLine("LIST: " + list);
             var sb = new StringBuilder();
             for (int i = 0; i < list.Count; i++)
             {
@@ -115,7 +128,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             //What the model sees
             var str = value as String;
-            Console.WriteLine("STR" + str);
             return str.Split(new[] { ", " }, StringSplitOptions.None).Select(s => int.Parse(s)).ToList();
         }
 
