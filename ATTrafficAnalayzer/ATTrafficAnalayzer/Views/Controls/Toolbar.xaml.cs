@@ -24,25 +24,17 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (args.SelectedMode.Equals(Mode.MonthlySummary))
             {
-                //Remove the view Buttons
-                GraphButton.Visibility = Visibility.Hidden;
-                TableButton.Visibility = Visibility.Hidden;
-                FaultsButton.Visibility = Visibility.Hidden;
-                
-                //Add summary Button
-                
-                //Remove End Date and Interval
-                EndDatePicker.Visibility = Visibility.Hidden;
-                IntervalComboBox.Visibility = Visibility.Hidden;
+                GraphButton.Visibility = Visibility.Collapsed;
+                EndDateLabel.Visibility = Visibility.Collapsed;
+                EndDatePicker.Visibility = Visibility.Collapsed;
+                IntervalLabel.Visibility = Visibility.Collapsed;
+                IntervalComboBox.Visibility = Visibility.Collapsed;
             }
             else
             {
-                //Add the view Buttons
                 GraphButton.Visibility = Visibility.Visible;
-                TableButton.Visibility = Visibility.Visible;
-                FaultsButton.Visibility = Visibility.Visible;
-
-                //Add End Date and Interval
+                EndDateLabel.Visibility = Visibility.Visible;
+                IntervalLabel.Visibility = Visibility.Visible;
                 EndDatePicker.Visibility = Visibility.Visible;
                 IntervalComboBox.Visibility = Visibility.Visible;
             }
@@ -85,25 +77,13 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
             if (sender.Equals(GraphButton))
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Graph));
-            }
             else if (sender.Equals(TableButton))
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Table));
-            }
             else if (sender.Equals(HomeButton))
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
-            }
-            else if (sender.Equals(MonthlySummaryButton))
-            {
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Summary));
-            }
             else
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));
-            }
         }
 
         private void SwitchMode(object sender, RoutedEventArgs e)

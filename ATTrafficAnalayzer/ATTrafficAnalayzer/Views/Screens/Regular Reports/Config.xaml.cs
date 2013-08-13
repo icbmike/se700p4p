@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class Config : IConfigScreen
+    public partial class Config
     {
         private ObservableCollection<int> _detectorList;
         private ObservableCollection<int> _intersectionList;
@@ -25,7 +25,18 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #region events
 
+        public delegate void ConfigurationSavedEventHander(object sender, ConfigurationSavedEventArgs args);
 
+        public event ConfigurationSavedEventHander ConfigurationSaved;
+        public class ConfigurationSavedEventArgs
+        {
+            public string Name { get; set; }
+
+            public ConfigurationSavedEventArgs(string name)
+            {
+                Name = name;
+            }
+        } 
 
         #endregion
 
@@ -65,7 +76,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _detectorList.Clear();
-
+            
             foreach (var detector in _dbHelper.GetDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
@@ -103,7 +114,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 Debug.Assert(items != null, "items != null");
                 foreach (var item in items)
                 {
-                    ((ObservableCollection<int>)source.ItemsSource).Remove(item);
+                    ((ObservableCollection<int>) source.ItemsSource).Remove(item);
                 }
             }
 
@@ -132,10 +143,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var detector in _detectorList)
             {
-                var newApproach = new ConfigApproachBox(Approaches, null, string.Format("Group {0}", detector))
-                {
-                    Margin = new Thickness(20, 20, 0, 0)
-                };
+                var newApproach = new ConfigApproachBox(Approaches, null, string.Format("Group {0}", detector)) { Margin = new Thickness(20, 20, 0, 0) };
                 newApproach.AddDetector(detector);
                 Approaches.Children.Add(newApproach);
             }
@@ -147,10 +155,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 Approaches.Children.RemoveAt(1);
             }
-            var newApproach = new ConfigApproachBox(Approaches, null, "All Detectors")
-            {
-                Margin = new Thickness(20, 20, 0, 0)
-            };
+            var newApproach = new ConfigApproachBox(Approaches, null, "All Detectors") { Margin = new Thickness(20, 20, 0, 0) };
             Approaches.Children.Add(newApproach);
             foreach (var detector in _detectorList)
             {
@@ -172,14 +177,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             _dbHelper.addConfiguration(new Report(configName, _selectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
-            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName)); 
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
-            var configTextBox = (TextBox)sender;
+            var configTextBox = (TextBox) sender;
 
-            for (var count = 1; ; count++)
+            for (var count=1; ; count++)                             
             {
                 if (!_dbHelper.ConfigExists("Report " + count))
                 {
@@ -196,8 +201,5 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var intersection in DbHelper.GetIntersections())
                 _intersectionList.Add(intersection);
         }
-
-        public event ConfigurationSavedEventHander ConfigurationSaved;
     }
-
 }

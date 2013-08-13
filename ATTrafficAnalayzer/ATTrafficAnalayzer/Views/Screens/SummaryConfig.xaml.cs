@@ -12,7 +12,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class SummaryConfig
+    public partial class SummaryConfig : IConfigScreen
     {
         private readonly DbHelper _dbHelper;
 

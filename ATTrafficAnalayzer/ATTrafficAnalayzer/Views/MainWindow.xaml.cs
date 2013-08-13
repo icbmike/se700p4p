@@ -118,6 +118,8 @@ namespace ATTrafficAnalayzer.Views
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
                 }
+                else if (args.Button.Equals(Toolbar.ScreenButton.Home))
+                            ChangeScreen(new Home(fileImportMenuItem_Click));
                 else
                 {
                     //Get selected Config
@@ -133,28 +135,31 @@ namespace ATTrafficAnalayzer.Views
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Table))
                         {
-                            var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
-                            SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                            ReportList.ReportChanged += tableScreen.ReportChangedHandler;
-                            ChangeScreen(tableScreen);
+                            IView tableScreen;
+                            if (_selectedMode.Equals(Mode.RegularReports))
+                                tableScreen = new Summary();
+                            else
+                            {
+                                tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
+                                SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                                ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                            }
+                            ChangeScreen(tableScreen as UserControl);
                         }
-                        else if (args.Button.Equals(Toolbar.ScreenButton.Home))
-                        {
-                            ChangeScreen(new Home(fileImportMenuItem_Click));
-                        }
+                    }
+                    //TODO Remove when config screen saves summary reports
+                    else if (args.Button.Equals(Toolbar.ScreenButton.Table))
+                    {
+                        ChangeScreen(new Summary());
                     }
                     else
                     {
                         MessageBox.Show("Select a report from the list on the left");
                     }
                 }
-
-
             }
             else
-            {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
-            }
         }
 
         private void FileExitMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -208,7 +213,7 @@ namespace ATTrafficAnalayzer.Views
                     {
                         MessageBox.Show("You haven't imported volume data for the selected month");
                     }
-                    
+
                 }
             }
             else

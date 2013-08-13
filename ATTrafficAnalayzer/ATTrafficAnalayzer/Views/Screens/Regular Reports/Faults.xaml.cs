@@ -9,7 +9,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class Faults : IView
+    public partial class Faults
     {
         private readonly DbHelper _dbHelper;
         private DateTime _endDate;
@@ -45,18 +45,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 FillGrid();
             }
-        }
-
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
-
-        void IView.DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
-            DateRangeChangedHandler(sender, args);
         }
     }
 }

@@ -24,34 +24,47 @@
             <Button Name="HomeButton"
                     Margin="5,0"
                     Click="SwitchScreen"
-                    VerticalAlignment="Center"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     MouseLeftButtonDown="SwitchScreen"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}">
-                <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
+                    <ContentPresenter Content="Home" />
+                </StackPanel>
             </Button>
-
-            <Button Name="TableButton"
-                    Content="Table"
-                    Margin="10,0,1,0"
-                    Click="SwitchScreen"
-                    Width="80"
-                    Style="{StaticResource AtToolbarButtonStyle}" />
-            <Button Name="GraphButton"
-                    Click="SwitchScreen"
+            <Button Name="MonthlySummaryButton"
+                    Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,1,0"
-                    Content="Graph"
-                    Width="80" />
+                    Margin="1"
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_420_tower.png" />
+                    <ContentPresenter Content="Summary" />
+                </StackPanel>
+            </Button>
+            <Button Name="RegularReportsButton"
+                    Click="SwitchMode"
+                    Style="{StaticResource AtToolbarButtonStyle}"
+                    Margin="1"
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_450_factory.png" />
+                    <ContentPresenter Content="Reports" />
+                </StackPanel>
+            </Button>
             <Button Name="FaultsButton"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,1,0"
-                    Content="Faults"
-                    Width="80" />
+                    Margin="1"
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_421_send.png" />
+                    <ContentPresenter Content="Faults" />
+                </StackPanel>
+            </Button>
 
-            <Label Margin="10,0,4,0"
+            <Label Name="StartDateLabel"
+                   Margin="10,0,4,0"
                    Foreground="White"
                    FontSize="16"
                    Content="Start Date:" />
@@ -62,7 +75,8 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
-            <Label Margin="20,0,0,0"
+            <Label Name="EndDateLabel"
+                   Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
                    FontSize="16"
                    Content="End Date:" />
@@ -74,7 +88,8 @@
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
 
-            <Label Margin="20,0,0,0"
+            <Label Name="IntervalLabel"
+                   Margin="20,0,0,0"
                    Foreground="White"
                    FontSize="16"
                    Content="Interval" />
@@ -92,20 +107,24 @@
                 <ComboBoxItem>30 min</ComboBoxItem>
                 <ComboBoxItem>60 min</ComboBoxItem>
             </ComboBox>
-            
-            <Button Name="MonthlySummaryButton"
-                    Click="SwitchMode"
+
+            <Button Name="TableButton"
+                    Margin="10,0,1,0"
+                    Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,10,0"
-                    Content="Monthly Summary"
-                     />
-            
-            <Button Name="RegularReportsButton"
-                    Click="SwitchMode"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_119_table.png" />
+            </Button>
+            <Button Name="GraphButton"
+                    Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,10,0"
-                    Content="Regular Reports"
-                     />
+                    Margin="1,0,1,0"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_040_stats.png" />
+            </Button>
+
         </ToolBar>
     </ToolBarPanel>
 </UserControl>

@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="ATTrafficAnalayzer.Views.Screens.Faults"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="1100"
+             d:DesignWidth="1720">
+
+    <ScrollViewer HorizontalContentAlignment="Stretch">
+        <StackPanel Margin="20">
+
+            <Label FontSize="28"
+                   Margin="20,0"
+                   FontWeight="Bold"
+                   Content="Faulty Detectors" />
+
+            <DataGrid AutoGenerateColumns="True"
+                      Name="FaultsDataGrid"
+                      IsReadOnly="True"
+                      FrozenColumnCount="1"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="False"
+                      ScrollViewer.CanContentScroll="False"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Disabled"
+                      FontSize="11"
+                      HorizontalContentAlignment="Stretch"
+                      AreRowDetailsFrozen="True"
+                      RowHeaderWidth="0"
+                      VerticalAlignment="Top"
+                      ColumnWidth="Auto"
+                      Margin="20"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
