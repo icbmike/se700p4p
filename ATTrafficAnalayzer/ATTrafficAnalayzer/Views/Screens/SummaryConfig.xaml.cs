@@ -34,7 +34,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public ObservableCollection<SummaryRow> Rows { get; set; }
 
-
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var configName = ConfigNameTextBox.Text;

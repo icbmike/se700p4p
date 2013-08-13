@@ -98,7 +98,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _reportsDataTableHelper.RemoveConfig(selectedItem);
+                    _reportsDataTableHelper.RemoveConfig(selectedItem, _selectedMode);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";

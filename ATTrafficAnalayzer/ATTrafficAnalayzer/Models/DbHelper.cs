@@ -693,7 +693,7 @@ namespace ATTrafficAnalayzer.Models
 
         public SQLiteDataAdapter GetMonthlySummariesDataAdapter()
         {
-            return GetDataAdapter("SELECT name FROM monthly_summaries");
+            return GetDataAdapter("SELECT name FROM monthly_summaries;");
         }
 
         public bool VolumesExistForMonth(int month)

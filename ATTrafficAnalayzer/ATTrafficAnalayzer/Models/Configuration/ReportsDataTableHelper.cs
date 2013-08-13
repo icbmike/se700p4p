@@ -3,6 +3,7 @@ using System.Collections;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
+using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.Configuration
 {
@@ -27,8 +28,8 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         #region Config Related Methods
 
-        private DbDataAdapter _regularReportsDataAdapter;
-        private DbDataAdapter _monthlySummaryDataAdapter;
+        private SQLiteDataAdapter _regularReportsDataAdapter;
+        private SQLiteDataAdapter _monthlySummaryDataAdapter;
 
         private DataTable _regularReportsDataTable = new DataTable();
         private DataTable _monthlySummaryDataTable = new DataTable();
@@ -38,11 +39,14 @@ namespace ATTrafficAnalayzer.Models.Configuration
             //Regular reports
             _regularReportsDataAdapter = _dbHelper.GetConfigsDataAdapter();
             _regularReportsDataAdapter.Fill(_regularReportsDataTable);
+            new SQLiteCommandBuilder(_regularReportsDataAdapter);
+
             _regularReportsDataTable.PrimaryKey = new[] { _regularReportsDataTable.Columns["name"] };
 
             //Monthly Summaries
             _monthlySummaryDataAdapter = _dbHelper.GetMonthlySummariesDataAdapter();
             _monthlySummaryDataAdapter.Fill(_monthlySummaryDataTable);
+            new SQLiteCommandBuilder(_monthlySummaryDataAdapter);
             _monthlySummaryDataTable.PrimaryKey = new[] { _monthlySummaryDataTable.Columns["name"] };
         }
 
@@ -51,26 +55,25 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return _regularReportsDataTable.DefaultView;
         }
 
-        public void RemoveConfig(string configToDelete)
+        public void RemoveConfig(string configToDelete, Mode selectedMode)
         {
-            RemoveConfigFromDataSet(configToDelete);
+            RemoveConfigFromDataSet(configToDelete, selectedMode);
             SyncConfigs();
         }
 
-        public void RemoveConfigFromDataSet(String configToDelete)
+        private void RemoveConfigFromDataSet(String configToDelete, Mode selectedMode)
         {
-            var configs = _regularReportsDataTable.Rows;
+            var configs = selectedMode.Equals(Mode.RegularReports) ? _regularReportsDataTable.Rows : _monthlySummaryDataTable.Rows;
             var rowToDelete = configs.Find(configToDelete);
-            Console.WriteLine("Deleting: " + rowToDelete["name"]);
             rowToDelete.Delete();
         }
 
         public void SyncConfigs()
         {
             _regularReportsDataAdapter.Update(_regularReportsDataTable);
-            _monthlySummaryDataAdapter.Update((_monthlySummaryDataTable));
+            _monthlySummaryDataAdapter.Update(_monthlySummaryDataTable);
             _regularReportsDataAdapter.Fill(_regularReportsDataTable);
-            _monthlySummaryDataAdapter.Fill((_monthlySummaryDataTable));
+            _monthlySummaryDataAdapter.Fill(_monthlySummaryDataTable);
         }
 
         #endregion
