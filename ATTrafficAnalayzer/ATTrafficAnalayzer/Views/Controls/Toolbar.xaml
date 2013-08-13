@@ -24,32 +24,36 @@
             <Button Name="HomeButton"
                     Margin="5,0"
                     Click="SwitchScreen"
-                    VerticalAlignment="Center"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     MouseLeftButtonDown="SwitchScreen"
                     Background="{x:Null}"
                     Foreground="{x:Null}">
                 <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
             </Button>
-
-            <Button Name="TableButton"
-                    Content="Table"
-                    Margin="10,0,1,0"
-                    Click="SwitchScreen"
-                    Width="80"
-                    Style="{StaticResource AtToolbarButtonStyle}" />
-            <Button Name="GraphButton"
-                    Click="SwitchScreen"
+            <Button Name="MonthlySummaryButton"
+                    Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,1,0"
-                    Content="Graph"
-                    Width="80" />
+                    Margin="1"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_420_tower.png" />
+            </Button>
+            <Button Name="RegularReportsButton"
+                    Click="SwitchMode"
+                    Style="{StaticResource AtToolbarButtonStyle}"
+                    Margin="1"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_450_factory.png" />
+            </Button>
             <Button Name="FaultsButton"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,1,0"
-                    Content="Faults"
-                    Width="80" />
+                    Margin="1"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_421_send.png" />
+            </Button>
 
             <Label Margin="10,0,4,0"
                    Foreground="White"
@@ -92,20 +96,26 @@
                 <ComboBoxItem>30 min</ComboBoxItem>
                 <ComboBoxItem>60 min</ComboBoxItem>
             </ComboBox>
-            
-            <Button Name="MonthlySummaryButton"
-                    Click="SwitchMode"
+
+            <Button Name="TableButton"
+                    Content="Table"
+                    Margin="10,0,1,0"
+                    Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,10,0"
-                    Content="Monthly Summary"
-                     />
-            
-            <Button Name="RegularReportsButton"
-                    Click="SwitchMode"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_119_table.png" />
+            </Button>
+            <Button Name="GraphButton"
+                    Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,10,0"
-                    Content="Regular Reports"
-                     />
+                    Margin="1,0,1,0"
+                    Content="Graph"
+                    Background="{x:Null}"
+                    Foreground="{x:Null}">
+                <Image Source="/Resources\Images\Icons\glyphicons_040_stats.png" />
+            </Button>
+
         </ToolBar>
     </ToolBarPanel>
 </UserControl>

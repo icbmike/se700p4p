@@ -229,6 +229,11 @@
     <Resource Include="Resources\Images\Icons\glyphicons_359_file_export.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_418_disk_import.png" />
     <Resource Include="Resources\Images\plus-hd.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_040_stats.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_119_table.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_420_tower.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_421_send.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_450_factory.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

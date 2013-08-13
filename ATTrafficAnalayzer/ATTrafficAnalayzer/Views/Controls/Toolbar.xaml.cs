@@ -83,21 +83,13 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void SwitchScreen(object sender, RoutedEventArgs e)
         {
             if (sender.Equals(GraphButton))
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Graph));
-            }
             else if (sender.Equals(TableButton))
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Table));
-            }
             else if (sender.Equals(HomeButton))
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
-            }
             else
-            {
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));
-            }
         }
 
         private void SwitchMode(object sender, RoutedEventArgs e)
