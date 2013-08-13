@@ -6,6 +6,9 @@ namespace ATTrafficAnalayzer.Views.Screens
 {
     public class SummaryRow
     {
+
+        private bool _isValid;
+
         public SummaryRow()
         {
             DetectorsIn = new List<int>();
@@ -24,6 +27,12 @@ namespace ATTrafficAnalayzer.Views.Screens
                 return _intersections;
             }
         }
+
+        public bool IsValid
+        {
+            get { return SelectedIntersectionIn != 0 && SelectedIntersectionOut != 0 && !RouteName.Equals(""); }
+        }
+
         public string RouteName { get; set; }
         public int SelectedIntersectionIn { get; set; }
         public int SelectedIntersectionOut { get; set; }

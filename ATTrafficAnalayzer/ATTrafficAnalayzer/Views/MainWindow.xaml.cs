@@ -29,6 +29,7 @@ namespace ATTrafficAnalayzer.Views
             SettingsToolbar.ModeChanged += SettingsToolbarOnModeChanged;
             ImportCompleted += welcomeScreen.ImportCompletedHandler;
             ChangeScreen(welcomeScreen);
+            _selectedMode = Mode.RegularReports;
         }
 
         private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)

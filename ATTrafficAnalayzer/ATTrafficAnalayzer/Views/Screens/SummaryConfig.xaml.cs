@@ -29,31 +29,30 @@ namespace ATTrafficAnalayzer.Views.Screens
             InitializeComponent();
             SummaryDataGrid.DataContext = this;
 
-            FillSummary();
         }
 
         public ObservableCollection<SummaryRow> Rows { get; set; }
 
-        private void FillSummary()
-        {
-
-            Rows.Add(new SummaryRow
-                {
-                    DetectorsIn = { 1, 2, 3 },
-                    DetectorsOut = { 4, 5 },
-                    RouteName = "FROM SAINT HELIERS TO HOWICK"
-                });
-
-        }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var configName = ConfigNameTextBox.Text;
 
+            if (Rows.Count == 0)
+            {
+                MessageBox.Show("No rows in table");
+                return;
+            }
+
             //Do save
             foreach (var row in Rows)
             {
-                Console.WriteLine(row);
+                //Check if any are in a bad state
+                if (!row.IsValid)
+                {
+                    MessageBox.Show("Invalid data in tables");
+                    return;
+                }
             }
 
             //Fire saved event

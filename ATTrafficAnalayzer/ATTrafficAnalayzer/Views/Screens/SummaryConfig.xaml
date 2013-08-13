@@ -31,6 +31,7 @@
                       CanUserReorderColumns="False"
                       CanUserResizeColumns="False"
                       CanUserSortColumns="True"
+                      CanUserDeleteRows="True"
                       ScrollViewer.CanContentScroll="False"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Disabled"
