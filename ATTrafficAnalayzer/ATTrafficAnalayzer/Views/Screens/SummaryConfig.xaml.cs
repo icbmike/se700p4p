@@ -59,43 +59,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             //Do save
             foreach (var row in Rows)
             {
-
+                Console.WriteLine(row);
             }
 
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
 
         }
-
        
-    }
-
-    public class SummaryRow
-    {
-        public SummaryRow()
-        {
-            DetectorsIn = new List<int>();
-            DetectorsOut = new List<int>();
-        }
-        private ObservableCollection<int> _intersections;
-
-        public ObservableCollection<int> Intersections
-        {
-            get
-            {
-                if (_intersections == null)
-                {
-                    _intersections = new ObservableCollection<int>(DbHelper.GetIntersections());
-                }
-                return _intersections;
-            }
-        }
-        public string RouteName { get; set; }
-        public int SelectedIntersectionIn { get; set; }
-        public int SelectedIntersectionOut { get; set; }
-        public List<int> DetectorsIn { get; set; }
-        public List<int> DetectorsOut { get; set; }
-
     }
 
     public class DetectorsListToStringConverter : MarkupExtension, IValueConverter

@@ -7,6 +7,11 @@
              mc:Ignorable="d"
              d:DesignHeight="1100"
              d:DesignWidth="1720">
+    <UserControl.Resources>
+        <Style x:Key="ComboBoxColumnStyle" TargetType="ComboBox">
+            <Setter Property="ItemsSource" Value="{Binding Path=Intersections}" />
+        </Style>
+    </UserControl.Resources>
 
     <ScrollViewer HorizontalContentAlignment="Stretch">
         <StackPanel Margin="10">
@@ -15,7 +20,7 @@
                    Margin="20,0"
                    FontWeight="Bold"
                    Name="ConfigNameTextBox" />
-            
+
             <Label FontSize="16"
                    Margin="20,0"
                    Name="DateLabel" />
@@ -39,40 +44,31 @@
                     <DataGridTextColumn 
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Route Name" Binding="{Binding RouteName}" />
-                    
+
                     <DataGridComboBoxColumn 
-                                        SelectedValueBinding="{Binding Path=SelectedIntersectionIn}"
-                                        Header="Inbound Intersection" >
-                        <DataGridComboBoxColumn.EditingElementStyle>
-                            <Style TargetType="ComboBox">
-                                <Setter Property="ItemsSource" Value="{Binding Path=Intersections}" />
-                                
-                            </Style>
-                        </DataGridComboBoxColumn.EditingElementStyle>
-                    </DataGridComboBoxColumn>
+                                        Header="Inbound Intersection"
+                                        SelectedValueBinding="{Binding SelectedIntersectionIn}"
+                        ElementStyle="{StaticResource ComboBoxColumnStyle}"
+                                        EditingElementStyle="{StaticResource ComboBoxColumnStyle}"
+                                        />
 
                     <DataGridTextColumn Binding="{Binding DetectorsIn, Converter={screens:DetectorsListToStringConverter}}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Inbound Detectors" />
-                    
+
                     <DataGridComboBoxColumn
-                                        SelectedValueBinding="{Binding SelectedIntersectionOut}"
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Outbound Intersection" >
-                        <DataGridComboBoxColumn.EditingElementStyle>
-                            <Style TargetType="ComboBox">
-                                <Setter Property="ItemsSource" Value="{Binding Path=Intersections}" />
-                            </Style>
-                        </DataGridComboBoxColumn.EditingElementStyle>
-                    </DataGridComboBoxColumn>
-                  
+                                        SelectedValueBinding="{Binding Path=SelectedIntersectionOut}"
+                                        ElementStyle="{StaticResource ComboBoxColumnStyle}"
+                                        EditingElementStyle="{StaticResource ComboBoxColumnStyle}"
+                                        Header="Outbound Intersection" />
+
                     <DataGridTextColumn Binding="{Binding DetectorsOut, Converter={screens:DetectorsListToStringConverter}}"
                                         ClipboardContentBinding="{x:Null}"
                                         Header="Outbound Detectors" />
-                    
+
                 </DataGrid.Columns>
             </DataGrid>
-        <Button Content="Save Summary Configuration"
+            <Button Content="Save Summary Configuration"
                 Click="ButtonBase_OnClick"/>
         </StackPanel>
     </ScrollViewer>
