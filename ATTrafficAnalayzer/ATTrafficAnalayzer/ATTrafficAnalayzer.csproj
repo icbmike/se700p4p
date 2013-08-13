@@ -119,6 +119,7 @@
     <Compile Include="Views\Screens\SummaryConfig.xaml.cs">
       <DependentUpon>SummaryConfig.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Screens\SummaryRow.cs" />
     <Compile Include="Views\Screens\Table.xaml.cs">
       <DependentUpon>Table.xaml</DependentUpon>
     </Compile>
