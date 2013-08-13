@@ -39,21 +39,26 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var configName = ConfigNameTextBox.Text;
 
+            //Check we're in a valid state
             if (Rows.Count == 0)
             {
                 MessageBox.Show("No rows in table");
                 return;
             }
-
-            //Do save
             if (Rows.Any(row => !row.IsValid))
             {
                 MessageBox.Show("Invalid data in tables");
                 return;
             }
+            if (configName.Equals(""))
+            {
+                MessageBox.Show("Summary Name is empty");
+                return;
+            }
 
+            //Do save
             DbHelper.GetDbHelper().SaveMonthlySummaryConfig(configName, Rows);
-            Console.WriteLine("Woooo");
+
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
 
