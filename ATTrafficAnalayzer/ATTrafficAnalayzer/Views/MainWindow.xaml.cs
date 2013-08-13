@@ -35,6 +35,11 @@ namespace ATTrafficAnalayzer.Views
         private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _selectedMode = args.SelectedMode;
+
+            if (_selectedMode.Equals(Mode.RegularReports) || _selectedMode.Equals((Mode.MonthlySummary)))
+            {
+                ReportList.Visibility = Visibility.Visible;
+            }
         }
 
         public delegate void ImportCompletedHandler(object sender);
@@ -117,10 +122,12 @@ namespace ATTrafficAnalayzer.Views
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
+                    ReportList.Visibility = Visibility.Collapsed;
                 }
                 else if (args.Button.Equals(Toolbar.ScreenButton.Home))
                 {
                     ChangeScreen(new Home(fileImportMenuItem_Click));
+                    ReportList.Visibility = Visibility.Collapsed;
                 }
                 else
                 {

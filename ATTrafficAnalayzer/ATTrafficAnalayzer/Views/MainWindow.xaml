@@ -103,6 +103,7 @@
 
         <controls:ReportBrowser x:Name="ReportList"
                              EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
+                             Visibility="Collapsed"
                              ExportEvent="ReportList_OnExportEvent" />
 
         <ContentControl DockPanel.Dock="Right"
