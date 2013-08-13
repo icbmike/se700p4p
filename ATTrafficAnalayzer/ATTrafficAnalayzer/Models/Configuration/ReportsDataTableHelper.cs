@@ -68,7 +68,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public void SyncConfigs()
         {
             _regularReportsDataAdapter.Update(_regularReportsDataTable);
+            _monthlySummaryDataAdapter.Update((_monthlySummaryDataTable));
             _regularReportsDataAdapter.Fill(_regularReportsDataTable);
+            _monthlySummaryDataAdapter.Fill((_monthlySummaryDataTable));
         }
 
         #endregion

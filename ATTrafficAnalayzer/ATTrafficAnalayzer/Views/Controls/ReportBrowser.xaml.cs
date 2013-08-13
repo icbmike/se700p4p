@@ -128,6 +128,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
+            _reportsDataTableHelper.SyncConfigs();
             PopulateListView();
         }
 

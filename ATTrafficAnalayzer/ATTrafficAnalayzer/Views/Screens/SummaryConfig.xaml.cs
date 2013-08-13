@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
@@ -45,16 +46,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             //Do save
-            foreach (var row in Rows)
+            if (Rows.Any(row => !row.IsValid))
             {
-                //Check if any are in a bad state
-                if (!row.IsValid)
-                {
-                    MessageBox.Show("Invalid data in tables");
-                    return;
-                }
+                MessageBox.Show("Invalid data in tables");
+                return;
             }
 
+            DbHelper.GetDbHelper().SaveMonthlySummaryConfig(configName, Rows);
+            Console.WriteLine("Woooo");
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
 

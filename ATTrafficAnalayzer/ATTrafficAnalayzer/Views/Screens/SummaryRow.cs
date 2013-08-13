@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
+using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -44,6 +45,16 @@ namespace ATTrafficAnalayzer.Views.Screens
             return "RouteName: " + RouteName + " Intersection In: " + SelectedIntersectionIn + " Intersection Out: " +
                    SelectedIntersectionOut +
                    " Detectors In: " + DetectorsIn + " Detectors Out: " + DetectorsOut;
+        }
+
+        public JObject ToJson()
+        {
+            return new JObject {{"route_name", RouteName}, 
+                                    {"intersection_in", SelectedIntersectionIn},
+                                    {"intersection_out", SelectedIntersectionOut},
+                                    {"detectors_in", new JArray(DetectorsIn.ToArray())},
+                                    {"detectors_out", new JArray(DetectorsOut.ToArray())}
+                                };
         }
 
     }
