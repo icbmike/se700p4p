@@ -109,6 +109,7 @@
     <Compile Include="Models\Configuration\Report.cs" />
     <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
+    <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />
     <Compile Include="Views\Screens\Faults.xaml.cs">
       <DependentUpon>Faults.xaml</DependentUpon>
     </Compile>
