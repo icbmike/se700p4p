@@ -26,36 +26,45 @@
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     MouseLeftButtonDown="SwitchScreen"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}">
-                <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
+                    <ContentPresenter Content="Home" />
+                </StackPanel>
             </Button>
             <Button Name="MonthlySummaryButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}">
-                <Image Source="/Resources\Images\Icons\glyphicons_420_tower.png" />
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_420_tower.png" />
+                    <ContentPresenter Content="Summary" />
+                </StackPanel>
             </Button>
             <Button Name="RegularReportsButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}">
-                <Image Source="/Resources\Images\Icons\glyphicons_450_factory.png" />
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_450_factory.png" />
+                    <ContentPresenter Content="Reports" />
+                </StackPanel>
             </Button>
             <Button Name="FaultsButton"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}">
-                <Image Source="/Resources\Images\Icons\glyphicons_421_send.png" />
+                    Background="{x:Null}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_421_send.png" />
+                    <ContentPresenter Content="Faults" />
+                </StackPanel>
             </Button>
 
-            <Label Margin="10,0,4,0"
+            <Label Name="StartDateLabel"
+                   Margin="10,0,4,0"
                    Foreground="White"
                    FontSize="16"
                    Content="Start Date:" />
@@ -66,7 +75,8 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
-            <Label Margin="20,0,0,0"
+            <Label Name="EndDateLabel"
+                   Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
                    FontSize="16"
                    Content="End Date:" />
@@ -78,7 +88,8 @@
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
 
-            <Label Margin="20,0,0,0"
+            <Label Name="IntervalLabel"
+                   Margin="20,0,0,0"
                    Foreground="White"
                    FontSize="16"
                    Content="Interval" />
@@ -98,7 +109,6 @@
             </ComboBox>
 
             <Button Name="TableButton"
-                    Content="Table"
                     Margin="10,0,1,0"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
@@ -110,7 +120,6 @@
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1,0,1,0"
-                    Content="Graph"
                     Background="{x:Null}"
                     Foreground="{x:Null}">
                 <Image Source="/Resources\Images\Icons\glyphicons_040_stats.png" />

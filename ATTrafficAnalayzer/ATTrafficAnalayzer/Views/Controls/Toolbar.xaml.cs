@@ -24,23 +24,17 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (args.SelectedMode.Equals(Mode.MonthlySummary))
             {
-                //Remove the view Buttons
-                GraphButton.Visibility = Visibility.Hidden;
-                FaultsButton.Visibility = Visibility.Hidden;
-                
-                //Add summary Button
-                
-                //Remove End Date and Interval
-                EndDatePicker.Visibility = Visibility.Hidden;
-                IntervalComboBox.Visibility = Visibility.Hidden;
+                GraphButton.Visibility = Visibility.Collapsed;
+                EndDateLabel.Visibility = Visibility.Collapsed;
+                EndDatePicker.Visibility = Visibility.Collapsed;
+                IntervalLabel.Visibility = Visibility.Collapsed;
+                IntervalComboBox.Visibility = Visibility.Collapsed;
             }
             else
             {
-                //Add the view Buttons
                 GraphButton.Visibility = Visibility.Visible;
-                FaultsButton.Visibility = Visibility.Visible;
-
-                //Add End Date and Interval
+                EndDateLabel.Visibility = Visibility.Visible;
+                IntervalLabel.Visibility = Visibility.Visible;
                 EndDatePicker.Visibility = Visibility.Visible;
                 IntervalComboBox.Visibility = Visibility.Visible;
             }
