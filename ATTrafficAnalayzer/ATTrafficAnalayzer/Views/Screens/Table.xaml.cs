@@ -9,6 +9,7 @@ using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using System;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -70,12 +71,18 @@ namespace ATTrafficAnalayzer.Views.Screens
             //Add all the things!
 
             var timeSpan = _endDate - _startDate;
+            bool countsDontMatch = false;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
                 {
-
-                    ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, day));
+                    var tableApproachDisplay = CreateApproachDisplay(approach, day);
+                    if (tableApproachDisplay == null)
+                    {
+                        countsDontMatch = true;
+                        break;
+                    }
+                    ApproachesStackPanel.Children.Add(tableApproachDisplay);
 
                     _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                     _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -85,6 +92,13 @@ namespace ATTrafficAnalayzer.Views.Screens
                     _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(),
                         string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
                 }
+
+                if (countsDontMatch) break;
+            }
+            if (countsDontMatch)
+            {
+                if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
+                return;
             }
 
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
@@ -110,7 +124,12 @@ namespace ATTrafficAnalayzer.Views.Screens
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
             approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
-            approachDisplay.ApproachDataGrid.ItemsSource = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day).AsDataView();
+            var dataTable = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day);
+            if (dataTable == null)
+            {
+                return null;
+            }
+            approachDisplay.ApproachDataGrid.ItemsSource = dataTable.AsDataView();
 
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
             approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));

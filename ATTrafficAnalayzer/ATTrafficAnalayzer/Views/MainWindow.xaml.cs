@@ -24,11 +24,14 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            var welcomeScreen = new Home(fileImportMenuItem_Click);
+            var homeScreen = new Home();
+            homeScreen.ImportRequested += fileImportMenuItem_Click;
+
             SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
             SettingsToolbar.ModeChanged += SettingsToolbarOnModeChanged;
-            ImportCompleted += welcomeScreen.ImportCompletedHandler;
-            ChangeScreen(welcomeScreen);
+            ImportCompleted += homeScreen.ImportCompletedHandler;
+
+            ChangeScreen(homeScreen);
             _selectedMode = Mode.RegularReports;
         }
 
@@ -155,7 +158,10 @@ namespace ATTrafficAnalayzer.Views
                 }
                 else if (args.Button.Equals(Toolbar.ScreenButton.Home))
                 {
-                    ChangeScreen(new Home(fileImportMenuItem_Click));
+                    var homeScreen = new Home();
+                    homeScreen.ImportRequested += fileImportMenuItem_Click;
+                    ChangeScreen(homeScreen);
+
                     ReportList.Visibility = Visibility.Collapsed;
                 }
                 else
@@ -169,6 +175,7 @@ namespace ATTrafficAnalayzer.Views
                             var graphScreen = new Graph(SettingsToolbar.SettingsTray, selectedItem);
                             SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
                             ReportList.ReportChanged += graphScreen.ReportChangedHandler;
+                            graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                             ChangeScreen(graphScreen);
                         }
                         else if (args.Button.Equals(Toolbar.ScreenButton.Table))
@@ -178,6 +185,7 @@ namespace ATTrafficAnalayzer.Views
                                 var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
                                 SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                                 ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                                tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                                 ChangeScreen(tableScreen);
                             }
                             else
@@ -195,6 +203,16 @@ namespace ATTrafficAnalayzer.Views
             }
             else
                 MessageBox.Show("You haven't imported volume data for the selected date range");
+        }
+
+        private void OnVolumeDateCountsDontMatch(IView sender)
+        {
+            MessageBox.Show("You don't have volume data imported for the range you specified");
+
+            var homeScreen = new Home();
+            homeScreen.ImportRequested += fileImportMenuItem_Click;
+            ChangeScreen(homeScreen);
+
         }
 
         private void FileExitMenuItem_OnClick(object sender, RoutedEventArgs e)

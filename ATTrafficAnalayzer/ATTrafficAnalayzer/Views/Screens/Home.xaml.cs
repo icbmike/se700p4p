@@ -22,10 +22,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         #endregion
 
 
-        public Home(ImportRequestEventHandler handler)
+        public Home()
         {
             InitializeComponent();
-            ImportRequested += handler;
            
             var bw = new BackgroundWorker();
 
@@ -35,6 +34,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Logger.Info("constructed view", "homescreen");
         }
+
 
         private void WorkerCompletedHandler(object sender, RunWorkerCompletedEventArgs e)
         {
