@@ -328,6 +328,7 @@ namespace ATTrafficAnalayzer.Models
             int index = 0;
             DateTimeRecord currentDateTime = null;
             DuplicatePolicy duplicatePolicy = DuplicatePolicy.Continue;
+            bool continuing = false;
 
             using (var cmd = new SQLiteCommand(dbConnection))
             {
@@ -386,7 +387,7 @@ namespace ATTrafficAnalayzer.Models
                                     }
                                     catch (SQLiteException e)
                                     {
-                                        if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
+                                        if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint) && !continuing)
                                         {
 
                                             Logger.Error("DBHELPER",
@@ -399,6 +400,11 @@ namespace ATTrafficAnalayzer.Models
                                             {
                                                 alreadyLoaded = true;
                                                 break;
+                                            }
+                                            else
+                                            {
+                                                
+                                                continuing = true;
                                             }
                                         }
                                     }

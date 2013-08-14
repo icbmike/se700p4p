@@ -100,33 +100,35 @@ namespace ATTrafficAnalayzer.Views
                 var settings = new ProgressDialogSettings(true, false, false);
                 foreach (var filename in dlg.FileNames)
                 {
+                    DbHelper.DuplicatePolicy skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 
-                        DbHelper.ImportFile(b, w, filename,
-                                            progress =>
-                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
-                                            () =>
-                                                {
-                                                    var waitForInput = true;
-                                                    var  policy = DbHelper.DuplicatePolicy.Continue;
-                                                    Dispatcher.BeginInvoke(new Action(() =>
-                                                        {
-                                                            var dialog = new DuplicatePolicyDialog {Owner = this};
-                                                            dialog.ShowDialog();
-                                                            policy = dialog.SelectedPolicy;
-                                                            waitForInput = false;
-                                                        }), null);
-                                                    while (waitForInput) ;
+                        skipAllOrOne = DbHelper.ImportFile(b, w, filename,
+                                                           progress =>
+                                                           ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
+                                                           () =>
+                                                               {
+                                                                   var waitForInput = true;
+                                                                   var  policy = DbHelper.DuplicatePolicy.Continue;
+                                                                   Dispatcher.BeginInvoke(new Action(() =>
+                                                                       {
+                                                                           var dialog = new DuplicatePolicyDialog {Owner = this};
+                                                                           dialog.ShowDialog();
+                                                                           policy = dialog.SelectedPolicy;
+                                                                           waitForInput = false;
+                                                                       }), null);
+                                                                   while (waitForInput) ;
 
-                                                    return policy;
-                                                });
-                                        
+                                                                   return policy;
+                                                               });
+
+
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
-                    }, settings); 
+                    }, settings);
+                    if (skipAllOrOne.Equals(DbHelper.DuplicatePolicy.SkipAll)) break;
                 }
-                
             }
         }
 
