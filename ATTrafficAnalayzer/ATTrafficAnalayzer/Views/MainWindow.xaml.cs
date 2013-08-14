@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
@@ -85,7 +86,9 @@ namespace ATTrafficAnalayzer.Views
                     FileName = "",
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     DefaultExt = ".VS",
-                    Filter = "Volume Store Files (.VS)|*.VS"
+                    Filter = "Volume Store Files (.VS)|*.VS",
+                    Multiselect = true
+                    
                 };
 
             // Show open file dialog box 
@@ -95,17 +98,37 @@ namespace ATTrafficAnalayzer.Views
             if (result == true)
             {
                 var settings = new ProgressDialogSettings(true, false, false);
-
-                ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
+                foreach (var filename in dlg.FileNames)
                 {
+                    DbHelper.DuplicatePolicy skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
+                    ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
+                    {
+                        // Open document 
+                        skipAllOrOne = DbHelper.ImportFile(b, w, filename,
+                                                           progress =>
+                                                           ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
+                                                           () =>
+                                                               {
+                                                                   var waitForInput = true;
+                                                                   var  policy = DbHelper.DuplicatePolicy.Continue;
+                                                                   Dispatcher.BeginInvoke(new Action(() =>
+                                                                       {
+                                                                           var dialog = new DuplicatePolicyDialog {Owner = this};
+                                                                           dialog.ShowDialog();
+                                                                           policy = dialog.SelectedPolicy;
+                                                                           waitForInput = false;
+                                                                       }), null);
+                                                                   while (waitForInput) ;
 
-                    // Open document 
-                    var filename = dlg.FileName;
-                    DbHelper.ImportFile(b, w, filename, progress => ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"));
+                                                                   return policy;
+                                                               });
 
-                    b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
-                }, settings);
+                        b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
+
+                    }, settings);
+                    if (skipAllOrOne.Equals(DbHelper.DuplicatePolicy.SkipAll)) break;
+                }
             }
         }
 
