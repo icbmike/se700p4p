@@ -136,6 +136,7 @@ namespace ATTrafficAnalayzer.Views
         {
             ReportList.ReportChanged -= iView.ReportChangedHandler;
             SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
+            iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
         }
         private void RemoveHandlers(IConfigScreen iConfigScreen)
         {
