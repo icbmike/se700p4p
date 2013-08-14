@@ -85,7 +85,9 @@ namespace ATTrafficAnalayzer.Views
                     FileName = "",
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     DefaultExt = ".VS",
-                    Filter = "Volume Store Files (.VS)|*.VS"
+                    Filter = "Volume Store Files (.VS)|*.VS",
+                    Multiselect = true
+                    
                 };
 
             // Show open file dialog box 
@@ -95,17 +97,19 @@ namespace ATTrafficAnalayzer.Views
             if (result == true)
             {
                 var settings = new ProgressDialogSettings(true, false, false);
-
-                ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
+                foreach (var fileName in dlg.FileNames)
                 {
+                    ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
+                    {
+                        // Open document 
+                        var filename = dlg.FileName;
+                        DbHelper.ImportFile(b, w, filename, progress => ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"));
 
-                    // Open document 
-                    var filename = dlg.FileName;
-                    DbHelper.ImportFile(b, w, filename, progress => ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"));
+                        b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
-                    b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
-
-                }, settings);
+                    }, settings); 
+                }
+                
             }
         }
 
