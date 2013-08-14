@@ -207,7 +207,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
-            _dbHelper.addConfiguration(new Report(configName, _selectedIntersection, approaches));
+            _dbHelper.addConfiguration(new Report(configName, SelectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
 
