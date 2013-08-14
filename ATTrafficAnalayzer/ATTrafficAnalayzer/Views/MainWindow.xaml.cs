@@ -156,6 +156,7 @@ namespace ATTrafficAnalayzer.Views
                                 var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
                                 SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                                 ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                                tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                                 ChangeScreen(tableScreen);
                             }
                             else
