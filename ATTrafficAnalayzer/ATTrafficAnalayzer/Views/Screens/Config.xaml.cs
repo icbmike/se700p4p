@@ -138,7 +138,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
             }
 
-            var approach = new ConfigApproachBox(Approaches, items) { Margin = new Thickness(20, 20, 0, 0) };
+            var approach = new ConfigApproachBox(Approaches, items, "New Approach") { Margin = new Thickness(20, 20, 0, 0) };
 
             Approaches.Children.Add(approach);
 
