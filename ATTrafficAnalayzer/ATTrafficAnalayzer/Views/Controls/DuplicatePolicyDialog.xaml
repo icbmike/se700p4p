@@ -1,0 +1,36 @@
+﻿<Window x:Class="ATTrafficAnalayzer.Views.Controls.DuplicatePolicyDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DuplicatePolicyDialog" Width="512" Height="217">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+
+        <TextBlock 
+            Grid.Column="0" 
+            Grid.ColumnSpan="3" 
+            Grid.Row="0"
+            TextWrapping="WrapWithOverflow"
+            TextAlignment="Center"
+            Padding="20"
+            >
+            <TextBlock.Text>
+                Duplicate data has been detected. 
+                This may be because you are trying to import the same file twice or that the file you are importing has erroneous data. 
+                How would you like to proceed?
+            </TextBlock.Text>
+        </TextBlock>
+        <Button Grid.Row="1" Name="SkipButton" Grid.Column="0" Margin="20 20 10 20" Content="Skip this file" Padding="5" Click="OnClick"/>
+        <Button Grid.Row="1" Name="SkipAllButton"  Grid.Column="1" Margin="10 20 10 20" Content="Skip all files" Padding="5" Click="OnClick"/>
+        <Button Grid.Row="1" Name="ContinueButton" Grid.Column="2" Margin="10 20 20 20" Content="Continue importing current file" Padding="5" Click="OnClick"/>
+               
+    </Grid>
+</Window>

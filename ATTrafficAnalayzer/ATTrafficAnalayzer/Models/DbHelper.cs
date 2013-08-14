@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
-    internal class DbHelper
+    public class DbHelper
     {
         private const string DbPath = "Data Source=TAdb.db3";
 
@@ -304,7 +304,13 @@ namespace ATTrafficAnalayzer.Models
 
         #region Volume Related Methods
 
-        public static void ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress)
+        public enum DuplicatePolicy
+        {
+            Skip, SkipAll, Continue
+        }
+
+
+        public static DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
             var dbConnection = new SQLiteConnection(DbPath);
@@ -321,6 +327,7 @@ namespace ATTrafficAnalayzer.Models
             //Now decrypt it
             int index = 0;
             DateTimeRecord currentDateTime = null;
+            DuplicatePolicy duplicatePolicy = DuplicatePolicy.Continue;
 
             using (var cmd = new SQLiteCommand(dbConnection))
             {
@@ -381,20 +388,24 @@ namespace ATTrafficAnalayzer.Models
                                     {
                                         if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint))
                                         {
+
                                             Logger.Error("DBHELPER",
                                                          e + "\nDetector: " + detector + "\nIntersection: " +
                                                          volumeRecord.IntersectionNumber + "\nDate Time: " +
                                                          currentDateTime.DateTime);
-                                            ////alreadyLoaded = true;
-                                            //break;
+                                            
+                                            duplicatePolicy = getDuplicatePolicy();
+                                            if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
+                                            {
+                                                alreadyLoaded = true;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                                 break;
                         }
-                        if (!alreadyLoaded) continue;
-                        MessageBox.Show("Volume information from " + filename + " has already been loaded");
-                        break;
+                        if (alreadyLoaded) break;
                     }
                     transaction.Commit();
                 }
@@ -402,6 +413,7 @@ namespace ATTrafficAnalayzer.Models
 
             dbConnection.Close();
             fs.Close();
+            return duplicatePolicy;
         }
 
         public static List<int> GetIntersections()

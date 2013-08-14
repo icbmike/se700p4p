@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
@@ -97,14 +98,30 @@ namespace ATTrafficAnalayzer.Views
             if (result == true)
             {
                 var settings = new ProgressDialogSettings(true, false, false);
-                foreach (var fileName in dlg.FileNames)
+                foreach (var filename in dlg.FileNames)
                 {
-                    ProgressDialog.Execute(this, "Importing VS File", (b, w) =>
+                    ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 
-                        var filename = dlg.FileName;
-                        DbHelper.ImportFile(b, w, filename, progress => ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"));
+                        DbHelper.ImportFile(b, w, filename,
+                                            progress =>
+                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
+                                            () =>
+                                                {
+                                                    var waitForInput = true;
+                                                    var  policy = DbHelper.DuplicatePolicy.Continue;
+                                                    Dispatcher.BeginInvoke(new Action(() =>
+                                                        {
+                                                            var dialog = new DuplicatePolicyDialog {Owner = this};
+                                                            dialog.ShowDialog();
+                                                            policy = dialog.SelectedPolicy;
+                                                            waitForInput = false;
+                                                        }), null);
+                                                    while (waitForInput) ;
 
+                                                    return policy;
+                                                });
+                                        
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
                     }, settings); 

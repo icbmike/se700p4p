@@ -80,6 +80,9 @@
     <Compile Include="Views\Controls\ConfigApproachBox.xaml.cs">
       <DependentUpon>ConfigApproachBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\DuplicatePolicyDialog.xaml.cs">
+      <DependentUpon>DuplicatePolicyDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\TableApproachDisplay.xaml.cs">
       <DependentUpon>TableApproachDisplay.xaml</DependentUpon>
     </Compile>
@@ -132,6 +135,10 @@
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\Controls\ConfigApproachBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DuplicatePolicyDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
