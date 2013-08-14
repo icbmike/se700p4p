@@ -16,50 +16,57 @@
                  BandIndex="1"
                  VerticalContentAlignment="Stretch"
                  HorizontalContentAlignment="Stretch"
-                 Foreground="White"
                  ToolBarTray.IsLocked="True"
                  Background="{x:Null}"
                  Loaded="MainToolbar_OnLoaded">
 
             <Button Name="HomeButton"
-                    Margin="5,0"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     MouseLeftButtonDown="SwitchScreen"
-                    Background="{x:Null}">
+                    Background="{x:Null}"
+                    Foreground="White">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
-                    <ContentPresenter Content="Home" />
+                    <ContentPresenter Content="Home"
+                                      Margin="6,0"
+                                      VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
             <Button Name="MonthlySummaryButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1"
-                    Background="{x:Null}">
+                    Background="{x:Null}"
+                    Foreground="White">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_420_tower.png" />
-                    <ContentPresenter Content="Summary" />
+                    <Image Source="/Resources\Images\Icons\glyphicons_331_dashboard.png" />
+                    <ContentPresenter Content="Summary"
+                                      Margin="6,0"
+                                      VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
             <Button Name="RegularReportsButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1"
-                    Background="{x:Null}">
+                    Background="{x:Null}"
+                    Foreground="White">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_450_factory.png" />
-                    <ContentPresenter Content="Reports" />
+                    <Image Source="/Resources\Images\Icons\glyphicons_029_notes_2.png" />
+                    <ContentPresenter Content="Reports"
+                                      VerticalAlignment="Center"
+                                      Margin="6,0" />
                 </StackPanel>
             </Button>
             <Button Name="FaultsButton"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1"
-                    Background="{x:Null}">
+                    Background="{x:Null}"
+                    Foreground="White">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_421_send.png" />
-                    <ContentPresenter Content="Faults" />
+                    <Image Source="/Resources\Images\Icons\glyphicons_078_warning_sign.png" />
+                    <ContentPresenter Content="Faults"
+                                      Margin="6,0"
+                                      VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
 

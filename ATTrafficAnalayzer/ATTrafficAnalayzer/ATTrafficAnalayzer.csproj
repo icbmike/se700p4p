@@ -244,6 +244,9 @@
     <Resource Include="Resources\Images\Icons\glyphicons_420_tower.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_421_send.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_450_factory.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_029_notes_2.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_078_warning_sign.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_331_dashboard.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
