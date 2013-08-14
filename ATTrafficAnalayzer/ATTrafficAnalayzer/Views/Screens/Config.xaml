@@ -30,6 +30,7 @@
                   VerticalContentAlignment="Center"
                   HorizontalContentAlignment="Center"
                   Padding="6,5,5,5" />
+        
         <ListView Name="DetectorListView"
                   Grid.Column="0"
                   Grid.Row="2"

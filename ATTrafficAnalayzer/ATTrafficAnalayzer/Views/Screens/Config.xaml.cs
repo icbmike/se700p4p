@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -14,7 +16,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class Config : IConfigScreen
+    public partial class Config : IConfigScreen, INotifyPropertyChanged
     {
         private ObservableCollection<int> _detectorList;
         private ObservableCollection<int> _intersectionList;
@@ -22,6 +24,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private readonly DbHelper _dbHelper;
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
+        private bool newConfig = true;
+        private string oldName;
 
         #region events
 
@@ -32,7 +36,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         public int SelectedIntersection
         {
             get { return _selectedIntersection; }
-            set { _selectedIntersection = value; }
+            set
+            {
+                _selectedIntersection = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("SelectedIntersection"));
+            }
         }
 
         public ObservableCollection<int> IntersectionList
@@ -60,6 +68,29 @@ namespace ATTrafficAnalayzer.Views.Screens
             InitializeComponent();
 
             Logger.Info("constructed view", "report config");
+
+        }
+
+        public Config(string configToBeEdited)
+            : this()
+        {
+            //Populate config screen
+            var config = _dbHelper.GetConfiguration(configToBeEdited);
+            var approaches = _dbHelper.GetApproaches(configToBeEdited);
+            foreach (var approach in approaches)
+            {
+                var configApproachBox = new ConfigApproachBox(Approaches, approach.Detectors, approach.Name)
+                {
+                    Margin = new Thickness(20, 20, 0, 0)
+                };
+
+                Approaches.Children.Add(configApproachBox);
+            }
+
+            SelectedIntersection = config.Intersection;
+            newConfig = false;
+            oldName = configToBeEdited;
+            ConfigNameTextBox.Text = configToBeEdited;
         }
 
         private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -160,6 +191,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            if (!newConfig)
+            {
+                //Delete the previous config before inserting the new one
+                _reportsDataTableHelper.RemoveConfig(oldName, Mode.RegularReports);
+            }
+
             var configName = ConfigNameTextBox.Text;
 
             var approaches = new List<Approach>();
@@ -173,20 +210,26 @@ namespace ATTrafficAnalayzer.Views.Screens
             _dbHelper.addConfiguration(new Report(configName, _selectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+
+
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
-            var configTextBox = (TextBox)sender;
-
-            for (var count = 1; ; count++)
+            if (newConfig)
             {
-                if (!_dbHelper.ConfigExists("Report " + count))
+                var configTextBox = (TextBox)sender;
+
+                for (var count = 1; ; count++)
                 {
-                    configTextBox.Text = "Report " + count;
-                    break;
+                    if (!_dbHelper.ConfigExists("Report " + count))
+                    {
+                        configTextBox.Text = "Report " + count;
+                        break;
+                    }
                 }
             }
+
         }
 
         internal void ImportCompletedHandler(object sender)
@@ -198,6 +241,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
 }

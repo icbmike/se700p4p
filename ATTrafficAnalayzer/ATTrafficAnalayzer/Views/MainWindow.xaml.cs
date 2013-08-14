@@ -224,7 +224,14 @@ namespace ATTrafficAnalayzer.Views
             }
             else
             {
-                throw new NotImplementedException();
+                //Open relevant config screen
+                var reportConfigurationScreen = new Config(args.ConfigToBeEdited);
+
+                reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+
+                ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                ChangeScreen(reportConfigurationScreen);
             }
 
         }
