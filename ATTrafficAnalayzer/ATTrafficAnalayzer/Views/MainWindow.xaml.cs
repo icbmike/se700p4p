@@ -88,7 +88,6 @@ namespace ATTrafficAnalayzer.Views
             // Show open file dialog box 
             var result = dlg.ShowDialog();
 
-
             // Process open file dialog box results 
             if (result == true)
             {
@@ -109,7 +108,37 @@ namespace ATTrafficAnalayzer.Views
 
         private void ChangeScreen(UserControl screen)
         {
+            if (MainContentControl.Content != null ) RemoveHandlers(MainContentControl.Content);
             MainContentControl.Content = screen;
+        }
+
+        private void RemoveHandlers(object screen)
+        {
+
+            if (screen as IConfigScreen != null)
+            {
+                RemoveHandlers(screen as IConfigScreen);
+            }else if (screen as IView != null)
+            {
+                RemoveHandlers(screen as IView);
+            }
+            else
+            {
+                MessageBox.Show("Somethings has gone horribly wrong");
+            }
+        }
+
+
+        private void RemoveHandlers(IView iView)
+        {
+            ReportList.ReportChanged -= iView.ReportChangedHandler;
+            SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
+        }
+        private void RemoveHandlers(IConfigScreen iConfigScreen)
+        {
+            iConfigScreen.ConfigurationSaved -= ReportList.ConfigurationSavedEventHandler;
+            iConfigScreen.ConfigurationSaved -= reportConfigurationScreen_ConfigurationSaved;
+
         }
 
         private void SwitchScreen(object sender, Toolbar.ScreenChangeEventHandlerArgs args)
@@ -224,7 +253,14 @@ namespace ATTrafficAnalayzer.Views
             }
             else
             {
-                throw new NotImplementedException();
+                //Open relevant config screen
+                var reportConfigurationScreen = new Config(args.ConfigToBeEdited);
+
+                reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
+                reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
+
+                ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                ChangeScreen(reportConfigurationScreen);
             }
 
         }

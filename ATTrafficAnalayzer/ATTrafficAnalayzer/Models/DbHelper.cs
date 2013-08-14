@@ -625,7 +625,7 @@ namespace ATTrafficAnalayzer.Models
 
         public List<Approach> GetApproaches(String configName)
         {
-            throw new NotImplementedException();
+            return GetConfiguration(configName).Approaches;
         }
 
         public bool ConfigExists(String configName)
