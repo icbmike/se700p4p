@@ -214,8 +214,8 @@ namespace ATTrafficAnalayzer.Views
                             }
                             else
                             {
-                                var tableScreen = new Summary();
-                                ChangeScreen(tableScreen);
+                                var screen = new Summary(SettingsToolbar.SettingsTray, selectedItem);
+                                ChangeScreen(screen);
                             }
                         }
                     }
