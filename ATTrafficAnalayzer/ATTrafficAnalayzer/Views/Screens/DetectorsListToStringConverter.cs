@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             //What the GUI sees
             var list = value as List<int>;
             var sb = new StringBuilder();
-            for (int i = 0; i < list.Count; i++)
+            for (var i = 0; i < list.Count; i++)
             {
                 sb.Append(list[i]);
                 if (i < list.Count - 1)

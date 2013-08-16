@@ -100,7 +100,7 @@ namespace ATTrafficAnalayzer.Views
                 var settings = new ProgressDialogSettings(true, false, false);
                 foreach (var filename in dlg.FileNames)
                 {
-                    DbHelper.DuplicatePolicy skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
+                    var skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 

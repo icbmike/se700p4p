@@ -70,7 +70,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             //Add all the things!
 
             var timeSpan = _endDate - _startDate;
-            bool countsDontMatch = false;
+            var countsDontMatch = false;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
