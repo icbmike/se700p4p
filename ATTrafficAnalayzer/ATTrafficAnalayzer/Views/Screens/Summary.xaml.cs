@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
@@ -62,17 +63,24 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DataTable GetDataTable()
         {
             var dataTable = new DataTable();
+            var summaryDate = new DateTime(2013, 3, 11);
 
             dataTable.Columns.Add("-", typeof(string));
             foreach (var summary in _summaryConfig)
                 dataTable.Columns.Add(summary.RouteName, typeof(string));
 
-            for (var i = 0; i < 30; i++)
+            for (var i = 1; i <= DateTime.DaysInMonth(summaryDate.Year, summaryDate.Month); i++)
+            {
+                var row = dataTable.NewRow();
+                var j = 1;
+                row[0] = string.Format("Day {0}", i);
                 foreach (var summary in _summaryConfig)
                 {
-                    var row = dataTable.NewRow();
-                    dataTable.Rows.Add(row);
+                    row[j] = _dbHelper.GetVolumeForDay(summaryDate, summary.SelectedIntersectionIn, summary.DetectorsIn);
+                    j++;
                 }
+                dataTable.Rows.Add(row);
+            }
 
             return dataTable;
         }

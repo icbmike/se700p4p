@@ -564,17 +564,23 @@ namespace ATTrafficAnalayzer.Models
                 foreach (var detector in detectors)
                 {
                     query.CommandText =
-                        "SELECT SUM(volume) FROM volumes" +
-                        "WHERE intersection = '@intersection' AND detector = '@detector'" +
+                        "SELECT SUM(volume) " +
+                        "FROM volumes " +
+                        "WHERE intersection = @intersection AND detector = @detector " +
                         "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
 
                     query.Parameters.AddWithValue("@intersection", intersection);
-                    query.Parameters.AddWithValue("@detector", intersection);
+                    query.Parameters.AddWithValue("@detector", detector);
                     query.Parameters.AddWithValue("@startDateTime", date);
                     query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
 
                     var reader = query.ExecuteReader();
-                    volume += reader.GetInt32(0);
+                    while (reader.Read())
+                    {
+                        volume += reader.GetDouble(0);
+                    }
+//                    var reader = query.ExecuteScalar();
+//                    volume += (int) reader;
                 }
             }
             conn.Close();
