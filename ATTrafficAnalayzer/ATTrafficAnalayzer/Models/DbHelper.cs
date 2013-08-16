@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Media;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Screens;
@@ -532,7 +533,7 @@ namespace ATTrafficAnalayzer.Models
             conn.Close();
 
             return volumes;
-        }
+       }
 
         public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate)
         {
@@ -553,10 +554,36 @@ namespace ATTrafficAnalayzer.Models
             return result;
         }
 
+        public int GetVolumeForDay(DateTime date, int intersection, List<int> detectors)
+        {
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+            int volume = 0;
+            using (var query = new SQLiteCommand(conn))
+            {
+                foreach (var detector in detectors)
+                {
+                    query.CommandText =
+                        "SELECT SUM(volume) FROM volumes" +
+                        "WHERE intersection = '@intersection' AND detector = '@detector'" +
+                        "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    query.Parameters.AddWithValue("@detector", intersection);
+                    query.Parameters.AddWithValue("@startDateTime", date);
+                    query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
+
+                    var reader = query.ExecuteReader();
+                    volume += reader.GetInt32(0);
+                }
+            }
+            conn.Close();
+            return volume;
+        }
+
         #endregion
 
-        #region Config Related Methods
-
+        #region Config Related Methods 
         public SQLiteDataAdapter GetConfigsDataAdapter()
         {
             const string getCongifsSql = "SELECT name FROM configs;";
@@ -720,6 +747,8 @@ namespace ATTrafficAnalayzer.Models
             return true; //Needs to be implemented
         }
 
+        #region Summary Related Methods
+
         public void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows)
         {
             var config = new JArray { rows.Select(row => row.ToJson()) };
@@ -759,16 +788,18 @@ namespace ATTrafficAnalayzer.Models
 
                     foreach (var summaryJson in configArray)
                     {
-                        summaries.Add(new SummaryRow((string) summaryJson["route_name"],
-                            (int) summaryJson["intersection_in"],
-                            (int) summaryJson["intersection_out"],
-                            summaryJson["detectors_in"].Select(t => (int) t).ToList(),
-                            summaryJson["detectors_out"].Select(t => (int) t).ToList()));
+                        summaries.Add(new SummaryRow((string)summaryJson["route_name"],
+                            (int)summaryJson["intersection_in"],
+                            (int)summaryJson["intersection_out"],
+                            summaryJson["detectors_in"].Select(t => (int)t).ToList(),
+                            summaryJson["detectors_out"].Select(t => (int)t).ToList()));
                     }
                 }
             }
             conn.Close();
             return summaries;
         }
+
+        #endregion
     }
 }

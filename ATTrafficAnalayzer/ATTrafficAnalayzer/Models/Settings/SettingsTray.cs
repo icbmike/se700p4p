@@ -7,10 +7,11 @@ namespace ATTrafficAnalayzer.Models.Settings
         public int Interval { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime StartDate { get; set; }
+        public DateTime SummaryDate { get; set; }
 
         public override string ToString()
         {
-            return "Interval: " + Interval + ", Start Date: " + StartDate + ", End Date: " + EndDate; 
+            return "Interval: " + Interval + ", Start Date: " + StartDate + ", End Date: " + EndDate + " , Summary Date: " + SummaryDate; 
         }
     }
 

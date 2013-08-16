@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
@@ -46,17 +47,35 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
 
             ScreenTitle.Content = screenTitle;
-            foreach (var summary in _summaryConfig)
+
+            //            table.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Route: {0}\n", summary.RouteName))));
+            //            table.ApproachSummary.Inlines.Add(new Run(string.lFormat("Inbound intersection: {0} - Detectors: {1}\n", summary.SelectedIntersectionIn, summary.GetDetectorsInAsString())));
+            //            table.ApproachSummary.Inlines.Add(new Run(string.Format("Outbound intersection: {0} - Detectors: {1}", summary.SelectedIntersectionOut, summary.GetDetectorsOutAsString())));
+
+            var table = new TableApproachDisplay
             {
-                var table = new TableApproachDisplay();
-                ApproachesStackPanel.Children.Add(table);
-
-                var dataTable = summary.GetDataTable();
-
-                table.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Route: {0}\n", summary.RouteName))));
-                table.ApproachSummary.Inlines.Add(new Run(string.Format("Inbound intersection: {0} - Detectors: {1}\n", summary.SelectedIntersectionIn, summary.GetDetectorsInAsString())));
-                table.ApproachSummary.Inlines.Add(new Run(string.Format("Outbound intersection: {0} - Detectors: {1}", summary.SelectedIntersectionOut, summary.GetDetectorsOutAsString())));
-            }
+                ApproachDataGrid = { ItemsSource = GetDataTable().AsDataView() }
+            };
+            ApproachesStackPanel.Children.Add(table);
         }
+
+        private DataTable GetDataTable()
+        {
+            var dataTable = new DataTable();
+
+            dataTable.Columns.Add("-", typeof(string));
+            foreach (var summary in _summaryConfig)
+                dataTable.Columns.Add(summary.RouteName, typeof(string));
+
+            for (var i = 0; i < 30; i++)
+                foreach (var summary in _summaryConfig)
+                {
+                    var row = dataTable.NewRow();
+                    dataTable.Rows.Add(row);
+                }
+
+            return dataTable;
+        }
+
     }
 }

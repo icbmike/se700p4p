@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d">
 
     <ToolBarPanel Name="ToolbarPanel"
@@ -94,6 +95,22 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
+            <Label Name="MonthLabel"
+                   Margin="20,0,0,0"
+                   Foreground="#FFF6F6F6"
+                   FontSize="16"
+                   Content="Month: "
+                   Visibility="Collapsed" />
+            <xctk:DateTimeUpDown Name="MonthDatePicker"
+                                 Width="150"
+                                 Background="White"
+                                 Value="{Binding SummaryDate}"
+                                 FontSize="16"
+                                 Format="YearMonth"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Visibility="Collapsed"
+                                 CultureInfo="en-NZ" />
 
             <Label Name="IntervalLabel"
                    Margin="20,0,0,0"

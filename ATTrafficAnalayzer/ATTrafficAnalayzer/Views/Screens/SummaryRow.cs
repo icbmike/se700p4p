@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using ATTrafficAnalayzer.Models;
 using Newtonsoft.Json.Linq;
 
@@ -78,15 +77,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         public string GetDetectorsOutAsString()
         {
             return String.Join(", ", DetectorsOut);
-        }
-
-        public DataTable GetDataTable()
-        {
-            var dataTable = new DataTable();
-
-            //Column headings
-
-            return dataTable;
         }
     }
 }

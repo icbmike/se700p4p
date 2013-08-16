@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using Xceed.Wpf.Toolkit;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -25,18 +25,26 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (args.SelectedMode.Equals(Mode.MonthlySummary))
             {
                 GraphButton.Visibility = Visibility.Collapsed;
+                StartDateLabel.Visibility = Visibility.Collapsed;
+                StartDatePicker.Visibility = Visibility.Collapsed;
                 EndDateLabel.Visibility = Visibility.Collapsed;
                 EndDatePicker.Visibility = Visibility.Collapsed;
                 IntervalLabel.Visibility = Visibility.Collapsed;
                 IntervalComboBox.Visibility = Visibility.Collapsed;
+                MonthLabel.Visibility = Visibility.Visible;
+                MonthDatePicker.Visibility = Visibility.Visible;
             }
             else
             {
                 GraphButton.Visibility = Visibility.Visible;
+                StartDateLabel.Visibility = Visibility.Visible;
+                StartDatePicker.Visibility = Visibility.Visible;
                 EndDateLabel.Visibility = Visibility.Visible;
                 IntervalLabel.Visibility = Visibility.Visible;
                 EndDatePicker.Visibility = Visibility.Visible;
                 IntervalComboBox.Visibility = Visibility.Visible;
+                MonthLabel.Visibility = Visibility.Collapsed;
+                MonthDatePicker.Visibility = Visibility.Collapsed;
             }
         }
 
