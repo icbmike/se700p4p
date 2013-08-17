@@ -21,6 +21,7 @@
                  Background="{x:Null}"
                  Loaded="MainToolbar_OnLoaded">
 
+            <!--Mode settings-->
             <Button Name="HomeButton"
                     Click="SwitchScreen"
                     Style="{StaticResource AtToolbarButtonStyle}"
@@ -71,6 +72,7 @@
                 </StackPanel>
             </Button>
 
+            <!--Date settings-->
             <Label Name="StartDateLabel"
                    Margin="10,0,4,0"
                    Foreground="White"
@@ -95,23 +97,35 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
-            <Label Name="MonthLabel"
+            <Label Name="SummaryDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
                    FontSize="16"
                    Content="Month: "
                    Visibility="Collapsed" />
-            <xctk:DateTimeUpDown Name="MonthDatePicker"
-                                 Width="150"
-                                 Background="White"
-                                 Value="{Binding SummaryDate}"
-                                 FontSize="16"
-                                 Format="YearMonth"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center"
-                                 Visibility="Collapsed"
-                                 CultureInfo="en-NZ" />
-
+            <ComboBox Height="23"
+                      Name="SummaryMonthComboBox"
+                      Width="80"
+                      SelectedValue="{Binding SummaryMonth}"
+                      SelectedValuePath="Content"
+                      SelectedIndex="0"
+                      Foreground="Black"
+                      FontSize="16"
+                      SelectionChanged="SummaryComboBox_OnSelectionChanged">
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+            </ComboBox>
+            <ComboBox Height="23"
+                      Name="SummaryYearComboBox"
+                      Width="80"
+                      SelectedValue="{Binding SummaryYear}"
+                      SelectedIndex="0"
+                      Foreground="Black"
+                      FontSize="16"
+                      SelectionChanged="SummaryComboBox_OnSelectionChanged">
+                <ComboBoxItem>2012</ComboBoxItem>
+                <ComboBoxItem>2013</ComboBoxItem>
+            </ComboBox>
             <Label Name="IntervalLabel"
                    Margin="20,0,0,0"
                    Foreground="White"
@@ -132,6 +146,7 @@
                 <ComboBoxItem>60 min</ComboBoxItem>
             </ComboBox>
 
+            <!--View settings-->
             <Button Name="TableButton"
                     Margin="10,0,1,0"
                     Click="SwitchScreen"

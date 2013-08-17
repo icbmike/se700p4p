@@ -38,10 +38,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate))
+            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate))
             {
-                _startDate = args.startDate;
-                _endDate = args.endDate;
+                _startDate = args.StartDate;
+                _endDate = args.EndDate;
 
                 FillGrid();
             }

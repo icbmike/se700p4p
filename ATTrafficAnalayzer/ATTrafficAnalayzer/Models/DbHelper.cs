@@ -533,7 +533,7 @@ namespace ATTrafficAnalayzer.Models
             conn.Close();
 
             return volumes;
-       }
+        }
 
         public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate)
         {
@@ -558,7 +558,7 @@ namespace ATTrafficAnalayzer.Models
         {
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
-            int volume = 0;
+            var volume = 0;
             using (var query = new SQLiteCommand(conn))
             {
                 foreach (var detector in detectors)
@@ -575,12 +575,12 @@ namespace ATTrafficAnalayzer.Models
                     query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
 
                     var reader = query.ExecuteReader();
-                    while (reader.Read())
+                    if (reader.RecordsAffected == 1)
                     {
-                        volume += reader.GetDouble(0);
+                        Console.WriteLine("got here!");
+                        volume = reader.GetInt32(0);
                     }
-//                    var reader = query.ExecuteScalar();
-//                    volume += (int) reader;
+                    reader.Close();
                 }
             }
             conn.Close();
@@ -589,7 +589,7 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
-        #region Config Related Methods 
+        #region Config Related Methods
         public SQLiteDataAdapter GetConfigsDataAdapter()
         {
             const string getCongifsSql = "SELECT name FROM configs;";

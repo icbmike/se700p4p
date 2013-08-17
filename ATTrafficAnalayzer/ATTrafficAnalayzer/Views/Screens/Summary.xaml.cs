@@ -63,7 +63,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DataTable GetDataTable()
         {
             var dataTable = new DataTable();
-            var summaryDate = new DateTime(2013, 3, 11);
+            var summaryDate = new DateTime(2013, 3, 1);
 
             dataTable.Columns.Add("-", typeof(string));
             foreach (var summary in _summaryConfig)
@@ -76,7 +76,9 @@ namespace ATTrafficAnalayzer.Views.Screens
                 row[0] = string.Format("Day {0}", i);
                 foreach (var summary in _summaryConfig)
                 {
+                    Logger.Debug(summaryDate.Date.ToString(), "Date");
                     row[j] = _dbHelper.GetVolumeForDay(summaryDate, summary.SelectedIntersectionIn, summary.DetectorsIn);
+                    summaryDate = summaryDate.AddDays(1);
                     j++;
                 }
                 dataTable.Rows.Add(row);

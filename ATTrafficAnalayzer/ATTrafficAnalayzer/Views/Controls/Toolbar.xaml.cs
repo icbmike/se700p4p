@@ -2,7 +2,8 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using Xceed.Wpf.Toolkit;
+using ATTrafficAnalayzer.Properties;
+using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -16,70 +17,27 @@ namespace ATTrafficAnalayzer.Views.Controls
         public Toolbar()
         {
             InitializeComponent();
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+
+            // Set default dates
+            StartDatePicker.SelectedDate = DateTime.Today;
+
             ModeChanged += Toolbar_ModeChanged;
         }
 
-        private void Toolbar_ModeChanged(object sender, ModeChangedEventHandlerArgs args)
-        {
-            if (args.SelectedMode.Equals(Mode.MonthlySummary))
-            {
-                GraphButton.Visibility = Visibility.Collapsed;
-                StartDateLabel.Visibility = Visibility.Collapsed;
-                StartDatePicker.Visibility = Visibility.Collapsed;
-                EndDateLabel.Visibility = Visibility.Collapsed;
-                EndDatePicker.Visibility = Visibility.Collapsed;
-                IntervalLabel.Visibility = Visibility.Collapsed;
-                IntervalComboBox.Visibility = Visibility.Collapsed;
-                MonthLabel.Visibility = Visibility.Visible;
-                MonthDatePicker.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                GraphButton.Visibility = Visibility.Visible;
-                StartDateLabel.Visibility = Visibility.Visible;
-                StartDatePicker.Visibility = Visibility.Visible;
-                EndDateLabel.Visibility = Visibility.Visible;
-                IntervalLabel.Visibility = Visibility.Visible;
-                EndDatePicker.Visibility = Visibility.Visible;
-                IntervalComboBox.Visibility = Visibility.Visible;
-                MonthLabel.Visibility = Visibility.Collapsed;
-                MonthDatePicker.Visibility = Visibility.Collapsed;
-            }
-        }
+        #region Screen events
 
-        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            var toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
-            if (overflowGrid != null)
-            {
-                overflowGrid.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        #region Screen refreshing
-
-        public enum ScreenButton
-        {
-            Graph,
-            Table,
-            Faults,
-            Summary,
-            Home
-        }
+        public enum ScreenButton { Graph, Table, Faults, Summary, Home }
 
         public delegate void ScreenChangeEventHandler(object sender, ScreenChangeEventHandlerArgs args);
         public event ScreenChangeEventHandler ScreenChanged;
-
         public class ScreenChangeEventHandlerArgs
         {
+            public ScreenButton Button { get; set; }
+
             public ScreenChangeEventHandlerArgs(ScreenButton button)
             {
                 Button = button;
             }
-
-            public ScreenButton Button { get; set; }
         }
 
         private void SwitchScreen(object sender, RoutedEventArgs e)
@@ -94,59 +52,73 @@ namespace ATTrafficAnalayzer.Views.Controls
                 ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));
         }
 
-        private void SwitchMode(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region Mode events
+
+        public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
+        public event ModeChangedEventHandler ModeChanged;
+        public class ModeChangedEventHandlerArgs
         {
-             ModeChanged(this, new ModeChangedEventHandlerArgs(sender.Equals(MonthlySummaryButton) ? Mode.MonthlySummary : Mode.RegularReports));
+            private readonly Mode _mode;
+            public ModeChangedEventHandlerArgs(Mode mode) { _mode = mode; }
+            public Mode SelectedMode { get { return _mode; } }
+        }
+
+        private void SwitchMode(object sender, RoutedEventArgs e) { ModeChanged(this, new ModeChangedEventHandlerArgs(sender.Equals(MonthlySummaryButton) ? Mode.MonthlySummary : Mode.RegularReports)); }
+
+        private void Toolbar_ModeChanged(object sender, ModeChangedEventHandlerArgs args)
+        {
+            if (args.SelectedMode.Equals(Mode.MonthlySummary))
+            {
+                GraphButton.Visibility = Visibility.Collapsed;
+                StartDateLabel.Visibility = Visibility.Collapsed;
+                StartDatePicker.Visibility = Visibility.Collapsed;
+                EndDateLabel.Visibility = Visibility.Collapsed;
+                EndDatePicker.Visibility = Visibility.Collapsed;
+                IntervalLabel.Visibility = Visibility.Collapsed;
+                IntervalComboBox.Visibility = Visibility.Collapsed;
+                SummaryDateLabel.Visibility = Visibility.Visible;
+                SummaryMonthComboBox.Visibility = Visibility.Visible;
+                SummaryYearComboBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                GraphButton.Visibility = Visibility.Visible;
+                StartDateLabel.Visibility = Visibility.Visible;
+                StartDatePicker.Visibility = Visibility.Visible;
+                EndDateLabel.Visibility = Visibility.Visible;
+                IntervalLabel.Visibility = Visibility.Visible;
+                EndDatePicker.Visibility = Visibility.Visible;
+                IntervalComboBox.Visibility = Visibility.Visible;
+                SummaryDateLabel.Visibility = Visibility.Collapsed;
+                SummaryMonthComboBox.Visibility = Visibility.Collapsed;
+                SummaryYearComboBox.Visibility = Visibility.Collapsed;
+            }
         }
 
         #endregion
 
-
-        public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
-
-        public event ModeChangedEventHandler ModeChanged;
-
-        public class ModeChangedEventHandlerArgs
-        {
-            private readonly Mode _mode;
-
-            public ModeChangedEventHandlerArgs(Mode mode)
-            {
-                _mode = mode;
-            }
-
-            public Mode SelectedMode
-            {
-                get { return _mode; }
-            }
-        }
-
-        #region Date refreshing
-
-        private Boolean _startModifyingEnd;
+        #region Date events
 
         public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
         public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
+        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
 
-        public int Month
-        {
-            get { return StartDatePicker.SelectedDate.Value.Month; }
-        }
-
+        private Boolean _startModifyingEnd;
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
-
         public class DateRangeChangedEventHandlerArgs
         {
-            public DateTime startDate { get; set; }
-            public DateTime endDate { get; set; }
-            public int interval { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public int Interval { get; set; }
 
             public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
             {
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.interval = interval;
+                StartDate = startDate;
+                EndDate = endDate;
+                Interval = interval;
             }
         }
 
@@ -154,10 +126,8 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (sender.Equals(StartDatePicker))
             {
-                Console.WriteLine("Start date picker...");
                 if (EndDatePicker != null)
                 {
-                    Console.WriteLine("true");
                     _startModifyingEnd = true;
                     var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
                     EndDatePicker.SelectedDate = newDate;
@@ -165,10 +135,8 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
             else if (sender.Equals(EndDatePicker))
             {
-                Console.WriteLine("End date picker...");
                 if (_startModifyingEnd)
                 {
-                    Console.WriteLine("false");
                     _startModifyingEnd = false;
                     return;
                 }
@@ -176,11 +144,48 @@ namespace ATTrafficAnalayzer.Views.Controls
 
             if (DateRangeChanged != null)
             {
-                Console.WriteLine("Firing the actual event");
                 DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
             }
         }
 
         #endregion
+
+        #region Summary events
+
+        public delegate void SummaryDateChangedEventHandler(object sender, SummaryDateChangedEventArgs args);
+        public event SummaryDateChangedEventHandler SummaryDateChanged;
+        public class SummaryDateChangedEventArgs
+        {
+            public int SummaryMonth { get; set; }
+            public int SummaryYear { get; set; }
+
+            public SummaryDateChangedEventArgs(int year, int month)
+            {
+                SummaryMonth = month;
+                SummaryYear = year;
+            }
+        }
+
+        private void SummaryComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SummaryDateChanged(this, new SummaryDateChangedEventArgs(SummaryMonthComboBox.SelectedIndex, SummaryYearComboBox.SelectedIndex));
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Removes overflow tab from the toolbar's right-end
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }

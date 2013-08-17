@@ -141,14 +141,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate) || !args.interval.Equals(_interval))
+            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate) || !args.Interval.Equals(_interval))
             {
                 //RenderTable() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                _startDate = args.startDate;
-                _endDate = args.endDate;
-                _interval = args.interval;
+                _startDate = args.StartDate;
+                _endDate = args.EndDate;
+                _interval = args.Interval;
 
                 RenderTable();
             }

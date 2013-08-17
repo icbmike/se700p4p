@@ -155,14 +155,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
+            if (!args.StartDate.Equals(startDate) || !args.EndDate.Equals(endDate) || !args.Interval.Equals(interval))
             {
                 //InitializeGraph() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                startDate = args.startDate;
-                endDate = args.endDate;
-                interval = args.interval;
+                startDate = args.StartDate;
+                endDate = args.EndDate;
+                interval = args.Interval;
 
                 RenderGraph();
             }
