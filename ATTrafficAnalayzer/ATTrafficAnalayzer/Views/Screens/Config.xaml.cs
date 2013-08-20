@@ -194,7 +194,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             if (!newConfig)
             {
                 //Delete the previous config before inserting the new one
-                _reportsDataTableHelper.RemoveConfig(oldName, Mode.RegularReports);
+                _reportsDataTableHelper.RemoveConfig(oldName, Mode.Report);
             }
 
             var configName = ConfigNameTextBox.Text;

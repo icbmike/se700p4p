@@ -2,8 +2,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using ATTrafficAnalayzer.Properties;
-using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -14,62 +12,72 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
 
+        public enum View { Table, Graph }
+
         public Toolbar()
         {
             InitializeComponent();
 
-            // Set default dates
+            // Set default values
             StartDatePicker.SelectedDate = DateTime.Today;
+            SummaryMonthComboBox.SelectedIndex = DateTime.Today.Month;
+            SummaryYearComboBox.SelectedIndex = DateTime.Today.Year - 2012;
 
             ModeChanged += Toolbar_ModeChanged;
         }
 
-        #region Screen events
-
-        public enum ScreenButton { Graph, Table, Faults, Summary, Home }
-
-        public delegate void ScreenChangeEventHandler(object sender, ScreenChangeEventHandlerArgs args);
-        public event ScreenChangeEventHandler ScreenChanged;
-        public class ScreenChangeEventHandlerArgs
-        {
-            public ScreenButton Button { get; set; }
-
-            public ScreenChangeEventHandlerArgs(ScreenButton button)
-            {
-                Button = button;
-            }
-        }
-
-        private void SwitchScreen(object sender, RoutedEventArgs e)
-        {
-            if (sender.Equals(GraphButton))
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Graph));
-            else if (sender.Equals(TableButton))
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Table));
-            else if (sender.Equals(HomeButton))
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
-            else
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));
-        }
-
-        #endregion
-
-        #region Mode events
+        #region Mode/view switching events
 
         public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
         public event ModeChangedEventHandler ModeChanged;
         public class ModeChangedEventHandlerArgs
         {
+            private readonly View _view;
             private readonly Mode _mode;
-            public ModeChangedEventHandlerArgs(Mode mode) { _mode = mode; }
-            public Mode SelectedMode { get { return _mode; } }
+
+            public ModeChangedEventHandlerArgs(Mode mode, View view)
+            {
+                _mode = mode;
+                _view = view;
+            }
+
+            public ModeChangedEventHandlerArgs(View view)
+            {
+                _view = view;
+            }
+
+            public ModeChangedEventHandlerArgs(Mode mode)
+            {
+                _mode = mode;
+            }
+
+            public Mode Mode { get { return _mode; } }
+            public View View { get { return _view; } }
         }
 
-        private void SwitchMode(object sender, RoutedEventArgs e) { ModeChanged(this, new ModeChangedEventHandlerArgs(sender.Equals(MonthlySummaryButton) ? Mode.MonthlySummary : Mode.RegularReports)); }
+        private void SwitchMode(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(HomeButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Home));
+            else if (sender.Equals(RegularReportsButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Report));
+            else if (sender.Equals(MonthlySummaryButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Summary));
+            else if (sender.Equals(FaultsButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Faults));
+        }
+
+        private void SwitchView(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(GraphButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(View.Graph));
+            else if (sender.Equals(TableButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(View.Table));
+        }
 
         private void Toolbar_ModeChanged(object sender, ModeChangedEventHandlerArgs args)
         {
-            if (args.SelectedMode.Equals(Mode.MonthlySummary))
+            if (args.Mode.Equals(Mode.Summary))
             {
                 GraphButton.Visibility = Visibility.Collapsed;
                 StartDateLabel.Visibility = Visibility.Collapsed;
@@ -99,13 +107,14 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #endregion
 
-        #region Date events
+        #region View parameter events
 
         public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
         public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
         public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
 
         private Boolean _startModifyingEnd;
+
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
         public class DateRangeChangedEventHandlerArgs
@@ -119,6 +128,11 @@ namespace ATTrafficAnalayzer.Views.Controls
                 StartDate = startDate;
                 EndDate = endDate;
                 Interval = interval;
+            }
+
+            public DateRangeChangedEventHandlerArgs(int year, int month)
+            {
+                StartDate = new DateTime(year + 2012, month + 1, 1);
             }
         }
 
@@ -148,27 +162,10 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
-        #endregion
-
-        #region Summary events
-
-        public delegate void SummaryDateChangedEventHandler(object sender, SummaryDateChangedEventArgs args);
-        public event SummaryDateChangedEventHandler SummaryDateChanged;
-        public class SummaryDateChangedEventArgs
-        {
-            public int SummaryMonth { get; set; }
-            public int SummaryYear { get; set; }
-
-            public SummaryDateChangedEventArgs(int year, int month)
-            {
-                SummaryMonth = month;
-                SummaryYear = year;
-            }
-        }
-
         private void SummaryComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SummaryDateChanged(this, new SummaryDateChangedEventArgs(SummaryMonthComboBox.SelectedIndex, SummaryYearComboBox.SelectedIndex));
+            if (DateRangeChanged != null)
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(SummaryYearComboBox.SelectedIndex, SummaryMonthComboBox.SelectedIndex));
         }
 
         #endregion

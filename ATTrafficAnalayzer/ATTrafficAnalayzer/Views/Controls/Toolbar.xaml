@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d">
 
     <ToolBarPanel Name="ToolbarPanel"
@@ -23,9 +22,9 @@
 
             <!--Mode settings-->
             <Button Name="HomeButton"
-                    Click="SwitchScreen"
+                    Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    MouseLeftButtonDown="SwitchScreen"
+                    MouseLeftButtonDown="SwitchMode"
                     Background="{x:Null}"
                     Foreground="White">
                 <StackPanel Orientation="Horizontal">
@@ -60,7 +59,7 @@
                 </StackPanel>
             </Button>
             <Button Name="FaultsButton"
-                    Click="SwitchScreen"
+                    Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Background="{x:Null}"
                     Foreground="White">
@@ -111,9 +110,20 @@
                       SelectedIndex="0"
                       Foreground="Black"
                       FontSize="16"
-                      SelectionChanged="SummaryComboBox_OnSelectionChanged">
-                <ComboBoxItem>1</ComboBoxItem>
-                <ComboBoxItem>2</ComboBoxItem>
+                      SelectionChanged="SummaryComboBox_OnSelectionChanged"
+                      Visibility="Collapsed">
+                <ComboBoxItem>January</ComboBoxItem>
+                <ComboBoxItem>February</ComboBoxItem>
+                <ComboBoxItem>March</ComboBoxItem>
+                <ComboBoxItem>April</ComboBoxItem>
+                <ComboBoxItem>May</ComboBoxItem>
+                <ComboBoxItem>June</ComboBoxItem>
+                <ComboBoxItem>July</ComboBoxItem>
+                <ComboBoxItem>August</ComboBoxItem>
+                <ComboBoxItem>September</ComboBoxItem>
+                <ComboBoxItem>October</ComboBoxItem>
+                <ComboBoxItem>November</ComboBoxItem>
+                <ComboBoxItem>December</ComboBoxItem>
             </ComboBox>
             <ComboBox Height="23"
                       Name="SummaryYearComboBox"
@@ -122,9 +132,12 @@
                       SelectedIndex="0"
                       Foreground="Black"
                       FontSize="16"
-                      SelectionChanged="SummaryComboBox_OnSelectionChanged">
+                      SelectionChanged="SummaryComboBox_OnSelectionChanged"
+                      Visibility="Collapsed">
                 <ComboBoxItem>2012</ComboBoxItem>
                 <ComboBoxItem>2013</ComboBoxItem>
+                <ComboBoxItem>2014</ComboBoxItem>
+                <ComboBoxItem>2015</ComboBoxItem>
             </ComboBox>
             <Label Name="IntervalLabel"
                    Margin="20,0,0,0"
@@ -149,14 +162,14 @@
             <!--View settings-->
             <Button Name="TableButton"
                     Margin="10,0,1,0"
-                    Click="SwitchScreen"
+                    Click="SwitchView"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Background="{x:Null}"
                     Foreground="{x:Null}">
                 <Image Source="/Resources\Images\Icons\glyphicons_119_table.png" />
             </Button>
             <Button Name="GraphButton"
-                    Click="SwitchScreen"
+                    Click="SwitchView"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1,0,1,0"
                     Background="{x:Null}"

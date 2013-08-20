@@ -33,16 +33,77 @@ namespace ATTrafficAnalayzer.Views
             ImportCompleted += homeScreen.ImportCompletedHandler;
 
             ChangeScreen(homeScreen);
-            _selectedMode = Mode.RegularReports;
+            _selectedMode = Mode.Report;
         }
 
         private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
-            _selectedMode = args.SelectedMode;
+            _selectedMode = args.Mode;
 
-            if (_selectedMode.Equals(Mode.RegularReports) || _selectedMode.Equals((Mode.MonthlySummary)))
+            switch (_selectedMode)
             {
-                ReportList.Visibility = Visibility.Visible;
+                case Mode.Home:
+                    var homeScreen = new Home();
+                    homeScreen.ImportRequested += fileImportMenuItem_Click;
+                    ChangeScreen(homeScreen);
+
+                    ReportList.Visibility = Visibility.Collapsed;
+                    break;
+
+                case Mode.Report:
+                    ReportList.Visibility = Visibility.Visible;
+                    if (
+                        !DbHelper.GetDbHelper()
+                            .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected date range");
+                    }
+                    else if (ReportList.GetSelectedConfiguration() == null)
+                    {
+                        MessageBox.Show("Select a report from the list on the left");
+                    }
+                    else if (args.Mode.Equals(Toolbar.View.Graph))
+                    {
+                        var graphScreen = new Graph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
+                        ReportList.ReportChanged += graphScreen.ReportChangedHandler;
+                        graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
+                        ChangeScreen(graphScreen);
+                    }
+                    else if (args.View.Equals(Toolbar.View.Table))
+                    {
+                        var tableScreen = new Table(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                        ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                        tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
+                        ChangeScreen(tableScreen);
+                    }
+                    break;
+
+                case Mode.Summary:
+                    ReportList.Visibility = Visibility.Visible;
+                    if ( !DbHelper.GetDbHelper() .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected date range");
+                    }
+                    else if (ReportList.GetSelectedConfiguration() == null)
+                    {
+                        MessageBox.Show("Select a report from the list on the left");
+                    }
+                    else if (args.View.Equals(Toolbar.View.Table))
+                    {
+                        var screen = new Summary(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        ChangeScreen(screen);
+                    }
+                    break;
+
+                case Mode.Faults:
+                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
+                    SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
+                    ChangeScreen(faultsScreen);
+
+                    ReportList.Visibility = Visibility.Collapsed;
+                    break;
             }
         }
 
@@ -69,7 +130,6 @@ namespace ATTrafficAnalayzer.Views
                 {
                     break;
                 }
-
             }
         }
 
@@ -88,7 +148,7 @@ namespace ATTrafficAnalayzer.Views
                     DefaultExt = ".VS",
                     Filter = "Volume Store Files (.VS)|*.VS",
                     Multiselect = true
-                    
+
                 };
 
             // Show open file dialog box 
@@ -108,20 +168,20 @@ namespace ATTrafficAnalayzer.Views
                                                            progress =>
                                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
                                                            () =>
-                                                               {
-                                                                   var waitForInput = true;
-                                                                   var  policy = DbHelper.DuplicatePolicy.Continue;
-                                                                   Dispatcher.BeginInvoke(new Action(() =>
-                                                                       {
-                                                                           var dialog = new DuplicatePolicyDialog {Owner = this};
-                                                                           dialog.ShowDialog();
-                                                                           policy = dialog.SelectedPolicy;
-                                                                           waitForInput = false;
-                                                                       }), null);
-                                                                   while (waitForInput) ;
+                                                           {
+                                                               var waitForInput = true;
+                                                               var policy = DbHelper.DuplicatePolicy.Continue;
+                                                               Dispatcher.BeginInvoke(new Action(() =>
+                                                                   {
+                                                                       var dialog = new DuplicatePolicyDialog { Owner = this };
+                                                                       dialog.ShowDialog();
+                                                                       policy = dialog.SelectedPolicy;
+                                                                       waitForInput = false;
+                                                                   }), null);
+                                                               while (waitForInput) ;
 
-                                                                   return policy;
-                                                               });
+                                                               return policy;
+                                                           });
 
 
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
@@ -134,7 +194,7 @@ namespace ATTrafficAnalayzer.Views
 
         private void ChangeScreen(UserControl screen)
         {
-            if (MainContentControl.Content != null ) RemoveHandlers(MainContentControl.Content);
+            if (MainContentControl.Content != null) RemoveHandlers(MainContentControl.Content);
             MainContentControl.Content = screen;
         }
 
@@ -144,7 +204,8 @@ namespace ATTrafficAnalayzer.Views
             if (screen as IConfigScreen != null)
             {
                 RemoveHandlers(screen as IConfigScreen);
-            }else if (screen as IView != null)
+            }
+            else if (screen as IView != null)
             {
                 RemoveHandlers(screen as IView);
             }
@@ -153,8 +214,6 @@ namespace ATTrafficAnalayzer.Views
                 MessageBox.Show("Somethings has gone horribly wrong");
             }
         }
-
-
         private void RemoveHandlers(IView iView)
         {
             ReportList.ReportChanged -= iView.ReportChangedHandler;
@@ -166,67 +225,6 @@ namespace ATTrafficAnalayzer.Views
             iConfigScreen.ConfigurationSaved -= ReportList.ConfigurationSavedEventHandler;
             iConfigScreen.ConfigurationSaved -= reportConfigurationScreen_ConfigurationSaved;
 
-        }
-
-        private void SwitchScreen(object sender, Toolbar.ScreenChangeEventHandlerArgs args)
-        {
-            if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
-            {
-
-                if (args.Button.Equals(Toolbar.ScreenButton.Faults))
-                {
-                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
-                    SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
-                    ChangeScreen(faultsScreen);
-                    ReportList.Visibility = Visibility.Collapsed;
-                }
-                else if (args.Button.Equals(Toolbar.ScreenButton.Home))
-                {
-                    var homeScreen = new Home();
-                    homeScreen.ImportRequested += fileImportMenuItem_Click;
-                    ChangeScreen(homeScreen);
-
-                    ReportList.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    //Get selected Config
-                    var selectedItem = ReportList.GetSelectedConfiguration();
-                    if (selectedItem != null)
-                    {
-                        if (args.Button.Equals(Toolbar.ScreenButton.Graph))
-                        {
-                            var graphScreen = new Graph(SettingsToolbar.SettingsTray, selectedItem);
-                            SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
-                            ReportList.ReportChanged += graphScreen.ReportChangedHandler;
-                            graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                            ChangeScreen(graphScreen);
-                        }
-                        else if (args.Button.Equals(Toolbar.ScreenButton.Table))
-                        {
-                            if (_selectedMode.Equals(Mode.RegularReports))
-                            {
-                                var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
-                                SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                                ReportList.ReportChanged += tableScreen.ReportChangedHandler;
-                                tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                                ChangeScreen(tableScreen);
-                            }
-                            else
-                            {
-                                var screen = new Summary(SettingsToolbar.SettingsTray, selectedItem);
-                                ChangeScreen(screen);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Select a report from the list on the left");
-                    }
-                }
-            }
-            else
-                MessageBox.Show("You haven't imported volume data for the selected date range");
         }
 
         private void OnVolumeDateCountsDontMatch(IView sender)
@@ -261,7 +259,7 @@ namespace ATTrafficAnalayzer.Views
 
             if (args.New)
             {
-                if (_selectedMode.Equals(Mode.RegularReports))
+                if (_selectedMode.Equals(Mode.Report))
                 {
                     if (DbHelper.GetDbHelper()
                                 .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))

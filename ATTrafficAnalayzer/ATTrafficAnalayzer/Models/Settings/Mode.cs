@@ -2,8 +2,10 @@ namespace ATTrafficAnalayzer.Models.Settings
 {
     public enum Mode
     {
-        MonthlySummary,
-        RegularReports
+        Home,
+        Summary,
+        Report,
+        Faults
     }
 
 }

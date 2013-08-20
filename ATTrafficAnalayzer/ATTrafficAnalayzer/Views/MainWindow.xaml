@@ -98,7 +98,7 @@
             <controls:Toolbar Canvas.Top="55"
                               Canvas.Left="20"
                               x:Name="SettingsToolbar"
-                              ScreenChanged="SwitchScreen" />
+                              ModeChanged="SettingsToolbarOnModeChanged" />
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportList"

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
-using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {

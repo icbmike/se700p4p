@@ -13,14 +13,14 @@ namespace ATTrafficAnalayzer.Views.Controls
     public partial class ReportBrowser
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
-        private Mode _selectedMode;
+        private Mode _mode;
         private bool _modeHasChanged;
 
         public ReportBrowser()
         {
             InitializeComponent();
             DataContext = this;
-            _selectedMode = Mode.RegularReports;
+            _mode = Mode.Report;
 
             PopulateListView();
         }
@@ -28,7 +28,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void PopulateListView()
         {
             StandardReportsTreeView.ItemsSource =
-                _selectedMode.Equals(Mode.RegularReports)
+                _mode.Equals(Mode.Report)
 
                     ? _reportsDataTableHelper.GetRegularReportDataView()
                     : _reportsDataTableHelper.GetMonthlySummaryDataView();
@@ -99,7 +99,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _reportsDataTableHelper.RemoveConfig(selectedItem, _selectedMode);
+                    _reportsDataTableHelper.RemoveConfig(selectedItem, _mode);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -162,7 +162,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
-            _selectedMode = args.SelectedMode;
+            _mode = args.Mode;
             _modeHasChanged = true;
             PopulateListView();
 
