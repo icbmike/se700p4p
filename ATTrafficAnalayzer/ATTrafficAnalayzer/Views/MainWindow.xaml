@@ -45,46 +45,6 @@
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="_Report"
-                          FontSize="16"
-                          Foreground="White">
-                    <MenuItem Name="ReportNewMenuItem"
-                              Foreground="Black"
-                              Header="_New report">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_036_file.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Name="ReportEditMenuItem"
-                              Header="_Edit report"
-                              Foreground="Black">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Name="ReportRemoveMenuItem"
-                              Header="_Remove report"
-                              Foreground="Black">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Name="ReportImportMenuItem"
-                              Foreground="Black"
-                              Header="_Import report">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_358_file_import.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Name="ReportExportMenuItem"
-                              Foreground="Black"
-                              Header="_Export report">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </MenuItem>
                 <MenuItem Header="_Help"
                           FontSize="16"
                           Foreground="White">
@@ -97,8 +57,7 @@
 
             <controls:Toolbar Canvas.Top="55"
                               Canvas.Left="20"
-                              x:Name="SettingsToolbar"
-                              ModeChanged="SettingsToolbarOnModeChanged" />
+                              x:Name="SettingsToolbar" />
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportList"

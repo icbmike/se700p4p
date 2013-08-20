@@ -13,17 +13,20 @@ namespace ATTrafficAnalayzer.Views.Controls
         public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
 
         public enum View { Table, Graph }
+        private static View _view = View.Table;
+        private static Mode _mode = Mode.Home;
+
 
         public Toolbar()
         {
             InitializeComponent();
 
             // Set default values
-            StartDatePicker.SelectedDate = DateTime.Today;
+            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
             SummaryMonthComboBox.SelectedIndex = DateTime.Today.Month;
             SummaryYearComboBox.SelectedIndex = DateTime.Today.Year - 2012;
 
-            ModeChanged += Toolbar_ModeChanged;
+            ModeChanged += SwitchToolbar;
         }
 
         #region Mode/view switching events
@@ -32,9 +35,6 @@ namespace ATTrafficAnalayzer.Views.Controls
         public event ModeChangedEventHandler ModeChanged;
         public class ModeChangedEventHandlerArgs
         {
-            private readonly View _view;
-            private readonly Mode _mode;
-
             public ModeChangedEventHandlerArgs(Mode mode, View view)
             {
                 _mode = mode;
@@ -75,34 +75,28 @@ namespace ATTrafficAnalayzer.Views.Controls
                 ModeChanged(this, new ModeChangedEventHandlerArgs(View.Table));
         }
 
-        private void Toolbar_ModeChanged(object sender, ModeChangedEventHandlerArgs args)
+        private void SwitchToolbar(object sender, ModeChangedEventHandlerArgs e)
         {
-            if (args.Mode.Equals(Mode.Summary))
-            {
-                GraphButton.Visibility = Visibility.Collapsed;
-                StartDateLabel.Visibility = Visibility.Collapsed;
-                StartDatePicker.Visibility = Visibility.Collapsed;
-                EndDateLabel.Visibility = Visibility.Collapsed;
-                EndDatePicker.Visibility = Visibility.Collapsed;
-                IntervalLabel.Visibility = Visibility.Collapsed;
-                IntervalComboBox.Visibility = Visibility.Collapsed;
-                SummaryDateLabel.Visibility = Visibility.Visible;
-                SummaryMonthComboBox.Visibility = Visibility.Visible;
-                SummaryYearComboBox.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                GraphButton.Visibility = Visibility.Visible;
-                StartDateLabel.Visibility = Visibility.Visible;
-                StartDatePicker.Visibility = Visibility.Visible;
-                EndDateLabel.Visibility = Visibility.Visible;
-                IntervalLabel.Visibility = Visibility.Visible;
-                EndDatePicker.Visibility = Visibility.Visible;
-                IntervalComboBox.Visibility = Visibility.Visible;
-                SummaryDateLabel.Visibility = Visibility.Collapsed;
-                SummaryMonthComboBox.Visibility = Visibility.Collapsed;
-                SummaryYearComboBox.Visibility = Visibility.Collapsed;
-            }
+            // Report & faults date pickers
+            var isReportsOrFaults = e.Mode.Equals(Mode.Report) || e.Mode.Equals(Mode.Faults);
+            StartDateLabel.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
+            StartDatePicker.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
+            EndDateLabel.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
+            EndDatePicker.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
+
+            // Report controls
+            var isReportMode = e.Mode.Equals(Mode.Report);
+            GraphButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+            TableButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+            IntervalLabel.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+            IntervalComboBox.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+
+            // Summary controls
+            var isSummaryMode = e.Mode.Equals(Mode.Summary);
+            SummaryMonthLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryMonthComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryYearLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryYearComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed; ;
         }
 
         #endregion
@@ -133,6 +127,11 @@ namespace ATTrafficAnalayzer.Views.Controls
             public DateRangeChangedEventHandlerArgs(int year, int month)
             {
                 StartDate = new DateTime(year + 2012, month + 1, 1);
+            }
+
+            public DateTime GetStartDate()
+            {
+                return StartDate;
             }
         }
 

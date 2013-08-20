@@ -20,7 +20,7 @@
                  Background="{x:Null}"
                  Loaded="MainToolbar_OnLoaded">
 
-            <!--Mode settings-->
+            <!--Mode toggle-->
             <Button Name="HomeButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
@@ -71,32 +71,59 @@
                 </StackPanel>
             </Button>
 
-            <!--Date settings-->
+            <!--Report date pickers-->
             <Label Name="StartDateLabel"
                    Margin="10,0,4,0"
                    Foreground="White"
                    FontSize="16"
-                   Content="Start Date:" />
+                   Content="Start Date:"
+                   Visibility="Collapsed" />
             <DatePicker Name="StartDatePicker"
                         Background="White"
                         SelectedDate="{Binding StartDate}"
                         FontSize="16"
+                        Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
+                        Visibility="Collapsed"
                    FontSize="16"
                    Content="End Date:" />
             <DatePicker Name="EndDatePicker"
                         Background="White"
                         SelectedDate="{Binding EndDate}"
                         FontSize="16"
+                        Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged" />
-            <Label Name="SummaryDateLabel"
+            <Label Name="IntervalLabel"
+                   Margin="20,0,0,0"
+                   Visibility="Collapsed"
+                   Foreground="White"
+                   FontSize="16"
+                   Content="Interval" />
+            <ComboBox Height="23"
+                      Name="IntervalComboBox"
+                      Width="80"
+                      SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
+                      Visibility="Collapsed"
+                      SelectedValuePath="Content"
+                      SelectedIndex="0"
+                      Foreground="Black"
+                      FontSize="16"
+                      SelectionChanged="DateOrInverval_SelectionChanged">
+                <ComboBoxItem>5 min</ComboBoxItem>
+                <ComboBoxItem>15 min</ComboBoxItem>
+                <ComboBoxItem>30 min</ComboBoxItem>
+                <ComboBoxItem>60 min</ComboBoxItem>
+            </ComboBox>
+
+            <!--Summary date pickers-->
+            <Label Name="SummaryMonthLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
                    FontSize="16"
@@ -104,8 +131,7 @@
                    Visibility="Collapsed" />
             <ComboBox Height="23"
                       Name="SummaryMonthComboBox"
-                      Width="80"
-                      SelectedValue="{Binding SummaryMonth}"
+                      Width="120"
                       SelectedValuePath="Content"
                       SelectedIndex="0"
                       Foreground="Black"
@@ -125,10 +151,15 @@
                 <ComboBoxItem>November</ComboBoxItem>
                 <ComboBoxItem>December</ComboBoxItem>
             </ComboBox>
+            <Label Name="SummaryYearLabel"
+                   Margin="20,0,0,0"
+                   Foreground="#FFF6F6F6"
+                   FontSize="16"
+                   Content="Year: "
+                   Visibility="Collapsed" />
             <ComboBox Height="23"
                       Name="SummaryYearComboBox"
-                      Width="80"
-                      SelectedValue="{Binding SummaryYear}"
+                      Width="100"
                       SelectedIndex="0"
                       Foreground="Black"
                       FontSize="16"
@@ -139,33 +170,15 @@
                 <ComboBoxItem>2014</ComboBoxItem>
                 <ComboBoxItem>2015</ComboBoxItem>
             </ComboBox>
-            <Label Name="IntervalLabel"
-                   Margin="20,0,0,0"
-                   Foreground="White"
-                   FontSize="16"
-                   Content="Interval" />
-            <ComboBox Height="23"
-                      Name="IntervalComboBox"
-                      Width="80"
-                      SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
-                      SelectedValuePath="Content"
-                      SelectedIndex="0"
-                      Foreground="Black"
-                      FontSize="16"
-                      SelectionChanged="DateOrInverval_SelectionChanged">
-                <ComboBoxItem>5 min</ComboBoxItem>
-                <ComboBoxItem>15 min</ComboBoxItem>
-                <ComboBoxItem>30 min</ComboBoxItem>
-                <ComboBoxItem>60 min</ComboBoxItem>
-            </ComboBox>
 
-            <!--View settings-->
+            <!--View toggle-->
             <Button Name="TableButton"
                     Margin="10,0,1,0"
                     Click="SwitchView"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Background="{x:Null}"
-                    Foreground="{x:Null}">
+                    Foreground="{x:Null}"
+                    Visibility="Collapsed">
                 <Image Source="/Resources\Images\Icons\glyphicons_119_table.png" />
             </Button>
             <Button Name="GraphButton"
@@ -173,7 +186,8 @@
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1,0,1,0"
                     Background="{x:Null}"
-                    Foreground="{x:Null}">
+                    Foreground="{x:Null}"
+                    Visibility="Collapsed">
                 <Image Source="/Resources\Images\Icons\glyphicons_040_stats.png" />
             </Button>
 

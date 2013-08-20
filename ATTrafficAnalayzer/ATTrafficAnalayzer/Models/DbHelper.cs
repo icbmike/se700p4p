@@ -535,16 +535,17 @@ namespace ATTrafficAnalayzer.Models
             return volumes;
         }
 
-        public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate)
+        public Boolean VolumesExist(DateTime startDate, DateTime endDate)
         {
+            endDate = endDate.AddSeconds(-1);
             var conn = new SQLiteConnection(DbPath);
             conn.Open();
             Boolean result;
             using (var query = new SQLiteCommand(conn))
             {
-                query.CommandText = "SELECT volume " +
+                query.CommandText = "SELECT * " +
                                     "FROM volumes " +
-                                    "WHERE (dateTime BETWEEN @startDate AND @endDate);";
+                                    "WHERE (datetime BETWEEN @startDate AND @endDate);";
                 query.Parameters.AddWithValue("@startDate", startDate);
                 query.Parameters.AddWithValue("@endDate", endDate);
                 var reader = query.ExecuteReader();

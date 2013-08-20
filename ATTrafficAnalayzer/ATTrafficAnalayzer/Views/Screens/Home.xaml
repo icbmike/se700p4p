@@ -45,7 +45,8 @@
                 Name="ImportButton"
                 VerticalAlignment="Stretch"
                 Margin="10,5,10,10"
-                Style="{StaticResource AtButtonStyle}" />
+                Style="{StaticResource AtButtonStyle}"
+                FontSize="20" />
 
     </Grid>
 </UserControl>

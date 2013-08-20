@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
@@ -16,7 +15,7 @@ namespace ATTrafficAnalayzer.Views
     /// </summary>
     public partial class MainWindow
     {
-        private Mode _selectedMode;
+        private Mode _mode;
 
         public MainWindow()
         {
@@ -33,36 +32,25 @@ namespace ATTrafficAnalayzer.Views
             ImportCompleted += homeScreen.ImportCompletedHandler;
 
             ChangeScreen(homeScreen);
-            _selectedMode = Mode.Report;
+            _mode = Mode.Report;
         }
 
         private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
-            _selectedMode = args.Mode;
+            _mode = args.Mode;
 
-            switch (_selectedMode)
+            switch (_mode)
             {
                 case Mode.Home:
+                    ReportList.Visibility = Visibility.Collapsed;
                     var homeScreen = new Home();
                     homeScreen.ImportRequested += fileImportMenuItem_Click;
                     ChangeScreen(homeScreen);
-
-                    ReportList.Visibility = Visibility.Collapsed;
                     break;
 
                 case Mode.Report:
                     ReportList.Visibility = Visibility.Visible;
-                    if (
-                        !DbHelper.GetDbHelper()
-                            .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
-                    {
-                        MessageBox.Show("You haven't imported volume data for the selected date range");
-                    }
-                    else if (ReportList.GetSelectedConfiguration() == null)
-                    {
-                        MessageBox.Show("Select a report from the list on the left");
-                    }
-                    else if (args.Mode.Equals(Toolbar.View.Graph))
+                    if (args.Mode.Equals(Toolbar.View.Graph))
                     {
                         var graphScreen = new Graph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
@@ -82,27 +70,15 @@ namespace ATTrafficAnalayzer.Views
 
                 case Mode.Summary:
                     ReportList.Visibility = Visibility.Visible;
-                    if ( !DbHelper.GetDbHelper() .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
-                    {
-                        MessageBox.Show("You haven't imported volume data for the selected date range");
-                    }
-                    else if (ReportList.GetSelectedConfiguration() == null)
-                    {
-                        MessageBox.Show("Select a report from the list on the left");
-                    }
-                    else if (args.View.Equals(Toolbar.View.Table))
-                    {
-                        var screen = new Summary(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
-                        ChangeScreen(screen);
-                    }
+                    var screen = new Summary(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                    ChangeScreen(screen);
                     break;
 
                 case Mode.Faults:
+                    ReportList.Visibility = Visibility.Collapsed;
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     ChangeScreen(faultsScreen);
-
-                    ReportList.Visibility = Visibility.Collapsed;
                     break;
             }
         }
@@ -259,10 +235,10 @@ namespace ATTrafficAnalayzer.Views
 
             if (args.New)
             {
-                if (_selectedMode.Equals(Mode.Report))
+                if (_mode.Equals(Mode.Report))
                 {
                     if (DbHelper.GetDbHelper()
-                                .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                                .VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                     {
                         var reportConfigurationScreen = new Config();
                         reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;

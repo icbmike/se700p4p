@@ -1,4 +1,5 @@
-﻿using ATTrafficAnalayzer.Models;
+﻿using System.Windows;
+using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Data;
@@ -29,6 +30,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void FillGrid()
         {
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            {
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+                return;
+            }
+
             var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate);
             var dataTable = new DataTable();
             dataAdapter.Fill(dataTable);

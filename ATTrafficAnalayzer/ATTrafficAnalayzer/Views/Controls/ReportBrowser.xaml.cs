@@ -154,9 +154,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (ReportChanged != null && !_modeHasChanged)
-            {
                 ReportChanged(this, new SelectedReporChangeEventHandlerArgs(GetSelectedConfiguration()));
-            }
             _modeHasChanged = false;
         }
 

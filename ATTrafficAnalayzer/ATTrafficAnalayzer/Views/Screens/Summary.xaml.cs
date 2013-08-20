@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
@@ -41,6 +42,17 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void RenderTable(string screenTitle)
         {
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _startDate.AddMonths(1)))
+            {
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+                return;
+            }
+
+            if (false)
+            {
+                MessageBox.Show("Select a report from the list on the left");
+                return;
+            }
 
             ScreenTitle.Content = screenTitle;
 

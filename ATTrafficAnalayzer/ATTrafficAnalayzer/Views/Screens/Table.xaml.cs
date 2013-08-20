@@ -54,6 +54,18 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void RenderTable()
         {
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            {
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+                return;
+            }
+
+            if (_configuration == null)
+            {
+                MessageBox.Show("Select a report from the list on the left");
+                return;
+            }
+
             ScreenTitle.Content = _configuration.ConfigName;
 
             //Clear all the things!
@@ -63,10 +75,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             _maxPm.ClearApproaches();
             _maxTotal.ClearApproaches();
             _peakHourAm.ClearApproaches();
-            _peakHourPm.ClearApproaches(); 
+            _peakHourPm.ClearApproaches();
 
             OverallSummaryTextBlock.Inlines.Clear();
-            
+
             //Add all the things!
 
             var timeSpan = _endDate - _startDate;
