@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ATTrafficAnalayzer.Views.Screens.Home"
+﻿<UserControl x:Class="ATTrafficAnalayzer.Views.Screens.Dashboard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,46 +6,46 @@
              mc:Ignorable="d"
              d:DesignHeight="1100"
              d:DesignWidth="1720"
-             Background="White"
-             Padding="15">
+             Margin="20">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition Height="60" />
+            <RowDefinition Height="80" />
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0"
                Grid.Row="0"
-               FontSize="23"
+               FontSize="28"
+               Margin="20,0"
                FontWeight="Bold"
-               Content="Dates that you have imported volume information for" />
+               Content="Imported Data" />
+        <ListBox Visibility="Collapsed"
+                 Grid.Column="0"
+                 FontSize="16"
+                 Grid.Row="1"
+                 Margin="20"
+                 HorizontalAlignment="Stretch"
+                 Name="ImportedDatesList"
+                 VerticalAlignment="Stretch"
+                 ItemStringFormat="D" />
+        <Button Grid.Column="0"
+                Grid.Row="2"
+                Content="Import Data"
+                Click="ImportButtonClick"
+                HorizontalAlignment="Stretch"
+                Margin="20,10"
+                Name="ImportButton"
+                VerticalAlignment="Stretch"
+                Style="{StaticResource AtButtonStyle}" />
+
         <ProgressBar Name="ProgressBar"
                      IsIndeterminate="True"
                      Grid.Column="0"
                      Grid.Row="1"
                      Height="25"
                      Width="300" />
-        <ListBox Visibility="Collapsed"
-                 Grid.Column="0"
-                 Grid.Row="1"
-                 HorizontalAlignment="Stretch"
-                 Name="ImportedDatesList"
-                 VerticalAlignment="Stretch"
-                 Margin="10,10,10,5"
-                 ItemStringFormat="D"
-                 Grid.ColumnSpan="2" />
-
-        <Button Grid.Column="1"
-                Grid.Row="2"
-                Content="Import Data"
-                Click="ImportButtonClick"
-                HorizontalAlignment="Stretch"
-                Name="ImportButton"
-                VerticalAlignment="Stretch"
-                Margin="10,5,10,10"
-                Style="{StaticResource AtButtonStyle}" />
 
     </Grid>
 </UserControl>

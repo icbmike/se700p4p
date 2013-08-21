@@ -1,4 +1,5 @@
-﻿using ATTrafficAnalayzer.Models;
+﻿using System.Windows;
+using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Data;
@@ -29,6 +30,9 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void FillGrid()
         {
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+
             var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate);
             var dataTable = new DataTable();
             dataAdapter.Fill(dataTable);
@@ -38,10 +42,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         internal void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate))
+            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate))
             {
-                _startDate = args.startDate;
-                _endDate = args.endDate;
+                _startDate = args.StartDate;
+                _endDate = args.EndDate;
 
                 FillGrid();
             }

@@ -20,15 +20,16 @@
                  Background="{x:Null}"
                  Loaded="MainToolbar_OnLoaded">
 
-            <Button Name="HomeButton"
-                    Click="SwitchScreen"
+            <!--Mode toggle-->
+            <Button Name="DashboardButton"
+                    Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    MouseLeftButtonDown="SwitchScreen"
+                    MouseLeftButtonDown="SwitchMode"
                     Background="{x:Null}"
                     Foreground="White">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
-                    <ContentPresenter Content="Home"
+                    <ContentPresenter Content="Dashboard"
                                       Margin="6,0"
                                       VerticalAlignment="Center" />
                 </StackPanel>
@@ -58,7 +59,7 @@
                 </StackPanel>
             </Button>
             <Button Name="FaultsButton"
-                    Click="SwitchScreen"
+                    Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Background="{x:Null}"
                     Foreground="White">
@@ -70,44 +71,61 @@
                 </StackPanel>
             </Button>
 
+            <!--Report date pickers-->
             <Label Name="StartDateLabel"
                    Margin="10,0,4,0"
                    Foreground="White"
                    FontSize="16"
-                   Content="Start Date:" />
+                   Content="Start Date:"
+                   Visibility="Collapsed" />
             <DatePicker Name="StartDatePicker"
                         Background="White"
                         SelectedDate="{Binding StartDate}"
-                        FontSize="16"
+                        FontSize="14"
+                        Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        SelectedDateChanged="DateOrInverval_SelectionChanged" />
+                        Padding="6, 3"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        SelectedDateChanged="DateOrInverval_SelectionChanged"
+                        SelectedDateFormat="Long" />
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
+                   Visibility="Collapsed"
                    FontSize="16"
                    Content="End Date:" />
             <DatePicker Name="EndDatePicker"
                         Background="White"
                         SelectedDate="{Binding EndDate}"
-                        FontSize="16"
+                        Padding="6, 3"
+                        FontSize="14"
+                        Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        SelectedDateChanged="DateOrInverval_SelectionChanged" />
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        SelectedDateChanged="DateOrInverval_SelectionChanged"
+                        SelectedDateFormat="Long" />
 
-            <Label Name="IntervalLabel"
+            <!--Report config-->            <Label Name="IntervalLabel"
                    Margin="20,0,0,0"
+                   Visibility="Collapsed"
                    Foreground="White"
                    FontSize="16"
-                   Content="Interval" />
+                   Content="Interval: " />
             <ComboBox Height="23"
                       Name="IntervalComboBox"
-                      Width="80"
                       SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
+                      Visibility="Collapsed"
                       SelectedValuePath="Content"
+                      Padding="6, 0"
                       SelectedIndex="0"
                       Foreground="Black"
-                      FontSize="16"
+                      FontSize="14"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
                       SelectionChanged="DateOrInverval_SelectionChanged">
                 <ComboBoxItem>5 min</ComboBoxItem>
                 <ComboBoxItem>15 min</ComboBoxItem>
@@ -115,20 +133,83 @@
                 <ComboBoxItem>60 min</ComboBoxItem>
             </ComboBox>
 
+            <!--Summary config-->
+            <Label Name="SummaryAmPeakLabel"
+                   Margin="20,0,0,0"
+                   Visibility="Collapsed"
+                   Foreground="White"
+                   FontSize="16"
+                   Content="AM Peak Period:" />
+            <ComboBox Height="23"
+                      Name="SummaryAmPeakComboBox"
+                      Visibility="Collapsed"
+                      SelectedIndex="8"
+                      Padding="6, 0"
+                      Foreground="Black"
+                      FontSize="14"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      SelectionChanged="SummaryPeakComboBox_SelectionChanged">
+                <ComboBoxItem>Midnight</ComboBoxItem>
+                <ComboBoxItem>1 AM</ComboBoxItem>
+                <ComboBoxItem>2 AM</ComboBoxItem>
+                <ComboBoxItem>3 AM</ComboBoxItem>
+                <ComboBoxItem>4 AM</ComboBoxItem>
+                <ComboBoxItem>5 AM</ComboBoxItem>
+                <ComboBoxItem>6 AM</ComboBoxItem>
+                <ComboBoxItem>7 AM</ComboBoxItem>
+                <ComboBoxItem>8 AM</ComboBoxItem>
+                <ComboBoxItem>9 AM</ComboBoxItem>
+                <ComboBoxItem>10 AM</ComboBoxItem>
+                <ComboBoxItem>11 AM</ComboBoxItem>
+            </ComboBox>
+            <Label Name="SummaryPmPeakLabel"
+                   Margin="20,0,0,0"
+                   Visibility="Collapsed"
+                   Foreground="White"
+                   FontSize="16"
+                   Content="PM Peak Period:" />
+            <ComboBox Height="23"
+                      Name="SummaryPmPeakComboBox"
+                      Visibility="Collapsed"
+                      SelectedIndex="4"
+                      Foreground="Black"
+                      FontSize="14"
+                      Padding="6, 0"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      SelectionChanged="SummaryPeakComboBox_SelectionChanged">
+                <ComboBoxItem>Midday</ComboBoxItem>
+                <ComboBoxItem>1 PM</ComboBoxItem>
+                <ComboBoxItem>2 PM</ComboBoxItem>
+                <ComboBoxItem>3 PM</ComboBoxItem>
+                <ComboBoxItem>4 PM</ComboBoxItem>
+                <ComboBoxItem>5 PM</ComboBoxItem>
+                <ComboBoxItem>6 PM</ComboBoxItem>
+                <ComboBoxItem>7 PM</ComboBoxItem>
+                <ComboBoxItem>8 PM</ComboBoxItem>
+                <ComboBoxItem>9 PM</ComboBoxItem>
+                <ComboBoxItem>10 PM</ComboBoxItem>
+                <ComboBoxItem>11 PM</ComboBoxItem>
+            </ComboBox>
+
+            <!--View toggle-->
             <Button Name="TableButton"
                     Margin="10,0,1,0"
-                    Click="SwitchScreen"
+                    Click="SwitchView"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Background="{x:Null}"
-                    Foreground="{x:Null}">
+                    Foreground="{x:Null}"
+                    Visibility="Collapsed">
                 <Image Source="/Resources\Images\Icons\glyphicons_119_table.png" />
             </Button>
             <Button Name="GraphButton"
-                    Click="SwitchScreen"
+                    Click="SwitchView"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     Margin="1,0,1,0"
                     Background="{x:Null}"
-                    Foreground="{x:Null}">
+                    Foreground="{x:Null}"
+                    Visibility="Collapsed">
                 <Image Source="/Resources\Images\Icons\glyphicons_040_stats.png" />
             </Button>
 

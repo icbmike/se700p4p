@@ -1,8 +1,8 @@
-﻿using ATTrafficAnalayzer.Models.Settings;
+﻿using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -13,33 +13,166 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
 
+        public enum View { Table, Graph }
+        private static View _view = View.Table;
+        private static Mode _mode = Mode.Dashboard;
+
+
         public Toolbar()
         {
             InitializeComponent();
+
+            // Set default values
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-            ModeChanged += Toolbar_ModeChanged;
+
+            ModeChanged += SwitchToolbar;
         }
 
-        private void Toolbar_ModeChanged(object sender, ModeChangedEventHandlerArgs args)
+        #region Mode/view switching events
+
+        public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
+        public event ModeChangedEventHandler ModeChanged;
+        public class ModeChangedEventHandlerArgs
         {
-            if (args.SelectedMode.Equals(Mode.MonthlySummary))
+            public ModeChangedEventHandlerArgs(Mode mode, View view)
             {
-                GraphButton.Visibility = Visibility.Collapsed;
-                EndDateLabel.Visibility = Visibility.Collapsed;
-                EndDatePicker.Visibility = Visibility.Collapsed;
-                IntervalLabel.Visibility = Visibility.Collapsed;
-                IntervalComboBox.Visibility = Visibility.Collapsed;
+                _mode = mode;
+                _view = view;
             }
-            else
+
+            public ModeChangedEventHandlerArgs(View view)
             {
-                GraphButton.Visibility = Visibility.Visible;
-                EndDateLabel.Visibility = Visibility.Visible;
-                IntervalLabel.Visibility = Visibility.Visible;
-                EndDatePicker.Visibility = Visibility.Visible;
-                IntervalComboBox.Visibility = Visibility.Visible;
+                _view = view;
+            }
+
+            public ModeChangedEventHandlerArgs(Mode mode)
+            {
+                _mode = mode;
+            }
+
+            public Mode Mode { get { return _mode; } }
+            public View View { get { return _view; } }
+        }
+
+        private void SwitchMode(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(DashboardButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Dashboard));
+            else if (sender.Equals(RegularReportsButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Report));
+            else if (sender.Equals(MonthlySummaryButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Summary));
+            else if (sender.Equals(FaultsButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Faults));
+        }
+
+        private void SwitchView(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(GraphButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(View.Graph));
+            else if (sender.Equals(TableButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(View.Table));
+        }
+
+        private void SwitchToolbar(object sender, ModeChangedEventHandlerArgs e)
+        {
+            // Date pickers
+            var isHomeMode = e.Mode.Equals(Mode.Dashboard);
+            StartDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+            StartDatePicker.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+            EndDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+            EndDatePicker.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+
+            // Report controls
+            var isReportMode = e.Mode.Equals(Mode.Report);
+            GraphButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+            TableButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+            IntervalLabel.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+            IntervalComboBox.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+
+            // Summary controls
+            var isSummaryMode = e.Mode.Equals(Mode.Summary);
+            SummaryAmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryAmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed ;
+            SummaryPmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryPmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        #endregion
+
+        #region View parameter events
+
+        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
+        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
+        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
+
+        private Boolean _startModifyingEnd;
+
+        public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
+        public event DateRangeChangedEventHandler DateRangeChanged;
+        public class DateRangeChangedEventHandlerArgs
+        {
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public int AmPeakHour { get; set; }
+            public int PmPeakHour { get; set; }
+            public int Interval { get; set; }
+
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
+            {
+                StartDate = startDate;
+                EndDate = endDate;
+                Interval = interval;
+            }
+
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate)
+            {
+                StartDate = startDate;
+                EndDate = endDate;
+            }
+
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int amPeakHour, int pmPeakHour)
+            {
+                StartDate = startDate;
+                EndDate = endDate;
+                AmPeakHour = amPeakHour;
+                PmPeakHour = pmPeakHour;
             }
         }
 
+        private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender.Equals(StartDatePicker))
+            {
+                if (EndDatePicker != null)
+                {
+                    _startModifyingEnd = true;
+                    var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+                    EndDatePicker.SelectedDate = newDate;
+                }
+            }
+            else if (sender.Equals(EndDatePicker))
+            {
+                if (_startModifyingEnd)
+                {
+                    _startModifyingEnd = false;
+                    return;
+                }
+            }
+
+            if (DateRangeChanged != null)
+            {
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Removes overflow tab from the toolbar's right-end
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainToolbar_OnLoaded(object sender, RoutedEventArgs e)
         {
             var toolBar = sender as ToolBar;
@@ -50,129 +183,15 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
-        #region Screen refreshing
-
-        public enum ScreenButton
+        private void SummaryPeakComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Graph,
-            Table,
-            Faults,
-            Summary,
-            Home
-        }
-
-        public delegate void ScreenChangeEventHandler(object sender, ScreenChangeEventHandlerArgs args);
-        public event ScreenChangeEventHandler ScreenChanged;
-
-        public class ScreenChangeEventHandlerArgs
-        {
-            public ScreenChangeEventHandlerArgs(ScreenButton button)
-            {
-                Button = button;
-            }
-
-            public ScreenButton Button { get; set; }
-        }
-
-        private void SwitchScreen(object sender, RoutedEventArgs e)
-        {
-            if (sender.Equals(GraphButton))
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Graph));
-            else if (sender.Equals(TableButton))
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Table));
-            else if (sender.Equals(HomeButton))
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Home));
-            else
-                ScreenChanged(this, new ScreenChangeEventHandlerArgs(ScreenButton.Faults));
-        }
-
-        private void SwitchMode(object sender, RoutedEventArgs e)
-        {
-             ModeChanged(this, new ModeChangedEventHandlerArgs(sender.Equals(MonthlySummaryButton) ? Mode.MonthlySummary : Mode.RegularReports));
-        }
-
-        #endregion
-
-
-        public delegate void ModeChangedEventHandler(object sender, ModeChangedEventHandlerArgs args);
-
-        public event ModeChangedEventHandler ModeChanged;
-
-        public class ModeChangedEventHandlerArgs
-        {
-            private readonly Mode _mode;
-
-            public ModeChangedEventHandlerArgs(Mode mode)
-            {
-                _mode = mode;
-            }
-
-            public Mode SelectedMode
-            {
-                get { return _mode; }
-            }
-        }
-
-        #region Date refreshing
-
-        private Boolean _startModifyingEnd;
-
-        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
-        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
-
-        public int Month
-        {
-            get { return StartDatePicker.SelectedDate.Value.Month; }
-        }
-
-        public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
-        public event DateRangeChangedEventHandler DateRangeChanged;
-
-        public class DateRangeChangedEventHandlerArgs
-        {
-            public DateTime startDate { get; set; }
-            public DateTime endDate { get; set; }
-            public int interval { get; set; }
-
-            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
-            {
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.interval = interval;
-            }
-        }
-
-        private void DateOrInverval_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender.Equals(StartDatePicker))
-            {
-                Console.WriteLine("Start date picker...");
-                if (EndDatePicker != null)
-                {
-                    Console.WriteLine("true");
-                    _startModifyingEnd = true;
-                    var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
-                    EndDatePicker.SelectedDate = newDate;
-                }
-            }
-            else if (sender.Equals(EndDatePicker))
-            {
-                Console.WriteLine("End date picker...");
-                if (_startModifyingEnd)
-                {
-                    Console.WriteLine("false");
-                    _startModifyingEnd = false;
-                    return;
-                }
-            }
-
             if (DateRangeChanged != null)
             {
-                Console.WriteLine("Firing the actual event");
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
+                DateRangeChanged(this,
+                    new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value,
+                        EndDatePicker.SelectedDate.Value, SummaryAmPeakComboBox.SelectedIndex,
+                        SummaryPmPeakComboBox.SelectedIndex));
             }
         }
-
-        #endregion
     }
 }

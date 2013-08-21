@@ -18,7 +18,8 @@
                    Foreground="White"
                    Padding="5"
                    DockPanel.Dock="Left" />
-            <Button HorizontalAlignment="Right"
+            <Button Name="NewButton"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}"

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
 using ATTrafficAnalayzer.Models.Settings;
 
@@ -63,7 +61,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         private void RemoveConfigFromDataSet(String configToDelete, Mode selectedMode)
         {
-            var configs = selectedMode.Equals(Mode.RegularReports) ? _regularReportsDataTable.Rows : _monthlySummaryDataTable.Rows;
+            var configs = selectedMode.Equals(Mode.Report) ? _regularReportsDataTable.Rows : _monthlySummaryDataTable.Rows;
             var rowToDelete = configs.Find(configToDelete);
             rowToDelete.Delete();
         }

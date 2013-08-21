@@ -10,7 +10,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Home.xaml
     /// </summary>
-    public partial class Home : IView
+    public partial class Dashboard : IView
     {
 
         #region events
@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         #endregion
 
 
-        public Home()
+        public Dashboard()
         {
             InitializeComponent();
            

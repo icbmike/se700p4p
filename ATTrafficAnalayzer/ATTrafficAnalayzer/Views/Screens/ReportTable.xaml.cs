@@ -9,14 +9,13 @@ using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using System;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
     /// </summary>
-    public partial class Table : IView
+    public partial class ReportTable : IView
     {
         private readonly VolumeMetric _maxTotal = new VolumeMetric();
         private readonly VolumeMetric _maxAm = new VolumeMetric();
@@ -38,7 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="configName"></param>
-        public Table(SettingsTray settings, string configName)
+        public ReportTable(SettingsTray settings, string configName)
         {
             _configuration = _dbHelper.GetConfiguration(configName);
 
@@ -52,9 +51,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             RenderTable();
         }
 
-
         private void RenderTable()
         {
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            {
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+                return;
+            }
+
             ScreenTitle.Content = _configuration.ConfigName;
 
             //Clear all the things!
@@ -64,14 +68,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             _maxPm.ClearApproaches();
             _maxTotal.ClearApproaches();
             _peakHourAm.ClearApproaches();
-            _peakHourPm.ClearApproaches(); 
+            _peakHourPm.ClearApproaches();
 
             OverallSummaryTextBlock.Inlines.Clear();
-            
+
             //Add all the things!
 
             var timeSpan = _endDate - _startDate;
-            bool countsDontMatch = false;
+            var countsDontMatch = false;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
@@ -142,14 +146,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(_startDate) || !args.endDate.Equals(_endDate) || !args.interval.Equals(_interval))
+            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate) || !args.Interval.Equals(_interval))
             {
                 //RenderTable() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                _startDate = args.startDate;
-                _endDate = args.endDate;
-                _interval = args.interval;
+                _startDate = args.StartDate;
+                _endDate = args.EndDate;
+                _interval = args.Interval;
 
                 RenderTable();
             }

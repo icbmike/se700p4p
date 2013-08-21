@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Properties;
 using ATTrafficAnalayzer.Views.Controls;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
@@ -17,39 +18,54 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class Graph : IView
+    public partial class ReportGraph : IView
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
         
-        private string configName;
-        private DateTime startDate;
-        private DateTime endDate;
-        private int interval;
-        private List<LineAndMarker<MarkerPointsGraph>> series;
+        private string _configName;
+        private DateTime _startDate;
+        private DateTime _endDate;
+        private int _interval;
+        private readonly List<LineAndMarker<MarkerPointsGraph>> series;
 
 
-        public Graph(SettingsTray settings, string configName)
+        public ReportGraph(SettingsTray settings, string configName)
         {
-            startDate = settings.StartDate;
-            endDate = settings.EndDate;
-            interval = settings.Interval;
+            _startDate = settings.StartDate;
+            _endDate = settings.EndDate;
+            _interval = settings.Interval;
+            _configName = configName;
 
-            this.configName = configName;
             InitializeComponent();
 
-            ScreenTitle.Content = configName;
             series = new List<LineAndMarker<MarkerPointsGraph>>();
-
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
 
-            //Display the graph
             RenderGraph();
-
         }
 
         private void RenderGraph()
         {
+            var dbHelper = DbHelper.GetDbHelper();
+            var configuation = dbHelper.GetConfiguration(_configName);
+
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            {
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+                return;
+            }
+
+            if (configuation == null)
+            {
+                MessageBox.Show("Construct your new report or select a report from the list on the left");
+                return;
+            }
+
+            ScreenTitle.Content = _configName;
+
+            var intersection = configuation.Intersection;
+
             //Clear anything that's already on the graph
             foreach (var graph in series)
             {
@@ -62,15 +78,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             //Clear the series
             series.Clear();
 
-            var dbHelper = DbHelper.GetDbHelper();
-            var reportConfiguration = dbHelper.GetConfiguration(configName);
-            var intersection = reportConfiguration.Intersection;
-
             // List dates
             var dateList = new List<DateTime>();
-            for (var date = startDate;
-                date < endDate;
-                date = date.AddMinutes(interval))
+            for (var date = _startDate;
+                date < _endDate;
+                date = date.AddMinutes(_interval))
                 dateList.Add(date);
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
@@ -78,25 +90,25 @@ namespace ATTrafficAnalayzer.Views.Screens
             
             var brushCounter = 0;
             var countsMatch = true;
-            foreach (var approach in reportConfiguration.Approaches)
+            foreach (var approach in configuation.Approaches)
             {
                 //Get volume info from db
-                var approachVolumes = approach.GetVolumesList(intersection, startDate, endDate);
+                var approachVolumes = approach.GetVolumesList(intersection, _startDate, _endDate);
 
                 //Check that we actually have volumes that we need
-                if (approachVolumes.Count / (interval / 5) != dateList.Count)
+                if (approachVolumes.Count / (_interval / 5) != dateList.Count)
                 {
                     countsMatch = false;
                     break;
                 }
 
                 var compressedVolumes = new int[dateList.Count];
-                var valuesPerCell = interval / 5;
+                var valuesPerCell = _interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
                 {
                     var cellValue = 0;
 
-                    for (var i = 0; i < interval / 5; i++)
+                    for (var i = 0; i < _interval / 5; i++)
                     {
                         cellValue += approachVolumes[i + valuesPerCell * j];
                     }
@@ -155,14 +167,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
 
-            if (!args.startDate.Equals(startDate) || !args.endDate.Equals(endDate) || !args.interval.Equals(interval))
+            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate) || !args.Interval.Equals(_interval))
             {
                 //InitializeGraph() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                startDate = args.startDate;
-                endDate = args.endDate;
-                interval = args.interval;
+                _startDate = args.StartDate;
+                _endDate = args.EndDate;
+                _interval = args.Interval;
 
                 RenderGraph();
             }
@@ -170,7 +182,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
         {
-            configName = args.ReportName;
+            _configName = args.ReportName;
             RenderGraph();
         }
 

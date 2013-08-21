@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
@@ -16,7 +15,7 @@ namespace ATTrafficAnalayzer.Views
     /// </summary>
     public partial class MainWindow
     {
-        private Mode _selectedMode;
+        private Mode _mode;
 
         public MainWindow()
         {
@@ -25,7 +24,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            var homeScreen = new Home();
+            var homeScreen = new Dashboard();
             homeScreen.ImportRequested += fileImportMenuItem_Click;
 
             SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
@@ -33,16 +32,69 @@ namespace ATTrafficAnalayzer.Views
             ImportCompleted += homeScreen.ImportCompletedHandler;
 
             ChangeScreen(homeScreen);
-            _selectedMode = Mode.RegularReports;
+            _mode = Mode.Report;
         }
 
         private void SettingsToolbarOnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
-            _selectedMode = args.SelectedMode;
+            _mode = args.Mode;
 
-            if (_selectedMode.Equals(Mode.RegularReports) || _selectedMode.Equals((Mode.MonthlySummary)))
+            switch (_mode)
             {
-                ReportList.Visibility = Visibility.Visible;
+                case Mode.Dashboard:
+                    ReportList.Visibility = Visibility.Collapsed;
+                    var homeScreen = new Dashboard();
+                    homeScreen.ImportRequested += fileImportMenuItem_Click;
+                    ChangeScreen(homeScreen);
+                    break;
+
+                case Mode.Report:
+                    ReportList.Visibility = Visibility.Visible;
+                    if (ReportList.GetSelectedConfiguration() == null)
+                    {
+                        ChangeScreen(new ReportConfig());
+                        MessageBox.Show("Construct your new report or select a report from the Report Browser");
+                    }
+                    else if (args.View.Equals(Toolbar.View.Graph))
+                    {
+                        var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
+                        ReportList.ReportChanged += graphScreen.ReportChangedHandler;
+                        graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
+                        ChangeScreen(graphScreen);
+                    }
+                    else if (args.View.Equals(Toolbar.View.Table))
+                    {
+                        var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
+                        ReportList.ReportChanged += tableScreen.ReportChangedHandler;
+                        tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
+                        ChangeScreen(tableScreen);
+                    }
+                    break;
+
+                case Mode.Summary:
+                    ReportList.Visibility = Visibility.Visible;
+                    if (ReportList.GetSelectedConfiguration() == null)
+                    {
+                        ChangeScreen(new SummaryConfig());
+                        MessageBox.Show("Construct your new report or select a report from the Report Browser");
+                    }
+                    else
+                    {
+                        var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
+                            ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
+                        ChangeScreen(summaryScreen);
+                    }
+                    break;
+
+                case Mode.Faults:
+                    ReportList.Visibility = Visibility.Collapsed;
+                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
+                    SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
+                    ChangeScreen(faultsScreen);
+                    break;
             }
         }
 
@@ -62,14 +114,9 @@ namespace ATTrafficAnalayzer.Views
                 messageBoxText = "Would you like to import another file?";
 
                 if (result.Equals(MessageBoxResult.Yes))
-                {
                     ImportFile();
-                }
                 else
-                {
                     break;
-                }
-
             }
         }
 
@@ -88,7 +135,7 @@ namespace ATTrafficAnalayzer.Views
                     DefaultExt = ".VS",
                     Filter = "Volume Store Files (.VS)|*.VS",
                     Multiselect = true
-                    
+
                 };
 
             // Show open file dialog box 
@@ -100,7 +147,7 @@ namespace ATTrafficAnalayzer.Views
                 var settings = new ProgressDialogSettings(true, false, false);
                 foreach (var filename in dlg.FileNames)
                 {
-                    DbHelper.DuplicatePolicy skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
+                    var skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 
@@ -108,20 +155,20 @@ namespace ATTrafficAnalayzer.Views
                                                            progress =>
                                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
                                                            () =>
-                                                               {
-                                                                   var waitForInput = true;
-                                                                   var  policy = DbHelper.DuplicatePolicy.Continue;
-                                                                   Dispatcher.BeginInvoke(new Action(() =>
-                                                                       {
-                                                                           var dialog = new DuplicatePolicyDialog {Owner = this};
-                                                                           dialog.ShowDialog();
-                                                                           policy = dialog.SelectedPolicy;
-                                                                           waitForInput = false;
-                                                                       }), null);
-                                                                   while (waitForInput) ;
+                                                           {
+                                                               var waitForInput = true;
+                                                               var policy = DbHelper.DuplicatePolicy.Continue;
+                                                               Dispatcher.BeginInvoke(new Action(() =>
+                                                                   {
+                                                                       var dialog = new DuplicatePolicyDialog { Owner = this };
+                                                                       dialog.ShowDialog();
+                                                                       policy = dialog.SelectedPolicy;
+                                                                       waitForInput = false;
+                                                                   }), null);
+                                                               while (waitForInput) ;
 
-                                                                   return policy;
-                                                               });
+                                                               return policy;
+                                                           });
 
 
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
@@ -134,7 +181,7 @@ namespace ATTrafficAnalayzer.Views
 
         private void ChangeScreen(UserControl screen)
         {
-            if (MainContentControl.Content != null ) RemoveHandlers(MainContentControl.Content);
+            if (MainContentControl.Content != null) RemoveHandlers(MainContentControl.Content);
             MainContentControl.Content = screen;
         }
 
@@ -144,7 +191,8 @@ namespace ATTrafficAnalayzer.Views
             if (screen as IConfigScreen != null)
             {
                 RemoveHandlers(screen as IConfigScreen);
-            }else if (screen as IView != null)
+            }
+            else if (screen as IView != null)
             {
                 RemoveHandlers(screen as IView);
             }
@@ -153,8 +201,6 @@ namespace ATTrafficAnalayzer.Views
                 MessageBox.Show("Somethings has gone horribly wrong");
             }
         }
-
-
         private void RemoveHandlers(IView iView)
         {
             ReportList.ReportChanged -= iView.ReportChangedHandler;
@@ -168,72 +214,11 @@ namespace ATTrafficAnalayzer.Views
 
         }
 
-        private void SwitchScreen(object sender, Toolbar.ScreenChangeEventHandlerArgs args)
-        {
-            if (DbHelper.GetDbHelper().VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
-            {
-
-                if (args.Button.Equals(Toolbar.ScreenButton.Faults))
-                {
-                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
-                    SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
-                    ChangeScreen(faultsScreen);
-                    ReportList.Visibility = Visibility.Collapsed;
-                }
-                else if (args.Button.Equals(Toolbar.ScreenButton.Home))
-                {
-                    var homeScreen = new Home();
-                    homeScreen.ImportRequested += fileImportMenuItem_Click;
-                    ChangeScreen(homeScreen);
-
-                    ReportList.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    //Get selected Config
-                    var selectedItem = ReportList.GetSelectedConfiguration();
-                    if (selectedItem != null)
-                    {
-                        if (args.Button.Equals(Toolbar.ScreenButton.Graph))
-                        {
-                            var graphScreen = new Graph(SettingsToolbar.SettingsTray, selectedItem);
-                            SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
-                            ReportList.ReportChanged += graphScreen.ReportChangedHandler;
-                            graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                            ChangeScreen(graphScreen);
-                        }
-                        else if (args.Button.Equals(Toolbar.ScreenButton.Table))
-                        {
-                            if (_selectedMode.Equals(Mode.RegularReports))
-                            {
-                                var tableScreen = new Table(SettingsToolbar.SettingsTray, selectedItem);
-                                SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                                ReportList.ReportChanged += tableScreen.ReportChangedHandler;
-                                tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                                ChangeScreen(tableScreen);
-                            }
-                            else
-                            {
-                                var tableScreen = new Summary();
-                                ChangeScreen(tableScreen);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Select a report from the list on the left");
-                    }
-                }
-            }
-            else
-                MessageBox.Show("You haven't imported volume data for the selected date range");
-        }
-
         private void OnVolumeDateCountsDontMatch(IView sender)
         {
             MessageBox.Show("You don't have volume data imported for the range you specified");
 
-            var homeScreen = new Home();
+            var homeScreen = new Dashboard();
             homeScreen.ImportRequested += fileImportMenuItem_Click;
             ChangeScreen(homeScreen);
 
@@ -258,15 +243,14 @@ namespace ATTrafficAnalayzer.Views
 
         private void ReportList_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
-
             if (args.New)
             {
-                if (_selectedMode.Equals(Mode.RegularReports))
+                if (_mode.Equals(Mode.Report))
                 {
                     if (DbHelper.GetDbHelper()
-                                .VolumesExistForDateRange(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                                .VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                     {
-                        var reportConfigurationScreen = new Config();
+                        var reportConfigurationScreen = new ReportConfig();
                         reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
 
@@ -296,7 +280,7 @@ namespace ATTrafficAnalayzer.Views
             else
             {
                 //Open relevant config screen
-                var reportConfigurationScreen = new Config(args.ConfigToBeEdited);
+                var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
 
                 reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                 reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
@@ -309,7 +293,7 @@ namespace ATTrafficAnalayzer.Views
 
         void reportConfigurationScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
         {
-            var tableScreen = new Table(SettingsToolbar.SettingsTray, args.Name);
+            var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
             ChangeScreen(tableScreen);
         }

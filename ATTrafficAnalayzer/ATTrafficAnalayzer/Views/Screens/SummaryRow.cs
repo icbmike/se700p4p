@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using Newtonsoft.Json.Linq;
@@ -15,6 +16,17 @@ namespace ATTrafficAnalayzer.Views.Screens
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
         }
+
+        public SummaryRow(string routeName, int intersectionIn, int intersectionOut, List<int> detectorsIn,
+            List<int> detectorsOut)
+        {
+            RouteName = routeName;
+            SelectedIntersectionIn = intersectionIn;
+            SelectedIntersectionOut = intersectionOut;
+            DetectorsIn = detectorsIn;
+            DetectorsOut = detectorsOut;
+        }
+
         private ObservableCollection<int> _intersections;
 
         public ObservableCollection<int> Intersections
@@ -57,5 +69,14 @@ namespace ATTrafficAnalayzer.Views.Screens
                                 };
         }
 
+        public string GetDetectorsInAsString()
+        {
+            return String.Join(", ", DetectorsIn);
+        }
+
+        public string GetDetectorsOutAsString()
+        {
+            return String.Join(", ", DetectorsOut);
+        }
     }
 }

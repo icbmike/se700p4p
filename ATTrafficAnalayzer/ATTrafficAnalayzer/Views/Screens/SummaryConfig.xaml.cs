@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Configuration;
-using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -15,11 +12,9 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class SummaryConfig : IConfigScreen
     {
         private readonly DbHelper _dbHelper;
-
-        #region events
+        private bool _isNewConfig = true;
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
-        #endregion
 
         public SummaryConfig()
         {
@@ -60,8 +55,23 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
-
         }
-       
+
+        private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (_isNewConfig)
+            {
+                var configTextBox = (TextBox)sender;
+
+                for (var count = 1; ; count++)
+                {
+                    if (!_dbHelper.ConfigExists("Summary " + count))
+                    {
+                        configTextBox.Text = "Summary " + count;
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
