@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Text;
 using System.Windows;
 using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
@@ -60,18 +61,31 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             ScreenTitle.Content = _screenTitle;
 
-            AmPeakApproachDisplay.ApproachDataGrid.ItemsSource =
-                GetDataTable(new AmPeakCalculator(_amPeakHour)).AsDataView();
-            AmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
+            //TODO define ApproachDisplays in the xaml
 
-            PmPeakApproachDisplay.ApproachDataGrid.ItemsSource =
-                GetDataTable(new PmPeakCalculator(_pmPeakHour)).AsDataView();
-            PmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
+            ApproachesStackPanel.Children.Clear();
 
-            SumApproachDisplay.ApproachDataGrid.ItemsSource =
-                GetDataTable(new SumCalculator()).AsDataView();
-            SumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
-        }
+            var amPeakApproachDisplay = new TableApproachDisplay
+            {
+                ApproachDataGrid = { ItemsSource = GetDataTable(new AmPeakCalculator(_amPeakHour)).AsDataView() }
+            };
+            amPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
+            ApproachesStackPanel.Children.Add(amPeakApproachDisplay);
+
+            var pmPeakApproachDisplay = new TableApproachDisplay
+            {
+                ApproachDataGrid = { ItemsSource = GetDataTable(new PmPeakCalculator(_pmPeakHour)).AsDataView() }
+            };
+            pmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
+            ApproachesStackPanel.Children.Add(pmPeakApproachDisplay);
+
+            var sumApproachDisplay = new TableApproachDisplay
+            {
+                ApproachDataGrid = { ItemsSource = GetDataTable(new SumCalculator()).AsDataView() }
+            };
+            sumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
+            ApproachesStackPanel.Children.Add(sumApproachDisplay);
+          }
 
         private DataTable GetDataTable(ICalculator calculator)
         {
@@ -116,7 +130,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             public int GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
-                MessageBox.Show("AM: " + _hour);
                 date = date.AddHours(_hour);
                 return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
                     dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
@@ -135,7 +148,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             public int GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
-                MessageBox.Show("PM: " + _hour);
                 date = date.AddHours(_hour + 12);
                 return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1))+
                     dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:ATTrafficAnalayzer.Views.Controls"
              mc:Ignorable="d"
              d:DesignHeight="1100"
              d:DesignWidth="1720">
@@ -14,12 +13,9 @@
                    Content="No Summary Selected"
                    FontSize="28"
                    Margin="20,0"
-                   x:FieldModifier="private"
                    FontWeight="Bold" />
 
-            <controls:TableApproachDisplay Name="AmPeakApproachDisplay" />
-            <controls:TableApproachDisplay Name="PmPeakApproachDisplay" />
-            <controls:TableApproachDisplay Name="SumApproachDisplay" />
+            <StackPanel Name="ApproachesStackPanel" />
 
         </StackPanel>
     </ScrollViewer>

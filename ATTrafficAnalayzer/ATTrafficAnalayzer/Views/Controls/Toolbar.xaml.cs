@@ -187,7 +187,6 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (DateRangeChanged != null)
             {
-                MessageBox.Show(string.Format("AM: {0} PM: {1}", SummaryAmPeakComboBox.SelectedIndex, SummaryPmPeakComboBox.SelectedIndex));
                 DateRangeChanged(this,
                     new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value,
                         EndDatePicker.SelectedDate.Value, SummaryAmPeakComboBox.SelectedIndex,
