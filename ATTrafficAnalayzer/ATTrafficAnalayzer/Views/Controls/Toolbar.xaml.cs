@@ -89,6 +89,13 @@ namespace ATTrafficAnalayzer.Views.Controls
             TableButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
             IntervalLabel.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
             IntervalComboBox.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
+
+            // Summary controls
+            var isSummaryMode = e.Mode.Equals(Mode.Summary);
+            SummaryAmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryAmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed ;
+            SummaryPmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
+            SummaryPmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #endregion
@@ -107,6 +114,8 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
+            public int AmPeakHour { get; set; }
+            public int PmPeakHour { get; set; }
             public int Interval { get; set; }
 
             public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
@@ -120,7 +129,14 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 StartDate = startDate;
                 EndDate = endDate;
-                Interval = 0;
+            }
+
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int amPeakHour, int pmPeakHour)
+            {
+                StartDate = startDate;
+                EndDate = endDate;
+                AmPeakHour = amPeakHour;
+                PmPeakHour = pmPeakHour;
             }
         }
 
@@ -164,6 +180,18 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (overflowGrid != null)
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void SummaryPeakComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DateRangeChanged != null)
+            {
+                MessageBox.Show(string.Format("AM: {0} PM: {1}", SummaryAmPeakComboBox.SelectedIndex, SummaryPmPeakComboBox.SelectedIndex));
+                DateRangeChanged(this,
+                    new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value,
+                        EndDatePicker.SelectedDate.Value, SummaryAmPeakComboBox.SelectedIndex,
+                        SummaryPmPeakComboBox.SelectedIndex));
             }
         }
     }

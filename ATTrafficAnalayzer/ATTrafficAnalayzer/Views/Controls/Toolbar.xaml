@@ -85,6 +85,7 @@
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
+                        Padding="6, 3"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged"
@@ -98,6 +99,7 @@
             <DatePicker Name="EndDatePicker"
                         Background="White"
                         SelectedDate="{Binding EndDate}"
+                        Padding="6, 3"
                         FontSize="14"
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
@@ -106,21 +108,22 @@
                         VerticalContentAlignment="Center"
                         SelectedDateChanged="DateOrInverval_SelectionChanged"
                         SelectedDateFormat="Long" />
-            <Label Name="IntervalLabel"
+
+            <!--Report config-->            <Label Name="IntervalLabel"
                    Margin="20,0,0,0"
                    Visibility="Collapsed"
                    Foreground="White"
                    FontSize="16"
-                   Content="Interval" />
+                   Content="Interval: " />
             <ComboBox Height="23"
                       Name="IntervalComboBox"
-                      Width="80"
                       SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
                       Visibility="Collapsed"
                       SelectedValuePath="Content"
+                      Padding="6, 0"
                       SelectedIndex="0"
                       Foreground="Black"
-                      FontSize="16"
+                      FontSize="14"
                       HorizontalContentAlignment="Center"
                       VerticalContentAlignment="Center"
                       SelectionChanged="DateOrInverval_SelectionChanged">
@@ -128,6 +131,66 @@
                 <ComboBoxItem>15 min</ComboBoxItem>
                 <ComboBoxItem>30 min</ComboBoxItem>
                 <ComboBoxItem>60 min</ComboBoxItem>
+            </ComboBox>
+
+            <!--Summary config-->
+            <Label Name="SummaryAmPeakLabel"
+                   Margin="20,0,0,0"
+                   Visibility="Collapsed"
+                   Foreground="White"
+                   FontSize="16"
+                   Content="AM Peak Period:" />
+            <ComboBox Height="23"
+                      Name="SummaryAmPeakComboBox"
+                      Visibility="Collapsed"
+                      SelectedIndex="8"
+                      Padding="6, 0"
+                      Foreground="Black"
+                      FontSize="14"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      SelectionChanged="SummaryPeakComboBox_SelectionChanged">
+                <ComboBoxItem>Midnight</ComboBoxItem>
+                <ComboBoxItem>1 AM</ComboBoxItem>
+                <ComboBoxItem>2 AM</ComboBoxItem>
+                <ComboBoxItem>3 AM</ComboBoxItem>
+                <ComboBoxItem>4 AM</ComboBoxItem>
+                <ComboBoxItem>5 AM</ComboBoxItem>
+                <ComboBoxItem>6 AM</ComboBoxItem>
+                <ComboBoxItem>7 AM</ComboBoxItem>
+                <ComboBoxItem>8 AM</ComboBoxItem>
+                <ComboBoxItem>9 AM</ComboBoxItem>
+                <ComboBoxItem>10 AM</ComboBoxItem>
+                <ComboBoxItem>11 AM</ComboBoxItem>
+            </ComboBox>
+            <Label Name="SummaryPmPeakLabel"
+                   Margin="20,0,0,0"
+                   Visibility="Collapsed"
+                   Foreground="White"
+                   FontSize="16"
+                   Content="PM Peak Period:" />
+            <ComboBox Height="23"
+                      Name="SummaryPmPeakComboBox"
+                      Visibility="Collapsed"
+                      SelectedIndex="4"
+                      Foreground="Black"
+                      FontSize="14"
+                      Padding="6, 0"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      SelectionChanged="SummaryPeakComboBox_SelectionChanged">
+                <ComboBoxItem>Midday</ComboBoxItem>
+                <ComboBoxItem>1 PM</ComboBoxItem>
+                <ComboBoxItem>2 PM</ComboBoxItem>
+                <ComboBoxItem>3 PM</ComboBoxItem>
+                <ComboBoxItem>4 PM</ComboBoxItem>
+                <ComboBoxItem>5 PM</ComboBoxItem>
+                <ComboBoxItem>6 PM</ComboBoxItem>
+                <ComboBoxItem>7 PM</ComboBoxItem>
+                <ComboBoxItem>8 PM</ComboBoxItem>
+                <ComboBoxItem>9 PM</ComboBoxItem>
+                <ComboBoxItem>10 PM</ComboBoxItem>
+                <ComboBoxItem>11 PM</ComboBoxItem>
             </ComboBox>
 
             <!--View toggle-->

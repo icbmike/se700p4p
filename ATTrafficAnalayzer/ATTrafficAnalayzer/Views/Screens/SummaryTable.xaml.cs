@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing.Text;
 using System.Windows;
 using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
@@ -16,8 +15,11 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class SummaryTable : IView
     {
         private readonly SettingsTray _settings;
-        private DateTime _startDate;
-        private DateTime _endDate;
+        private readonly DateTime _startDate;
+        private readonly DateTime _endDate;
+        private int _amPeakHour = 8;
+        private int _pmPeakHour = 4;
+        private readonly string _screenTitle;
         private readonly IEnumerable<SummaryRow> _summaryConfig;
         readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
@@ -27,14 +29,18 @@ namespace ATTrafficAnalayzer.Views.Screens
             _settings = settings;
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
+            _screenTitle = configName;
 
             InitializeComponent();
-            RenderTable(configName);
+            RenderTable();
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
-            throw new System.NotImplementedException();
+            _amPeakHour = args.AmPeakHour;
+            _pmPeakHour = args.PmPeakHour;
+
+            RenderTable();
         }
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
@@ -44,7 +50,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
-        private void RenderTable(string screenTitle)
+        private void RenderTable()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {
@@ -52,28 +58,19 @@ namespace ATTrafficAnalayzer.Views.Screens
                 return;
             }
 
-            ScreenTitle.Content = screenTitle;
+            ScreenTitle.Content = _screenTitle;
 
-            var amPeakApproachDisplay = new TableApproachDisplay
-            {
-                ApproachDataGrid = { ItemsSource = GetDataTable(new AmPeakCalculator(10)).AsDataView() }
-            };
-            amPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
-            ApproachesStackPanel.Children.Add(amPeakApproachDisplay);
+            AmPeakApproachDisplay.ApproachDataGrid.ItemsSource =
+                GetDataTable(new AmPeakCalculator(_amPeakHour)).AsDataView();
+            AmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
 
-            var pmPeakApproachDisplay = new TableApproachDisplay
-            {
-                ApproachDataGrid = { ItemsSource = GetDataTable(new PmPeakCalculator(18)).AsDataView() }
-            };
-            pmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
-            ApproachesStackPanel.Children.Add(pmPeakApproachDisplay);
+            PmPeakApproachDisplay.ApproachDataGrid.ItemsSource =
+                GetDataTable(new PmPeakCalculator(_pmPeakHour)).AsDataView();
+            PmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
 
-            var sumApproachDisplay = new TableApproachDisplay
-            {
-                ApproachDataGrid = { ItemsSource = GetDataTable(new SumCalculator()).AsDataView() }
-            };
-            sumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
-            ApproachesStackPanel.Children.Add(sumApproachDisplay);
+            SumApproachDisplay.ApproachDataGrid.ItemsSource =
+                GetDataTable(new SumCalculator()).AsDataView();
+            SumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
         }
 
         private DataTable GetDataTable(ICalculator calculator)
@@ -119,6 +116,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             public int GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
+                MessageBox.Show("AM: " + _hour);
                 date = date.AddHours(_hour);
                 return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
                     dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
@@ -137,7 +135,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             public int GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
-                date = date.AddHours(_hour);
+                MessageBox.Show("PM: " + _hour);
+                date = date.AddHours(_hour + 12);
                 return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1))+
                     dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
             }

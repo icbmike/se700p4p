@@ -58,6 +58,7 @@ namespace ATTrafficAnalayzer.Views
                     else if (args.View.Equals(Toolbar.View.Graph))
                     {
                         var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
                         ReportList.ReportChanged += graphScreen.ReportChangedHandler;
                         graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(graphScreen);
@@ -81,7 +82,10 @@ namespace ATTrafficAnalayzer.Views
                     }
                     else
                     {
-                        ChangeScreen(new SummaryTable(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration()));
+                        var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
+                            ReportList.GetSelectedConfiguration());
+                        SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
+                        ChangeScreen(summaryScreen);
                     }
                     break;
 
