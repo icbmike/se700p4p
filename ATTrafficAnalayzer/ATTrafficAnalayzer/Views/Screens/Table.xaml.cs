@@ -51,8 +51,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             RenderTable();
         }
 
-        public event ReportBrowser.EditConfigurationEventHandler EditConfigurationEvent;
-
         private void RenderTable()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
@@ -65,13 +63,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                 OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} with {1} vehicles\n", string.Join(", ", _peakHourAm.GetApproachesAsString()), _peakHourAm.GetValue())));
                 OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} with {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
 
-                return;
-            }
-
-            if (_configuration == null)
-            {
-                MessageBox.Show("Construct your new report or select a report from the list on the left");
-                EditConfigurationEvent(this, new ReportBrowser.EditConfigurationEventHandlerArgs());
                 return;
             }
 

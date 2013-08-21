@@ -50,10 +50,14 @@ namespace ATTrafficAnalayzer.Views
 
                 case Mode.Report:
                     ReportList.Visibility = Visibility.Visible;
-                    if (args.View.Equals(Toolbar.View.Graph))
+                    if (ReportList.GetSelectedConfiguration() == null)
+                    {
+                        ChangeScreen(new Config());
+                        MessageBox.Show("Construct your new report or select a report from the Report Browser");
+                    }
+                    else if (args.View.Equals(Toolbar.View.Graph))
                     {
                         var graphScreen = new Graph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
-                        SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
                         ReportList.ReportChanged += graphScreen.ReportChangedHandler;
                         graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(graphScreen);
@@ -70,8 +74,15 @@ namespace ATTrafficAnalayzer.Views
 
                 case Mode.Summary:
                     ReportList.Visibility = Visibility.Visible;
-                    var screen = new Summary(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
-                    ChangeScreen(screen);
+                    if (ReportList.GetSelectedConfiguration() == null)
+                    {
+                        ChangeScreen(new SummaryConfig());
+                        MessageBox.Show("Construct your new report or select a report from the Report Browser");
+                    }
+                    else
+                    {
+                        ChangeScreen(new Summary(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration()));
+                    }
                     break;
 
                 case Mode.Faults:
@@ -150,7 +161,7 @@ namespace ATTrafficAnalayzer.Views
                                                                        policy = dialog.SelectedPolicy;
                                                                        waitForInput = false;
                                                                    }), null);
-                                                               while (waitForInput);
+                                                               while (waitForInput) ;
 
                                                                return policy;
                                                            });
@@ -228,7 +239,6 @@ namespace ATTrafficAnalayzer.Views
 
         private void ReportList_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
-
             if (args.New)
             {
                 if (_mode.Equals(Mode.Report))

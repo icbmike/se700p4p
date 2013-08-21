@@ -1,4 +1,5 @@
-﻿using ATTrafficAnalayzer.Models.Settings;
+﻿using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
