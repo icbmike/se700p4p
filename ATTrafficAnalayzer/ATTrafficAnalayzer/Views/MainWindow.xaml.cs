@@ -50,7 +50,7 @@ namespace ATTrafficAnalayzer.Views
 
                 case Mode.Report:
                     ReportList.Visibility = Visibility.Visible;
-                    if (args.Mode.Equals(Toolbar.View.Graph))
+                    if (args.View.Equals(Toolbar.View.Graph))
                     {
                         var graphScreen = new Graph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
@@ -99,13 +99,9 @@ namespace ATTrafficAnalayzer.Views
                 messageBoxText = "Would you like to import another file?";
 
                 if (result.Equals(MessageBoxResult.Yes))
-                {
                     ImportFile();
-                }
                 else
-                {
                     break;
-                }
             }
         }
 
@@ -154,7 +150,7 @@ namespace ATTrafficAnalayzer.Views
                                                                        policy = dialog.SelectedPolicy;
                                                                        waitForInput = false;
                                                                    }), null);
-                                                               while (waitForInput) ;
+                                                               while (waitForInput);
 
                                                                return policy;
                                                            });

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Properties;
 using ATTrafficAnalayzer.Views.Controls;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
@@ -33,19 +34,15 @@ namespace ATTrafficAnalayzer.Views.Screens
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
             _interval = settings.Interval;
-
             _configName = configName;
+
             InitializeComponent();
 
-            ScreenTitle.Content = configName;
             series = new List<LineAndMarker<MarkerPointsGraph>>();
-
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
 
-            //Display the graph
             RenderGraph();
-
         }
 
         private void RenderGraph()
@@ -61,9 +58,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             if (configuation == null)
             {
-                MessageBox.Show("Select a report from the list on the left");
+                MessageBox.Show("Construct your new report or select a report from the list on the left");
                 return;
             }
+
+            ScreenTitle.Content = _configName;
 
             var intersection = configuation.Intersection;
 

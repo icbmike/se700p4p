@@ -38,8 +38,7 @@
                 Margin="20,10"
                 Name="ImportButton"
                 VerticalAlignment="Stretch"
-                Style="{StaticResource AtButtonStyle}"
-                FontSize="20" />
+                Style="{StaticResource AtButtonStyle}" />
 
         <ProgressBar Name="ProgressBar"
                      IsIndeterminate="True"

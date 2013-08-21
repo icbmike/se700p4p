@@ -96,7 +96,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             SummaryMonthLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
             SummaryMonthComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
             SummaryYearLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
-            SummaryYearComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed; ;
+            SummaryYearComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #endregion

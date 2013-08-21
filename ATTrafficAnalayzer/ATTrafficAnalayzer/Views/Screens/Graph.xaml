@@ -33,6 +33,7 @@
 
             <d3:Header Name="ScreenTitle"
                        FontFamily="Helvetica"
+                       Content="No Report Selected"
                        FontSize="30"
                        FontWeight="Bold"
                        Margin="0,0,0,20" />
