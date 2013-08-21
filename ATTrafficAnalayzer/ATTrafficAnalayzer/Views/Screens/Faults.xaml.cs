@@ -31,10 +31,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void FillGrid()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
-            {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
-                return;
-            }
 
             var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate);
             var dataTable = new DataTable();

@@ -20,8 +20,6 @@
                       IsReadOnly="True"
                       FrozenColumnCount="1"
                       CanUserReorderColumns="False"
-                      CanUserResizeColumns="False"
-                      CanUserSortColumns="False"
                       ScrollViewer.CanContentScroll="False"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Disabled"
@@ -31,7 +29,8 @@
                       RowHeaderWidth="0"
                       VerticalAlignment="Top"
                       ColumnWidth="Auto"
-                      Margin="20"/>
+                      Margin="20"
+                      CanUserSortColumns="False" />
 
         </StackPanel>
     </ScrollViewer>
