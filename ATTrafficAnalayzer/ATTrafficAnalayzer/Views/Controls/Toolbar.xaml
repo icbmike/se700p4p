@@ -81,11 +81,14 @@
             <DatePicker Name="StartDatePicker"
                         Background="White"
                         SelectedDate="{Binding StartDate}"
-                        FontSize="16"
+                        FontSize="14"
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        SelectedDateChanged="DateOrInverval_SelectionChanged" />
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        SelectedDateChanged="DateOrInverval_SelectionChanged"
+                        SelectedDateFormat="Long" />
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
@@ -95,11 +98,14 @@
             <DatePicker Name="EndDatePicker"
                         Background="White"
                         SelectedDate="{Binding EndDate}"
-                        FontSize="16"
+                        FontSize="14"
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        SelectedDateChanged="DateOrInverval_SelectionChanged" />
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        SelectedDateChanged="DateOrInverval_SelectionChanged"
+                        SelectedDateFormat="Long" />
             <Label Name="IntervalLabel"
                    Margin="20,0,0,0"
                    Visibility="Collapsed"
@@ -115,6 +121,8 @@
                       SelectedIndex="0"
                       Foreground="Black"
                       FontSize="16"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
                       SelectionChanged="DateOrInverval_SelectionChanged">
                 <ComboBoxItem>5 min</ComboBoxItem>
                 <ComboBoxItem>15 min</ComboBoxItem>

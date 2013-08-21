@@ -54,6 +54,8 @@
                 <DataGridTextColumn Binding="{Binding DetectorsIn, Converter={screens:DetectorsListToStringConverter}}"
                                     ClipboardContentBinding="{x:Null}"
                                     Header="Inbound Detectors" />
+                <DataGridTextColumn ClipboardContentBinding="{x:Null}"
+                                    Header="Inbound Dividing Factor" />
                 <DataGridComboBoxColumn SelectedValueBinding="{Binding Path=SelectedIntersectionOut}"
                                         ElementStyle="{StaticResource ComboBoxColumnStyle}"
                                         EditingElementStyle="{StaticResource ComboBoxColumnStyle}"
@@ -61,6 +63,8 @@
                 <DataGridTextColumn Binding="{Binding DetectorsOut, Converter={screens:DetectorsListToStringConverter}}"
                                     ClipboardContentBinding="{x:Null}"
                                     Header="Outbound Detectors" />
+                <DataGridTextColumn ClipboardContentBinding="{x:Null}"
+                                    Header="Outbound Dividing Factor" />
             </DataGrid.Columns>
         </DataGrid>
 
