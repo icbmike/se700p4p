@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows;
+using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
@@ -15,6 +16,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     {
         private readonly SettingsTray _settings;
         private DateTime _startDate;
+        private DateTime _endDate;
         private readonly IEnumerable<SummaryRow> _summaryConfig;
         readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
@@ -23,6 +25,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _summaryConfig = _dbHelper.GetSummaryConfig(configName);
             _settings = settings;
             _startDate = settings.StartDate;
+            _endDate = settings.EndDate;
 
             InitializeComponent();
             RenderTable(configName);
@@ -42,50 +45,39 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void RenderTable(string screenTitle)
         {
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _startDate.AddMonths(1)))
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
             }
 
-            if (false)
-            {
-                MessageBox.Show("Select a report from the list on the left");
-                return;
-            }
-
             ScreenTitle.Content = screenTitle;
-
-            //            table.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Route: {0}\n", summary.RouteName))));
-            //            table.ApproachSummary.Inlines.Add(new Run(string.lFormat("Inbound intersection: {0} - Detectors: {1}\n", summary.SelectedIntersectionIn, summary.GetDetectorsInAsString())));
-            //            table.ApproachSummary.Inlines.Add(new Run(string.Format("Outbound intersection: {0} - Detectors: {1}", summary.SelectedIntersectionOut, summary.GetDetectorsOutAsString())));
 
             var table = new TableApproachDisplay
             {
                 ApproachDataGrid = { ItemsSource = GetDataTable().AsDataView() }
             };
+
             ApproachesStackPanel.Children.Add(table);
         }
 
         private DataTable GetDataTable()
         {
             var dataTable = new DataTable();
-            var summaryDate = new DateTime(2013, 3, 1);
 
-            dataTable.Columns.Add("-", typeof(string));
+            dataTable.Columns.Add("Day", typeof(string));
             foreach (var summary in _summaryConfig)
                 dataTable.Columns.Add(summary.RouteName, typeof(string));
 
-            for (var i = 1; i <= DateTime.DaysInMonth(summaryDate.Year, summaryDate.Month); i++)
+            for (var date = _startDate; date < _endDate; date = date.AddDays(1))
             {
                 var row = dataTable.NewRow();
                 var j = 1;
-                row[0] = string.Format("Day {0}", i);
+                row[0] = string.Format(date.ToLongDateString());
                 foreach (var summary in _summaryConfig)
                 {
-                    Logger.Debug(summaryDate.Date.ToString(), "Date");
-                    row[j] = _dbHelper.GetVolumeForDay(summaryDate, summary.SelectedIntersectionIn, summary.DetectorsIn);
-                    summaryDate = summaryDate.AddDays(1);
+                    row[j] = _dbHelper.GetVolumeForDay(date, summary.SelectedIntersectionIn, summary.DetectorsIn) +
+                             _dbHelper.GetVolumeForDay(date, summary.SelectedIntersectionOut, summary.DetectorsOut);
                     j++;
                 }
                 dataTable.Rows.Add(row);

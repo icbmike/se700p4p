@@ -567,7 +567,8 @@ namespace ATTrafficAnalayzer.Models
                     query.CommandText =
                         "SELECT SUM(volume) " +
                         "FROM volumes " +
-                        "WHERE intersection = @intersection AND detector = @detector " +
+                        "WHERE intersection = @intersection " +
+                        "AND detector = @detector " +
                         "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
 
                     query.Parameters.AddWithValue("@intersection", intersection);
@@ -575,13 +576,7 @@ namespace ATTrafficAnalayzer.Models
                     query.Parameters.AddWithValue("@startDateTime", date);
                     query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
 
-                    var reader = query.ExecuteReader();
-                    if (reader.RecordsAffected == 1)
-                    {
-                        Console.WriteLine("got here!");
-                        volume = reader.GetInt32(0);
-                    }
-                    reader.Close();
+                    volume += Convert.ToInt32(query.ExecuteScalar());
                 }
             }
             conn.Close();
@@ -803,6 +798,7 @@ namespace ATTrafficAnalayzer.Models
                     }
                 }
             }
+            //            }
             conn.Close();
             return summaries;
         }

@@ -2,7 +2,7 @@ namespace ATTrafficAnalayzer.Models.Settings
 {
     public enum Mode
     {
-        Home,
+        Dashboard,
         Summary,
         Report,
         Faults

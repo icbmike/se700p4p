@@ -21,7 +21,7 @@
                  Loaded="MainToolbar_OnLoaded">
 
             <!--Mode toggle-->
-            <Button Name="HomeButton"
+            <Button Name="DashboardButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     MouseLeftButtonDown="SwitchMode"
@@ -29,7 +29,7 @@
                     Foreground="White">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
-                    <ContentPresenter Content="Home"
+                    <ContentPresenter Content="Dashboard"
                                       Margin="6,0"
                                       VerticalAlignment="Center" />
                 </StackPanel>
@@ -89,7 +89,7 @@
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
-                        Visibility="Collapsed"
+                   Visibility="Collapsed"
                    FontSize="16"
                    Content="End Date:" />
             <DatePicker Name="EndDatePicker"
@@ -120,55 +120,6 @@
                 <ComboBoxItem>15 min</ComboBoxItem>
                 <ComboBoxItem>30 min</ComboBoxItem>
                 <ComboBoxItem>60 min</ComboBoxItem>
-            </ComboBox>
-
-            <!--Summary date pickers-->
-            <Label Name="SummaryMonthLabel"
-                   Margin="20,0,0,0"
-                   Foreground="#FFF6F6F6"
-                   FontSize="16"
-                   Content="Month: "
-                   Visibility="Collapsed" />
-            <ComboBox Height="23"
-                      Name="SummaryMonthComboBox"
-                      Width="120"
-                      SelectedValuePath="Content"
-                      SelectedIndex="0"
-                      Foreground="Black"
-                      FontSize="16"
-                      SelectionChanged="SummaryComboBox_OnSelectionChanged"
-                      Visibility="Collapsed">
-                <ComboBoxItem>January</ComboBoxItem>
-                <ComboBoxItem>February</ComboBoxItem>
-                <ComboBoxItem>March</ComboBoxItem>
-                <ComboBoxItem>April</ComboBoxItem>
-                <ComboBoxItem>May</ComboBoxItem>
-                <ComboBoxItem>June</ComboBoxItem>
-                <ComboBoxItem>July</ComboBoxItem>
-                <ComboBoxItem>August</ComboBoxItem>
-                <ComboBoxItem>September</ComboBoxItem>
-                <ComboBoxItem>October</ComboBoxItem>
-                <ComboBoxItem>November</ComboBoxItem>
-                <ComboBoxItem>December</ComboBoxItem>
-            </ComboBox>
-            <Label Name="SummaryYearLabel"
-                   Margin="20,0,0,0"
-                   Foreground="#FFF6F6F6"
-                   FontSize="16"
-                   Content="Year: "
-                   Visibility="Collapsed" />
-            <ComboBox Height="23"
-                      Name="SummaryYearComboBox"
-                      Width="100"
-                      SelectedIndex="0"
-                      Foreground="Black"
-                      FontSize="16"
-                      SelectionChanged="SummaryComboBox_OnSelectionChanged"
-                      Visibility="Collapsed">
-                <ComboBoxItem>2012</ComboBoxItem>
-                <ComboBoxItem>2013</ComboBoxItem>
-                <ComboBoxItem>2014</ComboBoxItem>
-                <ComboBoxItem>2015</ComboBoxItem>
             </ComboBox>
 
             <!--View toggle-->

@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public enum View { Table, Graph }
         private static View _view = View.Table;
-        private static Mode _mode = Mode.Home;
+        private static Mode _mode = Mode.Dashboard;
 
 
         public Toolbar()
@@ -24,8 +24,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
             // Set default values
             StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
-            SummaryMonthComboBox.SelectedIndex = DateTime.Today.Month;
-            SummaryYearComboBox.SelectedIndex = DateTime.Today.Year - 2012;
 
             ModeChanged += SwitchToolbar;
         }
@@ -58,8 +56,8 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void SwitchMode(object sender, RoutedEventArgs e)
         {
-            if (sender.Equals(HomeButton))
-                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Home));
+            if (sender.Equals(DashboardButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Dashboard));
             else if (sender.Equals(RegularReportsButton))
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Report));
             else if (sender.Equals(MonthlySummaryButton))
@@ -78,12 +76,12 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void SwitchToolbar(object sender, ModeChangedEventHandlerArgs e)
         {
-            // Report & faults date pickers
-            var isReportsOrFaults = e.Mode.Equals(Mode.Report) || e.Mode.Equals(Mode.Faults);
-            StartDateLabel.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
-            StartDatePicker.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
-            EndDateLabel.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
-            EndDatePicker.Visibility = isReportsOrFaults ? Visibility.Visible : Visibility.Collapsed;
+            // Date pickers
+            var isHomeMode = e.Mode.Equals(Mode.Dashboard);
+            StartDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+            StartDatePicker.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+            EndDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
+            EndDatePicker.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
 
             // Report controls
             var isReportMode = e.Mode.Equals(Mode.Report);
@@ -91,13 +89,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             TableButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
             IntervalLabel.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
             IntervalComboBox.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
-
-            // Summary controls
-            var isSummaryMode = e.Mode.Equals(Mode.Summary);
-            SummaryMonthLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
-            SummaryMonthComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
-            SummaryYearLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
-            SummaryYearComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #endregion
@@ -125,14 +116,11 @@ namespace ATTrafficAnalayzer.Views.Controls
                 Interval = interval;
             }
 
-            public DateRangeChangedEventHandlerArgs(int year, int month)
+            public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate)
             {
-                StartDate = new DateTime(year + 2012, month + 1, 1);
-            }
-
-            public DateTime GetStartDate()
-            {
-                return StartDate;
+                StartDate = startDate;
+                EndDate = endDate;
+                Interval = 0;
             }
         }
 
@@ -160,12 +148,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
             }
-        }
-
-        private void SummaryComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DateRangeChanged != null)
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(SummaryYearComboBox.SelectedIndex, SummaryMonthComboBox.SelectedIndex));
         }
 
         #endregion

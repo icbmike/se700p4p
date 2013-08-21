@@ -14,10 +14,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly DbHelper _dbHelper;
         private bool _isNewConfig = true;
 
-        #region events
-
         public event ConfigurationSavedEventHander ConfigurationSaved;
-        #endregion
 
         public SummaryConfig()
         {
@@ -58,7 +55,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
-
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)

@@ -10,6 +10,7 @@
         <StackPanel Margin="10">
 
             <Label Name="ScreenTitle"
+                   Content="No Summary Selected"
                    FontSize="28"
                    Margin="20,0"
                    x:FieldModifier="private"

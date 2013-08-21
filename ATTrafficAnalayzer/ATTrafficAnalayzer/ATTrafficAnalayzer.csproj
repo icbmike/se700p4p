@@ -149,8 +149,8 @@
     <Compile Include="Views\Screens\ReportTable.xaml.cs">
       <DependentUpon>ReportTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\Home.xaml.cs">
-      <DependentUpon>Home.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\Controls\ConfigApproachBox.xaml">
       <SubType>Designer</SubType>
@@ -212,7 +212,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\Home.xaml">
+    <Page Include="Views\Screens\Dashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

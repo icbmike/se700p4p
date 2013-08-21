@@ -24,7 +24,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-            var homeScreen = new Home();
+            var homeScreen = new Dashboard();
             homeScreen.ImportRequested += fileImportMenuItem_Click;
 
             SettingsToolbar.ModeChanged += ReportList.ModeChangedHandler;
@@ -41,9 +41,9 @@ namespace ATTrafficAnalayzer.Views
 
             switch (_mode)
             {
-                case Mode.Home:
+                case Mode.Dashboard:
                     ReportList.Visibility = Visibility.Collapsed;
-                    var homeScreen = new Home();
+                    var homeScreen = new Dashboard();
                     homeScreen.ImportRequested += fileImportMenuItem_Click;
                     ChangeScreen(homeScreen);
                     break;
@@ -214,7 +214,7 @@ namespace ATTrafficAnalayzer.Views
         {
             MessageBox.Show("You don't have volume data imported for the range you specified");
 
-            var homeScreen = new Home();
+            var homeScreen = new Dashboard();
             homeScreen.ImportRequested += fileImportMenuItem_Click;
             ChangeScreen(homeScreen);
 
