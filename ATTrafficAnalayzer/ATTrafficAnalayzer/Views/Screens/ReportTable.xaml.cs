@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
     /// </summary>
-    public partial class Table : IView
+    public partial class ReportTable : IView
     {
         private readonly VolumeMetric _maxTotal = new VolumeMetric();
         private readonly VolumeMetric _maxAm = new VolumeMetric();
@@ -37,7 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="configName"></param>
-        public Table(SettingsTray settings, string configName)
+        public ReportTable(SettingsTray settings, string configName)
         {
             _configuration = _dbHelper.GetConfiguration(configName);
 

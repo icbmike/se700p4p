@@ -52,19 +52,19 @@ namespace ATTrafficAnalayzer.Views
                     ReportList.Visibility = Visibility.Visible;
                     if (ReportList.GetSelectedConfiguration() == null)
                     {
-                        ChangeScreen(new Config());
+                        ChangeScreen(new ReportConfig());
                         MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else if (args.View.Equals(Toolbar.View.Graph))
                     {
-                        var graphScreen = new Graph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
                         ReportList.ReportChanged += graphScreen.ReportChangedHandler;
                         graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(graphScreen);
                     }
                     else if (args.View.Equals(Toolbar.View.Table))
                     {
-                        var tableScreen = new Table(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
+                        var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                         ReportList.ReportChanged += tableScreen.ReportChangedHandler;
                         tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
@@ -81,7 +81,7 @@ namespace ATTrafficAnalayzer.Views
                     }
                     else
                     {
-                        ChangeScreen(new Summary(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration()));
+                        ChangeScreen(new SummaryTable(SettingsToolbar.SettingsTray, ReportList.GetSelectedConfiguration()));
                     }
                     break;
 
@@ -246,7 +246,7 @@ namespace ATTrafficAnalayzer.Views
                     if (DbHelper.GetDbHelper()
                                 .VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
                     {
-                        var reportConfigurationScreen = new Config();
+                        var reportConfigurationScreen = new ReportConfig();
                         reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
 
@@ -276,7 +276,7 @@ namespace ATTrafficAnalayzer.Views
             else
             {
                 //Open relevant config screen
-                var reportConfigurationScreen = new Config(args.ConfigToBeEdited);
+                var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
 
                 reportConfigurationScreen.ConfigurationSaved += ReportList.ConfigurationSavedEventHandler;
                 reportConfigurationScreen.ConfigurationSaved += reportConfigurationScreen_ConfigurationSaved;
@@ -289,7 +289,7 @@ namespace ATTrafficAnalayzer.Views
 
         void reportConfigurationScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
         {
-            var tableScreen = new Table(SettingsToolbar.SettingsTray, args.Name);
+            var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
             SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
             ChangeScreen(tableScreen);
         }

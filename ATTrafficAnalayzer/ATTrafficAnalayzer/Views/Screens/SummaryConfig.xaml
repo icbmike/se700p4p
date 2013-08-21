@@ -6,71 +6,67 @@
              xmlns:screens="clr-namespace:ATTrafficAnalayzer.Views.Screens"
              mc:Ignorable="d"
              d:DesignHeight="1100"
-             d:DesignWidth="1720">
+             d:DesignWidth="1720"
+             Margin="40">
+
     <UserControl.Resources>
-        <Style x:Key="ComboBoxColumnStyle" TargetType="ComboBox">
-            <Setter Property="ItemsSource" Value="{Binding Path=Intersections}" />
+        <Style x:Key="ComboBoxColumnStyle"
+               TargetType="ComboBox">
+            <Setter Property="ItemsSource"
+                    Value="{Binding Path=Intersections}" />
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer HorizontalContentAlignment="Stretch">
-        <StackPanel Margin="10">
+    <StackPanel>
 
-            <TextBox FontSize="28"
-                   Margin="20,0"
-                   FontWeight="Bold"
-                   Name="ConfigNameTextBox" />
+        <TextBox FontSize="30"
+                 FontWeight="Bold"
+                 Name="ConfigNameTextBox"
+                 Loaded="ConfigNameTextBox_Loaded" />
 
-            <Label FontSize="16"
-                   Margin="20,0"
-                   Name="DateLabel" />
+        <Label FontSize="16"
+               Name="DateLabel" />
 
-            <DataGrid Name="SummaryDataGrid"
-                      Margin="25"
-                      AutoGenerateColumns="False"
-                      CanUserReorderColumns="False"
-                      CanUserResizeColumns="False"
-                      CanUserSortColumns="True"
-                      CanUserDeleteRows="True"
-                      ScrollViewer.CanContentScroll="False"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Disabled"
-                      FontSize="12"
-                      HorizontalContentAlignment="Stretch"
-                      AreRowDetailsFrozen="False"
-                      RowHeaderWidth="0"
-                      ColumnWidth="*"
-                      ItemsSource="{Binding Rows}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn 
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Route Name" Binding="{Binding RouteName}" />
-
-                    <DataGridComboBoxColumn 
-                                        Header="Inbound Intersection"
+        <DataGrid Name="SummaryDataGrid"
+                  Margin="0, 20"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="False"
+                  CanUserSortColumns="True"
+                  CanUserDeleteRows="True"
+                  ScrollViewer.CanContentScroll="False"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Disabled"
+                  FontSize="14"
+                  HorizontalContentAlignment="Stretch"
+                  AreRowDetailsFrozen="False"
+                  RowHeaderWidth="0"
+                  ColumnWidth="*"
+                  ItemsSource="{Binding Rows}">
+            <DataGrid.Columns>
+                <DataGridTextColumn ClipboardContentBinding="{x:Null}"
+                                    Header="Route Name"
+                                    Binding="{Binding RouteName}" />
+                <DataGridComboBoxColumn Header="Inbound Intersection"
                                         SelectedValueBinding="{Binding SelectedIntersectionIn}"
-                        ElementStyle="{StaticResource ComboBoxColumnStyle}"
-                                        EditingElementStyle="{StaticResource ComboBoxColumnStyle}"
-                                        />
-
-                    <DataGridTextColumn Binding="{Binding DetectorsIn, Converter={screens:DetectorsListToStringConverter}}"
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Inbound Detectors" />
-
-                    <DataGridComboBoxColumn
-                                        SelectedValueBinding="{Binding Path=SelectedIntersectionOut}"
+                                        ElementStyle="{StaticResource ComboBoxColumnStyle}"
+                                        EditingElementStyle="{StaticResource ComboBoxColumnStyle}" />
+                <DataGridTextColumn Binding="{Binding DetectorsIn, Converter={screens:DetectorsListToStringConverter}}"
+                                    ClipboardContentBinding="{x:Null}"
+                                    Header="Inbound Detectors" />
+                <DataGridComboBoxColumn SelectedValueBinding="{Binding Path=SelectedIntersectionOut}"
                                         ElementStyle="{StaticResource ComboBoxColumnStyle}"
                                         EditingElementStyle="{StaticResource ComboBoxColumnStyle}"
                                         Header="Outbound Intersection" />
+                <DataGridTextColumn Binding="{Binding DetectorsOut, Converter={screens:DetectorsListToStringConverter}}"
+                                    ClipboardContentBinding="{x:Null}"
+                                    Header="Outbound Detectors" />
+            </DataGrid.Columns>
+        </DataGrid>
 
-                    <DataGridTextColumn Binding="{Binding DetectorsOut, Converter={screens:DetectorsListToStringConverter}}"
-                                        ClipboardContentBinding="{x:Null}"
-                                        Header="Outbound Detectors" />
+        <Button Content="Save Summary Configuration"
+                Click="ButtonBase_OnClick"
+                Style="{StaticResource AtButtonStyle}" />
 
-                </DataGrid.Columns>
-            </DataGrid>
-            <Button Content="Save Summary Configuration"
-                Click="ButtonBase_OnClick"/>
-        </StackPanel>
-    </ScrollViewer>
+    </StackPanel>
 </UserControl>

@@ -16,7 +16,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class Config : IConfigScreen, INotifyPropertyChanged
+    public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
     {
         private ObservableCollection<int> _detectorList;
         private ObservableCollection<int> _intersectionList;
@@ -24,14 +24,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private readonly DbHelper _dbHelper;
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
-        private bool newConfig = true;
+        private bool isNewConfig = true;
         private string oldName;
-
-        #region events
-
-
-
-        #endregion
 
         public int SelectedIntersection
         {
@@ -55,7 +49,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             set { _detectorList = value; }
         }
 
-        public Config()
+        public ReportConfig()
         {
             DataContext = this;
             _intersectionList = new ObservableCollection<int>();
@@ -71,8 +65,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         }
 
-        public Config(string configToBeEdited)
-            : this()
+        public ReportConfig(string configToBeEdited) : this()
         {
             //Populate config screen
             var config = _dbHelper.GetConfiguration(configToBeEdited);
@@ -88,7 +81,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             SelectedIntersection = config.Intersection;
-            newConfig = false;
+            isNewConfig = false;
             oldName = configToBeEdited;
             ConfigNameTextBox.Text = configToBeEdited;
         }
@@ -191,7 +184,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (!newConfig)
+            if (!isNewConfig)
             {
                 //Delete the previous config before inserting the new one
                 _reportsDataTableHelper.RemoveConfig(oldName, Mode.Report);
@@ -216,7 +209,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if (newConfig)
+            if (isNewConfig)
             {
                 var configTextBox = (TextBox)sender;
 
@@ -229,7 +222,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                     }
                 }
             }
-
         }
 
         internal void ImportCompletedHandler(object sender)

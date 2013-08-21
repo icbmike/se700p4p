@@ -11,14 +11,14 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class Summary : IView
+    public partial class SummaryTable : IView
     {
         private readonly SettingsTray _settings;
         private DateTime _startDate;
         private readonly IEnumerable<SummaryRow> _summaryConfig;
         readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
-        public Summary(SettingsTray settings, string configName)
+        public SummaryTable(SettingsTray settings, string configName)
         {
             _summaryConfig = _dbHelper.GetSummaryConfig(configName);
             _settings = settings;

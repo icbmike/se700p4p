@@ -18,7 +18,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class Graph : IView
+    public partial class ReportGraph : IView
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
         
@@ -29,7 +29,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly List<LineAndMarker<MarkerPointsGraph>> series;
 
 
-        public Graph(SettingsTray settings, string configName)
+        public ReportGraph(SettingsTray settings, string configName)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
