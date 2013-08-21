@@ -21,7 +21,7 @@
                  Loaded="MainToolbar_OnLoaded">
 
             <!--Mode toggle-->
-            <Button Name="DashboardButton"
+            <Button Name="HomeButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
                     MouseLeftButtonDown="SwitchMode"
@@ -29,7 +29,7 @@
                     Foreground="White">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
-                    <ContentPresenter Content="Dashboard"
+                    <ContentPresenter Content="Home"
                                       Margin="6,0"
                                       VerticalAlignment="Center" />
                 </StackPanel>
@@ -40,7 +40,8 @@
                     Background="{x:Null}"
                     Foreground="White">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_331_dashboard.png" />
+                    <Image Width="24"
+                           Source="/Resources\Images\Icons\glyphicons_057_history.png" />
                     <ContentPresenter Content="Summary"
                                       Margin="6,0"
                                       VerticalAlignment="Center" />
@@ -109,7 +110,8 @@
                         SelectedDateChanged="DateOrInverval_SelectionChanged"
                         SelectedDateFormat="Long" />
 
-            <!--Report config-->            <Label Name="IntervalLabel"
+            <!--Report config-->
+            <Label Name="IntervalLabel"
                    Margin="20,0,0,0"
                    Visibility="Collapsed"
                    Foreground="White"

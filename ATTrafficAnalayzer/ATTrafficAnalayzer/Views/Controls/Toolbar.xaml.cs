@@ -56,7 +56,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void SwitchMode(object sender, RoutedEventArgs e)
         {
-            if (sender.Equals(DashboardButton))
+            if (sender.Equals(HomeButton))
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Dashboard));
             else if (sender.Equals(RegularReportsButton))
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Report));

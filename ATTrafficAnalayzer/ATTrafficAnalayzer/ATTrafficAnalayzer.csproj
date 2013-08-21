@@ -149,8 +149,8 @@
     <Compile Include="Views\Screens\ReportTable.xaml.cs">
       <DependentUpon>ReportTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\Dashboard.xaml.cs">
-      <DependentUpon>Dashboard.xaml</DependentUpon>
+    <Compile Include="Views\Screens\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\Controls\ConfigApproachBox.xaml">
       <SubType>Designer</SubType>
@@ -212,7 +212,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\Dashboard.xaml">
+    <Page Include="Views\Screens\Home.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -265,6 +265,7 @@
     <Resource Include="Resources\Images\Icons\glyphicons_029_notes_2.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_078_warning_sign.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_331_dashboard.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_057_history.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
