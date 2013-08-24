@@ -135,6 +135,72 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
+        private void ReportBrowser_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
+        {
+            if (args.New)
+            {
+                if (_mode.Equals(Mode.Report))
+                {
+                    if (DbHelper.GetDbHelper().VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    {
+                        var reportConfigurationScreen = new ReportConfig();
+                        reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                        reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+
+                        ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                        ChangeScreen(reportConfigurationScreen);
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected date range");
+                    }
+                }
+                else
+                {
+                    if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
+                    {
+                        var monthlySummary = new SummaryConfig();
+                        monthlySummary.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                        monthlySummary.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        ChangeScreen(monthlySummary);
+                    }
+                    else
+                    {
+                        MessageBox.Show("You haven't imported volume data for the selected month");
+                    }
+                }
+            }
+            else
+            {
+                //Open relevant config screen
+                var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
+
+                reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+
+                ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                ChangeScreen(reportConfigurationScreen);
+            }
+        }
+
+        void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
+        {
+            if (_mode.Equals(Mode.Report))
+            {
+                var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
+                SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
+                ReportBrowser.ReportChanged += reportTableScreen.ReportChangedHandler;
+                ChangeScreen(reportTableScreen);
+            }
+            else if (_mode.Equals(Mode.Summary))
+            {
+                var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name);
+                SettingsToolbar.DateRangeChanged += summaryTableScreen.DateRangeChangedHandler;
+                ReportBrowser.ReportChanged += summaryTableScreen.ReportChangedHandler;
+                ChangeScreen(summaryTableScreen);
+            }
+        }
+
         #endregion
 
         #region File Importing
@@ -270,8 +336,6 @@ namespace ATTrafficAnalayzer.Views
 
         #endregion
 
-        #region Other Event Handlers
-
         private void OnVolumeDateCountsDontMatch(IView sender)
         {
             MessageBox.Show("You don't have volume data imported for the range you specified");
@@ -280,72 +344,5 @@ namespace ATTrafficAnalayzer.Views
             homeScreen.ImportRequested += FileImportMenuItem_Click;
             ChangeScreen(homeScreen);
         }
-
-        private void ReportBrowser_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
-        {
-            if (args.New)
-            {
-                if (_mode.Equals(Mode.Report))
-                {
-                    if (DbHelper.GetDbHelper().VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
-                    {
-                        var reportConfigurationScreen = new ReportConfig();
-                        reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                        reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-
-                        ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                        ChangeScreen(reportConfigurationScreen);
-                    }
-                    else
-                    {
-                        MessageBox.Show("You haven't imported volume data for the selected date range");
-                    }
-                }
-                else
-                {
-                    if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
-                    {
-                        var monthlySummary = new SummaryConfig();
-                        monthlySummary.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                        ChangeScreen(monthlySummary);
-                    }
-                    else
-                    {
-                        MessageBox.Show("You haven't imported volume data for the selected month");
-                    }
-                }
-            }
-            else
-            {
-                //Open relevant config screen
-                var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
-
-                reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-
-                ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                ChangeScreen(reportConfigurationScreen);
-            }
-        }
-
-        void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
-        {
-            if (_mode.Equals(Mode.Report))
-            {
-                var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
-                SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
-                ReportBrowser.ReportChanged += reportTableScreen.ReportChangedHandler;
-                ChangeScreen(reportTableScreen);
-            }
-            else if (_mode.Equals(Mode.Summary))
-            {
-                var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name);
-                SettingsToolbar.DateRangeChanged += summaryTableScreen.DateRangeChangedHandler;
-                ReportBrowser.ReportChanged += summaryTableScreen.ReportChangedHandler;
-                ChangeScreen(summaryTableScreen);
-            }
-        }
-
-        #endregion
     }
 }

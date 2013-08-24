@@ -213,7 +213,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dbHelper.ConfigExists("Report " + count))
+                    if (!_dbHelper.ReportExists("Report " + count))
                     {
                         configTextBox.Text = "Report " + count;
                         break;
