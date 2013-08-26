@@ -18,36 +18,10 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
     {
-        private ObservableCollection<int> _detectorList;
-        private ObservableCollection<int> _intersectionList;
-        private int _selectedIntersection;
-
         private readonly DbHelper _dbHelper;
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
         private readonly bool _isNewConfig = true;
         private readonly string _oldName;
-
-        public int SelectedIntersection
-        {
-            get { return _selectedIntersection; }
-            set
-            {
-                _selectedIntersection = value;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("SelectedIntersection"));
-            }
-        }
-
-        public ObservableCollection<int> IntersectionList
-        {
-            get { return _intersectionList; }
-            set { _intersectionList = value; }
-        }
-
-        public ObservableCollection<int> DetectorList
-        {
-            get { return _detectorList; }
-            set { _detectorList = value; }
-        }
 
         public ReportConfig()
         {
@@ -83,37 +57,39 @@ namespace ATTrafficAnalayzer.Views.Screens
             SelectedIntersection = config.Intersection;
             _isNewConfig = false;
             _oldName = configToBeEdited;
-            ConfigNameTextBox.Text = configToBeEdited;
+            ReportNameTextBox.Text = configToBeEdited;
         }
 
-        private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            _detectorList.Clear();
+        #region Bindings
 
-            foreach (var detector in _dbHelper.GetDetectorsAtIntersection(_selectedIntersection))
+        private int _selectedIntersection;
+        public int SelectedIntersection
+        {
+            get { return _selectedIntersection; }
+            set
             {
-                _detectorList.Add(detector);
+                _selectedIntersection = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("SelectedIntersection"));
             }
         }
 
-        private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private ObservableCollection<int> _intersectionList;
+        public ObservableCollection<int> IntersectionList
         {
-            var listview = sender as ListView;
-
-            Debug.Assert(listview != null, "listview != null");
-            if (listview.SelectedItems.Count == 0)
-            {
-                return;
-            }
-
-            var items = listview.SelectedItems.Cast<int>().ToList();
-
-            var data = new DataObject();
-            data.SetData("source", listview);
-            data.SetData("fromMainList", true);
-            data.SetData("items", items);
-            DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
+            get { return _intersectionList; }
+            set { _intersectionList = value; }
         }
+
+        private ObservableCollection<int> _detectorList;
+        public ObservableCollection<int> DetectorList
+        {
+            get { return _detectorList; }
+            set { _detectorList = value; }
+        }
+
+        #endregion
+
+        #region Control Event Handlers
 
         private void NewApproachDrop(object sender, DragEventArgs e)
         {
@@ -145,6 +121,29 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
             }
 
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isNewConfig)
+            {
+                //Delete the previous config before inserting the new one
+                _reportsDataTableHelper.RemoveConfig(_oldName, Mode.Report);
+            }
+
+            var configName = ReportNameTextBox.Text;
+
+            var approaches = new List<Approach>();
+            for (var i = 1; i < Approaches.Children.Count; i++)
+            {
+                var appCtrl = Approaches.Children[i] as ConfigApproachBox;
+                Debug.Assert(appCtrl != null, "appCtrl != null");
+                approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
+            }
+
+            _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
+            _reportsDataTableHelper.SyncConfigs();
+            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 
         private void Distribute_Click(object sender, RoutedEventArgs e)
@@ -182,30 +181,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isNewConfig)
-            {
-                //Delete the previous config before inserting the new one
-                _reportsDataTableHelper.RemoveConfig(_oldName, Mode.Report);
-            }
-
-            var configName = ConfigNameTextBox.Text;
-
-            var approaches = new List<Approach>();
-            for (var i = 1; i < Approaches.Children.Count; i++)
-            {
-                var appCtrl = Approaches.Children[i] as ConfigApproachBox;
-                Debug.Assert(appCtrl != null, "appCtrl != null");
-                approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
-            }
-
-            _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
-            _reportsDataTableHelper.SyncConfigs();
-            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
-        }
-
-        private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
+        private void ReportNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
             if (_isNewConfig)
             {
@@ -222,6 +198,39 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+        #endregion
+
+        #region Other Event Handlers
+
+        private void ListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var listview = sender as ListView;
+
+            Debug.Assert(listview != null, "listview != null");
+            if (listview.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            var items = listview.SelectedItems.Cast<int>().ToList();
+
+            var data = new DataObject();
+            data.SetData("source", listview);
+            data.SetData("fromMainList", true);
+            data.SetData("items", items);
+            DragDrop.DoDragDrop(listview, data, DragDropEffects.Move);
+        }
+
+        private void OnIntersectionSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _detectorList.Clear();
+
+            foreach (var detector in _dbHelper.GetDetectorsAtIntersection(_selectedIntersection))
+            {
+                _detectorList.Add(detector);
+            }
+        }
+
         internal void ImportCompletedHandler(object sender)
         {
             //Refresh combobox list
@@ -231,7 +240,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 
 }

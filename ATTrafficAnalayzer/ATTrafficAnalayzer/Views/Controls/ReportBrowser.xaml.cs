@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
         private Mode _mode;
-        private bool _modeHasChanged;
+        private bool _hasModeChanged;
 
         public ReportBrowser()
         {
@@ -22,16 +22,16 @@ namespace ATTrafficAnalayzer.Views.Controls
             DataContext = this;
             _mode = Mode.Report;
 
-            PopulateListView();
+            Render();
         }
 
-        private void PopulateListView()
+        private void Render()
         {
             StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _reportsDataTableHelper.GetRegularReportDataView() : _reportsDataTableHelper.GetMonthlySummaryDataView();
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
-        #region events
+        #region New/Edit Configuration
 
         public delegate void EditConfigurationEventHandler(object sender, EditConfigurationEventHandlerArgs args);
 
@@ -54,6 +54,16 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
+        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
+        {
+            _reportsDataTableHelper.SyncConfigs();
+            Render();
+        }
+
+        #endregion
+
+        #region Export Configuration
+
         public delegate void ExportConfigurationEventHandler(object sender, ExportConfigurationEventHandlerArgs args);
 
         public event EditConfigurationEventHandler ExportEvent;
@@ -69,9 +79,45 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #endregion
 
+        #region Selected Configuration
+
+        public delegate void SelectedReportChangeEventHandler(object sender, SelectedReportChangeEventHandlerArgs args);
+        public event SelectedReportChangeEventHandler ReportChanged;
+        public class SelectedReportChangeEventHandlerArgs
+        {
+            public string ReportName { get; set; }
+
+            public SelectedReportChangeEventHandlerArgs(string reportName)
+            {
+                ReportName = reportName;
+            }
+        }
+
+        public string GetSelectedConfiguration()
+        {
+            var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
+            return selectedRow == null ? null : selectedRow.Row["name"] as string;
+        }
+
+        private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (ReportChanged != null && !_hasModeChanged)
+                ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
+            _hasModeChanged = false;
+        }
+
+        #endregion
+
+        #region Menu Event Handlers
+
         private void newBtn_Click(object sender, RoutedEventArgs e)
         {
             EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs());
+        }
+
+        private void editBtn_Click(object sender, RoutedEventArgs e)
+        {
+            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
 
         private void removeBtn_Click(object sender, RoutedEventArgs e)
@@ -110,54 +156,23 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
-        public string GetSelectedConfiguration()
-        {
-            var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
-            return selectedRow == null ? null : selectedRow.Row["name"] as string;
-        }
-
-        private void editBtn_Click(object sender, RoutedEventArgs e)
-        {
-            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
-        }
-
-        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
-        {
-            _reportsDataTableHelper.SyncConfigs();
-            PopulateListView();
-        }
-
         private void exportBtn_Click(object sender, RoutedEventArgs e)
         {
             ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
         }
 
-        public delegate void SelectedReportChangeEventHandler(object sender, SelectedReporChangeEventHandlerArgs args);
-        public event SelectedReportChangeEventHandler ReportChanged;
+        #endregion
 
-        public class SelectedReporChangeEventHandlerArgs
-        {
-            public string ReportName { get; set; }
-
-            public SelectedReporChangeEventHandlerArgs(string reportName)
-            {
-                ReportName = reportName;
-            }
-        }
-
-        private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (ReportChanged != null && !_modeHasChanged)
-                ReportChanged(this, new SelectedReporChangeEventHandlerArgs(GetSelectedConfiguration()));
-            _modeHasChanged = false;
-        }
+        #region Other Event Handlers
 
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _mode = args.Mode;
-            _modeHasChanged = true;
-            PopulateListView();
+            _hasModeChanged = true;
+            Render();
 
         }
+
+        #endregion
     }
 }

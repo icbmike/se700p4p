@@ -329,7 +329,7 @@ namespace ATTrafficAnalayzer.Views
                                           "Created by Michael Little and Andrew Luey";
             const string caption = "About Us";
             const MessageBoxButton button = MessageBoxButton.OK;
-            const MessageBoxImage icon = MessageBoxImage.Information;
+            const MessageBoxImage icon = MessageBoxImage.None;
 
             MessageBox.Show(messageBoxText, caption, button, icon);
         }

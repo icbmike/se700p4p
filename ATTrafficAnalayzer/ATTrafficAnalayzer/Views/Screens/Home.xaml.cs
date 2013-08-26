@@ -72,7 +72,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             throw new NotImplementedException();
         }
 
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             throw new NotImplementedException();
         }
