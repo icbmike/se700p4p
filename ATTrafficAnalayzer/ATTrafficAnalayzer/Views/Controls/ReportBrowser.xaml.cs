@@ -12,7 +12,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class ReportBrowser
     {
-        private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
+        private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
         private Mode _mode;
         private bool _hasModeChanged;
 
@@ -27,7 +27,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void Render()
         {
-            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _reportsDataTableHelper.GetRegularReportDataView() : _reportsDataTableHelper.GetMonthlySummaryDataView();
+            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _dataTableHelper.GetReportDataView() : _dataTableHelper.GetSummaryDataView();
             StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
@@ -56,7 +56,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
-            _reportsDataTableHelper.SyncConfigs();
+            _dataTableHelper.SyncConfigs();
             Render();
         }
 
@@ -139,7 +139,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _reportsDataTableHelper.RemoveConfig(selectedItem, _mode);
+                    _dataTableHelper.RemoveReport(selectedItem, _mode);
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";
@@ -170,7 +170,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             _mode = args.Mode;
             _hasModeChanged = true;
             Render();
-
         }
 
         #endregion

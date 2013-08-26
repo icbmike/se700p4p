@@ -19,7 +19,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
     {
         private readonly DbHelper _dbHelper;
-        private readonly ReportsDataTableHelper _reportsDataTableHelper = ReportsDataTableHelper.GetDataTableHelper();
+        private readonly DataTableHelper _reportsDataTableHelper = DataTableHelper.GetDataTableHelper();
         private readonly bool _isNewConfig = true;
         private readonly string _oldName;
 
@@ -111,7 +111,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Approaches.Children.Add(approach);
 
-
             Debug.Assert(dragSourceList != null, "dragSourceList != null");
             if (dragSourceList.Count == 0)
             {
@@ -120,15 +119,16 @@ namespace ATTrafficAnalayzer.Views.Screens
                     Approaches.Children.Remove(e.Data.GetData("approach") as ConfigApproachBox);
                 }
             }
-
         }
+
+        public event ConfigurationSavedEventHander ConfigurationSaved;
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (!_isNewConfig)
             {
                 //Delete the previous config before inserting the new one
-                _reportsDataTableHelper.RemoveConfig(_oldName, Mode.Report);
+                _reportsDataTableHelper.RemoveReport(_oldName, Mode.Report);
             }
 
             var configName = ReportNameTextBox.Text;
@@ -142,16 +142,15 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
-            _reportsDataTableHelper.SyncConfigs();
-            ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+
+            if (ConfigurationSaved != null)
+                ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 
         private void Distribute_Click(object sender, RoutedEventArgs e)
         {
             while (Approaches.Children.Count > 1)
-            {
                 Approaches.Children.RemoveAt(1);
-            }
 
             foreach (var detector in _detectorList)
             {
@@ -167,18 +166,16 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void Group_Click(object sender, RoutedEventArgs e)
         {
             while (Approaches.Children.Count > 1)
-            {
                 Approaches.Children.RemoveAt(1);
-            }
+
             var newApproach = new ConfigApproachBox(Approaches, null, "All Detectors")
             {
                 Margin = new Thickness(20, 20, 0, 0)
             };
             Approaches.Children.Add(newApproach);
+            
             foreach (var detector in _detectorList)
-            {
                 newApproach.AddDetector(detector);
-            }
         }
 
         private void ReportNameTextBox_Loaded(object sender, RoutedEventArgs e)
@@ -238,8 +235,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var intersection in DbHelper.GetIntersections())
                 _intersectionList.Add(intersection);
         }
-
-        public event ConfigurationSavedEventHander ConfigurationSaved;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
