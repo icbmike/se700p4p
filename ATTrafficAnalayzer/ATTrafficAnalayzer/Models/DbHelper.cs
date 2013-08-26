@@ -605,7 +605,8 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
-        #region Config Related Methods
+        #region Report Related Methods
+
         public SQLiteDataAdapter GetConfigsDataAdapter()
         {
             const string getCongifsSql = "SELECT name FROM configs;";
@@ -696,7 +697,7 @@ namespace ATTrafficAnalayzer.Models
             return GetConfiguration(configName).Approaches;
         }
 
-        public bool ConfigExists(String configName)
+        public bool ReportExists(String name)
         {
             long reader;
 
@@ -707,7 +708,82 @@ namespace ATTrafficAnalayzer.Models
                 const string configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
                 var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql };
 
-                configExistsQuery.Parameters.AddWithValue("@configName", configName);
+                configExistsQuery.Parameters.AddWithValue("@configName", name);
+                reader = (Int64)configExistsQuery.ExecuteScalar();
+
+                dbConnection.Close();
+            }
+
+            return reader.Equals(1);
+        }
+
+        #endregion
+
+        #region Summary Related Methods
+
+        public void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows)
+        {
+            var config = new JArray { rows.Select(row => row.ToJson()) };
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+
+                using (var command = new SQLiteCommand(conn))
+                {
+                    command.CommandText = "INSERT INTO monthly_summaries (name, config) VALUES (@name, @config);";
+                    command.Parameters.AddWithValue("@name", configName);
+                    command.Parameters.AddWithValue("@config", config.ToString());
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public IEnumerable<SummaryRow> GetSummaryConfig(string name)
+        {
+            var summaries = new List<SummaryRow>();
+
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+
+            using (var query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "SELECT config FROM monthly_summaries WHERE name = @name";
+                query.Parameters.AddWithValue("@name", name);
+
+                var reader = query.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    var configArray = JArray.Parse(reader.GetString(0));
+
+                    foreach (var summaryJson in configArray)
+                    {
+                        summaries.Add(new SummaryRow((string)summaryJson["route_name"],
+                            (int)summaryJson["intersection_in"],
+                            (int)summaryJson["intersection_out"],
+                            summaryJson["detectors_in"].Select(t => (int)t).ToList(),
+                            summaryJson["detectors_out"].Select(t => (int)t).ToList()));
+                    }
+                }
+            }
+            conn.Close();
+            return summaries;
+        }
+
+        public bool SummaryExists(String name)
+        {
+            long reader;
+
+            using (var dbConnection = new SQLiteConnection(DbPath))
+            {
+                dbConnection.Open();
+
+                const string configExistsSql = "SELECT EXISTS(SELECT 1 FROM monthly_summaries WHERE name = @name LIMIT 1);";
+                var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql };
+
+                configExistsQuery.Parameters.AddWithValue("@name", name);
                 reader = (Int64)configExistsQuery.ExecuteScalar();
 
                 dbConnection.Close();
@@ -768,61 +844,5 @@ namespace ATTrafficAnalayzer.Models
         {
             return true; //Needs to be implemented
         }
-
-        #region Summary Related Methods
-
-        public void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows)
-        {
-            var config = new JArray { rows.Select(row => row.ToJson()) };
-
-            using (var conn = new SQLiteConnection(DbPath))
-            {
-                conn.Open();
-
-                using (var command = new SQLiteCommand(conn))
-                {
-                    command.CommandText = "INSERT INTO monthly_summaries (name, config) VALUES (@name, @config);";
-                    command.Parameters.AddWithValue("@name", configName);
-                    command.Parameters.AddWithValue("@config", config.ToString());
-
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public IEnumerable<SummaryRow> GetSummaryConfig(string name)
-        {
-            var summaries = new List<SummaryRow>();
-
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-
-            using (var query = new SQLiteCommand(conn))
-            {
-                query.CommandText = "SELECT config FROM monthly_summaries WHERE name = @name";
-                query.Parameters.AddWithValue("@name", name);
-
-                var reader = query.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    var configArray = JArray.Parse(reader.GetString(0));
-
-                    foreach (var summaryJson in configArray)
-                    {
-                        summaries.Add(new SummaryRow((string)summaryJson["route_name"],
-                            (int)summaryJson["intersection_in"],
-                            (int)summaryJson["intersection_out"],
-                            summaryJson["detectors_in"].Select(t => (int)t).ToList(),
-                            summaryJson["detectors_out"].Select(t => (int)t).ToList()));
-                    }
-                }
-            }
-            //            }
-            conn.Close();
-            return summaries;
-        }
-
-        #endregion
     }
 }

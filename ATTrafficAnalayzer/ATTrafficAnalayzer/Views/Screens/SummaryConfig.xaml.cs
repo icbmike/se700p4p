@@ -24,7 +24,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
             SummaryDataGrid.DataContext = this;
-
         }
 
         public ObservableCollection<SummaryRow> Rows { get; set; }
@@ -65,7 +64,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dbHelper.ConfigExists("Summary " + count))
+                    if (!_dbHelper.SummaryExists("Summary " + count))
                     {
                         configTextBox.Text = "Summary " + count;
                         break;

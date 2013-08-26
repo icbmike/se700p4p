@@ -48,10 +48,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
-            RenderTable();
+            Render();
         }
 
-        private void RenderTable()
+        public void Render()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {
@@ -145,24 +145,20 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
-
             if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate) || !args.Interval.Equals(_interval))
             {
-                //RenderTable() is a time consuming operation.
-                //We dont want to do it if we don't have to.
-
                 _startDate = args.StartDate;
                 _endDate = args.EndDate;
                 _interval = args.Interval;
 
-                RenderTable();
+                Render();
             }
         }
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
         {
             _configuration = _dbHelper.GetConfiguration(args.ReportName);
-            RenderTable();
+            Render();
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;

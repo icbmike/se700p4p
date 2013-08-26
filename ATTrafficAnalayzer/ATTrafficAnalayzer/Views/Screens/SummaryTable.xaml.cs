@@ -14,49 +14,39 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class SummaryTable : IView
     {
-        private readonly DateTime _startDate;
-        private readonly DateTime _endDate;
+        private string _configName;
+
+        private IEnumerable<SummaryRow> _summaryConfig;
+        readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
+        private SettingsTray _settings;
+
+        private DateTime _startDate;
+        private DateTime _endDate;
         private int _amPeakHour = 8;
         private int _pmPeakHour = 4;
-        private readonly string _screenTitle;
-        private readonly IEnumerable<SummaryRow> _summaryConfig;
-        readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
         public SummaryTable(SettingsTray settings, string configName)
         {
-            _summaryConfig = _dbHelper.GetSummaryConfig(configName);
-            _startDate = settings.StartDate;
-            _endDate = settings.EndDate;
-            _screenTitle = configName;
+            _configName = configName;
+            _settings = settings;
+            _startDate = _settings.StartDate;
+            _endDate = _settings.EndDate;
 
             InitializeComponent();
-            RenderTable();
+            Render();
         }
 
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void Render()
         {
-            _amPeakHour = args.AmPeakHour;
-            _pmPeakHour = args.PmPeakHour;
+            _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
 
-            RenderTable();
-        }
-
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
-
-        private void RenderTable()
-        {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
             }
 
-            ScreenTitle.Content = _screenTitle;
+            ScreenTitle.Content = _configName;
 
             //TODO define ApproachDisplays in the xaml
 
@@ -83,6 +73,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             sumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
             ApproachesStackPanel.Children.Add(sumApproachDisplay);
           }
+
+        #region Data Table Generation
 
         private DataTable GetDataTable(ICalculator calculator)
         {
@@ -160,5 +152,30 @@ namespace ATTrafficAnalayzer.Views.Screens
                              dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionOut, summary.DetectorsOut);
             }
         }
+
+        #endregion
+
+        #region Event Handlers
+
+        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            _startDate = _settings.StartDate;
+            _endDate = _settings.EndDate;
+
+            _amPeakHour = args.AmPeakHour;
+            _pmPeakHour = args.PmPeakHour;
+
+            Render();
+        }
+
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        {
+            _configName = args.ReportName;
+            Render();
+        }
+
+        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+
+        #endregion
     }
 }

@@ -203,8 +203,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
             _reportsDataTableHelper.SyncConfigs();
             ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
-
-
         }
 
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
@@ -215,7 +213,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dbHelper.ConfigExists("Report " + count))
+                    if (!_dbHelper.ReportExists("Report " + count))
                     {
                         configTextBox.Text = "Report " + count;
                         break;

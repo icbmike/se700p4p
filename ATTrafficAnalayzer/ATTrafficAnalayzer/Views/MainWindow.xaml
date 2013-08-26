@@ -60,13 +60,13 @@
                               x:Name="SettingsToolbar" />
         </Canvas>
 
-        <controls:ReportBrowser x:Name="ReportList"
-                             EditConfigurationEvent="ReportList_OnEditConfigurationEvent"
+        <controls:ReportBrowser x:Name="ReportBrowser"
+                             EditConfigurationEvent="ReportBrowser_OnEditConfigurationEvent"
                              Visibility="Collapsed"
-                             ExportEvent="ReportList_OnExportEvent" />
+                             ExportEvent="ReportBrowser_OnExportEvent" />
 
         <ContentControl DockPanel.Dock="Right"
-                        x:Name="MainContentControl"
+                        x:Name="ScreenContentControl"
                         Background="White" />
 
     </DockPanel>
