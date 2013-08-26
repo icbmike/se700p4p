@@ -155,7 +155,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             _configuration = _dbHelper.GetConfiguration(args.ReportName);
             Render();

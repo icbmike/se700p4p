@@ -7,7 +7,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public interface IView
     {
         void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args);
-        void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args);
+        void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args);
         void Render();
 
         event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;

@@ -45,7 +45,7 @@
                   BorderThickness="1"
                   x:FieldModifier="private" />
 
-        <TextBox Name="ConfigNameTextBox"
+        <TextBox Name="ReportNameTextBox"
                  Grid.Row="0"
                  Grid.Column="0"
                  Grid.ColumnSpan="3"
@@ -54,7 +54,7 @@
                  FontWeight="Bold"
                  Padding="3,6"
                  BorderThickness="1"
-                 Loaded="ConfigNameTextBox_Loaded">
+                 Loaded="ReportNameTextBox_Loaded">
             <TextBox.BorderBrush>
                 <SolidColorBrush Color="{StaticResource HighlightDark}" />
             </TextBox.BorderBrush>

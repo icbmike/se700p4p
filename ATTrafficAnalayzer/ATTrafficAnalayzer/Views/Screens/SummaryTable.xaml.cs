@@ -168,7 +168,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReporChangeEventHandlerArgs args)
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             _configName = args.ReportName;
             Render();
