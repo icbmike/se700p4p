@@ -72,6 +72,9 @@ namespace ATTrafficAnalayzer.Views
         {
             _mode = args.Mode;
 
+            if (ReportBrowser.GetSelectedConfiguration() != null)
+                ReportBrowser.ClearSelectedConfig();
+
             switch (_mode)
             {
                 case Mode.Home:
@@ -89,6 +92,7 @@ namespace ATTrafficAnalayzer.Views
                         var reportConfigurationScreen = new ReportConfig();
                         reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        ReportBrowser.ReportChanged += ReportChangedHandler;
                         ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                         ChangeScreen(reportConfigurationScreen);
 
@@ -119,6 +123,7 @@ namespace ATTrafficAnalayzer.Views
                         var summaryConfigScreen = new SummaryConfig();
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        ReportBrowser.ReportChanged += ReportChangedHandler;
                         ChangeScreen(summaryConfigScreen);
                         MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
@@ -165,11 +170,12 @@ namespace ATTrafficAnalayzer.Views
                 {
                     if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
                     {
-                        var monthlySummary = new SummaryConfig();
-                        monthlySummary.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                        monthlySummary.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        var summaryConfigScreen = new SummaryConfig();
+                        summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                        summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+
                         //TODO Import completed event
-                        ChangeScreen(monthlySummary);
+                        ChangeScreen(summaryConfigScreen);
                     }
                     else
                     {
@@ -188,9 +194,14 @@ namespace ATTrafficAnalayzer.Views
             }
         }
 
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        {
+            System.Windows.Forms.MessageBox.Show("hi");
+            IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
+        }
+
         void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
         {
-            MessageBox.Show("Changing to table view");
             if (_mode.Equals(Mode.Report))
             {
                 var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);

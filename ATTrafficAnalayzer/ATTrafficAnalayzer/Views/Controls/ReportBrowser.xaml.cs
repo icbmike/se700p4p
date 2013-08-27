@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Windows;
+using System.Windows.Controls;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
@@ -101,9 +102,16 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (ReportChanged != null && !_hasModeChanged)
-                ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
+            ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
             _hasModeChanged = false;
+        }
+
+        public void ClearSelectedConfig()
+        {
+            System.Windows.Forms.MessageBox.Show("Test");
+            var selectedItem = StandardReportsTreeView.SelectedItem as TreeViewItem;
+            if (selectedItem != null)
+                selectedItem.IsSelected = false;
         }
 
         #endregion
