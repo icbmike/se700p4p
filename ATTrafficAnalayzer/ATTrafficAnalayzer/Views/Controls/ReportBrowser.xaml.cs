@@ -16,6 +16,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
         private Mode _mode;
         private bool _hasModeChanged;
+        private bool _selectionCleared;
 
         public ReportBrowser()
         {
@@ -87,10 +88,17 @@ namespace ATTrafficAnalayzer.Views.Controls
         public class SelectedReportChangeEventHandlerArgs
         {
             public string ReportName { get; set; }
+            public bool SelectionCleared { get; set; }
 
             public SelectedReportChangeEventHandlerArgs(string reportName)
             {
                 ReportName = reportName;
+                SelectionCleared = false;
+            }
+            public SelectedReportChangeEventHandlerArgs(bool selectionCleared)
+            {
+                SelectionCleared = selectionCleared;
+                ReportName = null;
             }
         }
 
@@ -103,16 +111,25 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (!_hasModeChanged)
-                ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
+                if (_selectionCleared)
+                {
+                    ReportChanged(this, new SelectedReportChangeEventHandlerArgs(_selectionCleared));
+                    _selectionCleared = false;
+                }
+                else
+                {
+                    ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
+                }
+                
             _hasModeChanged = false;
+           
         }
 
         public void ClearSelectedConfig()
         {
-            //System.Windows.Forms.MessageBox.Show("Test");
-            var selectedItem = StandardReportsTreeView.SelectedItem as TreeViewItem;
-            if (selectedItem != null)
-                selectedItem.IsSelected = false;
+            _selectionCleared = true;
+            (StandardReportsTreeView.ItemContainerGenerator.ContainerFromItem(StandardReportsTreeView.SelectedItem) as
+             TreeViewItem).IsSelected = false;
         }
 
         #endregion

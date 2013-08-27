@@ -75,6 +75,8 @@ namespace ATTrafficAnalayzer.Views
             if (ReportBrowser.GetSelectedConfiguration() != null)
                 ReportBrowser.ClearSelectedConfig();
 
+            var selectedConfiguration = ReportBrowser.GetSelectedConfiguration();
+            Console.WriteLine(selectedConfiguration);
             switch (_mode)
             {
                 case Mode.Home:
@@ -196,8 +198,8 @@ namespace ATTrafficAnalayzer.Views
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            //System.Windows.Forms.MessageBox.Show("hi");
-            IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
+            if(!args.SelectionCleared)
+                IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
         }
 
         void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)

@@ -157,8 +157,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            _configuration = _dbHelper.GetConfiguration(args.ReportName);
-            Render();
+            if (!args.SelectionCleared)
+            {
+                _configuration = _dbHelper.GetConfiguration(args.ReportName);
+                Render();
+            }
+            
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
