@@ -51,7 +51,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
-        public void Render()
+        private void Render()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {

@@ -102,13 +102,14 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
+            if (!_hasModeChanged)
+                ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
             _hasModeChanged = false;
         }
 
         public void ClearSelectedConfig()
         {
-            System.Windows.Forms.MessageBox.Show("Test");
+            //System.Windows.Forms.MessageBox.Show("Test");
             var selectedItem = StandardReportsTreeView.SelectedItem as TreeViewItem;
             if (selectedItem != null)
                 selectedItem.IsSelected = false;
@@ -176,7 +177,11 @@ namespace ATTrafficAnalayzer.Views.Controls
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _mode = args.Mode;
-            _hasModeChanged = true;
+            if (GetSelectedConfiguration() != null)
+            {
+                _hasModeChanged = true;    
+            }
+            
             Render();
         }
 
