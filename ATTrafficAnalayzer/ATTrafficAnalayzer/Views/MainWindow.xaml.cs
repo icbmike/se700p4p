@@ -43,8 +43,8 @@ namespace ATTrafficAnalayzer.Views
                 RemoveHandlers(screen as IConfigScreen);
             else if (screen as IView != null)
                 RemoveHandlers(screen as IView);
-            else
-                MessageBox.Show("Somethings has gone horribly wrong");
+//            else
+//                MessageBox.Show("Somethings has gone horribly wrong");
         }
         private void RemoveHandlers(IView iView)
         {
@@ -65,7 +65,7 @@ namespace ATTrafficAnalayzer.Views
             ScreenContentControl.Content = screen;
 
             if (oldScreen != null)
-                RemoveHandlers(ScreenContentControl.Content);
+                RemoveHandlers(oldScreen);
         }
 
         private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
