@@ -37,35 +37,35 @@ namespace ATTrafficAnalayzer.Views
 
         #region Screen Switching
 
-        //private void RemoveHandlers(object screen)
-        //{
-        //    if (screen as IConfigScreen != null)
-        //        RemoveHandlers(screen as IConfigScreen);
-        //    else if (screen as IView != null)
-        //        RemoveHandlers(screen as IView);
-        //    else
-        //        MessageBox.Show("Somethings has gone horribly wrong");
-        //}
-        //private void RemoveHandlers(IView iView)
-        //{
-        //    ReportBrowser.ReportChanged -= iView.ReportChangedHandler;
-        //    SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
-        //    iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
-        //}
-        //private void RemoveHandlers(IConfigScreen iConfigScreen)
-        //{
-        //    iConfigScreen.ConfigurationSaved -= ReportBrowser.ConfigurationSavedEventHandler;
-        //    iConfigScreen.ConfigurationSaved -= IConfigScreen_ConfigurationSaved;
-        //}
+        private void RemoveHandlers(object screen)
+        {
+            if (screen as IConfigScreen != null)
+                RemoveHandlers(screen as IConfigScreen);
+            else if (screen as IView != null)
+                RemoveHandlers(screen as IView);
+//            else
+//                MessageBox.Show("Somethings has gone horribly wrong");
+        }
+        private void RemoveHandlers(IView iView)
+        {
+            ReportBrowser.ReportChanged -= iView.ReportChangedHandler;
+            SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
+            iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
+        }
+        private void RemoveHandlers(IConfigScreen iConfigScreen)
+        {
+            iConfigScreen.ConfigurationSaved -= ReportBrowser.ConfigurationSavedEventHandler;
+            iConfigScreen.ConfigurationSaved -= IConfigScreen_ConfigurationSaved;
+        }
 
         private void ChangeScreen(UserControl screen)
         {
-            //var oldScreen = ScreenContentControl.Content;
+            var oldScreen = ScreenContentControl.Content;
 
             ScreenContentControl.Content = screen;
 
-            //if (oldScreen != null)
-            //    RemoveHandlers(ScreenContentControl.Content);
+            if (oldScreen != null)
+                RemoveHandlers(oldScreen);
         }
 
         private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
@@ -75,6 +75,8 @@ namespace ATTrafficAnalayzer.Views
             if (ReportBrowser.GetSelectedConfiguration() != null)
                 ReportBrowser.ClearSelectedConfig();
 
+            var selectedConfiguration = ReportBrowser.GetSelectedConfiguration();
+            Console.WriteLine(selectedConfiguration);
             switch (_mode)
             {
                 case Mode.Home:
@@ -130,7 +132,7 @@ namespace ATTrafficAnalayzer.Views
                     else
                     {
                         var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
-                            ReportBrowser.GetSelectedConfiguration());
+                        ReportBrowser.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += summaryScreen.ReportChangedHandler;
                         ChangeScreen(summaryScreen);
@@ -196,8 +198,8 @@ namespace ATTrafficAnalayzer.Views
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            System.Windows.Forms.MessageBox.Show("hi");
-            IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
+            if(!args.SelectionCleared)
+                IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
         }
 
         void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
