@@ -53,7 +53,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Render()
         {
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;

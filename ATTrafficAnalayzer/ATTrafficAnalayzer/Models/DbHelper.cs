@@ -574,7 +574,28 @@ namespace ATTrafficAnalayzer.Models
             return result;
         }
 
- 
+        public Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection)
+        {
+            endDate = endDate.AddSeconds(-1);
+            var conn = new SQLiteConnection(DbPath);
+            conn.Open();
+            Boolean result;
+            using (var query = new SQLiteCommand(conn))
+            {
+                query.CommandText = "SELECT * " +
+                                    "FROM volumes " +
+                                    "WHERE intersection = @intersection " +
+                                    "AND (datetime BETWEEN @startDate AND @endDate);";
+                query.Parameters.AddWithValue("@startDate", startDate);
+                query.Parameters.AddWithValue("@endDate", endDate);
+                query.Parameters.AddWithValue("@intersection", intersection);
+                var reader = query.ExecuteReader();
+                result = reader.HasRows;
+            }
+            conn.Close();
+            return result;
+        }
+
         public int GetTotalVolumeForDay(DateTime date, int intersection, List<int> detectors)
         {
             var conn = new SQLiteConnection(DbPath);
