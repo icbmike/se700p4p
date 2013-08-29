@@ -70,9 +70,10 @@ namespace ATTrafficAnalayzer.Views
 
         private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
+            var prevMode = _mode;
             _mode = args.Mode;
 
-            if (ReportBrowser.GetSelectedConfiguration() != null)
+            if (!prevMode.Equals(_mode) && ReportBrowser.GetSelectedConfiguration() != null)
                 ReportBrowser.ClearSelectedConfig();
 
             var selectedConfiguration = ReportBrowser.GetSelectedConfiguration();
@@ -101,6 +102,7 @@ namespace ATTrafficAnalayzer.Views
                     }
                     else if (args.View.Equals(Toolbar.View.Graph))
                     {
+
                         var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += graphScreen.ReportChangedHandler;
