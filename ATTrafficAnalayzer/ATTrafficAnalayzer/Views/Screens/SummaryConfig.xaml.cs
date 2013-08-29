@@ -72,5 +72,10 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
             }
         }
+
+        private void UserControl_GotFocus_1(object sender, RoutedEventArgs e)
+        {
+            Popup.Visibility = Visibility.Collapsed;
+        }
     }
 }

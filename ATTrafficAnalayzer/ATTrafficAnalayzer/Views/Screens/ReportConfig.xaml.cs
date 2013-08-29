@@ -239,6 +239,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
-    }
 
+           private void UserControl_GotFocus_1(object sender, RoutedEventArgs e)
+        {
+            Popup.Visibility = Visibility.Collapsed;
+        }
+    }
 }

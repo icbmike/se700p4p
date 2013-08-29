@@ -96,9 +96,8 @@ namespace ATTrafficAnalayzer.Views
                         reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;
                         ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                        reportConfigurationScreen.Visibility = Visibility.Visible;
                         ChangeScreen(reportConfigurationScreen);
-
-                        MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else if (args.View.Equals(Toolbar.View.Graph))
                     {
@@ -126,8 +125,8 @@ namespace ATTrafficAnalayzer.Views
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;
+                        summaryConfigScreen.Popup.Visibility = Visibility.Visible;
                         ChangeScreen(summaryConfigScreen);
-                        MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else
                     {
