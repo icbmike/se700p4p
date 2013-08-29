@@ -43,8 +43,8 @@ namespace ATTrafficAnalayzer.Views
                 RemoveHandlers(screen as IConfigScreen);
             else if (screen as IView != null)
                 RemoveHandlers(screen as IView);
-            else
-                MessageBox.Show("Somethings has gone horribly wrong");
+//            else
+//                MessageBox.Show("Somethings has gone horribly wrong");
         }
         private void RemoveHandlers(IView iView)
         {
@@ -56,21 +56,27 @@ namespace ATTrafficAnalayzer.Views
         {
             iConfigScreen.ConfigurationSaved -= ReportBrowser.ConfigurationSavedEventHandler;
             iConfigScreen.ConfigurationSaved -= IConfigScreen_ConfigurationSaved;
-
         }
 
         private void ChangeScreen(UserControl screen)
         {
-            if (ScreenContentControl.Content != null)
-                RemoveHandlers(ScreenContentControl.Content);
+            var oldScreen = ScreenContentControl.Content;
 
             ScreenContentControl.Content = screen;
+
+            if (oldScreen != null)
+                RemoveHandlers(oldScreen);
         }
 
         private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _mode = args.Mode;
 
+            if (ReportBrowser.GetSelectedConfiguration() != null)
+                ReportBrowser.ClearSelectedConfig();
+
+            var selectedConfiguration = ReportBrowser.GetSelectedConfiguration();
+            Console.WriteLine(selectedConfiguration);
             switch (_mode)
             {
                 case Mode.Home:
@@ -85,7 +91,13 @@ namespace ATTrafficAnalayzer.Views
                     ReportBrowser.Visibility = Visibility.Visible;
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
-                        ChangeScreen(new ReportConfig());
+                        var reportConfigurationScreen = new ReportConfig();
+                        reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                        reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        ReportBrowser.ReportChanged += ReportChangedHandler;
+                        ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                        ChangeScreen(reportConfigurationScreen);
+
                         MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else if (args.View.Equals(Toolbar.View.Graph))
@@ -111,14 +123,16 @@ namespace ATTrafficAnalayzer.Views
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
                         var summaryConfigScreen = new SummaryConfig();
+                        summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                        ReportBrowser.ReportChanged += ReportChangedHandler;
                         ChangeScreen(summaryConfigScreen);
                         MessageBox.Show("Construct your new report or select a report from the Report Browser");
                     }
                     else
                     {
                         var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
-                            ReportBrowser.GetSelectedConfiguration());
+                        ReportBrowser.GetSelectedConfiguration());
                         SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += summaryScreen.ReportChangedHandler;
                         ChangeScreen(summaryScreen);
@@ -146,7 +160,6 @@ namespace ATTrafficAnalayzer.Views
                         var reportConfigurationScreen = new ReportConfig();
                         reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-
                         ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                         ChangeScreen(reportConfigurationScreen);
                     }
@@ -159,10 +172,12 @@ namespace ATTrafficAnalayzer.Views
                 {
                     if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
                     {
-                        var monthlySummary = new SummaryConfig();
-                        monthlySummary.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                        monthlySummary.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-                        ChangeScreen(monthlySummary);
+                        var summaryConfigScreen = new SummaryConfig();
+                        summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                        summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+
+                        //TODO Import completed event
+                        ChangeScreen(summaryConfigScreen);
                     }
                     else
                     {
@@ -174,13 +189,17 @@ namespace ATTrafficAnalayzer.Views
             {
                 //Open relevant config screen
                 var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
-
                 reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                 reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-
                 ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                 ChangeScreen(reportConfigurationScreen);
             }
+        }
+
+        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        {
+            if(!args.SelectionCleared)
+                IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
         }
 
         void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)

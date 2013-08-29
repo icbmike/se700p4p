@@ -5,80 +5,78 @@ using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.Configuration
 {
-    class ReportsDataTableHelper
+    class DataTableHelper
     {
-        private static ReportsDataTableHelper _instance;
+        private static DataTableHelper _instance;
         private static readonly object SyncLock = new object();
-        public static ReportsDataTableHelper GetDataTableHelper()
+        public static DataTableHelper GetDataTableHelper()
         {
             lock (SyncLock)
-            {
-                return _instance ?? (_instance = new ReportsDataTableHelper());
-            }
+                return _instance ?? (_instance = new DataTableHelper());
         }
 
         private readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
 
-        private ReportsDataTableHelper()
+        private DataTableHelper()
         {
             CreateConfigDataSet();
         }
 
-        #region Config Related Methods
+        #region Report Related Methods
 
-        private SQLiteDataAdapter _regularReportsDataAdapter;
-        private SQLiteDataAdapter _monthlySummaryDataAdapter;
+        private SQLiteDataAdapter _reportDataAdapter;
+        private SQLiteDataAdapter _summaryDataAdapter;
 
-        private readonly DataTable _regularReportsDataTable = new DataTable();
-        private readonly DataTable _monthlySummaryDataTable = new DataTable();
+        private readonly DataTable _reportsDataTable = new DataTable();
+        private readonly DataTable _summaryDataTable = new DataTable();
 
         private void CreateConfigDataSet()
         {
             //Regular reports
-            _regularReportsDataAdapter = _dbHelper.GetConfigsDataAdapter();
-            _regularReportsDataAdapter.Fill(_regularReportsDataTable);
-            new SQLiteCommandBuilder(_regularReportsDataAdapter);
-
-            _regularReportsDataTable.PrimaryKey = new[] { _regularReportsDataTable.Columns["name"] };
+            _reportDataAdapter = _dbHelper.GetConfigsDataAdapter();
+            _reportDataAdapter.Fill(_reportsDataTable);
+            new SQLiteCommandBuilder(_reportDataAdapter);
+            _reportsDataTable.PrimaryKey = new[] { _reportsDataTable.Columns["name"] };
 
             //Monthly Summaries
-            _monthlySummaryDataAdapter = _dbHelper.GetMonthlySummariesDataAdapter();
-            _monthlySummaryDataAdapter.Fill(_monthlySummaryDataTable);
-            new SQLiteCommandBuilder(_monthlySummaryDataAdapter);
-            _monthlySummaryDataTable.PrimaryKey = new[] { _monthlySummaryDataTable.Columns["name"] };
+            _summaryDataAdapter = _dbHelper.GetMonthlySummariesDataAdapter();
+            _summaryDataAdapter.Fill(_summaryDataTable);
+            new SQLiteCommandBuilder(_summaryDataAdapter);
+            _summaryDataTable.PrimaryKey = new[] { _summaryDataTable.Columns["name"] };
         }
 
-        public DataView GetRegularReportDataView()
+        public DataView GetReportDataView()
         {
-            return _regularReportsDataTable.DefaultView;
+            return _reportsDataTable.DefaultView;
         }
 
-        public void RemoveConfig(string configToDelete, Mode selectedMode)
+        public void RemoveReport(string configToDelete, Mode selectedMode)
         {
-            RemoveConfigFromDataSet(configToDelete, selectedMode);
+            RemoveReport(configToDelete, selectedMode);
             SyncConfigs();
         }
 
-        private void RemoveConfigFromDataSet(String configToDelete, Mode selectedMode)
+        #endregion
+
+        private void RemoveConfig(String configToDelete, Mode selectedMode)
         {
-            var configs = selectedMode.Equals(Mode.Report) ? _regularReportsDataTable.Rows : _monthlySummaryDataTable.Rows;
+            var configs = selectedMode.Equals(Mode.Report) ? _reportsDataTable.Rows : _summaryDataTable.Rows;
             var rowToDelete = configs.Find(configToDelete);
             rowToDelete.Delete();
         }
 
         public void SyncConfigs()
         {
-            _regularReportsDataAdapter.Update(_regularReportsDataTable);
-            _monthlySummaryDataAdapter.Update(_monthlySummaryDataTable);
-            _regularReportsDataAdapter.Fill(_regularReportsDataTable);
-            _monthlySummaryDataAdapter.Fill(_monthlySummaryDataTable);
+            _reportDataAdapter.Update(_reportsDataTable);
+            _reportDataAdapter.Fill(_reportsDataTable);
+
+            _summaryDataAdapter.Update(_summaryDataTable);
+            _summaryDataAdapter.Fill(_summaryDataTable);
         }
 
-        #endregion
-
-        public DataView GetMonthlySummaryDataView()
+        public DataView GetSummaryDataView()
         {
-            return _monthlySummaryDataTable.DefaultView;
+            return _summaryDataTable.DefaultView;
         }
     }
 }

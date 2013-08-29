@@ -51,9 +51,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
-        public void Render()
+        private void Render()
         {
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
@@ -157,8 +157,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            _configuration = _dbHelper.GetConfiguration(args.ReportName);
-            Render();
+            if (!args.SelectionCleared)
+            {
+                _configuration = _dbHelper.GetConfiguration(args.ReportName);
+                Render();
+            }
+            
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
