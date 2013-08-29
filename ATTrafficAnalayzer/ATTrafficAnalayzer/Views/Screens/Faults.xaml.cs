@@ -2,6 +2,7 @@
 using System.Data;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
@@ -35,11 +36,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate);
             var dataTable = new DataTable();
             dataAdapter.Fill(dataTable);
+
             foreach (var row in dataTable.Rows)
             {
                 var dataRow = row as DataRow;
                 dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[]{","}, StringSplitOptions.None).ToList().Distinct());
-                Console.WriteLine(dataRow[1]);
             }
 
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
@@ -66,5 +67,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         #endregion
+
+        private void FaultsDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.Column.Header.Equals("Intersection"))
+            {
+                e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader);
+            }
+            
+        }
     }
 }

@@ -28,9 +28,12 @@
                       AreRowDetailsFrozen="True"
                       RowHeaderWidth="0"
                       VerticalAlignment="Top"
-                      ColumnWidth="Auto"
+                      ColumnWidth="*"
                       Margin="20"
-                      CanUserSortColumns="False" />
+                      AutoGeneratingColumn="FaultsDataGrid_OnAutoGeneratingColumn"
+                      CanUserSortColumns="False" >
+                
+            </DataGrid>
 
         </StackPanel>
     </ScrollViewer>
