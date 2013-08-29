@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.ComponentModel;
+using System.Data;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -31,6 +32,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private Report _configuration;
 
         readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
+        private bool _countsDontMatch;
 
         /// <summary>
         /// 
@@ -53,16 +55,41 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Render()
         {
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
-            {
-                MessageBox.Show("You haven't imported volume data for the selected date range");
-                return;
-            }
+
+            var bw = new BackgroundWorker {WorkerReportsProgress = true};
+
+            bw.DoWork += bw_DoWork;
+            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.ProgressChanged += bw_ProgressChanged;
+            bw.RunWorkerAsync();
+
+            ProgressBar.Visibility = Visibility.Visible;
+            ViewContent.Visibility = Visibility.Collapsed;
 
             ScreenTitle.Content = _configuration.ConfigName;
 
             //Clear all the things!
             ApproachesStackPanel.Children.Clear();
+
+            OverallSummaryTextBlock.Inlines.Clear();
+
+        }
+
+        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            var approachDisplayRequirements = e.UserState as ApproachDisplayRequirements;
+
+            ApproachesStackPanel.Children.Add(CreateApproachDisplay(approachDisplayRequirements.Approach, approachDisplayRequirements.DataTable));
+        }
+
+
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
+            {
+                MessageBox.Show("You haven't imported volume data for the selected date range");
+                return;
+            }
 
             _maxAm.ClearApproaches();
             _maxPm.ClearApproaches();
@@ -70,23 +97,22 @@ namespace ATTrafficAnalayzer.Views.Screens
             _peakHourAm.ClearApproaches();
             _peakHourPm.ClearApproaches();
 
-            OverallSummaryTextBlock.Inlines.Clear();
-
             //Add all the things!
-
             var timeSpan = _endDate - _startDate;
-            var countsDontMatch = false;
+
+            _countsDontMatch = false;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
                 {
-                    var tableApproachDisplay = CreateApproachDisplay(approach, day);
-                    if (tableApproachDisplay == null)
+                    var dataTable = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day);
+                    if (dataTable == null)
                     {
-                        countsDontMatch = true;
+                        _countsDontMatch = true;
                         break;
                     }
-                    ApproachesStackPanel.Children.Add(tableApproachDisplay);
+
+                    (sender as BackgroundWorker).ReportProgress(0, new ApproachDisplayRequirements{Approach = approach, DataTable = dataTable});
 
                     _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                     _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -97,9 +123,15 @@ namespace ATTrafficAnalayzer.Views.Screens
                         string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
                 }
 
-                if (countsDontMatch) break;
+                if (_countsDontMatch) break;
             }
-            if (countsDontMatch)
+
+
+        }
+
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_countsDontMatch)
             {
                 if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
                 return;
@@ -113,6 +145,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} with {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
 
             Logger.Info("constructed view", "VS table");
+
+            ProgressBar.Visibility = Visibility.Collapsed;
+            ViewContent.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -121,18 +156,16 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="approach"></param>
         /// <param name="day"></param>
         /// <returns></returns>
-        private TableApproachDisplay CreateApproachDisplay(Approach approach, int day)
+        private TableApproachDisplay CreateApproachDisplay(Approach approach, DataTable dataTable)
         {
+
             var approachDisplay = new TableApproachDisplay();
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
             approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
-            var dataTable = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day);
-            if (dataTable == null)
-            {
-                return null;
-            }
+
+
             approachDisplay.ApproachDataGrid.ItemsSource = dataTable.AsDataView();
 
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
@@ -162,9 +195,16 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _configuration = _dbHelper.GetConfiguration(args.ReportName);
                 Render();
             }
-            
+
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+    }
+
+    internal class ApproachDisplayRequirements
+    {
+        public Approach Approach { get; set; }
+
+        public DataTable DataTable { get; set; }
     }
 }
