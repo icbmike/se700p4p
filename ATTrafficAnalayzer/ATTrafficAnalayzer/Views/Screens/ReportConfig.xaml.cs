@@ -36,7 +36,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             InitializeComponent();
 
             Logger.Info("constructed view", "report config");
-
         }
 
         public ReportConfig(string configToBeEdited) : this()
@@ -50,7 +49,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                 {
                     Margin = new Thickness(20, 20, 0, 0)
                 };
-
                 Approaches.Children.Add(configApproachBox);
             }
 
