@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         public Home()
         {
             InitializeComponent();
-           
+
             var bw = new BackgroundWorker();
 
             bw.DoWork += DoWorkHandler;
@@ -78,5 +78,12 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in ImportedDatesList.SelectedItems) {
+                System.Windows.Forms.MessageBox.Show(item.GetType().ToString());
+            }
+        }
     }
 }

@@ -14,15 +14,21 @@
             <RowDefinition />
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <Label Grid.Column="0"
                Grid.Row="0"
+               Grid.ColumnSpan="2"
                FontSize="28"
                Margin="20,0"
                FontWeight="Bold"
                Content="Imported Data" />
         <ListBox Visibility="Collapsed"
                  Grid.Column="0"
+               Grid.ColumnSpan="2"
                  FontSize="16"
                  Grid.Row="1"
                  Margin="20"
@@ -32,18 +38,28 @@
                  ItemStringFormat="D" />
         <Button Grid.Column="0"
                 Grid.Row="2"
-                Content="Import Data"
+                Content="Import"
                 Click="ImportButtonClick"
                 HorizontalAlignment="Stretch"
                 Margin="20,10"
                 Name="ImportButton"
                 VerticalAlignment="Stretch"
                 Style="{StaticResource AtButtonStyle}" />
+        <Button Grid.Column="1"
+                Grid.Row="2"
+                Content="Delete"
+                HorizontalAlignment="Stretch"
+                Margin="20,10"
+                Name="DeleteButton"
+                VerticalAlignment="Stretch"
+                Style="{StaticResource AtButtonStyle}"
+                Click="DeleteButton_Click" />
 
         <ProgressBar Name="ProgressBar"
                      IsIndeterminate="True"
                      Grid.Column="0"
                      Grid.Row="1"
+               Grid.ColumnSpan="2"
                      Height="25"
                      Width="300" />
 
