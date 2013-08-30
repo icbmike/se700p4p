@@ -33,6 +33,9 @@ namespace ATTrafficAnalayzer.Models
         void AddConfiguration(Report config);
         void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows);
 
+        void RemoveReport(String name);
+        void RemoveSummary(String name);
+
         bool SummaryExists(String name);
         bool ReportExists(String name);
 
