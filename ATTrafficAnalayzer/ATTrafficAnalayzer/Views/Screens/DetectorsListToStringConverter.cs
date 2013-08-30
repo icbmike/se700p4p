@@ -16,7 +16,14 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             return _converter ?? (_converter = new DetectorsListToStringConverter());
         }
-
+        /// <summary>
+        /// Converts a List of detectors to a string representation separated by commas
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns>The newly converted string</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //What the GUI sees
@@ -33,7 +40,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Turns a comma separated list of numbers into a List of integers
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //What the model sees

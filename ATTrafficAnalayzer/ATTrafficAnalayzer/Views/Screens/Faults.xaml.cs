@@ -22,6 +22,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DateTime _startDate;
         private int _faultThreshold;
 
+        /// <summary>
+        /// Bound Property to the Fault threshold control in XAML
+        /// </summary>
         public int FaultThreshold
         {
             get { return _faultThreshold; }
@@ -32,6 +35,13 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+        /// <summary>
+        /// Constructor for this screen.
+        /// </summary>
+        /// <param name="settings">A settings tray so that start date and end date can be retrieved on creation 
+        /// TODO: replace with DateTimes
+        /// 
+        ///  </param>
         public Faults(SettingsTray settings)
         {
             _startDate = settings.StartDate;
@@ -43,20 +53,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
-        public void Render()
+        /// <summary>
+        /// Fetches data and displays it in the screen's data grid
+        /// </summary>
+        private void Render()
         {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
-//            var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate, FaultThreshold);
-//            var dataTable = new DataTable();
-//            dataAdapter.Fill(dataTable);
-//
-//            foreach (var row in dataTable.Rows)
-//            {
-//                var dataRow = row as DataRow;
-//                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[] { "," }, StringSplitOptions.None).ToList().Distinct().OrderBy(int.Parse));
-//            }
             var faults = _dbHelper.GetSuspectedFaults(_startDate, _endDate, FaultThreshold);
             var transformedFaults = faults.Keys.ToDictionary(key => key, key => String.Join(", ", faults[key].Distinct().OrderBy(x => x)));
             FaultsDataGrid.ItemsSource = transformedFaults;
@@ -66,6 +70,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
+
+        /// <summary>
+        /// Handler for when the date range in the Toolbar is changed
+        /// </summary>
+        /// <param name="sender">The Toolbar</param>
+        /// <param name="args">Event args containing the new start and end datetime objects</param>
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
             if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate))
@@ -76,7 +86,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                 Render();
             }
         }
-
+        /// <summary>
+        /// Not needed to be implemented for this screen, as it does not rely on reports
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             throw new NotImplementedException();
@@ -84,15 +98,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #endregion
 
-        private void FaultsDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            if (e.Column.Header.Equals("Intersection"))
-            {
-                e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader);
-            }
-
-        }
-
+        /// <summary>
+        /// Click handler for the refresh button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RefreshFaults_OnClick(object sender, RoutedEventArgs e)
         {
             Render();

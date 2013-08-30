@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
@@ -11,16 +10,16 @@ using ATTrafficAnalayzer.Views.Screens;
 namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for ReportBrowser.xaml
+    ///     Interaction logic for ReportBrowser.xaml
     /// </summary>
     public partial class ReportBrowser
     {
+        private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
-        private Mode _mode;
         private bool _hasModeChanged;
+        private Mode _mode;
         private bool _selectionCleared;
-        private IDataSource _dataSource;
-
+        
         public ReportBrowser()
         {
             InitializeComponent();
@@ -32,9 +31,10 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void Render()
         {
-            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _dataSource.GetReportNames() : _dataSource.GetSummaryNames();
+            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report)
+                                                      ? _dataSource.GetReportNames()
+                                                      : _dataSource.GetSummaryNames();
             //StandardReportsTreeView.DisplayMemberPath = "name";
-
         }
 
         #region New/Edit Configuration
@@ -42,11 +42,20 @@ namespace ATTrafficAnalayzer.Views.Controls
         public delegate void EditConfigurationEventHandler(object sender, EditConfigurationEventHandlerArgs args);
 
         public event EditConfigurationEventHandler EditConfigurationEvent;
+
+        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
+        {
+            var treeViewItem =
+                StandardReportsTreeView.ItemContainerGenerator.ContainerFromIndex(StandardReportsTreeView.Items.Count -
+                                                                                  1) as TreeViewItem;
+            if (treeViewItem != null)
+                treeViewItem.IsSelected = true;
+
+            Render();
+        }
+
         public class EditConfigurationEventHandlerArgs
         {
-            public Boolean New { get; set; }
-            public string ConfigToBeEdited { get; set; }
-
             public EditConfigurationEventHandlerArgs()
             {
                 New = true;
@@ -58,15 +67,9 @@ namespace ATTrafficAnalayzer.Views.Controls
                 New = false;
                 ConfigToBeEdited = configToBeEdited;
             }
-        }
 
-        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
-        {
-            var treeViewItem = StandardReportsTreeView.ItemContainerGenerator.ContainerFromIndex(StandardReportsTreeView.Items.Count - 1) as TreeViewItem;
-            if (treeViewItem != null)
-                treeViewItem.IsSelected = true;
-
-            Render();
+            public Boolean New { get; set; }
+            public string ConfigToBeEdited { get; set; }
         }
 
         #endregion
@@ -76,14 +79,15 @@ namespace ATTrafficAnalayzer.Views.Controls
         public delegate void ExportConfigurationEventHandler(object sender, ExportConfigurationEventHandlerArgs args);
 
         public event EditConfigurationEventHandler ExportEvent;
+
         public class ExportConfigurationEventHandlerArgs
         {
-            public string ConfigToBeExported { get; set; }
-
             public ExportConfigurationEventHandlerArgs(string configToBeExported)
             {
                 ConfigToBeExported = configToBeExported;
             }
+
+            public string ConfigToBeExported { get; set; }
         }
 
         #endregion
@@ -91,23 +95,8 @@ namespace ATTrafficAnalayzer.Views.Controls
         #region Selected Configuration
 
         public delegate void SelectedReportChangeEventHandler(object sender, SelectedReportChangeEventHandlerArgs args);
-        public event SelectedReportChangeEventHandler ReportChanged;
-        public class SelectedReportChangeEventHandlerArgs
-        {
-            public string ReportName { get; set; }
-            public bool SelectionCleared { get; set; }
 
-            public SelectedReportChangeEventHandlerArgs(string reportName)
-            {
-                ReportName = reportName;
-                SelectionCleared = false;
-            }
-            public SelectedReportChangeEventHandlerArgs(bool selectionCleared)
-            {
-                SelectionCleared = selectionCleared;
-                ReportName = null;
-            }
-        }
+        public event SelectedReportChangeEventHandler ReportChanged;
 
         public string GetSelectedConfiguration()
         {
@@ -128,7 +117,6 @@ namespace ATTrafficAnalayzer.Views.Controls
                 }
 
             _hasModeChanged = false;
-
         }
 
         public void ClearSelectedConfig()
@@ -136,6 +124,24 @@ namespace ATTrafficAnalayzer.Views.Controls
             _selectionCleared = true;
             (StandardReportsTreeView.ItemContainerGenerator.ContainerFromItem(StandardReportsTreeView.SelectedItem) as
              TreeViewItem).IsSelected = false;
+        }
+
+        public class SelectedReportChangeEventHandlerArgs
+        {
+            public SelectedReportChangeEventHandlerArgs(string reportName)
+            {
+                ReportName = reportName;
+                SelectionCleared = false;
+            }
+
+            public SelectedReportChangeEventHandlerArgs(bool selectionCleared)
+            {
+                SelectionCleared = selectionCleared;
+                ReportName = null;
+            }
+
+            public string ReportName { get; set; }
+            public bool SelectionCleared { get; set; }
         }
 
         #endregion
@@ -158,13 +164,13 @@ namespace ATTrafficAnalayzer.Views.Controls
             var selectedItem = StandardReportsTreeView.SelectedItem as string;
 
             //Configure the message box to be displayed 
-            var messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
-            var caption = "Confirm delete";
+            string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
+            string caption = "Confirm delete";
             var button = MessageBoxButton.OKCancel;
             var icon = MessageBoxImage.Question;
 
             //Display message box
-            var isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
+            MessageBoxResult isConfirmedDeletion = MessageBox.Show(messageBoxText, caption, button, icon);
 
             //Process message box results 
             switch (isConfirmedDeletion)
@@ -174,7 +180,6 @@ namespace ATTrafficAnalayzer.Views.Controls
                     if (_mode.Equals(Mode.Report))
                     {
                         backgroundWorker.DoWork += (o, args) => _dataSource.RemoveReport(selectedItem);
-
                     }
                     else
                     {
@@ -182,15 +187,15 @@ namespace ATTrafficAnalayzer.Views.Controls
                     }
                     backgroundWorker.RunWorkerCompleted +=
                         (o, args) =>
-                        {
-                            messageBoxText = selectedItem + " was deleted";
-                            caption = "Delete successful";
-                            button = MessageBoxButton.OK;
-                            icon = MessageBoxImage.Information;
-                            MessageBox.Show(messageBoxText, caption, button, icon);
-                            //Refresh the view
-                            Render();
-                        };
+                            {
+                                messageBoxText = selectedItem + " was deleted";
+                                caption = "Delete successful";
+                                button = MessageBoxButton.OK;
+                                icon = MessageBoxImage.Information;
+                                MessageBox.Show(messageBoxText, caption, button, icon);
+                                //Refresh the view
+                                Render();
+                            };
                     backgroundWorker.RunWorkerAsync();
 
 
@@ -214,13 +219,11 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
-            
-
             if (GetSelectedConfiguration() != null)
             {
                 _hasModeChanged = true;
             }
-            
+
             if (_mode.Equals(args.Mode)) return;
 
             _mode = args.Mode;
