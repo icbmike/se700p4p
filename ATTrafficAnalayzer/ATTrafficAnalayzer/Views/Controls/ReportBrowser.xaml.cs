@@ -214,14 +214,17 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
-            _mode = args.Mode;
             
+
             if (GetSelectedConfiguration() != null)
             {
                 _hasModeChanged = true;
             }
-            if(!_mode.Equals(args.Mode))
-            {Render();}
+            
+            if (_mode.Equals(args.Mode)) return;
+
+            _mode = args.Mode;
+            Render();
         }
 
         #endregion
