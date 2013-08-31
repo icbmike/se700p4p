@@ -126,8 +126,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 if (_countsDontMatch) break;
             }
-
-
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

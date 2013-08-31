@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views
             _configuration = _dbHelper.GetConfiguration(configName);
         }
 
-        public void DoExport()
+        public void ExportReport()
         {
             using (var file = new StreamWriter(_outputFilename))
             {
@@ -38,7 +38,7 @@ namespace ATTrafficAnalayzer.Views
                         file.Write(detector + " ");
                     }
                     file.Write("\n");
-                    
+
                     //Retrieve the volume information from the database
                     // List dates
                     var dates = new List<DateTime>();
@@ -60,7 +60,6 @@ namespace ATTrafficAnalayzer.Views
                                                                           _settings.EndDate);
                             approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                         }
-
                     }
 
                     //The row headings
@@ -80,7 +79,7 @@ namespace ATTrafficAnalayzer.Views
                     // Get volume store data //12 hours
                     for (var i = 0; i < 12; i++)
                     {
-                        
+
                         for (var j = 0; j < 13; j++)
                         {
                             if (j == 0)
@@ -88,9 +87,32 @@ namespace ATTrafficAnalayzer.Views
                             else
                                 file.Write(approachVolumes[i * 12 + j] + ",");
                         }
-                        file.Write("\n");            
+                        file.Write("\n");
                     }
                 }
+            }
+        }
+
+        public void ExportSummary()
+        {
+            using (var file = new StreamWriter(_outputFilename))
+            {
+                //var amSummary = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakHour), _startDate, _endDate, _summaryConfig);
+
+                //var lines = new List<string>();
+
+                //string[] columnNames = dataTable.Columns.Cast<datacolumn>().
+                //                                  Select(column => column.ColumnName).
+                //                                  ToArray();
+
+                //var header = string.Join(",", columnNames);
+                //lines.Add(header);
+
+                //var valueLines = dt.AsEnumerable()
+                //                   .Select(row => string.Join(",", row.ItemArray));            
+                //lines.AddRange(valueLines );
+
+                //File.WriteAllLines("excel.csv",lines);
             }
         }
     }
