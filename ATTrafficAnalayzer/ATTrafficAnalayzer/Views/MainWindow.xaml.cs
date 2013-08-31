@@ -93,6 +93,7 @@ namespace ATTrafficAnalayzer.Views
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
                         var reportConfigurationScreen = new ReportConfig();
+                        reportConfigurationScreen.Popup.Visibility = Visibility.Visible;
                         reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;
@@ -124,6 +125,7 @@ namespace ATTrafficAnalayzer.Views
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
                         var summaryConfigScreen = new SummaryConfig();
+                        summaryConfigScreen.Popup.Visibility = Visibility.Visible;
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;

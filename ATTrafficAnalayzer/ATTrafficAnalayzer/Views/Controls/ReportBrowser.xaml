@@ -9,26 +9,59 @@
              d:DesignWidth="200">
     <DockPanel LastChildFill="True">
 
+        <Label Content="Report Browser"
+               FontWeight="Normal"
+               FontSize="14"
+               Foreground="White"
+               Padding="5"
+               Background="#428FBF"
+               DockPanel.Dock="Top" />
+
         <DockPanel DockPanel.Dock="Top"
-                   Background="#428FBF"
+                   LastChildFill="False"
                    Height="32">
-            <Label Content="Report Browser"
-                   FontWeight="Normal"
-                   FontSize="14"
-                   Foreground="White"
-                   Padding="5"
-                   DockPanel.Dock="Left" />
+            <DockPanel.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" />
+            </DockPanel.Background>
             <Button Name="NewButton"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
                     BorderBrush="{x:Null}"
                     OpacityMask="{x:Null}"
                     Click="newBtn_Click"
                     Foreground="{x:Null}"
-                    DockPanel.Dock="Right"
+                    DockPanel.Dock="Left"
                     Margin="6"
                     Background="{x:Null}">
                 <Image Source="/Resources\Images\Icons\glyphicons_432_plus.png" />
+            </Button>
+            <Button Name="EditButton"
+                    BorderBrush="{x:Null}"
+                    OpacityMask="{x:Null}"
+                    Click="editBtn_Click"
+                    Foreground="{x:Null}"
+                    DockPanel.Dock="Left"
+                    Margin="6"
+                    Background="{x:Null}">
+                <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
+            </Button>
+            <Button Name="ExportButton"
+                    BorderBrush="{x:Null}"
+                    OpacityMask="{x:Null}"
+                    Click="exportBtn_Click"
+                    Foreground="{x:Null}"
+                    DockPanel.Dock="Left"
+                    Margin="6"
+                    Background="{x:Null}">
+                <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
+            </Button>
+            <Button Name="DeleteButton"
+                    BorderBrush="{x:Null}"
+                    OpacityMask="{x:Null}"
+                    Click="removeBtn_Click"
+                    Foreground="{x:Null}"
+                    DockPanel.Dock="Left"
+                    Margin="6"
+                    Background="{x:Null}">
+                <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
             </Button>
         </DockPanel>
 
