@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using ATTrafficAnalayzer.Annotations;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
@@ -12,19 +14,31 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class Faults : IView
+    public partial class Faults : IView, INotifyPropertyChanged
     {
         private readonly DbHelper _dbHelper;
         private DateTime _endDate;
         private DateTime _startDate;
+        private int _faultThreshold;
+
+        public int FaultThreshold
+        {
+            get { return _faultThreshold; }
+            set
+            {
+                _faultThreshold = value;
+                OnPropertyChanged("FaultThreshold");
+            }
+        }
 
         public Faults(SettingsTray settings)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
             _dbHelper = DbHelper.GetDbHelper();
-
+            DataContext = this;
             InitializeComponent();
+            FaultThreshold = 100;
             Render();
         }
 
@@ -40,7 +54,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var row in dataTable.Rows)
             {
                 var dataRow = row as DataRow;
-                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[]{","}, StringSplitOptions.None).ToList().Distinct());
+                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[] { "," }, StringSplitOptions.None).ToList().Distinct());
             }
 
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
@@ -74,7 +88,21 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader);
             }
-            
+
+        }
+
+        private void RefreshFaults_OnClick(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.MessageBox.Show(FaultThreshold.ToString());
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
