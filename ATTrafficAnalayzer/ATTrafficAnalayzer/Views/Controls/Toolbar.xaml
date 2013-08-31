@@ -34,6 +34,20 @@
                                       VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
+           
+            <Button Name="RegularReportsButton"
+                    Click="SwitchMode"
+                    Style="{StaticResource AtToolbarButtonStyle}"
+                    Background="{x:Null}"
+                    Foreground="White">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources\Images\Icons\glyphicons_029_notes_2.png" />
+                    <ContentPresenter Content="Reports"
+                                      VerticalAlignment="Center"
+                                      Margin="6,0" />
+                </StackPanel>
+            </Button>
+            
             <Button Name="MonthlySummaryButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
@@ -47,18 +61,7 @@
                                       VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button Name="RegularReportsButton"
-                    Click="SwitchMode"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    Background="{x:Null}"
-                    Foreground="White">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_029_notes_2.png" />
-                    <ContentPresenter Content="Reports"
-                                      VerticalAlignment="Center"
-                                      Margin="6,0" />
-                </StackPanel>
-            </Button>
+
             <Button Name="FaultsButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
