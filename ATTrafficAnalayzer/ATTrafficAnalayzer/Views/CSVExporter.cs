@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using ATTrafficAnalayzer.Models;
@@ -13,13 +14,17 @@ namespace ATTrafficAnalayzer.Views
         private readonly string _outputFilename;
         private readonly SettingsTray _settings;
         private readonly DbHelper _dbHelper;
+        private readonly DataTableHelper _dtHelper;
         private readonly Report _configuration;
+        private readonly string _configName;
 
         public CSVExporter(String outputFilename, SettingsTray settings, string configName)
         {
             _outputFilename = outputFilename;
             _settings = settings;
             _dbHelper = DbHelper.GetDbHelper();
+            _dtHelper = DataTableHelper.GetDataTableHelper();
+            _configName = configName;
 
             //Retrieve the config for the supplied name
             _configuration = _dbHelper.GetConfiguration(configName);
@@ -95,25 +100,21 @@ namespace ATTrafficAnalayzer.Views
 
         public void ExportSummary()
         {
-            using (var file = new StreamWriter(_outputFilename))
-            {
-                //var amSummary = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakHour), _startDate, _endDate, _summaryConfig);
+            var amSummary = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_settings.SummaryAmPeak), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName));
 
-                //var lines = new List<string>();
+            var lines = new List<string>();
 
-                //string[] columnNames = dataTable.Columns.Cast<datacolumn>().
-                //                                  Select(column => column.ColumnName).
-                //                                  ToArray();
+            string[] columnNames = amSummary.Columns.Cast<DataColumn>().
+                                              Select(column => column.ColumnName).
+                                              ToArray();
+            var header = string.Join(",", columnNames);
+            lines.Add(header);
 
-                //var header = string.Join(",", columnNames);
-                //lines.Add(header);
+            var valueLines = amSummary.AsEnumerable()
+                .Select(row => string.Join(",", row.ItemArray));
+            lines.AddRange(valueLines);
 
-                //var valueLines = dt.AsEnumerable()
-                //                   .Select(row => string.Join(",", row.ItemArray));            
-                //lines.AddRange(valueLines );
-
-                //File.WriteAllLines("excel.csv",lines);
-            }
+            File.WriteAllLines(_outputFilename, lines);
         }
     }
 }
