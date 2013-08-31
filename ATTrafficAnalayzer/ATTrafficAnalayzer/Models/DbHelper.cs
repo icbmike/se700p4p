@@ -335,14 +335,6 @@ namespace ATTrafficAnalayzer.Models
         #region Volume Related Methods
 
         /// <summary>
-        ///     Duplicate policy options
-        /// </summary>
-        public enum DuplicatePolicy
-        {
-            Skip, SkipAll, Continue
-        }
-
-        /// <summary>
         ///     Imports a single file
         /// </summary>
         /// <param name="b">Worker thread</param>

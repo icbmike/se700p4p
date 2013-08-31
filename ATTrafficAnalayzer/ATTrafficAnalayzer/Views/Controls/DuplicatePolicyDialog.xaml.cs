@@ -19,7 +19,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class DuplicatePolicyDialog : Window
     {
-        public DbHelper.DuplicatePolicy SelectedPolicy { get; set; }
+        public DuplicatePolicy SelectedPolicy { get; set; }
 
         public DuplicatePolicyDialog()
         {
@@ -30,14 +30,14 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             if (sender == SkipButton )
             {
-                SelectedPolicy = DbHelper.DuplicatePolicy.Skip;
+                SelectedPolicy = DuplicatePolicy.Skip;
             }else if (sender == SkipAllButton)
             {
-                SelectedPolicy = DbHelper.DuplicatePolicy.SkipAll;
+                SelectedPolicy = DuplicatePolicy.SkipAll;
             }
             else
             {
-                SelectedPolicy = DbHelper.DuplicatePolicy.Continue;
+                SelectedPolicy = DuplicatePolicy.Continue;
             }
             Close();
         }

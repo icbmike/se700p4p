@@ -374,7 +374,7 @@ namespace ATTrafficAnalayzer.Views
                 foreach (var filename in dlg.FileNames)
                 {
                     //Default duplicate policy
-                    var skipAllOrOne = DbHelper.DuplicatePolicy.Skip;
+                    var skipAllOrOne = DuplicatePolicy.Skip;
 
                     //Execture the background task of importing a file
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
@@ -389,7 +389,7 @@ namespace ATTrafficAnalayzer.Views
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
                     }, settings);
-                    if (skipAllOrOne.Equals(DbHelper.DuplicatePolicy.SkipAll)) break;
+                    if (skipAllOrOne.Equals(DuplicatePolicy.SkipAll)) break;
                 }
             }
         }
@@ -399,16 +399,16 @@ namespace ATTrafficAnalayzer.Views
         /// Will return either the duplicate policy in the settings or ask the user on each duplicate conflict.
         /// </summary>
         /// <returns>The selected duplicate policy.</returns>
-        private DbHelper.DuplicatePolicy GetDuplicatePolicy()
+        private DuplicatePolicy GetDuplicatePolicy()
         {
-            DbHelper.DuplicatePolicy policy;
+            DuplicatePolicy policy;
             //If the setting is to ask...
             if (_defaultDupicatePolicy.Equals(DefaultDupicatePolicy.Ask))
             {
                 var waitForInput = true;
 
                 //Use a dispatcher to display a dialog to get a choice from the user, because were proably on a background thread.
-                policy = DbHelper.DuplicatePolicy.Continue;
+                policy = DuplicatePolicy.Continue;
                 Dispatcher.BeginInvoke(new Action(() =>
                     {
                         var dialog = new DuplicatePolicyDialog { Owner = this };
@@ -423,11 +423,11 @@ namespace ATTrafficAnalayzer.Views
             //Else use the setting
             else if (_defaultDupicatePolicy.Equals(DefaultDupicatePolicy.Skip))
             {
-                policy = DbHelper.DuplicatePolicy.Skip;
+                policy = DuplicatePolicy.Skip;
             }
             else //_defaultDupicatePolicy is DefaultDupicatePolicy.Continue 
             {
-                policy = DbHelper.DuplicatePolicy.Continue;
+                policy = DuplicatePolicy.Continue;
             }
 
             return policy;
