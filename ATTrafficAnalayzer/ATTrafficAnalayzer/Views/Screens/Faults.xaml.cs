@@ -54,7 +54,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             foreach (var row in dataTable.Rows)
             {
                 var dataRow = row as DataRow;
-                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[] { "," }, StringSplitOptions.None).ToList().Distinct());
+                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[] { "," }, StringSplitOptions.None).ToList().Distinct().OrderBy(int.Parse));
             }
 
             FaultsDataGrid.ItemsSource = dataTable.AsDataView();
