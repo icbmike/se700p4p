@@ -28,7 +28,7 @@
                Content="Imported Data" />
         <ListBox Visibility="Collapsed"
                  Grid.Column="0"
-               Grid.ColumnSpan="2"
+                 Grid.ColumnSpan="2"
                  FontSize="16"
                  Grid.Row="1"
                  Margin="20"
@@ -59,7 +59,7 @@
                      IsIndeterminate="True"
                      Grid.Column="0"
                      Grid.Row="1"
-               Grid.ColumnSpan="2"
+                     Grid.ColumnSpan="2"
                      Height="25"
                      Width="300" />
 

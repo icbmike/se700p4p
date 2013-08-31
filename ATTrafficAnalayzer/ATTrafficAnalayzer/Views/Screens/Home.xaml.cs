@@ -13,6 +13,8 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class Home
     {
 
+        DbHelper _helper;
+
         #region events
 
         public delegate void ImportRequestEventHandler(object sender, RoutedEventArgs e);
@@ -21,20 +23,21 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #endregion
 
-
         public Home()
         {
             InitializeComponent();
-
-            var bw = new BackgroundWorker();
-
-            bw.DoWork += DoWorkHandler;
-            bw.RunWorkerCompleted += WorkerCompletedHandler;
-            bw.RunWorkerAsync();
-
+            _helper = DbHelper.GetDbHelper();
+            Render();
             Logger.Info("constructed view", "homescreen");
         }
 
+        private void Render()
+        {
+            var bw = new BackgroundWorker();
+            bw.DoWork += DoWorkHandler;
+            bw.RunWorkerCompleted += WorkerCompletedHandler;
+            bw.RunWorkerAsync();
+        }
 
         private void WorkerCompletedHandler(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -45,8 +48,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void DoWorkHandler(object sender, DoWorkEventArgs e)
         {
-            var helper = DbHelper.GetDbHelper();
-            var importedDates = helper.GetImportedDates();
+            var importedDates = _helper.GetImportedDates();
             e.Result = importedDates;
         }
 
@@ -54,7 +56,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             ImportRequested(this, e);
         }
-
 
         internal void ImportCompletedHandler(object sender)
         {
@@ -67,23 +68,12 @@ namespace ATTrafficAnalayzer.Views.Screens
             bw.RunWorkerAsync();
         }
 
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in ImportedDatesList.SelectedItems) {
-                System.Windows.Forms.MessageBox.Show(item.GetType().ToString());
-            }
+            foreach (DateTime date in ImportedDatesList.SelectedItems)
+                _helper.RemoveVolumes(date);
         }
     }
 }
