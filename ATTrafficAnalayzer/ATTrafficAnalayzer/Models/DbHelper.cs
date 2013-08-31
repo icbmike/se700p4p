@@ -166,6 +166,7 @@ namespace ATTrafficAnalayzer.Models
             var returnCode = true;
             try
             {
+                System.Windows.Forms.MessageBox.Show(String.Format("DELETE FROM {0} WHERE {1};", tableName, where));
                 ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1};", tableName, where));
             }
             catch (Exception)
@@ -306,7 +307,6 @@ namespace ATTrafficAnalayzer.Models
         {
             Skip, SkipAll, Continue
         }
-
 
         public static DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
@@ -572,6 +572,31 @@ namespace ATTrafficAnalayzer.Models
             }
             conn.Close();
             return result;
+        }
+
+        public bool RemoveVolumes(DateTime date)
+        {
+            var returnCode = true;
+            try
+            {
+                using (var dbConnection = new SQLiteConnection(DbPath))
+                {
+                    dbConnection.Open();
+
+                    var query = new SQLiteCommand(dbConnection);
+                    query.CommandText = "DELETE FROM volumes WHERE (dateTime BETWEEN @startDate AND @endDate);";
+                    query.Parameters.AddWithValue("@startDate", date);
+                    query.Parameters.AddWithValue("@endDate", date.AddDays(1).AddSeconds(-1));
+                    query.ExecuteNonQuery();
+
+                    dbConnection.Close();
+                }
+            }
+            catch (Exception)
+            {
+                returnCode = false;
+            }
+            return returnCode;
         }
 
         public Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection)
