@@ -18,14 +18,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
             lock (SyncLock)
                 return _instance ?? (_instance = new DataTableHelper());
         }
-        
-
-        private MainWindow _mainWindow;
 
         private DataTableHelper()
         {
         }
-
 
         public DataTable GetSummaryDataTable(ICalculator calculator, DateTime _startDate, DateTime _endDate, IEnumerable<SummaryRow> _summaryConfig, bool hasWeekends)
         {

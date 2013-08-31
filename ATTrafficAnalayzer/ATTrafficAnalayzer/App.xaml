@@ -24,7 +24,7 @@
             
                     <Setter Property="Background">
                         <Setter.Value>
-                            <SolidColorBrush Color="Red" />
+                            <SolidColorBrush Color="#FF5FBDFF" />
                         </Setter.Value>
                     </Setter>
                 </Trigger>
