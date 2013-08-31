@@ -319,198 +319,213 @@ namespace ATTrafficAnalayzer.Models
         public static DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
-            var dbConnection = new SQLiteConnection(DbPath);
-            dbConnection.Open();
-
-            //Load the file into memory
-            var fs = new FileStream(filename, FileMode.Open);
-            var sizeInBytes = (int)fs.Length;
-            var byteArray = new byte[sizeInBytes];
-            fs.Read(byteArray, 0, sizeInBytes);
-
-            var alreadyLoaded = false;
-
-            //Now decrypt it
-            var index = 0;
-            DateTimeRecord currentDateTime = null;
-            var duplicatePolicy = DuplicatePolicy.Continue;
-            var continuing = false;
-
-            using (var cmd = new SQLiteCommand(dbConnection))
+            FileStream fs;
+            DuplicatePolicy duplicatePolicy;
+            using (var dbConnection = new SQLiteConnection(DbPath))
             {
-                using (var transaction = dbConnection.BeginTransaction())
+                dbConnection.Open();
+
+                //Load the file into memory
+                fs = new FileStream(filename, FileMode.Open);
+                var sizeInBytes = (int)fs.Length;
+                var byteArray = new byte[sizeInBytes];
+                fs.Read(byteArray, 0, sizeInBytes);
+
+                var alreadyLoaded = false;
+
+                //Now decrypt it
+                var index = 0;
+                DateTimeRecord currentDateTime = null;
+                duplicatePolicy = DuplicatePolicy.Continue;
+                var continuing = false;
+
+                using (var cmd = new SQLiteCommand(dbConnection))
                 {
-                    while (index < sizeInBytes) //seek through the byte array untill we reach the end
+                    using (var transaction = dbConnection.BeginTransaction())
                     {
-                        var recordSize = byteArray[index] + byteArray[index + 1] * 256;
-                        //The record size is stored in two bytes, little endian
-
-                        index += 2;
-                        var progress = (int)(((float)index / sizeInBytes) * 100);
-                        updateProgress(progress);
-
-
-                        byte[] record;
-                        if (recordSize % 2 == 0) //Records with odd record length have a trailing null byte.
+                        while (index < sizeInBytes) //seek through the byte array untill we reach the end
                         {
-                            record = byteArray.Skip(index).Take(recordSize).ToArray();
-                            index += recordSize;
-                        }
-                        else
-                        {
-                            record = byteArray.Skip(index).Take(recordSize + 1).ToArray();
-                            index += recordSize + 1;
-                        }
+                            var recordSize = byteArray[index] + byteArray[index + 1] * 256;
+                            //The record size is stored in two bytes, little endian
 
-                        //Find out what kind of data we have
-                        var recordType = VolumeRecordFactory.CheckRecordType(record);
+                            index += 2;
+                            var progress = (int)(((float)index / sizeInBytes) * 100);
+                            updateProgress(progress);
 
-                        //Construct the appropriate record type
-                        switch (recordType)
-                        {
-                            case VolumeRecordType.Datetime:
-                                currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
-                                break;
-                            case VolumeRecordType.Volume:
-                                var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
 
-                                foreach (var detector in volumeRecord.GetDetectors())
-                                {
-                                    cmd.CommandText =
-                                        "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
+                            byte[] record;
+                            if (recordSize % 2 == 0) //Records with odd record length have a trailing null byte.
+                            {
+                                record = byteArray.Skip(index).Take(recordSize).ToArray();
+                                index += recordSize;
+                            }
+                            else
+                            {
+                                record = byteArray.Skip(index).Take(recordSize + 1).ToArray();
+                                index += recordSize + 1;
+                            }
 
-                                    cmd.Parameters.Clear();
+                            //Find out what kind of data we have
+                            var recordType = VolumeRecordFactory.CheckRecordType(record);
 
-                                    cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5));
-                                    //Make up for the fact that volumes are offset ahead 5 minutes
-                                    cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
-                                    cmd.Parameters.AddWithValue("@detector", detector);
-                                    cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
+                            //Construct the appropriate record type
+                            switch (recordType)
+                            {
+                                case VolumeRecordType.Datetime:
+                                    currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
+                                    break;
+                                case VolumeRecordType.Volume:
+                                    var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
 
-                                    try
+                                    foreach (var detector in volumeRecord.GetDetectors())
                                     {
-                                        cmd.ExecuteNonQuery();
-                                    }
-                                    catch (SQLiteException e)
-                                    {
-                                        if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint) && !continuing)
+                                        cmd.CommandText =
+                                            "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
+
+                                        cmd.Parameters.Clear();
+
+                                        cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5));
+                                        //Make up for the fact that volumes are offset ahead 5 minutes
+                                        cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
+                                        cmd.Parameters.AddWithValue("@detector", detector);
+                                        cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
+
+                                        try
                                         {
-
-                                            Logger.Error("DBHELPER",
-                                                         e + "\nDetector: " + detector + "\nIntersection: " +
-                                                         volumeRecord.IntersectionNumber + "\nDate Time: " +
-                                                         currentDateTime.DateTime);
-
-                                            duplicatePolicy = getDuplicatePolicy();
-                                            if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
+                                            cmd.ExecuteNonQuery();
+                                        }
+                                        catch (SQLiteException e)
+                                        {
+                                            if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint) && !continuing)
                                             {
-                                                alreadyLoaded = true;
-                                                break;
+
+                                                Logger.Error("DBHELPER",
+                                                             e + "\nDetector: " + detector + "\nIntersection: " +
+                                                             volumeRecord.IntersectionNumber + "\nDate Time: " +
+                                                             currentDateTime.DateTime);
+
+                                                duplicatePolicy = getDuplicatePolicy();
+                                                if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
+                                                {
+                                                    alreadyLoaded = true;
+                                                    break;
+                                                }
+                                                continuing = true;
                                             }
-                                            continuing = true;
                                         }
                                     }
-                                }
-                                break;
+                                    break;
+                            }
+                            if (alreadyLoaded) break;
                         }
-                        if (alreadyLoaded) break;
+                        transaction.Commit();
                     }
-                    transaction.Commit();
                 }
-            }
 
-            dbConnection.Close();
+                dbConnection.Close();
+            }
             fs.Close();
             return duplicatePolicy;
         }
 
         public static List<int> GetIntersections()
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-            var intersections = new List<int>();
-            using (var query = new SQLiteCommand(conn))
+            List<int> intersections;
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
-                var reader = query.ExecuteReader();
+                conn.Open();
+                intersections = new List<int>();
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
+                    var reader = query.ExecuteReader();
 
-                while (reader.Read())
-                    intersections.Add(reader.GetInt32(0));
+                    while (reader.Read())
+                        intersections.Add(reader.GetInt32(0));
+                }
+                conn.Close();
             }
-            conn.Close();
             return intersections;
         }
 
         public List<int> GetDetectorsAtIntersection(int intersection)
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-            var detectors = new List<int>();
-            using (var query = new SQLiteCommand(conn))
+            List<int> detectors;
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
-                query.Parameters.AddWithValue("@intersection", intersection);
-                var reader = query.ExecuteReader();
-
-                while (reader.Read())
+                conn.Open();
+                detectors = new List<int>();
+                using (var query = new SQLiteCommand(conn))
                 {
-                    detectors.Add(reader.GetInt32(0));
+                    query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    var reader = query.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        detectors.Add(reader.GetInt32(0));
+                    }
                 }
+                conn.Close();
             }
-            conn.Close();
             return detectors;
         }
 
         public int GetVolume(int intersection, int detector, DateTime dateTime)
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
             int volume;
-            using (var query = new SQLiteCommand(conn))
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText =
-                    "SELECT volume from volumes WHERE intersection = '@intersection' AND detector = '@detector' AND dateTime = '@dateTime';";
-
-                query.Parameters.AddWithValue("@intersection", intersection);
-                query.Parameters.AddWithValue("@detector", detector);
-                query.Parameters.AddWithValue("@dateTime", dateTime);
-
-                var reader = query.ExecuteReader();
-                if (reader.RecordsAffected != 1)
+                conn.Open();
+                using (var query = new SQLiteCommand(conn))
                 {
-                    throw new Exception("WHOAH");
+                    query.CommandText =
+                        "SELECT volume from volumes WHERE intersection = '@intersection' AND detector = '@detector' AND dateTime = '@dateTime';";
+
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    query.Parameters.AddWithValue("@detector", detector);
+                    query.Parameters.AddWithValue("@dateTime", dateTime);
+
+                    var reader = query.ExecuteReader();
+                    if (reader.RecordsAffected != 1)
+                    {
+                        throw new Exception("WHOAH");
+                    }
+                    volume = reader.GetInt32(0);
                 }
-                volume = reader.GetInt32(0);
+                conn.Close();
             }
-            conn.Close();
             return volume;
         }
 
         public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-            var volume = 0;
-            using (var query = new SQLiteCommand(conn))
+            int volume;
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                foreach (var detector in detectorList)
+                conn.Open();
+                volume = 0;
+                using (var query = new SQLiteCommand(conn))
                 {
-                    query.CommandText =
-                        "SELECT volume " +
-                        "FROM volumes " +
-                        "WHERE intersection = @intersection " +
-                        "AND detector = @detector " +
-                        "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+                    foreach (var detector in detectorList)
+                    {
+                        query.CommandText =
+                            "SELECT volume " +
+                            "FROM volumes " +
+                            "WHERE intersection = @intersection " +
+                            "AND detector = @detector " +
+                            "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
 
-                    query.Parameters.AddWithValue("@intersection", intersection);
-                    query.Parameters.AddWithValue("@detector", detector);
-                    query.Parameters.AddWithValue("@startDateTime", startDateTime);
-                    query.Parameters.AddWithValue("@endDateTime", endDateTime);
+                        query.Parameters.AddWithValue("@intersection", intersection);
+                        query.Parameters.AddWithValue("@detector", detector);
+                        query.Parameters.AddWithValue("@startDateTime", startDateTime);
+                        query.Parameters.AddWithValue("@endDateTime", endDateTime);
 
-                    volume += Convert.ToInt32(query.ExecuteScalar());
+                        volume += Convert.ToInt32(query.ExecuteScalar());
+                    }
                 }
+                conn.Close();
             }
-            conn.Close();
             return volume;
         }
 
@@ -536,29 +551,32 @@ namespace ATTrafficAnalayzer.Models
 
         public List<int> GetVolumes(int intersection, int detector, DateTime startDate, DateTime endDate)
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-            var volumes = new List<int>();
-
-            using (var query = new SQLiteCommand(conn))
+            List<int> volumes;
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT volume " +
-                                    "FROM volumes " +
-                                    "WHERE intersection = @intersection " +
-                                    "AND detector = @detector " +
-                                    "AND (dateTime BETWEEN @startDate AND @endDate);";
-                query.Parameters.AddWithValue("@intersection", intersection);
-                query.Parameters.AddWithValue("@detector", detector);
-                query.Parameters.AddWithValue("@startDate", startDate);
-                //TODO change between to exclude upper limit instead of subtracting a second from endDate
-                query.Parameters.AddWithValue("@endDate", endDate.AddSeconds(-1));
-                var reader = query.ExecuteReader();
-                while (reader.Read())
+                conn.Open();
+                volumes = new List<int>();
+
+                using (var query = new SQLiteCommand(conn))
                 {
-                    volumes.Add(reader.GetInt32(0));
+                    query.CommandText = "SELECT volume " +
+                                        "FROM volumes " +
+                                        "WHERE intersection = @intersection " +
+                                        "AND detector = @detector " +
+                                        "AND (dateTime BETWEEN @startDate AND @endDate);";
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    query.Parameters.AddWithValue("@detector", detector);
+                    query.Parameters.AddWithValue("@startDate", startDate);
+                    //TODO change between to exclude upper limit instead of subtracting a second from endDate
+                    query.Parameters.AddWithValue("@endDate", endDate.AddSeconds(-1));
+                    var reader = query.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        volumes.Add(reader.GetInt32(0));
+                    }
                 }
+                conn.Close();
             }
-            conn.Close();
 
             return volumes;
         }
@@ -566,20 +584,22 @@ namespace ATTrafficAnalayzer.Models
         public Boolean VolumesExist(DateTime startDate, DateTime endDate)
         {
             endDate = endDate.AddSeconds(-1);
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
             Boolean result;
-            using (var query = new SQLiteCommand(conn))
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT * " +
-                                    "FROM volumes " +
-                                    "WHERE (datetime BETWEEN @startDate AND @endDate);";
-                query.Parameters.AddWithValue("@startDate", startDate);
-                query.Parameters.AddWithValue("@endDate", endDate);
-                var reader = query.ExecuteReader();
-                result = reader.HasRows;
+                conn.Open();
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText = "SELECT * " +
+                                        "FROM volumes " +
+                                        "WHERE (datetime BETWEEN @startDate AND @endDate);";
+                    query.Parameters.AddWithValue("@startDate", startDate);
+                    query.Parameters.AddWithValue("@endDate", endDate);
+                    var reader = query.ExecuteReader();
+                    result = reader.HasRows;
+                }
+                conn.Close();
             }
-            conn.Close();
             return result;
         }
 
@@ -613,50 +633,55 @@ namespace ATTrafficAnalayzer.Models
         public Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection)
         {
             endDate = endDate.AddSeconds(-1);
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
             Boolean result;
-            using (var query = new SQLiteCommand(conn))
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT * " +
-                                    "FROM volumes " +
-                                    "WHERE intersection = @intersection " +
-                                    "AND (datetime BETWEEN @startDate AND @endDate);";
-                query.Parameters.AddWithValue("@startDate", startDate);
-                query.Parameters.AddWithValue("@endDate", endDate);
-                query.Parameters.AddWithValue("@intersection", intersection);
-                var reader = query.ExecuteReader();
-                result = reader.HasRows;
+                conn.Open();
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText = "SELECT * " +
+                                        "FROM volumes " +
+                                        "WHERE intersection = @intersection " +
+                                        "AND (datetime BETWEEN @startDate AND @endDate);";
+                    query.Parameters.AddWithValue("@startDate", startDate);
+                    query.Parameters.AddWithValue("@endDate", endDate);
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    var reader = query.ExecuteReader();
+                    result = reader.HasRows;
+                }
+                conn.Close();
             }
-            conn.Close();
             return result;
         }
 
         public int GetTotalVolumeForDay(DateTime date, int intersection, List<int> detectors)
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-            var volume = 0;
-            using (var query = new SQLiteCommand(conn))
+            int volume;
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                foreach (var detector in detectors)
+                conn.Open();
+                volume = 0;
+                using (var query = new SQLiteCommand(conn))
                 {
-                    query.CommandText =
-                        "SELECT SUM(volume) " +
-                        "FROM volumes " +
-                        "WHERE intersection = @intersection " +
-                        "AND detector = @detector " +
-                        "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+                    foreach (var detector in detectors)
+                    {
+                        query.CommandText =
+                            "SELECT SUM(volume) " +
+                            "FROM volumes " +
+                            "WHERE intersection = @intersection " +
+                            "AND detector = @detector " +
+                            "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
 
-                    query.Parameters.AddWithValue("@intersection", intersection);
-                    query.Parameters.AddWithValue("@detector", detector);
-                    query.Parameters.AddWithValue("@startDateTime", date);
-                    query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
+                        query.Parameters.AddWithValue("@intersection", intersection);
+                        query.Parameters.AddWithValue("@detector", detector);
+                        query.Parameters.AddWithValue("@startDateTime", date);
+                        query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
 
-                    volume += Convert.ToInt32(query.ExecuteScalar());
+                        volume += Convert.ToInt32(query.ExecuteScalar());
+                    }
                 }
+                conn.Close();
             }
-            conn.Close();
             return volume;
         }
 
@@ -672,82 +697,86 @@ namespace ATTrafficAnalayzer.Models
 
         public Report GetConfiguration(string name)
         {
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-
-            JObject configJson = null;
-
-            using (var query = new SQLiteCommand(conn))
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT config FROM configs WHERE name = @name;";
-                query.Parameters.AddWithValue("@name", name);
-                var reader = query.ExecuteReader();
+                conn.Open();
 
-                if (reader.Read())
-                    configJson = JObject.Parse(reader.GetString(0));
-            }
-            if (configJson != null)
-            {
-                var approaches = new List<Approach>();
-                foreach (var approachID in (JArray)configJson["approaches"])
+                JObject configJson = null;
+
+                using (var query = new SQLiteCommand(conn))
                 {
-                    using (var query = new SQLiteCommand(conn))
+                    query.CommandText = "SELECT config FROM configs WHERE name = @name;";
+                    query.Parameters.AddWithValue("@name", name);
+                    var reader = query.ExecuteReader();
+
+                    if (reader.Read())
+                        configJson = JObject.Parse(reader.GetString(0));
+                }
+                if (configJson != null)
+                {
+                    var approaches = new List<Approach>();
+                    foreach (var approachID in (JArray)configJson["approaches"])
                     {
-                        query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
-                        query.Parameters.AddWithValue("@id", approachID);
+                        using (var query = new SQLiteCommand(conn))
+                        {
+                            query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
+                            query.Parameters.AddWithValue("@id", approachID);
 
-                        var reader = query.ExecuteReader();
-                        JObject approachJson = null;
+                            var reader = query.ExecuteReader();
+                            JObject approachJson = null;
 
-                        if (reader.Read())
-                            approachJson = JObject.Parse(reader.GetString(0));
+                            if (reader.Read())
+                                approachJson = JObject.Parse(reader.GetString(0));
 
-                        approaches.Add(new Approach((string)approachJson["name"],
-                                                    approachJson["detectors"].Select(t => (int)t).ToList()));
+                            approaches.Add(new Approach((string)approachJson["name"],
+                                                        approachJson["detectors"].Select(t => (int)t).ToList()));
+                        }
                     }
+                    conn.Close();
+                    return new Report(name, (int)configJson["intersection"], approaches);
                 }
                 conn.Close();
-                return new Report(name, (int)configJson["intersection"], approaches);
             }
-            conn.Close();
             return null;
         }
 
         public void AddConfiguration(Report config)
         {
             var configJson = config.ToJson();
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-
-            foreach (var approach in config.Approaches)
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                //INSERT APPROACHES INTO TABLE
+                conn.Open();
+
+                foreach (var approach in config.Approaches)
+                {
+                    //INSERT APPROACHES INTO TABLE
+                    using (var query = new SQLiteCommand(conn))
+                    {
+                        query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
+                        query.Parameters.AddWithValue("@approach", approach.ToJson().ToString());
+                        query.ExecuteNonQuery();
+                    }
+                    //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
+                    using (var query = new SQLiteCommand(conn))
+                    {
+                        query.CommandText = "SELECT last_insert_rowid();";
+
+                        var rowID = (Int64)query.ExecuteScalar();
+                        ((JArray)configJson["approaches"]).Add(rowID);
+                    }
+                }
+
+                //INSERT REPORT CONFIGURATION INTO TABLE
                 using (var query = new SQLiteCommand(conn))
                 {
-                    query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
-                    query.Parameters.AddWithValue("@approach", approach.ToJson().ToString());
+                    query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
+                    query.Parameters.AddWithValue("@name", config.ConfigName);
+                    query.Parameters.AddWithValue("@config", configJson.ToString());
+                    query.Parameters.AddWithValue("@last_used", DateTime.Today);
                     query.ExecuteNonQuery();
                 }
-                //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
-                using (var query = new SQLiteCommand(conn))
-                {
-                    query.CommandText = "SELECT last_insert_rowid();";
-
-                    var rowID = (Int64)query.ExecuteScalar();
-                    ((JArray)configJson["approaches"]).Add(rowID);
-                }
+                conn.Close();
             }
-
-            //INSERT REPORT CONFIGURATION INTO TABLE
-            using (var query = new SQLiteCommand(conn))
-            {
-                query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
-                query.Parameters.AddWithValue("@name", config.ConfigName);
-                query.Parameters.AddWithValue("@config", configJson.ToString());
-                query.Parameters.AddWithValue("@last_used", DateTime.Today);
-                query.ExecuteNonQuery();
-            }
-            conn.Close();
         }
 
         public List<Approach> GetApproaches(String configName)
@@ -804,25 +833,27 @@ namespace ATTrafficAnalayzer.Models
         {
             var summaries = new List<SummaryRow>();
 
-            var conn = new SQLiteConnection(DbPath);
-            conn.Open();
-
-            using (var query = new SQLiteCommand(conn))
+            using (var conn = new SQLiteConnection(DbPath))
             {
-                query.CommandText = "SELECT config FROM monthly_summaries WHERE name = @name";
-                query.Parameters.AddWithValue("@name", name);
+                conn.Open();
 
-                var reader = query.ExecuteReader();
-
-                if (reader.Read())
+                using (var query = new SQLiteCommand(conn))
                 {
-                    var configArray = JArray.Parse(reader.GetString(0));
+                    query.CommandText = "SELECT config FROM monthly_summaries WHERE name = @name";
+                    query.Parameters.AddWithValue("@name", name);
 
-                    summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string) summaryJson["route_name"], (int) summaryJson["intersection_in"], (int) summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int) t).ToList(), summaryJson["detectors_out"].Select(t => (int) t).ToList())));
+                    var reader = query.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        var configArray = JArray.Parse(reader.GetString(0));
+
+                        summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string) summaryJson["route_name"], (int) summaryJson["intersection_in"], (int) summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int) t).ToList(), summaryJson["detectors_out"].Select(t => (int) t).ToList())));
+                    }
+                    reader.Close();
                 }
-                reader.Close();
+                conn.Close();
             }
-            conn.Close();
             return summaries;
         }
 
