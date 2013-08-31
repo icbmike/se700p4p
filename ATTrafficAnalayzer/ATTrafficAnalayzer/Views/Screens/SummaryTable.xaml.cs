@@ -40,7 +40,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
 
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            if (!_dbHelper.VolumesExist(_startDate, _endDate))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
@@ -128,7 +128,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private class PmPeakCalculator : ICalculator
         {
             private readonly int _hour;
-
+            
             public PmPeakCalculator(int hour)
             {
                 _hour = hour;

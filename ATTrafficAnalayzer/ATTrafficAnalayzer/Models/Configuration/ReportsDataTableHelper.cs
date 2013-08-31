@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
+using System.Windows.Forms;
 using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.Configuration
@@ -53,7 +54,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public void RemoveReport(string configToDelete, Mode selectedMode)
         {
             RemoveConfig(configToDelete, selectedMode);
-            SyncConfigs();
+            SyncConfigs(selectedMode);
         }
 
         #endregion
@@ -65,15 +66,18 @@ namespace ATTrafficAnalayzer.Models.Configuration
             rowToDelete.Delete();
         }
 
-        public void SyncConfigs()
+        public void SyncConfigs(Mode selectedMode)
         {
-            
+            if (selectedMode.Equals(Mode.Report))
+            {
                 _reportDataAdapter.Update(_reportsDataTable);
                 _reportDataAdapter.Fill(_reportsDataTable);
-           
+            }
+            if (selectedMode.Equals(Mode.Summary))
+            {
                 _summaryDataAdapter.Update(_summaryDataTable);
                 _summaryDataAdapter.Fill(_summaryDataTable);
-            
+            }
         }
 
         public DataView GetSummaryDataView()

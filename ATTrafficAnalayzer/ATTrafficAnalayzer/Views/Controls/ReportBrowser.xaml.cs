@@ -58,7 +58,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
-            _dataTableHelper.SyncConfigs();
+            _dataTableHelper.SyncConfigs(_mode);
             Render();
         }
 
