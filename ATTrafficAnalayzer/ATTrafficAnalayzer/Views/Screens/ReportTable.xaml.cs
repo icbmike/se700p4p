@@ -10,6 +10,7 @@ using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using System;
+using System.Windows.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -79,7 +80,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var approachDisplayRequirements = e.UserState as ApproachDisplayRequirements;
 
-            ApproachesStackPanel.Children.Add(CreateApproachDisplay(approachDisplayRequirements.Approach, approachDisplayRequirements.DataTable));
+            ApproachesStackPanel.Children.Add(CreateApproachDisplay(approachDisplayRequirements.Approach, approachDisplayRequirements.DataTable, approachDisplayRequirements.Day ));
         }
 
 
@@ -112,7 +113,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                         break;
                     }
 
-                    (sender as BackgroundWorker).ReportProgress(0, new ApproachDisplayRequirements{Approach = approach, DataTable = dataTable});
+                    (sender as BackgroundWorker).ReportProgress(0, new ApproachDisplayRequirements{Approach = approach, DataTable = dataTable, Day = day});
 
                     _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                     _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -156,25 +157,24 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="approach"></param>
         /// <param name="day"></param>
         /// <returns></returns>
-        private TableApproachDisplay CreateApproachDisplay(Approach approach, DataTable dataTable)
+        private TableApproachDisplay CreateApproachDisplay(Approach approach, DataTable dataTable, int day)
         {
-
             var approachDisplay = new TableApproachDisplay();
 
             var cellStyle = new Style(typeof(DataGridCell));
             cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
             approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
 
-
             approachDisplay.ApproachDataGrid.ItemsSource = dataTable.AsDataView();
 
+            approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Date: {0}\n", _startDate.AddDays(day).ToLongDateString()))));
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
             approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));
             approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles @ {1}\n", approach.PmPeak.GetValue(), approach.PmPeak.GetApproachesAsString())));
             approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("Total volume: {0} vehicles", approach.GetTotal())));
 
             return approachDisplay;
-        }
+        }                                                                                                                                                     
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
@@ -195,7 +195,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _configuration = _dbHelper.GetConfiguration(args.ReportName);
                 Render();
             }
-
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
@@ -204,7 +203,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     internal class ApproachDisplayRequirements
     {
         public Approach Approach { get; set; }
-
         public DataTable DataTable { get; set; }
+        public int Day { get; set; }
     }
 }
