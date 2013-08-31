@@ -52,7 +52,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public void RemoveReport(string configToDelete, Mode selectedMode)
         {
-            RemoveReport(configToDelete, selectedMode);
+            RemoveConfig(configToDelete, selectedMode);
             SyncConfigs();
         }
 
@@ -67,11 +67,13 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public void SyncConfigs()
         {
-            _reportDataAdapter.Update(_reportsDataTable);
-            _reportDataAdapter.Fill(_reportsDataTable);
-
-            _summaryDataAdapter.Update(_summaryDataTable);
-            _summaryDataAdapter.Fill(_summaryDataTable);
+            
+                _reportDataAdapter.Update(_reportsDataTable);
+                _reportDataAdapter.Fill(_reportsDataTable);
+           
+                _summaryDataAdapter.Update(_summaryDataTable);
+                _summaryDataAdapter.Fill(_summaryDataTable);
+            
         }
 
         public DataView GetSummaryDataView()
