@@ -47,7 +47,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
-            var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate);
+            var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate, FaultThreshold);
             var dataTable = new DataTable();
             dataAdapter.Fill(dataTable);
 
@@ -93,7 +93,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void RefreshFaults_OnClick(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show(FaultThreshold.ToString());
+            Render();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

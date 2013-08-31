@@ -838,12 +838,12 @@ namespace ATTrafficAnalayzer.Models
             return importedDates;
         }
 
-        public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate)
+        public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate, int faultThreshold)
         {
             const string sql = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
-                               "FROM volumes WHERE volume > 100  AND (dateTime BETWEEN @startDate AND @endDate)" +
+                               "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
                                "GROUP BY intersection";
-            return GetDataAdapter(sql, new Dictionary<string, object> { { "@startDate", startDate }, { "@endDate", endDate } });
+            return GetDataAdapter(sql, new Dictionary<string, object> { { "@startDate", startDate }, { "@endDate", endDate }, {"@faultThreshold", faultThreshold} });
         }
 
         #endregion
