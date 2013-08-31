@@ -74,6 +74,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             foreach (DateTime date in ImportedDatesList.SelectedItems)
                 _helper.RemoveVolumes(date);
+            Render(); 
         }
     }
 }

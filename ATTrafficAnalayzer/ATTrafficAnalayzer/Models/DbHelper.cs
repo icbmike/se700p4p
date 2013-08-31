@@ -574,8 +574,9 @@ namespace ATTrafficAnalayzer.Models
             return result;
         }
 
-        public void RemoveVolumes(DateTime date)
+        public bool RemoveVolumes(DateTime date)
         {
+            var returnCode = true;
             try
             {
                 using (var dbConnection = new SQLiteConnection(DbPath))
@@ -589,13 +590,13 @@ namespace ATTrafficAnalayzer.Models
                     query.ExecuteNonQuery();
 
                     dbConnection.Close();
-                    System.Windows.Forms.MessageBox.Show("Volumes successfully deleted");
                 }
             }
             catch (Exception)
             {
-                System.Windows.Forms.MessageBox.Show("Cannot delete volumes");
+                returnCode = false;
             }
+            return returnCode;
         }
 
         public Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection)
