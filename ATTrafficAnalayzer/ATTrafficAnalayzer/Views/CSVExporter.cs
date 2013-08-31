@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using ATTrafficAnalayzer.Models;
@@ -13,19 +14,23 @@ namespace ATTrafficAnalayzer.Views
         private readonly string _outputFilename;
         private readonly SettingsTray _settings;
         private readonly DbHelper _dbHelper;
+        private readonly DataTableHelper _dtHelper;
         private readonly Report _configuration;
+        private readonly string _configName;
 
         public CSVExporter(String outputFilename, SettingsTray settings, string configName)
         {
             _outputFilename = outputFilename;
             _settings = settings;
             _dbHelper = DbHelper.GetDbHelper();
+            _dtHelper = DataTableHelper.GetDataTableHelper();
+            _configName = configName;
 
             //Retrieve the config for the supplied name
             _configuration = _dbHelper.GetConfiguration(configName);
         }
 
-        public void DoExport()
+        public void ExportReport()
         {
             using (var file = new StreamWriter(_outputFilename))
             {
@@ -38,7 +43,7 @@ namespace ATTrafficAnalayzer.Views
                         file.Write(detector + " ");
                     }
                     file.Write("\n");
-                    
+
                     //Retrieve the volume information from the database
                     // List dates
                     var dates = new List<DateTime>();
@@ -60,7 +65,6 @@ namespace ATTrafficAnalayzer.Views
                                                                           _settings.EndDate);
                             approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                         }
-
                     }
 
                     //The row headings
@@ -80,7 +84,7 @@ namespace ATTrafficAnalayzer.Views
                     // Get volume store data //12 hours
                     for (var i = 0; i < 12; i++)
                     {
-                        
+
                         for (var j = 0; j < 13; j++)
                         {
                             if (j == 0)
@@ -88,10 +92,29 @@ namespace ATTrafficAnalayzer.Views
                             else
                                 file.Write(approachVolumes[i * 12 + j] + ",");
                         }
-                        file.Write("\n");            
+                        file.Write("\n");
                     }
                 }
             }
+        }
+
+        public void ExportSummary()
+        {
+            var amSummary = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_settings.SummaryAmPeak), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName));
+
+            var lines = new List<string>();
+
+            string[] columnNames = amSummary.Columns.Cast<DataColumn>().
+                                              Select(column => column.ColumnName).
+                                              ToArray();
+            var header = string.Join(",", columnNames);
+            lines.Add(header);
+
+            var valueLines = amSummary.AsEnumerable()
+                .Select(row => string.Join(",", row.ItemArray));
+            lines.AddRange(valueLines);
+
+            File.WriteAllLines(_outputFilename, lines);
         }
     }
 }

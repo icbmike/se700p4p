@@ -326,7 +326,11 @@ namespace ATTrafficAnalayzer.Views
             if (dlg.ShowDialog() == true)
             {
                 var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited);
-                csvExporter.DoExport();
+
+                if (_mode.Equals(Mode.Report))
+                    csvExporter.ExportReport();
+                else if (_mode.Equals(Mode.Summary))
+                    csvExporter.ExportSummary();
             }
         }
 
