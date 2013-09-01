@@ -98,7 +98,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             _peakHourAm.ClearApproaches();
             _peakHourPm.ClearApproaches();
 
-            //Add all the things!
             var timeSpan = _endDate - _startDate;
 
             _countsDontMatch = false;

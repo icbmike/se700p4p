@@ -16,6 +16,8 @@ namespace ATTrafficAnalayzer.Views
     public partial class MainWindow
     {
         private Mode _mode;
+        private int _amPeakIndex = 8;
+        private int _pmPeakIndex = 4;
 
         public MainWindow()
         {
@@ -24,6 +26,7 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
+
             var homeScreen = new Home();
             homeScreen.ImportRequested += FileImportMenuItem_Click;
 
@@ -313,6 +316,12 @@ namespace ATTrafficAnalayzer.Views
 
         #region File Exporting
 
+        private void SettingsToolbar_DateRangeChanged(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        {
+            _amPeakIndex = args.AmPeakHour;
+            _pmPeakIndex = args.PmPeakHour;
+        }
+
         private void ReportBrowser_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
             var dlg = new SaveFileDialog
@@ -325,7 +334,7 @@ namespace ATTrafficAnalayzer.Views
 
             if (dlg.ShowDialog() == true)
             {
-                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited);
+                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited, _amPeakIndex, _pmPeakIndex);
 
                 if (_mode.Equals(Mode.Report))
                     csvExporter.ExportReport();
