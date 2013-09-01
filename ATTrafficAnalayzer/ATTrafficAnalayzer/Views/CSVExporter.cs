@@ -73,7 +73,7 @@ namespace ATTrafficAnalayzer.Views
             {
                 foreach (var approach in _reportConfig.Approaches)
                 {
-                    var dataTable = approach.GetDataTable(_settings, _reportConfig.Intersection, 24, 0, day);
+                    var dataTable = approach.GetDataTable(_settings, _reportConfig.Intersection, day);
 
                     string[] columnNames = dataTable.Columns.Cast<DataColumn>().
                                                   Select(column => column.ColumnName).

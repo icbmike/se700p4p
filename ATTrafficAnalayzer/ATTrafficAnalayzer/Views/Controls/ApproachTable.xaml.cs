@@ -32,7 +32,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
             //Display the table
             var grid = new GridView();
-            var dataTable = _approach.GetDataTable(_settings, _intersection, 0, 0);
+            var dataTable = _approach.GetDataTable(_settings, _intersection, 0);
             
             foreach (DataColumn col in dataTable.Columns)
             {
@@ -48,9 +48,9 @@ namespace ATTrafficAnalayzer.Views.Controls
             ApproachListView.ItemsSource = dataTable.DefaultView;
             
             //Display the statistics
-            ApproachSummary.Inlines.Add("Peak Volume: " + _approach.GetPeak() + " Peak time: " + _approach.GetPeakTime());
-            ApproachSummary.Inlines.Add("AM Peak: " + _approach.GetAmPeak() + " Peak time: " + _approach.GetAMPeakTime());
-            ApproachSummary.Inlines.Add("Pm Peak: " + _approach.GetPmPeak() + " Peak time: " + _approach.GetPMPeakTime());
+            ApproachSummary.Inlines.Add("Peak Volume: " + _approach.GetPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetPeakTime(_settings, _intersection, 0));
+            ApproachSummary.Inlines.Add("AM Peak: " + _approach.GetAmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetAmPeakTime(_settings, _intersection, 0));
+            ApproachSummary.Inlines.Add("Pm Peak: " + _approach.GetPmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetPmPeakTime(_settings, _intersection, 0));
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)

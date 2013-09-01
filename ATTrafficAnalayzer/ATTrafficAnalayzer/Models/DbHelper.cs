@@ -873,7 +873,7 @@ namespace ATTrafficAnalayzer.Models
                             }
 
                             approaches.Add(new Approach((string)approachJson["name"],
-                                                        approachJson["detectors"].Select(t => (int)t).ToList()));
+                                                        approachJson["detectors"].Select(t => (int)t).ToList(), this));
                         }
                     }
                     conn.Close();

@@ -171,7 +171,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 var appCtrl = Approaches.Children[i] as ConfigApproachBox;
                 Debug.Assert(appCtrl != null, "appCtrl != null");
                 //Construct Approach objects from the controls. TODO: Move this into a method on ConfigApproachBox
-                approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
+                approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList(), _dataSource));
             }
 
             //Do the database insertion.

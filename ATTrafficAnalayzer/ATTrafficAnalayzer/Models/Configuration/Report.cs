@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 var newRow = dataTable.NewRow();
                 newRow["Route Name"] = app.Name;
                 newRow["Inbound Intersections"] = Intersection;
-                newRow["Inbound Detectors"] = app.GetDetectorsAsString();
+                newRow["Inbound Detectors"] = string.Join(", ", app.Detectors);
                 newRow["Inbound Dividing Factor"] = "";
                 newRow["Outbound Intersections"] = "";
                 newRow["Outbound Detectors"] = "";
