@@ -78,13 +78,9 @@ namespace ATTrafficAnalayzer.Views
                     for (var i = 0; i <= 12; i++)
                     {
                         if (i == 0)
-                        {
                             file.Write(",");
-                        }
                         else
-                        {
                             file.Write((i - 1) + ",");
-                        }
                     }
                     file.Write("\n");
                     //Each row
@@ -109,6 +105,15 @@ namespace ATTrafficAnalayzer.Views
         {
             var lines = new List<string>();
 
+            lines.Add(_configName);
+            lines.Add("");
+
+            lines.Add(string.Format("Start date: {0}", _settings.StartDate.ToLongDateString()));
+            lines.Add(string.Format("End date: {0}", _settings.EndDate.ToLongDateString()));
+            lines.Add(string.Format("Morning peak hour: {0} AM", (_amPeakIndex == 0) ? 12 : _amPeakIndex));
+            lines.Add(string.Format("Evening peak hour: {0} PM", (_pmPeakIndex == 0) ? 12 : _pmPeakIndex));
+            lines.Add("");
+
             var config = _dbHelper.GetSummaryConfig(_configName);
             string[] configColumnNames = { "Route Name", "Inbound Intersection", "Inbound Detectors", "Inbound Dividing Factor", "Outbound Intersection", "Outbound Detectors", "Outbound Dividing Factor" };
             var configColumnNamesString = string.Join(",", configColumnNames);
@@ -116,7 +121,7 @@ namespace ATTrafficAnalayzer.Views
 
             foreach (var row in _summaryConfig)
             {
-                string[] rowString = { row.RouteName, row.SelectedIntersectionIn.ToString(), string.Join(" ", row.DetectorsIn), "coming soon", row.SelectedIntersectionOut.ToString(), string.Join(" ", row.DetectorsOut), "coming soon" };
+                string[] rowString = { row.RouteName, row.SelectedIntersectionIn.ToString(), string.Join(" ", row.DetectorsIn), row.DividingFactorIn.ToString(), row.SelectedIntersectionOut.ToString(), string.Join(" ", row.DetectorsOut), row.DividingFactorOut.ToString()};
                 lines.Add(string.Join(",", rowString));
             }
 

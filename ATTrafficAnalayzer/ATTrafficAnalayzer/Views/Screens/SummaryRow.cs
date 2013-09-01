@@ -15,13 +15,15 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         public SummaryRow(string routeName, int intersectionIn, int intersectionOut, List<int> detectorsIn,
-            List<int> detectorsOut)
+            List<int> detectorsOut, int dividingFactorIn, int dividingFactorOut)
         {
             RouteName = routeName;
             SelectedIntersectionIn = intersectionIn;
             SelectedIntersectionOut = intersectionOut;
             DetectorsIn = detectorsIn;
             DetectorsOut = detectorsOut;
+            DividingFactorIn = dividingFactorIn;
+            DividingFactorOut = dividingFactorOut;
         }
 
         private ObservableCollection<int> _intersections;
@@ -43,6 +45,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         public int SelectedIntersectionOut { get; set; }
         public List<int> DetectorsIn { get; set; }
         public List<int> DetectorsOut { get; set; }
+        public int DividingFactorIn { get; set; }
+        public int DividingFactorOut { get; set; }
 
         public override string ToString()
         {
@@ -57,7 +61,9 @@ namespace ATTrafficAnalayzer.Views.Screens
                                     {"intersection_in", SelectedIntersectionIn},
                                     {"intersection_out", SelectedIntersectionOut},
                                     {"detectors_in", new JArray(DetectorsIn.ToArray())},
-                                    {"detectors_out", new JArray(DetectorsOut.ToArray())}
+                                    {"detectors_out", new JArray(DetectorsOut.ToArray())},
+                                    {"div_factor_in", DividingFactorIn},
+                                    {"div_factor_out", DividingFactorOut}
                                 };
         }
 
