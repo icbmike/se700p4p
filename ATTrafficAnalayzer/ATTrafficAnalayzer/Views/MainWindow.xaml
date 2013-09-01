@@ -35,6 +35,13 @@
                             <Image Source="/Resources/Images/Icons/glyphicons_418_disk_import.png" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Header="_Preferences"
+                              Click="PreferencesMenuItem_OnClick"
+                            Foreground="Black">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_280_settings.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator />
                     <MenuItem Name="FileExitMenuItem"
                               Header="_Exit"

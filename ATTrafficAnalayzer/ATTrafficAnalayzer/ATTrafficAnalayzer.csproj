@@ -72,6 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EnumMatchToBooleanConverter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
     <Compile Include="Models\Settings\Mode.cs" />
@@ -83,6 +84,9 @@
     </Compile>
     <Compile Include="Views\Controls\DuplicatePolicyDialog.xaml.cs">
       <DependentUpon>DuplicatePolicyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\DuplicatePolicyPreferenceDialog.xaml.cs">
+      <DependentUpon>DuplicatePolicyPreferenceDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\TableApproachDisplay.xaml.cs">
       <DependentUpon>TableApproachDisplay.xaml</DependentUpon>
@@ -140,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\DuplicatePolicyDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DuplicatePolicyPreferenceDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -249,6 +257,7 @@
     <Resource Include="Resources\Images\Icons\glyphicons_078_warning_sign.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_331_dashboard.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_057_history.png" />
+    <Resource Include="Resources\Images\Icons\glyphicons_280_settings.png" />
     <Content Include="x64\SQLite.Interop.dll" />
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -18,9 +18,28 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class DuplicatePolicyPreferenceDialog : Window
     {
+        private DefaultDupicatePolicy CurrentOption { get; set; }
+
         public DuplicatePolicyPreferenceDialog()
         {
+            DataContext = this;
             InitializeComponent();
         }
+
+        private void OkButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            //Save preference
+            
+
+            //Exit the window
+            Close();
+        }
+    }
+
+    enum DefaultDupicatePolicy
+    {
+        Skip,
+        Continue,
+        Ask
     }
 }

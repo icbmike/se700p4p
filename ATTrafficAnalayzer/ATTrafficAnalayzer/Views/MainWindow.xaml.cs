@@ -370,5 +370,10 @@ namespace ATTrafficAnalayzer.Views
             homeScreen.ImportRequested += FileImportMenuItem_Click;
             ChangeScreen(homeScreen);
         }
+
+        private void PreferencesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
