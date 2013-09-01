@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -150,7 +151,22 @@ namespace ATTrafficAnalayzer.Views
                 lines.Add("");
             }
 
-            File.WriteAllLines(_outputFilename, lines);
+            try
+            {                                         
+                File.WriteAllLines(_outputFilename, lines);
+            }
+            catch (IOException)
+            {
+                var messageBoxText = "Cannot write to file. Please ensure the file is not open. Try again?";
+                const string caption = "Export failed";
+                const MessageBoxButton button = MessageBoxButton.OKCancel;
+                const MessageBoxImage icon = MessageBoxImage.Error;
+
+                var result = MessageBox.Show(messageBoxText, caption, button, icon);
+
+                if (result.Equals(MessageBoxResult.OK))
+                    ExportSummary();
+            }
         }
     }
 }
