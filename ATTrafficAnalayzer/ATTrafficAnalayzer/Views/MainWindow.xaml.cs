@@ -16,6 +16,7 @@ namespace ATTrafficAnalayzer.Views
     public partial class MainWindow
     {
         private Mode _mode;
+        private DefaultDupicatePolicy _defaultDupicatePolicy;
 
         public MainWindow()
         {
@@ -373,7 +374,10 @@ namespace ATTrafficAnalayzer.Views
 
         private void PreferencesMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            var preferenceDialog = new DuplicatePolicyPreferenceDialog();
+            preferenceDialog.ShowDialog();
+            _defaultDupicatePolicy = preferenceDialog.DefaultDuplicatePolicy;
+            System.Windows.Forms.MessageBox.Show(_defaultDupicatePolicy.ToString());
         }
     }
 }

@@ -11,21 +11,21 @@
         <RadioButton GroupName="Preference"
                      Content="Skip" 
                      Margin="30, 0, 0, 0" 
-                     IsChecked="{Binding Path=CurrentOption, Mode=TwoWay, 
+                     IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
                                  ConverterParameter=Skip}"/>
         
         <RadioButton GroupName="Preference" 
                      Content="Continue" 
                      Margin="30, 0, 0, 0" 
-                     IsChecked="{Binding Path=CurrentOption, Mode=TwoWay, 
+                     IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
                                  ConverterParameter=Continue}"/>
         
         <RadioButton GroupName="Preference" 
                      Content="Ask me every time" 
                      Margin="30, 0, 0, 0" 
-                     IsChecked="{Binding Path=CurrentOption, Mode=TwoWay, 
+                     IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
                                  ConverterParameter=Ask}"/>
         
