@@ -17,14 +17,18 @@ namespace ATTrafficAnalayzer.Views
         private readonly DataTableHelper _dtHelper;
         private readonly Report _configuration;
         private readonly string _configName;
+        private int _amPeakIndex = 8;
+        private int _pmPeakIndex = 4;
 
-        public CSVExporter(String outputFilename, SettingsTray settings, string configName)
+        public CSVExporter(String outputFilename, SettingsTray settings, string configName, int AmPeakHour, int PmPeakHour)
         {
             _outputFilename = outputFilename;
             _settings = settings;
             _dbHelper = DbHelper.GetDbHelper();
             _dtHelper = DataTableHelper.GetDataTableHelper();
             _configName = configName;
+            _amPeakIndex = AmPeakHour;
+            _pmPeakIndex = PmPeakHour;
 
             //Retrieve the config for the supplied name
             _configuration = _dbHelper.GetConfiguration(configName);
@@ -100,9 +104,12 @@ namespace ATTrafficAnalayzer.Views
 
         public void ExportSummary()
         {
+            System.Windows.Forms.MessageBox.Show("AM Peak: " + _amPeakIndex);
+            System.Windows.Forms.MessageBox.Show("PM Peak: " + _pmPeakIndex);
+
             Dictionary<string, DataTable> summaries = new Dictionary<string, DataTable>();
-            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_settings.SummaryAmPeak), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
-            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_settings.SummaryPmPeak), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
+            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
+            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
             summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
 
             var lines = new List<string>();
