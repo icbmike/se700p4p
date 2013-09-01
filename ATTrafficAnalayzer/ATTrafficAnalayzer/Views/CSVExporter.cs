@@ -6,6 +6,7 @@ using System.Linq;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views
 {
@@ -15,7 +16,8 @@ namespace ATTrafficAnalayzer.Views
         private readonly SettingsTray _settings;
         private readonly DbHelper _dbHelper;
         private readonly DataTableHelper _dtHelper;
-        private readonly Report _configuration;
+        private readonly Report _reportConfig;
+        private readonly IEnumerable<SummaryRow> _summaryConfig;
         private readonly string _configName;
         private int _amPeakIndex = 8;
         private int _pmPeakIndex = 4;
@@ -31,14 +33,15 @@ namespace ATTrafficAnalayzer.Views
             _pmPeakIndex = PmPeakHour;
 
             //Retrieve the config for the supplied name
-            _configuration = _dbHelper.GetConfiguration(configName);
+            _reportConfig = _dbHelper.GetConfiguration(configName);
+            _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
         }
 
         public void ExportReport()
         {
             using (var file = new StreamWriter(_outputFilename))
             {
-                foreach (var approach in _configuration.Approaches)
+                foreach (var approach in _reportConfig.Approaches)
                 {
                     //The approach name and its detectors
                     file.Write(approach.Name + " - Detectors: ");
@@ -60,12 +63,12 @@ namespace ATTrafficAnalayzer.Views
                     {
                         if (approachVolumes.Count == 0)
                         {
-                            approachVolumes.AddRange(_dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                            approachVolumes.AddRange(_dbHelper.GetVolumes(_reportConfig.Intersection, detector, _settings.StartDate,
                                                                           _settings.EndDate));
                         }
                         else
                         {
-                            var detectorVolumes = _dbHelper.GetVolumes(_configuration.Intersection, detector, _settings.StartDate,
+                            var detectorVolumes = _dbHelper.GetVolumes(_reportConfig.Intersection, detector, _settings.StartDate,
                                                                           _settings.EndDate);
                             approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
                         }
@@ -104,15 +107,26 @@ namespace ATTrafficAnalayzer.Views
 
         public void ExportSummary()
         {
-            System.Windows.Forms.MessageBox.Show("AM Peak: " + _amPeakIndex);
-            System.Windows.Forms.MessageBox.Show("PM Peak: " + _pmPeakIndex);
+            var lines = new List<string>();
+
+            var config = _dbHelper.GetSummaryConfig(_configName);
+            string[] configColumnNames = { "Route Name", "Inbound Intersection", "Inbound Detectors", "Inbound Dividing Factor", "Outbound Intersection", "Outbound Detectors", "Outbound Dividing Factor" };
+            var configColumnNamesString = string.Join(",", configColumnNames);
+            lines.Add(configColumnNamesString);
+
+            foreach (var row in _summaryConfig)
+            {
+                string[] rowString = { row.RouteName, row.SelectedIntersectionIn.ToString(), string.Join(" ", row.DetectorsIn), "coming soon", row.SelectedIntersectionOut.ToString(), string.Join(" ", row.DetectorsOut), "coming soon" };
+                lines.Add(string.Join(",", rowString));
+            }
+
+            lines.Add("");
 
             Dictionary<string, DataTable> summaries = new Dictionary<string, DataTable>();
-            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
-            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
-            summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _dbHelper.GetSummaryConfig(_configName)));
+            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig));
+            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig));
+            summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _summaryConfig));
 
-            var lines = new List<string>();
             foreach (var summary in summaries)
             {
                 lines.Add(summary.Key);
