@@ -40,66 +40,44 @@ namespace ATTrafficAnalayzer.Views
 
         public void ExportReport()
         {
-            using (var file = new StreamWriter(_outputFilename))
+            var lines = new List<string>();
+
+            lines.Add(_configName);
+            lines.Add("");
+
+            var start = _settings.StartDate.ToLongDateString();
+            start = start.Replace(',', ' ');
+            var end = _settings.EndDate.ToLongDateString();
+            end = end.Replace(',', ' ');
+
+            lines.Add(string.Format("Start date: {0}", start));
+            lines.Add(string.Format("End date: {0}", end));
+            lines.Add(string.Format("Interval: {0} min", _settings.Interval));
+            lines.Add("");
+
+            var timeSpan = _settings.EndDate - _settings.StartDate;
+
+            for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _reportConfig.Approaches)
                 {
-                    //The approach name and its detectors
-                    file.Write(approach.Name + " - Detectors: ");
-                    foreach (var detector in approach.Detectors)
-                    {
-                        file.Write(detector + " ");
-                    }
-                    file.Write("\n");
+                    var dataTable = approach.GetDataTable(_settings, _reportConfig.Intersection, 24, 0, day);
 
-                    //Retrieve the volume information from the database
-                    // List dates
-                    var dates = new List<DateTime>();
-                    for (var date = _settings.StartDate; date < _settings.EndDate; date = date.AddMinutes(_settings.Interval))
-                    {
-                        dates.Add(date);
-                    }
-                    var approachVolumes = new List<int>();
-                    foreach (var detector in approach.Detectors)
-                    {
-                        if (approachVolumes.Count == 0)
-                        {
-                            approachVolumes.AddRange(_dbHelper.GetVolumes(_reportConfig.Intersection, detector, _settings.StartDate,
-                                                                          _settings.EndDate));
-                        }
-                        else
-                        {
-                            var detectorVolumes = _dbHelper.GetVolumes(_reportConfig.Intersection, detector, _settings.StartDate,
-                                                                          _settings.EndDate);
-                            approachVolumes = approachVolumes.Zip(detectorVolumes, (i, i1) => i + i1).ToList();
-                        }
-                    }
+                    string[] columnNames = dataTable.Columns.Cast<DataColumn>().
+                                                  Select(column => column.ColumnName).
+                                                  ToArray();
+                    var header = string.Join(",", columnNames);
+                    lines.Add(header);
 
-                    //The row headings
-                    for (var i = 0; i <= 12; i++)
-                    {
-                        if (i == 0)
-                            file.Write(",");
-                        else
-                            file.Write((i - 1) + ",");
-                    }
-                    file.Write("\n");
-                    //Each row
-                    // Get volume store data //12 hours
-                    for (var i = 0; i < 12; i++)
-                    {
+                    var valueLines = dataTable.AsEnumerable()
+         .Select(row => string.Join(",", row.ItemArray));
+                    lines.AddRange(valueLines);
 
-                        for (var j = 0; j < 13; j++)
-                        {
-                            if (j == 0)
-                                file.Write(": " + _settings.Interval * i + ",");
-                            else
-                                file.Write(approachVolumes[i * 12 + j] + ",");
-                        }
-                        file.Write("\n");
-                    }
+                    lines.Add("");
                 }
             }
+
+            WriteToFile(lines);
         }
 
         public void ExportSummary()
@@ -109,8 +87,13 @@ namespace ATTrafficAnalayzer.Views
             lines.Add(_configName);
             lines.Add("");
 
-            lines.Add(string.Format("Start date: {0}", _settings.StartDate.ToLongDateString()));
-            lines.Add(string.Format("End date: {0}", _settings.EndDate.ToLongDateString()));
+            var start = _settings.StartDate.ToLongDateString();
+            start = start.Replace(',', ' ');
+            var end = _settings.EndDate.ToLongDateString();
+            end = end.Replace(',', ' ');
+
+            lines.Add(string.Format("Start date: {0}", start));
+            lines.Add(string.Format("End date: {0}", end));
             lines.Add(string.Format("Morning peak hour: {0} AM", (_amPeakIndex == 0) ? 12 : _amPeakIndex));
             lines.Add(string.Format("Evening peak hour: {0} PM", (_pmPeakIndex == 0) ? 12 : _pmPeakIndex));
             lines.Add("");
@@ -122,7 +105,7 @@ namespace ATTrafficAnalayzer.Views
 
             foreach (var row in _summaryConfig)
             {
-                string[] rowString = { row.RouteName, row.SelectedIntersectionIn.ToString(), string.Join(" ", row.DetectorsIn), row.DividingFactorIn.ToString(), row.SelectedIntersectionOut.ToString(), string.Join(" ", row.DetectorsOut), row.DividingFactorOut.ToString()};
+                string[] rowString = { row.RouteName, row.SelectedIntersectionIn.ToString(), string.Join(" ", row.DetectorsIn), row.DividingFactorIn.ToString(), row.SelectedIntersectionOut.ToString(), string.Join(" ", row.DetectorsOut), row.DividingFactorOut.ToString() };
                 lines.Add(string.Join(",", rowString));
             }
 
@@ -151,8 +134,13 @@ namespace ATTrafficAnalayzer.Views
                 lines.Add("");
             }
 
+            WriteToFile(lines);
+        }
+
+        private void WriteToFile(List<string> lines)
+        {
             try
-            {                                         
+            {
                 File.WriteAllLines(_outputFilename, lines);
             }
             catch (IOException)
@@ -167,6 +155,8 @@ namespace ATTrafficAnalayzer.Views
                 if (result.Equals(MessageBoxResult.OK))
                     ExportSummary();
             }
+
+            System.Windows.Forms.MessageBox.Show("Successfully exported");
         }
     }
 }
