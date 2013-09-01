@@ -78,7 +78,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 _reportDataAdapter.Update(_reportsDataTable);
                 _reportDataAdapter.Fill(_reportsDataTable);
             }
-            if (selectedMode.Equals(Mode.Summary))
+            else if (selectedMode.Equals(Mode.Summary))
             {
                 _summaryDataAdapter.Update(_summaryDataTable);
                 _summaryDataAdapter.Fill(_summaryDataTable);
