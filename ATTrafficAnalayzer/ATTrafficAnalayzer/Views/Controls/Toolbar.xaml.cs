@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+            SettingsTray.StartDate = DateTime.Today.AddDays(-1); 
 
             ModeChanged += SwitchToolbar;
         }
@@ -101,7 +101,9 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Toolbar Event Handlers
 
-        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
+        public DateTime StartDate { get { return SettingsTray.StartDate; } }
+        public DateTime EndDate { get { return SettingsTray.EndDate; } }
+        public int Month { get { return StartDate.Month; } }
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
