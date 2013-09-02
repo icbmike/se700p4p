@@ -73,7 +73,7 @@
         </DataGrid>
 
         <Button Content="Save Summary Configuration"
-                Click="ButtonBase_OnClick"
+                Click="SaveButton_OnClick"
                 DockPanel.Dock="Top"
                 Style="{StaticResource AtButtonStyle}" />
 

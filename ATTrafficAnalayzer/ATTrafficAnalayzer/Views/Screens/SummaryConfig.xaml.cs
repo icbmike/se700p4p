@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -12,13 +14,15 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class SummaryConfig : IConfigScreen
     {
         private readonly DbHelper _dbHelper;
-        private const bool IsNewConfig = true;
+        private bool IsNewConfig = true;
+        private string _oldName;
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
 
         public SummaryConfig()
         {
-            _dbHelper = DbHelper.GetDbHelper();
+            
+            if (_dbHelper == null) _dbHelper = DbHelper.GetDbHelper();
 
             Rows = new ObservableCollection<SummaryRow>();
 
@@ -26,10 +30,29 @@ namespace ATTrafficAnalayzer.Views.Screens
             SummaryDataGrid.DataContext = this;
         }
 
+        public SummaryConfig(string summaryToBeEdited) : this()
+        {
+            IsNewConfig = false;
+            _oldName = summaryToBeEdited;
+            ConfigNameTextBox.Text = summaryToBeEdited;
+
+            foreach (var summaryRow in _dbHelper.GetSummaryConfig(summaryToBeEdited))
+            {
+                Rows.Add(summaryRow);
+            }
+            
+        }
+
         public ObservableCollection<SummaryRow> Rows { get; set; }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
+
+            if (!IsNewConfig)
+            {
+              DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Summary);
+            }
+
             var configName = ConfigNameTextBox.Text;
 
             //Check we're in a valid state

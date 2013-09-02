@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ATTrafficAnalayzer.Models;
 using Newtonsoft.Json.Linq;
 
-namespace ATTrafficAnalayzer.Views.Screens
+namespace ATTrafficAnalayzer.Models.Configuration
 {
     public class SummaryRow
     {
