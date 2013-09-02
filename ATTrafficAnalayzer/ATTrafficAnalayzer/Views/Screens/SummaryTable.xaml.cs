@@ -75,7 +75,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             };
             sumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
             ApproachesStackPanel.Children.Add(sumApproachDisplay);
-          }
+        }
 
         #region Event Handlers
 
@@ -92,8 +92,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            _configName = args.ReportName;
-            Render();
+            if (!args.SelectionCleared)
+            {
+                if (!_configName.Equals(args.ReportName))
+                {
+                    _configName = args.ReportName;
+                    Render();
+                }
+            }
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
