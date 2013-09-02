@@ -10,7 +10,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// <summary>
     /// Interaction logic for Toolbar.xaml
     /// </summary>
-    public partial class Toolbar : INotifyPropertyChanged
+    public partial class Toolbar
     {
         public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
 
@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            StartDate = new DateTime(2013, 3, 11);
+            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
 
             ModeChanged += SwitchToolbar;
         }
@@ -92,7 +92,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             // Summary controls
             var isSummaryMode = e.Mode.Equals(Mode.Summary);
             SummaryAmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
-            SummaryAmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed ;
+            SummaryAmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
             SummaryPmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
             SummaryPmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -101,19 +101,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Toolbar Event Handlers
 
-        private DateTime _startDate;
-        private DateTime _endDate;
-
-        public DateTime StartDate { get {return _startDate;} set { _startDate = value; OnPropertyChanged("StartDate");} }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public DateTime EndDate { get { return _endDate; } set { _endDate = value; OnPropertyChanged("EndDate"); } } 
-        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; }}
+        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
@@ -132,7 +120,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                 AmPeakHour = amPeakHour;
                 PmPeakHour = pmPeakHour;
             }
-            
+
             public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
             {
                 StartDate = startDate;
@@ -148,37 +136,42 @@ namespace ATTrafficAnalayzer.Views.Controls
         }
 
         private Boolean _startModifyingEnd;
+        private DateTime _prevStartDate = new DateTime();
+        private DateTime _prevEndDate = new DateTime();
+        private int _prevInterval = 0;
 
         private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-             System.Windows.Forms.MessageBox.Show(string.Format("Test - Sender: {0}", sender.ToString()));
+            if (SettingsTray.StartDate.Equals(_prevStartDate) && SettingsTray.EndDate.Equals(_prevEndDate) && SettingsTray.Interval.Equals(_prevInterval))
+            {
+                return;
+            }
+            else
+            {
+                _prevStartDate = SettingsTray.StartDate;
+                _prevEndDate = SettingsTray.EndDate;
+                _prevInterval = SettingsTray.Interval;
+            }
 
-             //if (sender.Equals(StartDatePicker))
-             //{
-             //    if (EndDatePicker != null)
-             //    {
-             //        _startModifyingEnd = true;
-             //        EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
-             //    }
-             //}
-             //else if (sender.Equals(EndDatePicker))
-             //{
-             //    if (_startModifyingEnd)
-             //    {
-             //        _startModifyingEnd = false;
-             //        return;
-             //    }
-             //}
+            if (sender.Equals(StartDatePicker))
+            {
+                if (EndDatePicker != null)
+                {
+                    _startModifyingEnd = true;
+                    EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+                }
+            }
+            else if (sender.Equals(EndDatePicker))
+            {
+                if (_startModifyingEnd)
+                {
+                    _startModifyingEnd = false;
+                    return;
+                }
+            }
 
-             if (DateRangeChanged != null)
-             {
-                 System.Windows.Forms.MessageBox.Show("Thowing event");
-                 DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDate, EndDate, (ToolbarPanel.DataContext as SettingsTray).Interval));
-             }
-             else
-             {
-                 System.Windows.Forms.MessageBox.Show("It's null");
-             }
+            if (DateRangeChanged != null)
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(SettingsTray.StartDate, SettingsTray.EndDate, SettingsTray.Interval));
         }
 
         private void SummaryControls_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -208,7 +201,5 @@ namespace ATTrafficAnalayzer.Views.Controls
                 overflowGrid.Visibility = Visibility.Collapsed;
             }
         }
-    
-public event PropertyChangedEventHandler PropertyChanged;
-}
+    }
 }

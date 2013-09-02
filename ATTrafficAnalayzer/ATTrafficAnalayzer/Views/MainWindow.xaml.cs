@@ -47,8 +47,8 @@ namespace ATTrafficAnalayzer.Views
                 RemoveHandlers(screen as IConfigScreen);
             else if (screen as IView != null)
                 RemoveHandlers(screen as IView);
-//            else
-//                MessageBox.Show("Somethings has gone horribly wrong");
+            //            else
+            //                MessageBox.Show("Somethings has gone horribly wrong");
         }
         private void RemoveHandlers(IView iView)
         {
@@ -162,17 +162,20 @@ namespace ATTrafficAnalayzer.Views
             {
                 if (_mode.Equals(Mode.Report))
                 {
-                    if (DbHelper.GetDbHelper().VolumesExist(SettingsToolbar.StartDate, SettingsToolbar.EndDate))
+                    if (SettingsToolbar.StartDatePicker.SelectedDate != null && SettingsToolbar.EndDatePicker.SelectedDate != null)
                     {
-                        var reportConfigurationScreen = new ReportConfig();
-                        reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                        reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-                        ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                        ChangeScreen(reportConfigurationScreen);
-                    }
-                    else
-                    {
-                        MessageBox.Show("You haven't imported volume data for the selected date range");
+                        if (DbHelper.GetDbHelper().VolumesExist((DateTime) SettingsToolbar.StartDatePicker.SelectedDate, (DateTime) SettingsToolbar.EndDatePicker.SelectedDate))
+                        {
+                            var reportConfigurationScreen = new ReportConfig();
+                            reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                            reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                            ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                            ChangeScreen(reportConfigurationScreen);
+                        }
+                        else
+                        {
+                            MessageBox.Show("You haven't imported volume data for the selected date range");
+                        }
                     }
                 }
                 else
@@ -205,7 +208,7 @@ namespace ATTrafficAnalayzer.Views
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            if(!args.SelectionCleared)
+            if (!args.SelectionCleared)
                 IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
         }
 
@@ -309,7 +312,7 @@ namespace ATTrafficAnalayzer.Views
                 policy = DbHelper.DuplicatePolicy.Continue;
                 Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        var dialog = new DuplicatePolicyDialog {Owner = this};
+                        var dialog = new DuplicatePolicyDialog { Owner = this };
                         dialog.ShowDialog();
                         policy = dialog.SelectedPolicy;
                         waitForInput = false;
