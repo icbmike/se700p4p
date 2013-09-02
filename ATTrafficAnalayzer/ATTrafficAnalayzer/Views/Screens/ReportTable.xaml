@@ -8,24 +8,22 @@
              d:DesignWidth="1720">
 
     <ScrollViewer HorizontalContentAlignment="Stretch">
-        <StackPanel>
-            <ProgressBar IsIndeterminate="True" Name="ProgressBar" Height="30" Margin="50, 200, 50, 20"/>
-            <StackPanel Margin="20" Name="ViewContent" Visibility="Collapsed">
-                <Label Name="ScreenTitle"
+
+        <StackPanel Margin="20" Name="ViewContent">
+            <Label Name="ScreenTitle"
                    FontSize="28"
                    Margin="20,0"
                    x:FieldModifier="private"
                    Content="No Report Selected"
                    FontWeight="Bold" />
-                <TextBlock x:Name="OverallSummaryTextBlock"
+            
+            <TextBlock x:Name="OverallSummaryTextBlock"
                        Visibility="Visible"
                        Background="Aquamarine"
                        Margin="20,15,20,10"
                        Padding="5" />
 
-                <StackPanel Name="ApproachesStackPanel" />
-
-            </StackPanel>
+            <StackPanel Name="ApproachesStackPanel" />
 
         </StackPanel>
     </ScrollViewer>

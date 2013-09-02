@@ -64,9 +64,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             bw.ProgressChanged += bw_ProgressChanged;
             bw.RunWorkerAsync();
 
-            ProgressBar.Visibility = Visibility.Visible;
-            ViewContent.Visibility = Visibility.Collapsed;
-
             ScreenTitle.Content = _configuration.ConfigName;
 
             //Clear all the things!
@@ -144,8 +141,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Logger.Info("constructed view", "VS table");
 
-            ProgressBar.Visibility = Visibility.Collapsed;
-            ViewContent.Visibility = Visibility.Visible;
         }
 
         /// <summary>
