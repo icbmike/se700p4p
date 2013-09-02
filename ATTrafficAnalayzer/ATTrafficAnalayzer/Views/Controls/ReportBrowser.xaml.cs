@@ -59,6 +59,11 @@ namespace ATTrafficAnalayzer.Views.Controls
         public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
             _dataTableHelper.SyncConfigs(_mode);
+            
+            var treeViewItem = StandardReportsTreeView.ItemContainerGenerator.ContainerFromIndex(StandardReportsTreeView.Items.Count - 1) as TreeViewItem;
+            if (treeViewItem != null)
+                treeViewItem.IsSelected = true;
+            
             Render();
         }
 
