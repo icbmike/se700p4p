@@ -128,8 +128,7 @@ namespace ATTrafficAnalayzer.Views
                     ReportBrowser.Visibility = Visibility.Visible;
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
-                        var summaryConfigScreen = new SummaryConfig();
-                        summaryConfigScreen.Popup.Visibility = Visibility.Visible;
+                        var summaryConfigScreen = new SummaryConfig { Popup = { Visibility = Visibility.Visible } };
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;
@@ -198,11 +197,22 @@ namespace ATTrafficAnalayzer.Views
             else
             {
                 //Open relevant config screen
-                var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
-                reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-                ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                ChangeScreen(reportConfigurationScreen);
+                if (_mode.Equals(Mode.Report))
+                {
+                    var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
+                    reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                    reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                    ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                    ChangeScreen(reportConfigurationScreen);
+                }else if (_mode.Equals(Mode.Summary))
+                {
+                    var summaryConfigScreen = new SummaryConfig(args.ConfigToBeEdited);
+                    summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                    summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+
+                    //TODO Import completed event
+                    ChangeScreen(summaryConfigScreen);
+                }
             }
         }
 
