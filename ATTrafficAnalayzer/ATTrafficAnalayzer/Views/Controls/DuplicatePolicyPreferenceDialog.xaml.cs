@@ -31,12 +31,17 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             DataContext = this;
             InitializeComponent();
+
+            DefaultDupicatePolicy defaultDuplicatePolicy;
+            Enum.TryParse(Properties.Settings.Default.DefaultDuplicatePolicy, out defaultDuplicatePolicy);
+            DefaultDuplicatePolicy = defaultDuplicatePolicy;
         }
 
         private void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
             //Save preference
-
+            Properties.Settings.Default.DefaultDuplicatePolicy = DefaultDuplicatePolicy.ToString();
+            Properties.Settings.Default.Save();
 
             //Exit the window
             Close();
