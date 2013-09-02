@@ -81,7 +81,7 @@
                    Visibility="Collapsed" />
             <DatePicker Name="StartDatePicker"
                         Background="White"
-                        SelectedDate="{Binding StartDate}"
+                        SelectedDate="{Binding StartDate, Mode=TwoWay}"
                         FontSize="14"
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
@@ -99,7 +99,7 @@
                    Content="End Date:" />
             <DatePicker Name="EndDatePicker"
                         Background="White"
-                        SelectedDate="{Binding EndDate}"
+                        SelectedDate="{Binding EndDate, Mode=TwoWay}"
                         Padding="6, 3"
                         FontSize="14"
                         Visibility="Collapsed"

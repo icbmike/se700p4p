@@ -2,6 +2,8 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel;
+using ATTrafficAnalayzer.Annotations;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -20,8 +22,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            // Set default values
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+            SettingsTray.StartDate = DateTime.Today.AddDays(-1); 
 
             ModeChanged += SwitchToolbar;
         }
@@ -91,7 +92,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             // Summary controls
             var isSummaryMode = e.Mode.Equals(Mode.Summary);
             SummaryAmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
-            SummaryAmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed ;
+            SummaryAmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
             SummaryPmPeakLabel.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
             SummaryPmPeakComboBox.Visibility = isSummaryMode ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -100,9 +101,9 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Toolbar Event Handlers
 
-        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
-        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
-        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
+        public DateTime StartDate { get { return SettingsTray.StartDate; } }
+        public DateTime EndDate { get { return SettingsTray.EndDate; } }
+        public int Month { get { return StartDate.Month; } }
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
@@ -121,7 +122,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                 AmPeakHour = amPeakHour;
                 PmPeakHour = pmPeakHour;
             }
-            
+
             public DateRangeChangedEventHandlerArgs(DateTime startDate, DateTime endDate, int interval)
             {
                 StartDate = startDate;
@@ -137,16 +138,29 @@ namespace ATTrafficAnalayzer.Views.Controls
         }
 
         private Boolean _startModifyingEnd;
+        private DateTime _prevStartDate = new DateTime();
+        private DateTime _prevEndDate = new DateTime();
+        private int _prevInterval = 0;
 
         private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (SettingsTray.StartDate.Equals(_prevStartDate) && SettingsTray.EndDate.Equals(_prevEndDate) && SettingsTray.Interval.Equals(_prevInterval))
+            {
+                return;
+            }
+            else
+            {
+                _prevStartDate = SettingsTray.StartDate;
+                _prevEndDate = SettingsTray.EndDate;
+                _prevInterval = SettingsTray.Interval;
+            }
+
             if (sender.Equals(StartDatePicker))
             {
                 if (EndDatePicker != null)
                 {
                     _startModifyingEnd = true;
-                    var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
-                    EndDatePicker.SelectedDate = newDate;
+                    EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
                 }
             }
             else if (sender.Equals(EndDatePicker))
@@ -159,9 +173,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
 
             if (DateRangeChanged != null)
-            {
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
-            }
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(SettingsTray.StartDate, SettingsTray.EndDate, SettingsTray.Interval));
         }
 
         private void SummaryControls_SelectionChanged(object sender, SelectionChangedEventArgs e)
