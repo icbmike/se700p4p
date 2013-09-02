@@ -10,7 +10,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// <summary>
     /// Interaction logic for Toolbar.xaml
     /// </summary>
-    public partial class Toolbar : INotifyPropertyChanged
+    public partial class Toolbar 
     {
         public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
 
@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            StartDate = new DateTime(2013, 3, 11);
+            SettingsTray.StartDate = new DateTime(2013, 3, 11);
 
             ModeChanged += SwitchToolbar;
         }
@@ -101,19 +101,14 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Toolbar Event Handlers
 
-        private DateTime _startDate;
-        private DateTime _endDate;
+       
 
-        public DateTime StartDate { get {return _startDate;} set { _startDate = value; OnPropertyChanged("StartDate");} }
+        public DateTime StartDate { get {return SettingsTray.StartDate;}}
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public DateTime EndDate { get { return _endDate; } set { _endDate = value; OnPropertyChanged("EndDate"); } } 
-        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; }}
+       
+        public DateTime EndDate { get { return SettingsTray.EndDate; } } 
+        
+        public int Month { get { return StartDate.Month; }}
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
@@ -209,6 +204,5 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
     
-public event PropertyChangedEventHandler PropertyChanged;
 }
 }
