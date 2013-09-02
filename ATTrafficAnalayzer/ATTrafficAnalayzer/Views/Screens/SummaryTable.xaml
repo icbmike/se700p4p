@@ -7,16 +7,45 @@
              d:DesignHeight="1100"
              d:DesignWidth="1720">
     <ScrollViewer HorizontalContentAlignment="Stretch">
-        <StackPanel Margin="10">
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
             <Label Name="ScreenTitle"
                    Content="No Summary Selected"
                    FontSize="28"
                    Margin="20,0"
-                   FontWeight="Bold" />
+                   VerticalAlignment="Center"
+                   FontWeight="Bold"
+                   Grid.Column="0"
+                   Grid.Row="0" />
 
-            <StackPanel Name="ApproachesStackPanel" />
+            <Label Content="Include weekends: "
+                   Grid.Column="1"
+                   VerticalAlignment="Center"
+                   Grid.Row="0" />
 
-        </StackPanel>
+            <CheckBox Name="WeekendsCheckbox"
+                      Checked="WeekendsCheckbox_Checked"
+                      Unchecked="WeekendsCheckbox_Unchecked"
+                      VerticalAlignment="Center"
+                      Grid.Column="2"
+                      Grid.Row="0" />
+
+            <StackPanel Name="ApproachesStackPanel"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Grid.Row="1" />
+
+        </Grid>
     </ScrollViewer>
 </UserControl>

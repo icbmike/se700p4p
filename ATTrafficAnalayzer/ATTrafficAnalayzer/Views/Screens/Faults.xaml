@@ -20,6 +20,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
+
             <Label FontSize="28"
                    Margin="20,0"
                    FontWeight="Bold"

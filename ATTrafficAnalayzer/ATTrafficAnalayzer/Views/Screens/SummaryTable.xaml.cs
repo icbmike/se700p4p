@@ -24,6 +24,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private DateTime _startDate;
         private DateTime _endDate;
+        private bool _hasWeekends;
 
         private int _amPeakHour = 8;
         private int _pmPeakHour = 4;
@@ -57,21 +58,22 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var amPeakApproachDisplay = new TableApproachDisplay
             {
-                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakHour), _startDate, _endDate, _summaryConfig).AsDataView() }
+                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakHour), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
+
             };
             amPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
             ApproachesStackPanel.Children.Add(amPeakApproachDisplay);
 
             var pmPeakApproachDisplay = new TableApproachDisplay
             {
-                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakHour), _startDate, _endDate, _summaryConfig).AsDataView() }
+                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakHour), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
             };
             pmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
             ApproachesStackPanel.Children.Add(pmPeakApproachDisplay);
 
             var sumApproachDisplay = new TableApproachDisplay
             {
-                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _startDate, _endDate, _summaryConfig).AsDataView() }
+                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
             };
             sumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
             ApproachesStackPanel.Children.Add(sumApproachDisplay);
@@ -105,5 +107,23 @@ namespace ATTrafficAnalayzer.Views.Screens
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
         #endregion
+
+        private void WeekendsCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!_hasWeekends)
+            {
+                _hasWeekends = true;
+                Render();
+            }
+        }
+
+        private void WeekendsCheckbox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_hasWeekends)
+            {
+                _hasWeekends = false;
+                Render();
+            }
+        }
     }
 }
