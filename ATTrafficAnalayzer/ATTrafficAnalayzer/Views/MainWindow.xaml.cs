@@ -285,21 +285,7 @@ namespace ATTrafficAnalayzer.Views
                         skipAllOrOne = DbHelper.ImportFile(b, w, filename,
                                                            progress =>
                                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
-                                                           () =>
-                                                           {
-                                                               var waitForInput = true;
-                                                               var policy = DbHelper.DuplicatePolicy.Continue;
-                                                               Dispatcher.BeginInvoke(new Action(() =>
-                                                                   {
-                                                                       var dialog = new DuplicatePolicyDialog { Owner = this };
-                                                                       dialog.ShowDialog();
-                                                                       policy = dialog.SelectedPolicy;
-                                                                       waitForInput = false;
-                                                                   }), null);
-                                                               while (waitForInput) { }
-
-                                                               return policy;
-                                                           });
+                                                           GetDuplicatePolicy);
 
 
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
@@ -308,6 +294,37 @@ namespace ATTrafficAnalayzer.Views
                     if (skipAllOrOne.Equals(DbHelper.DuplicatePolicy.SkipAll)) break;
                 }
             }
+        }
+
+        private DbHelper.DuplicatePolicy GetDuplicatePolicy()
+        {
+            DbHelper.DuplicatePolicy policy;
+            if (_defaultDupicatePolicy.Equals(DefaultDupicatePolicy.Ask))
+            {
+                var waitForInput = true;
+
+                policy = DbHelper.DuplicatePolicy.Continue;
+                Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        var dialog = new DuplicatePolicyDialog {Owner = this};
+                        dialog.ShowDialog();
+                        policy = dialog.SelectedPolicy;
+                        waitForInput = false;
+                    }), null);
+                while (waitForInput)
+                {
+                }
+            }
+            else if (_defaultDupicatePolicy.Equals(DefaultDupicatePolicy.Skip))
+            {
+                policy = DbHelper.DuplicatePolicy.Skip;
+            }
+            else //_defaultDupicatePolicy is DefaultDupicatePolicy.Continue 
+            {
+                policy = DbHelper.DuplicatePolicy.Continue;
+            }
+
+            return policy;
         }
 
         #endregion
@@ -377,7 +394,6 @@ namespace ATTrafficAnalayzer.Views
             var preferenceDialog = new DuplicatePolicyPreferenceDialog();
             preferenceDialog.ShowDialog();
             _defaultDupicatePolicy = preferenceDialog.DefaultDuplicatePolicy;
-            System.Windows.Forms.MessageBox.Show(_defaultDupicatePolicy.ToString());
         }
     }
 }
