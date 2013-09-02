@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,7 +51,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             if (!IsNewConfig)
             {
-              DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Summary);
+                try
+                {
+                    DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Summary);
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "SummaryConfig");
+                }
             }
 
             var configName = ConfigNameTextBox.Text;

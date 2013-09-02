@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -126,7 +127,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             if (!_isNewConfig)
             {
                 //Delete the previous config before inserting the new one
-                _reportsDataTableHelper.RemoveReport(_oldName, Mode.Report);
+                try
+                {
+                    DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Report);
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "ReportConfig");
+                }
             }
 
             var configName = ReportNameTextBox.Text;
