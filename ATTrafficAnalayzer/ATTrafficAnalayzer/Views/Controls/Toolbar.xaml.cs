@@ -2,13 +2,15 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel;
+using ATTrafficAnalayzer.Annotations;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
     /// <summary>
     /// Interaction logic for Toolbar.xaml
     /// </summary>
-    public partial class Toolbar
+    public partial class Toolbar : INotifyPropertyChanged
     {
         public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
 
@@ -20,8 +22,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            // Set default values
-            StartDatePicker.SelectedDate = new DateTime(2013, 3, 11);
+            StartDate = new DateTime(2013, 3, 11);
 
             ModeChanged += SwitchToolbar;
         }
@@ -100,9 +101,19 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Toolbar Event Handlers
 
-        public DateTime StartDate { get { return StartDatePicker.SelectedDate.Value; } }
-        public DateTime EndDate { get { return EndDatePicker.SelectedDate.Value; } }
-        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; } }
+        private DateTime _startDate;
+        private DateTime _endDate;
+
+        public DateTime StartDate { get {return _startDate;} set { _startDate = value; OnPropertyChanged("StartDate");} }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public DateTime EndDate { get { return _endDate; } set { _endDate = value; OnPropertyChanged("EndDate"); } } 
+        public int Month { get { return StartDatePicker.SelectedDate.Value.Month; }}
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
         public event DateRangeChangedEventHandler DateRangeChanged;
@@ -140,28 +151,34 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender.Equals(StartDatePicker))
-            {
-                if (EndDatePicker != null)
-                {
-                    _startModifyingEnd = true;
-                    var newDate = StartDatePicker.SelectedDate.Value.AddDays(1);
-                    EndDatePicker.SelectedDate = newDate;
-                }
-            }
-            else if (sender.Equals(EndDatePicker))
-            {
-                if (_startModifyingEnd)
-                {
-                    _startModifyingEnd = false;
-                    return;
-                }
-            }
+             System.Windows.Forms.MessageBox.Show(string.Format("Test - Sender: {0}", sender.ToString()));
 
-            if (DateRangeChanged != null)
-            {
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDatePicker.SelectedDate.Value, EndDatePicker.SelectedDate.Value, (ToolbarPanel.DataContext as SettingsTray).Interval));
-            }
+             //if (sender.Equals(StartDatePicker))
+             //{
+             //    if (EndDatePicker != null)
+             //    {
+             //        _startModifyingEnd = true;
+             //        EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+             //    }
+             //}
+             //else if (sender.Equals(EndDatePicker))
+             //{
+             //    if (_startModifyingEnd)
+             //    {
+             //        _startModifyingEnd = false;
+             //        return;
+             //    }
+             //}
+
+             if (DateRangeChanged != null)
+             {
+                 System.Windows.Forms.MessageBox.Show("Thowing event");
+                 DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(StartDate, EndDate, (ToolbarPanel.DataContext as SettingsTray).Interval));
+             }
+             else
+             {
+                 System.Windows.Forms.MessageBox.Show("It's null");
+             }
         }
 
         private void SummaryControls_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -191,5 +208,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                 overflowGrid.Visibility = Visibility.Collapsed;
             }
         }
-    }
+    
+public event PropertyChangedEventHandler PropertyChanged;
+}
 }
