@@ -19,7 +19,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public SummaryConfig()
         {
-            _dbHelper = DbHelper.GetDbHelper();
+            
+            if (_dbHelper == null) _dbHelper = DbHelper.GetDbHelper();
 
             Rows = new ObservableCollection<SummaryRow>();
 
@@ -27,9 +28,20 @@ namespace ATTrafficAnalayzer.Views.Screens
             SummaryDataGrid.DataContext = this;
         }
 
+        public SummaryConfig(string summaryToBeEdited) : this()
+        {
+            ConfigNameTextBox.Text = summaryToBeEdited;
+
+            foreach (var summaryRow in _dbHelper.GetSummaryConfig(summaryToBeEdited))
+            {
+                Rows.Add(summaryRow);
+            }
+            
+        }
+
         public ObservableCollection<SummaryRow> Rows { get; set; }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
             var configName = ConfigNameTextBox.Text;
 

@@ -47,8 +47,8 @@ namespace ATTrafficAnalayzer.Views
                 RemoveHandlers(screen as IConfigScreen);
             else if (screen as IView != null)
                 RemoveHandlers(screen as IView);
-//            else
-//                MessageBox.Show("Somethings has gone horribly wrong");
+            //            else
+            //                MessageBox.Show("Somethings has gone horribly wrong");
         }
         private void RemoveHandlers(IView iView)
         {
@@ -128,8 +128,7 @@ namespace ATTrafficAnalayzer.Views
                     ReportBrowser.Visibility = Visibility.Visible;
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
-                        var summaryConfigScreen = new SummaryConfig();
-                        summaryConfigScreen.Popup.Visibility = Visibility.Visible;
+                        var summaryConfigScreen = new SummaryConfig { Popup = { Visibility = Visibility.Visible } };
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;
@@ -195,17 +194,28 @@ namespace ATTrafficAnalayzer.Views
             else
             {
                 //Open relevant config screen
-                var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
-                reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-                reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-                ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
-                ChangeScreen(reportConfigurationScreen);
+                if (_mode.Equals(Mode.Report))
+                {
+                    var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
+                    reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                    reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+                    ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
+                    ChangeScreen(reportConfigurationScreen);
+                }else if (_mode.Equals(Mode.Summary))
+                {
+                    var summaryConfigScreen = new SummaryConfig(args.ConfigToBeEdited);
+                    summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
+                    summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
+
+                    //TODO Import completed event
+                    ChangeScreen(summaryConfigScreen);
+                }
             }
         }
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            if(!args.SelectionCleared)
+            if (!args.SelectionCleared)
                 IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
         }
 
@@ -309,7 +319,7 @@ namespace ATTrafficAnalayzer.Views
                 policy = DbHelper.DuplicatePolicy.Continue;
                 Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        var dialog = new DuplicatePolicyDialog {Owner = this};
+                        var dialog = new DuplicatePolicyDialog { Owner = this };
                         dialog.ShowDialog();
                         policy = dialog.SelectedPolicy;
                         waitForInput = false;
