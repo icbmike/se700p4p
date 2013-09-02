@@ -56,33 +56,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Render()
         {
-
-            var bw = new BackgroundWorker {WorkerReportsProgress = true};
-
-            bw.DoWork += bw_DoWork;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
-            bw.ProgressChanged += bw_ProgressChanged;
-            bw.RunWorkerAsync();
-
-            ScreenTitle.Content = _configuration.ConfigName;
-
-            //Clear all the things!
-            ApproachesStackPanel.Children.Clear();
-
-            OverallSummaryTextBlock.Inlines.Clear();
-
-        }
-
-        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            var approachDisplayRequirements = e.UserState as ApproachDisplayRequirements;
-
-            ApproachesStackPanel.Children.Add(CreateApproachDisplay(approachDisplayRequirements.Approach, approachDisplayRequirements.DataTable, approachDisplayRequirements.Day ));
-        }
-
-
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
@@ -109,7 +82,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                         break;
                     }
 
-                    (sender as BackgroundWorker).ReportProgress(0, new ApproachDisplayRequirements{Approach = approach, DataTable = dataTable, Day = day});
+                    ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, dataTable, day));
 
                     _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                     _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -122,10 +95,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 if (_countsDontMatch) break;
             }
-        }
 
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
             if (_countsDontMatch)
             {
                 if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
@@ -140,6 +110,12 @@ namespace ATTrafficAnalayzer.Views.Screens
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} with {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
 
             Logger.Info("constructed view", "VS table");
+
+            ScreenTitle.Content = _configuration.ConfigName;
+
+            //Clear all the things!
+            ApproachesStackPanel.Children.Clear();
+            OverallSummaryTextBlock.Inlines.Clear();
 
         }
 
