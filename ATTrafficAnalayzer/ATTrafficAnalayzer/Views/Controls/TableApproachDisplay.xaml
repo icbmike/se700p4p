@@ -7,20 +7,20 @@
              d:DesignHeight="200"
              d:DesignWidth="1680">
     
-    <StackPanel>
-        
-        <TextBlock x:Name="ApproachSummary"
+    <Border BorderBrush="Black"
+            BorderThickness="1"
+            Margin="20,15,20,5"
+            Padding="5"
+            Background="#22356199">
+        <StackPanel>
+
+            <TextBlock x:Name="ApproachSummary"
                    Visibility="Visible"
-                   Margin="20,15,20,5"
-                   Padding="5"
                    IsEnabled="False">
-            <TextBlock.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}" />
-            </TextBlock.Background>
-        </TextBlock>
-        
-        <DataGrid Name="ApproachDataGrid"
-                  Margin="20,5,20,10"
+            </TextBlock>
+
+            <DataGrid Name="ApproachDataGrid"
+                  Margin="5,10,5,10"
                   IsReadOnly="True"
                   FrozenColumnCount="1"
                   CanUserReorderColumns="False"
@@ -33,7 +33,9 @@
                   HorizontalContentAlignment="Stretch"
                   AreRowDetailsFrozen="True"
                   RowHeaderWidth="0"
-                  ColumnWidth="*" />
-        
-    </StackPanel>
+                  ColumnWidth="*" >
+            </DataGrid>
+
+        </StackPanel>
+    </Border>
 </UserControl>
