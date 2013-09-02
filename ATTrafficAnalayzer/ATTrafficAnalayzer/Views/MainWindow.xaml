@@ -64,7 +64,8 @@
 
             <controls:Toolbar Canvas.Top="55"
                               Canvas.Left="20"
-                              x:Name="SettingsToolbar" />
+                              x:Name="SettingsToolbar"
+                              DateRangeChanged="SettingsToolbar_DateRangeChanged" />
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportBrowser"
