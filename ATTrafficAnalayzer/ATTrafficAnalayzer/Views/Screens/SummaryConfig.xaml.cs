@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -13,7 +14,8 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class SummaryConfig : IConfigScreen
     {
         private readonly DbHelper _dbHelper;
-        private const bool IsNewConfig = true;
+        private bool IsNewConfig = true;
+        private string _oldName;
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
 
@@ -30,6 +32,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public SummaryConfig(string summaryToBeEdited) : this()
         {
+            IsNewConfig = false;
+            _oldName = summaryToBeEdited;
             ConfigNameTextBox.Text = summaryToBeEdited;
 
             foreach (var summaryRow in _dbHelper.GetSummaryConfig(summaryToBeEdited))
@@ -43,6 +47,12 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
+
+            if (!IsNewConfig)
+            {
+              DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Summary);
+            }
+
             var configName = ConfigNameTextBox.Text;
 
             //Check we're in a valid state
