@@ -131,10 +131,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var approachDisplay = new TableApproachDisplay();
 
-            var cellStyle = new Style(typeof(DataGridCell));
-            cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
-            approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
-
+            approachDisplay.ApproachDataGrid.DataContext = dataTable;
             approachDisplay.ApproachDataGrid.ItemsSource = dataTable.AsDataView();
 
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Date: {0}\n", _startDate.AddDays(day).ToLongDateString()))));
