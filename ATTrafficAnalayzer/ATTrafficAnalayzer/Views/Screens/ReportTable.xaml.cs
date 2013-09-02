@@ -56,41 +56,17 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Render()
         {
-
-            var bw = new BackgroundWorker {WorkerReportsProgress = true};
-
-            bw.DoWork += bw_DoWork;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
-            bw.ProgressChanged += bw_ProgressChanged;
-            bw.RunWorkerAsync();
-
-            ProgressBar.Visibility = Visibility.Visible;
-            ViewContent.Visibility = Visibility.Collapsed;
-
-            ScreenTitle.Content = _configuration.ConfigName;
-
-            //Clear all the things!
-            ApproachesStackPanel.Children.Clear();
-
-            OverallSummaryTextBlock.Inlines.Clear();
-
-        }
-
-        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            var approachDisplayRequirements = e.UserState as ApproachDisplayRequirements;
-
-            ApproachesStackPanel.Children.Add(CreateApproachDisplay(approachDisplayRequirements.Approach, approachDisplayRequirements.DataTable, approachDisplayRequirements.Day ));
-        }
-
-
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
             }
+
+            ScreenTitle.Content = _configuration.ConfigName;
+
+            //Clear all the things!
+            ApproachesStackPanel.Children.Clear();
+            OverallSummaryTextBlock.Inlines.Clear();
 
             _maxAm.ClearApproaches();
             _maxPm.ClearApproaches();
@@ -112,7 +88,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                         break;
                     }
 
-                    (sender as BackgroundWorker).ReportProgress(0, new ApproachDisplayRequirements{Approach = approach, DataTable = dataTable, Day = day});
+                    ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, dataTable, day));
 
                     _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
                     _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
@@ -125,10 +101,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 if (_countsDontMatch) break;
             }
-        }
 
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
             if (_countsDontMatch)
             {
                 if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
@@ -144,8 +117,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Logger.Info("constructed view", "VS table");
 
-            ProgressBar.Visibility = Visibility.Collapsed;
-            ViewContent.Visibility = Visibility.Visible;
+            
+
         }
 
         /// <summary>
@@ -158,10 +131,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var approachDisplay = new TableApproachDisplay();
 
-            var cellStyle = new Style(typeof(DataGridCell));
-            cellStyle.Setters.Add(new Setter(BackgroundProperty, Brushes.Aqua));
-            approachDisplay.ApproachDataGrid.CellStyle = cellStyle;
-
+            approachDisplay.ApproachDataGrid.DataContext = dataTable;
             approachDisplay.ApproachDataGrid.ItemsSource = dataTable.AsDataView();
 
             approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Date: {0}\n", _startDate.AddDays(day).ToLongDateString()))));

@@ -18,14 +18,13 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportGraph : IView
     {
-        private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black };
-        
+        private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black, Brushes.DarkOrange };
+
         private string _configName;
         private DateTime _startDate;
         private DateTime _endDate;
         private int _interval;
         private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
-
 
         public ReportGraph(SettingsTray settings, string configName)
         {
@@ -39,11 +38,12 @@ namespace ATTrafficAnalayzer.Views.Screens
             _series = new List<LineAndMarker<MarkerPointsGraph>>();
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
+            Plotter.Legend.Visibility = Visibility.Collapsed;
 
             Render();
         }
 
-        public void Render()
+        private void Render()
         {
             var dbHelper = DbHelper.GetDbHelper();
             var configuation = dbHelper.GetConfiguration(_configName);
@@ -122,14 +122,20 @@ namespace ATTrafficAnalayzer.Views.Screens
                _series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name)));
-                brushCounter++;
 
+
+                var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
+                
+                stackPanel.Children.Add( new Label {Content = approach.Name, Margin = new Thickness(0, -5, 0, 0) });
+                stackPanel.Children.Add( new Border{Background = SeriesColours[(brushCounter)%SeriesColours.Count()], Height = 15, Width = 15, CornerRadius = new CornerRadius(5)});
                 //Add toggle checkboxes
                 var checkbox = new CheckBox
                 {
-                    Content = new Label {Content = approach.Name, Margin = new Thickness(0, -5, 0, 0)},
+                    Content = stackPanel,
                     IsChecked = true
                 };
+                brushCounter++;
+
                 checkbox.Checked += checkbox_Checked;
                 checkbox.Unchecked += checkbox_Checked;
                 ToggleContainer.Children.Add(checkbox);
@@ -150,18 +156,20 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             //Get the index of the checkbox that has been checked
             var index = ToggleContainer.Children.IndexOf(checkbox);
-                
+
             //See if it's checked
             if (checkbox.IsChecked.Value)
             {
                 Plotter.Children.Add(_series[index].LineGraph);
                 Plotter.Children.Add(_series[index].MarkerGraph);
             }
-            else          
+            else
             {
                 Plotter.Children.Remove(_series[index].LineGraph);
                 Plotter.Children.Remove(_series[index].MarkerGraph);
             }
+
+            Plotter.Legend.Visibility = Visibility.Collapsed;
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)

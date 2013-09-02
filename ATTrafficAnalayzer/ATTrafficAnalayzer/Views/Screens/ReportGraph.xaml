@@ -18,11 +18,12 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <d3:ChartPlotter Margin="20, 20, 40, 20"
+        <d3:ChartPlotter Margin="20, 20, 30, 20"
                          Grid.Row="0"
                          Grid.RowSpan="2"
                          Grid.Column="0"
-                         Name="Plotter">
+                         Name="Plotter"
+                         >
             <d3:ChartPlotter.HorizontalAxis>
                 <d3:HorizontalDateTimeAxis Name="DateAxis" />
             </d3:ChartPlotter.HorizontalAxis>
@@ -36,7 +37,8 @@
                        Content="No Report Selected"
                        FontSize="30"
                        FontWeight="Bold"
-                       Margin="0,0,0,20" />
+                       Margin="0,0,0,10"
+                       />
 
             <d3:VerticalAxisTitle FontFamily="Arial"
                                   Content="Traffic Volume (vehicles)"
@@ -50,11 +52,11 @@
         </d3:ChartPlotter>
         <Label Content="Toggle series"
                Grid.Row="0"
-               Margin="20, 20, 40, 20"
+               Margin="10, 20, 40, 10"
                Grid.Column="1"
                FontSize="23" />
         <StackPanel Name="ToggleContainer"
-                    Margin="20, 20, 40, 20"
+                    Margin="10, 10, 40, 20"
                     Grid.Row="1"
                     Grid.Column="1">
 
