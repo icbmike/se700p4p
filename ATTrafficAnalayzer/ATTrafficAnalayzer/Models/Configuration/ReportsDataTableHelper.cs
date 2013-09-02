@@ -90,7 +90,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return _summaryDataTable.DefaultView;
         }
 
-        public DataTable GetSummaryDataTable(ICalculator calculator, DateTime _startDate, DateTime _endDate, IEnumerable<SummaryRow> _summaryConfig)
+        public DataTable GetSummaryDataTable(ICalculator calculator, DateTime _startDate, DateTime _endDate, IEnumerable<SummaryRow> _summaryConfig, bool hasWeekends)
         {
             var dataTable = new DataTable();
 
@@ -100,7 +100,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
             for (var date = _startDate; date < _endDate; date = date.AddDays(1))
             {
-                if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                if (!hasWeekends && (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday))
                     continue;
                 var row = dataTable.NewRow();
                 var j = 1;

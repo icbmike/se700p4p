@@ -111,10 +111,20 @@ namespace ATTrafficAnalayzer.Views
 
             lines.Add("");
 
+            var messageBoxText = "Would you like to export weekends";
+            const string caption = "Export settings";
+            const MessageBoxButton button = MessageBoxButton.YesNo;
+            const MessageBoxImage icon = MessageBoxImage.Question;
+
+            var result = false;
+            if (MessageBox.Show(messageBoxText, caption, button, icon).Equals(MessageBoxResult.Yes))
+                result = true;
+
+
             Dictionary<string, DataTable> summaries = new Dictionary<string, DataTable>();
-            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig));
-            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig));
-            summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _summaryConfig));
+            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
+            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
+            summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
 
             foreach (var summary in summaries)
             {
