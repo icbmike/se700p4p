@@ -62,6 +62,12 @@ namespace ATTrafficAnalayzer.Views.Screens
                 return;
             }
 
+            ScreenTitle.Content = _configuration.ConfigName;
+
+            //Clear all the things!
+            ApproachesStackPanel.Children.Clear();
+            OverallSummaryTextBlock.Inlines.Clear();
+
             _maxAm.ClearApproaches();
             _maxPm.ClearApproaches();
             _maxTotal.ClearApproaches();
@@ -111,11 +117,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Logger.Info("constructed view", "VS table");
 
-            ScreenTitle.Content = _configuration.ConfigName;
-
-            //Clear all the things!
-            ApproachesStackPanel.Children.Clear();
-            OverallSummaryTextBlock.Inlines.Clear();
+            
 
         }
 
