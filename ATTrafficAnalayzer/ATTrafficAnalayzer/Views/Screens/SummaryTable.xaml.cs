@@ -18,7 +18,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private string _configName;
 
         private IEnumerable<SummaryRow> _summaryConfig;
-        private readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
+        private readonly IDataSource _dbHelper = DbHelper.GetDbHelper();
         private readonly DataTableHelper _dtHelper = DataTableHelper.GetDataTableHelper();
         private SettingsTray _settings;
 

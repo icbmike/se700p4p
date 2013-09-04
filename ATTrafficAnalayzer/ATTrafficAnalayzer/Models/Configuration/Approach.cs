@@ -10,7 +10,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 {
     public class Approach
     {
-        private readonly DbHelper _dbHelper;
+        private readonly IDataSource _dbHelper;
 
         public VolumeMetric AmPeak = new VolumeMetric();
         public VolumeMetric PmPeak = new VolumeMetric();

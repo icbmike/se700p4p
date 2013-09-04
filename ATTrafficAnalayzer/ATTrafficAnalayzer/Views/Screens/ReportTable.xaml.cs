@@ -32,7 +32,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private Report _configuration;
 
-        readonly DbHelper _dbHelper = DbHelper.GetDbHelper();
+        readonly IDataSource _dbHelper = DbHelper.GetDbHelper();
         private bool _countsDontMatch;
 
         /// <summary>

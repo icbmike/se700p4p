@@ -13,14 +13,14 @@ using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
-    public class DbHelper
+    public class DbHelper : IDataSource
     {
         private static string DbPath = new SQLiteConnectionStringBuilder
             {
                 DataSource = "TAdb.db3"
             }.ConnectionString;
 
-        private static DbHelper _instance;
+        private static IDataSource _instance;
         private static readonly object SyncLock = new object();
 
         private DbHelper()

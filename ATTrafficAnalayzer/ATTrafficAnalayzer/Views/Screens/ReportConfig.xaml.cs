@@ -19,7 +19,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
     {
-        private readonly DbHelper _dbHelper;
+        private readonly IDataSource _dbHelper;
         private readonly DataTableHelper _reportsDataTableHelper = DataTableHelper.GetDataTableHelper();
         private readonly bool _isNewConfig = true;
         private readonly string _oldName;

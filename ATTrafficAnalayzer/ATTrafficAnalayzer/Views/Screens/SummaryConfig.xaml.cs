@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class SummaryConfig : IConfigScreen
     {
-        private readonly DbHelper _dbHelper;
+        private readonly IDataSource _dbHelper;
         private bool IsNewConfig = true;
         private string _oldName;
 
