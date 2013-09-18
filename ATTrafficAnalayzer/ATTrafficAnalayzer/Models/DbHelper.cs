@@ -428,7 +428,7 @@ namespace ATTrafficAnalayzer.Models
             return duplicatePolicy;
         }
 
-        public static List<int> GetIntersections()
+        public List<int> GetIntersections()
         {
             List<int> intersections;
             using (var conn = new SQLiteConnection(DbPath))
@@ -740,6 +740,25 @@ namespace ATTrafficAnalayzer.Models
             return null;
         }
 
+        public List<string> GetReportNames()
+        {
+            var names = new List<string>();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = new SQLiteCommand(conn))
+                {
+                    command.CommandText = "SELECT name FROM configs;";
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        names.Add(reader.GetString(0));
+                    }
+                }
+            }
+            return names;
+        }
+
         public void AddConfiguration(Report config)
         {
             var configJson = config.ToJson();
@@ -855,6 +874,25 @@ namespace ATTrafficAnalayzer.Models
                 conn.Close();
             }
             return summaries;
+        }
+
+        public List<string> GetSummaryNames()
+        {
+            var names = new List<string>();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = new SQLiteCommand(conn))
+                {
+                    command.CommandText = "SELECT name FROM monthly_summaries;";
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        names.Add(reader.GetString(0));
+                    }
+                }
+            }
+            return names;
         }
 
         public bool SummaryExists(String name)
