@@ -15,12 +15,12 @@ namespace ATTrafficAnalayzer.Models
 {
     public class DbHelper : IDataSource
     {
-        private static string DbPath = new SQLiteConnectionStringBuilder
+        private static readonly string DbPath = new SQLiteConnectionStringBuilder
             {
                 DataSource = "TAdb.db3"
             }.ConnectionString;
 
-        private static IDataSource _instance;
+        private static DbHelper _instance;
         private static readonly object SyncLock = new object();
 
         private DbHelper()
@@ -848,7 +848,7 @@ namespace ATTrafficAnalayzer.Models
                     {
                         var configArray = JArray.Parse(reader.GetString(0));
 
-                        summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string) summaryJson["route_name"], (int) summaryJson["intersection_in"], (int) summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int) t).ToList(), summaryJson["detectors_out"].Select(t => (int) t).ToList(), (int) summaryJson["div_factor_in"], (int) summaryJson["div_factor_out"])));
+                        summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string)summaryJson["route_name"], (int)summaryJson["intersection_in"], (int)summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int)t).ToList(), summaryJson["detectors_out"].Select(t => (int)t).ToList(), (int)summaryJson["div_factor_in"], (int)summaryJson["div_factor_out"])));
                     }
                     reader.Close();
                 }
@@ -930,6 +930,40 @@ namespace ATTrafficAnalayzer.Models
         public bool VolumesExistForMonth(int month)
         {
             return true; //Needs to be implemented
+        }
+
+        public Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold)
+        {
+            var suspectedFaults = new Dictionary<int, List<int>>();
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = new SQLiteCommand(conn))
+                {
+                    command.CommandText = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
+                               "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
+                               "GROUP BY intersection";
+                    command.Parameters.AddWithValue("@faultThreshold", threshold);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var currentIntersection = reader.GetInt32(0);
+                        suspectedFaults.Add(currentIntersection, new List<int>());
+                        foreach (var detector in reader.GetString(1).Split(new[] { "," }, StringSplitOptions.None))
+                        {
+                            suspectedFaults[currentIntersection].Add(int.Parse(detector));
+                        }
+                       
+                    }
+                    
+                }
+            }
+
+            return suspectedFaults;
         }
     }
 }

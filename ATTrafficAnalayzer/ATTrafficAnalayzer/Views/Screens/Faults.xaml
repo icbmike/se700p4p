@@ -53,9 +53,9 @@
                 HorizontalAlignment="Left"
                 Height="20"/>
             
-            <DataGrid AutoGenerateColumns="True"
-                      Name="FaultsDataGrid"
+            <DataGrid Name="FaultsDataGrid"
                       IsReadOnly="True"
+                      AutoGenerateColumns="False"
                       FrozenColumnCount="1"
                       CanUserReorderColumns="False"
                       ScrollViewer.CanContentScroll="False"
@@ -68,12 +68,17 @@
                       VerticalAlignment="Top"
                       ColumnWidth="*"
                       Margin="20"
-                      AutoGeneratingColumn="FaultsDataGrid_OnAutoGeneratingColumn"
                       CanUserSortColumns="False"
                       Grid.Row="1"
                       Grid.Column="0"
                       Grid.ColumnSpan="4">
-                      
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Intersection" Binding="{Binding Path=Key}" Width="75"/>
+                    <DataGridTextColumn Header="Detectors" Binding="{Binding Path=Value}"/>
+                </DataGrid.Columns>
+                
+                
             </DataGrid>
 
         </Grid>

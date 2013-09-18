@@ -23,5 +23,8 @@ namespace ATTrafficAnalayzer.Models
         bool SummaryExists(String name);
         List<DateTime> GetImportedDates();
         bool VolumesExistForMonth(int month);
+
+        Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate,int threshold);
+
     }
 }

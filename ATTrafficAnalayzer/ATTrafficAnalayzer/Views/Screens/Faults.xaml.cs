@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -47,17 +48,18 @@ namespace ATTrafficAnalayzer.Views.Screens
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
-            var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate, FaultThreshold);
-            var dataTable = new DataTable();
-            dataAdapter.Fill(dataTable);
-
-            foreach (var row in dataTable.Rows)
-            {
-                var dataRow = row as DataRow;
-                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[] { "," }, StringSplitOptions.None).ToList().Distinct().OrderBy(int.Parse));
-            }
-
-            FaultsDataGrid.ItemsSource = dataTable.AsDataView();
+//            var dataAdapter = _dbHelper.GetFaultsDataAdapter(_startDate, _endDate, FaultThreshold);
+//            var dataTable = new DataTable();
+//            dataAdapter.Fill(dataTable);
+//
+//            foreach (var row in dataTable.Rows)
+//            {
+//                var dataRow = row as DataRow;
+//                dataRow[1] = String.Join(", ", (dataRow[1] as String).Split(new[] { "," }, StringSplitOptions.None).ToList().Distinct().OrderBy(int.Parse));
+//            }
+            var faults = _dbHelper.GetSuspectedFaults(_startDate, _endDate, FaultThreshold);
+            var transformedFaults = faults.Keys.ToDictionary(key => key, key => String.Join(", ", faults[key].Distinct().OrderBy(x => x)));
+            FaultsDataGrid.ItemsSource = transformedFaults;
         }
 
         #region Event Handlers
