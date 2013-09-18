@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Models
         int GetTotalVolumeForDay(DateTime date, int intersection, List<int> detectors);
         
         bool RemoveVolumes(DateTime date);
-        List<int> GetIntersections()
+        List<int> GetIntersections();
         List<int> GetDetectorsAtIntersection(int intersection);
         List<DateTime> GetImportedDates();
 

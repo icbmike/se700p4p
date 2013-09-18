@@ -2,6 +2,7 @@
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
@@ -17,20 +18,22 @@ namespace ATTrafficAnalayzer.Views.Controls
         private Mode _mode;
         private bool _hasModeChanged;
         private bool _selectionCleared;
+        private IDataSource _dataSource;
 
         public ReportBrowser()
         {
             InitializeComponent();
             DataContext = this;
             _mode = Mode.Report;
-
+            _dataSource = DbHelper.GetDbHelper();
             Render();
         }
 
         private void Render()
         {
-            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _dataTableHelper.GetReportDataView() : _dataTableHelper.GetSummaryDataView();
-            StandardReportsTreeView.DisplayMemberPath = "name";
+            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _dataSource.GetReportNames() : _dataSource.GetSummaryNames();
+            //StandardReportsTreeView.DisplayMemberPath = "name";
+            
         }
 
         #region New/Edit Configuration
@@ -109,8 +112,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public string GetSelectedConfiguration()
         {
-            var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
-            return selectedRow == null ? null : selectedRow.Row["name"] as string;
+            return StandardReportsTreeView.SelectedItem as string;
         }
 
         private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
