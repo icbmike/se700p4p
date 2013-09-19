@@ -715,7 +715,10 @@ namespace ATTrafficAnalayzer.Models
                 using (var command = new SQLiteCommand(conn))
                 {
                     command.CommandText = "SELECT MAX(dateTime) FROM volumes;";
-                    var maxDate = Convert.ToDateTime(command.ExecuteScalar());
+                    var result = command.ExecuteScalar();
+                    DateTime maxDate;
+                    
+                    maxDate = result != null ? Convert.ToDateTime(result) : DateTime.Today.AddDays(-1);
                     mostRecentDay = new DateTime(maxDate.Year, maxDate.Month, maxDate.Day);
                 }
             }
