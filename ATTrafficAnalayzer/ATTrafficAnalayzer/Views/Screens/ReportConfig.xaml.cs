@@ -19,7 +19,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
     {
-        private readonly DbHelper _dbHelper;
+        private readonly IDataSource _dataSource;
         private readonly DataTableHelper _reportsDataTableHelper = DataTableHelper.GetDataTableHelper();
         private readonly bool _isNewConfig = true;
         private readonly string _oldName;
@@ -30,8 +30,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             _intersectionList = new ObservableCollection<int>();
             _detectorList = new ObservableCollection<int>();
 
-            _dbHelper = DbHelper.GetDbHelper();
-            foreach (var intersection in DbHelper.GetIntersections())
+            _dataSource = DbHelper.GetDbHelper();
+            foreach (var intersection in _dataSource.GetIntersections())
                 _intersectionList.Add(intersection);
 
             InitializeComponent();
@@ -42,8 +42,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         public ReportConfig(string configToBeEdited) : this()
         {
             //Populate config screen
-            var config = _dbHelper.GetConfiguration(configToBeEdited);
-            var approaches = _dbHelper.GetApproaches(configToBeEdited);
+            var config = _dataSource.GetConfiguration(configToBeEdited);
+            var approaches = _dataSource.GetApproaches(configToBeEdited);
             foreach (var approach in approaches)
             {
                 var configApproachBox = new ConfigApproachBox(Approaches, approach.Detectors, approach.Name)
@@ -129,7 +129,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Delete the previous config before inserting the new one
                 try
                 {
-                    DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Report);
+                    _dataSource.RemoveReport(_oldName);
                 }
                 catch (Exception exception)
                 {
@@ -147,7 +147,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
-            _dbHelper.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
+            _dataSource.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
 
             if (ConfigurationSaved != null)
                 ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
@@ -192,7 +192,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dbHelper.ReportExists("Report " + count))
+                    if (!_dataSource.ReportExists("Report " + count))
                     {
                         configTextBox.Text = "Report " + count;
                         break;
@@ -228,7 +228,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _detectorList.Clear();
 
-            foreach (var detector in _dbHelper.GetDetectorsAtIntersection(_selectedIntersection))
+            foreach (var detector in _dataSource.GetDetectorsAtIntersection(_selectedIntersection))
             {
                 _detectorList.Add(detector);
             }
@@ -238,7 +238,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             //Refresh combobox list
             _intersectionList.Clear();
-            foreach (var intersection in DbHelper.GetIntersections())
+            foreach (var intersection in _dataSource.GetIntersections())
                 _intersectionList.Add(intersection);
         }
 

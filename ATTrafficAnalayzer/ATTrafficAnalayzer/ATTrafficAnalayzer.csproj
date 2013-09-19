@@ -76,6 +76,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
     <Compile Include="Models\Configuration\SummaryRow.cs" />
+    <Compile Include="Models\IDataSource.cs" />
     <Compile Include="Models\Settings\Mode.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Properties\Annotations.cs" />

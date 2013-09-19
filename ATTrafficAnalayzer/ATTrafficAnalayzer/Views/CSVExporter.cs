@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly string _outputFilename;
         private readonly SettingsTray _settings;
-        private readonly DbHelper _dbHelper;
+        private readonly IDataSource _dbHelper;
         private readonly DataTableHelper _dtHelper;
         private readonly Report _reportConfig;
         private readonly IEnumerable<SummaryRow> _summaryConfig;

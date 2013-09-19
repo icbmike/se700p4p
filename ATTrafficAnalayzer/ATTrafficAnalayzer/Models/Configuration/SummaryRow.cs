@@ -7,10 +7,13 @@ namespace ATTrafficAnalayzer.Models.Configuration
 {
     public class SummaryRow
     {
+        private IDataSource _dataSource;
+
         public SummaryRow()
         {
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
+            _dataSource = DbHelper.GetDbHelper();
         }
 
         public SummaryRow(string routeName, int intersectionIn, int intersectionOut, List<int> detectorsIn,
@@ -30,7 +33,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public ObservableCollection<int> Intersections
         {
             get {
-                return _intersections ?? (_intersections = new ObservableCollection<int>(DbHelper.GetIntersections()));
+                return _intersections ?? (_intersections = new ObservableCollection<int>(_dataSource.GetIntersections()));
             }
         }
 

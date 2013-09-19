@@ -13,7 +13,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class Home
     {
 
-        DbHelper _helper;
+        IDataSource _helper;
 
         #region events
 

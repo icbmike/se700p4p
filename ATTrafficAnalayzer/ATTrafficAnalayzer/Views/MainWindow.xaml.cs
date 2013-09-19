@@ -218,7 +218,7 @@ namespace ATTrafficAnalayzer.Views
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            if (!args.SelectionCleared)
+            if (!args.SelectionCleared && args.ReportName != null)
                 IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
         }
 
