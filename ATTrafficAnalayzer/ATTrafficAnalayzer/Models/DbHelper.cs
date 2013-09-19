@@ -706,6 +706,22 @@ namespace ATTrafficAnalayzer.Models
             return GetDataAdapter(getCongifsSql);
         }
 
+        public DateTime GetMostRecentImportedDate()
+        {
+            DateTime mostRecentDay;
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = new SQLiteCommand(conn))
+                {
+                    command.CommandText = "SELECT MAX(dateTime) FROM volumes;";
+                    var maxDate = Convert.ToDateTime(command.ExecuteScalar());
+                    mostRecentDay = new DateTime(maxDate.Year, maxDate.Month, maxDate.Day);
+                }
+            }
+            return mostRecentDay;
+        }
+
         public Report GetConfiguration(string name)
         {
             using (var conn = new SQLiteConnection(DbPath))
