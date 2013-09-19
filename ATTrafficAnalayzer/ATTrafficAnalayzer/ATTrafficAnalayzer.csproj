@@ -293,7 +293,9 @@
     <Resource Include="Resources\Images\Icons\glyphicons_331_dashboard.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_057_history.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_280_settings.png" />
-    <Content Include="x64\SQLite.Interop.dll" />
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

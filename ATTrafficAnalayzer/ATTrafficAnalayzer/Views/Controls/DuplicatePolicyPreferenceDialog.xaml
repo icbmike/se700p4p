@@ -2,33 +2,55 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:atTrafficAnalayzer="clr-namespace:ATTrafficAnalayzer"
-        Title="Select a Default Duplicate Policy" Width="368" Height="146">
+        Title="Preferences"
+        Width="368"
+        Height="146"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        Topmost="True"
+        WindowStartupLocation="CenterScreen"
+        Icon="/ATTrafficAnalayzer;component/Resources/Images/at-logo.png"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+
     <Window.Resources>
         <atTrafficAnalayzer:EnumMatchToBooleanConverter x:Key="EnumConverter" />
     </Window.Resources>
-    <StackPanel>
-        <Label Content="Select your preference for importing duplicate data" Margin="30, 0, 0, 0"/>
-        <RadioButton GroupName="Preference"
-                     Content="Skip" 
-                     Margin="30, 0, 0, 0" 
-                     IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
+
+    <StackPanel Margin="10">
+
+        <TextBlock FontSize="16"
+                   Margin="10">
+            What should Traffic Reporter do when importing duplicate traffic volumes?
+        </TextBlock>
+
+        <StackPanel HorizontalAlignment="Center"
+                    Margin="10">
+            <RadioButton GroupName="Preference"
+                         Content="Skip"
+                         IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
-                                 ConverterParameter=Skip}"/>
-        
-        <RadioButton GroupName="Preference" 
-                     Content="Continue" 
-                     Margin="30, 0, 0, 0" 
-                     IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
+                                 ConverterParameter=Skip}"
+                         FontSize="16" />
+            <RadioButton GroupName="Preference"
+                         Content="Re-import"
+                         IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
-                                 ConverterParameter=Continue}"/>
-        
-        <RadioButton GroupName="Preference" 
-                     Content="Ask me every time" 
-                     Margin="30, 0, 0, 0" 
-                     IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
+                                 ConverterParameter=Continue}"
+                         FontSize="16" />
+            <RadioButton GroupName="Preference"
+                         Content="Ask me every time"
+                         IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
-                                 ConverterParameter=Ask}"/>
-        
-        <Button Content="Ok" Width="200" Margin="0, 10, 0, 0" Click="OkButton_OnClick"/>
+                                 ConverterParameter=Ask}"
+                         FontSize="16" />
+        </StackPanel>
+
+        <Button Content="Ok"
+                Width="200"
+                Margin="20"
+                Click="OkButton_OnClick"
+                Style="{StaticResource AtButtonStyle}" />
+
     </StackPanel>
 </Window>
