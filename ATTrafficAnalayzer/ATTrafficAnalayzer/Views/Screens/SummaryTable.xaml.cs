@@ -43,16 +43,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         public void Render()
         {
             _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
-
-            if (!_dbHelper.VolumesExist(_startDate, _endDate))
-            {
-                MessageBox.Show("You haven't imported volume data for the selected date range");
-                return;
-            }
-
             ScreenTitle.Content = _configName;
-
-            //TODO define ApproachDisplays in the xaml
 
             ApproachesStackPanel.Children.Clear();
 

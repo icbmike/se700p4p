@@ -121,7 +121,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
             //Need to do check here if the user hasnt imported data for the
             //Check that we actually have volumes that we need
 
-            if (approachVolumes.Count / (settings.Interval / 5) != dates.Count)
+            if (approachVolumes.Count == 0)
             {
                 return null;
             }
@@ -137,7 +137,6 @@ namespace ATTrafficAnalayzer.Models.Configuration
                         var cellValue = 0;
                         for (var i = 0; i < settings.Interval / 5; i++)
                         {
-                            
                             cellValue += approachVolumes[(offset + columnIndex - 1) * 12 + rowIndex / 5 + i];
                         }
                         row[columnIndex] = cellValue;

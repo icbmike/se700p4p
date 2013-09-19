@@ -2,16 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Auckland Transport Traffic Report Viewer"
-        mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Height="1200"
         xmlns:controls="clr-namespace:ATTrafficAnalayzer.Views.Controls"
-        Width="1920"
+        Icon="..\Resources\Images\at-logo.png"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Icon="..\Resources\Images\at-logo.png"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        mc:Ignorable="d"
+        Height="1200"
+        Width="1920">
 
     <DockPanel LastChildFill="True">
 
@@ -37,7 +37,7 @@
                     </MenuItem>
                     <MenuItem Header="_Preferences"
                               Click="PreferencesMenuItem_OnClick"
-                            Foreground="Black">
+                              Foreground="Black">
                         <MenuItem.Icon>
                             <Image Source="/Resources/Images/Icons/glyphicons_280_settings.png" />
                         </MenuItem.Icon>
@@ -69,9 +69,9 @@
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportBrowser"
-                             EditConfigurationEvent="ReportBrowser_OnEditConfigurationEvent"
-                             Visibility="Collapsed"
-                             ExportEvent="ReportBrowser_OnExportEvent" />
+                                EditConfigurationEvent="ReportBrowser_OnEditConfigurationEvent"
+                                Visibility="Collapsed"
+                                ExportEvent="ReportBrowser_OnExportEvent" />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="ScreenContentControl"
