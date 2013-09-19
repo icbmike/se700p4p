@@ -157,7 +157,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            if (!args.SelectionCleared && !_configuration.ConfigName.Equals(args.ReportName))
+            if (!args.SelectionCleared && !_configuration.ConfigName.Equals(args.ReportName) && args.ReportName != null)
             {
                 _configuration = _dbHelper.GetConfiguration(args.ReportName);
                 Render();

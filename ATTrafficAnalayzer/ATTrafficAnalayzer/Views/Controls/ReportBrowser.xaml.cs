@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,7 +34,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report) ? _dataSource.GetReportNames() : _dataSource.GetSummaryNames();
             //StandardReportsTreeView.DisplayMemberPath = "name";
-            
+
         }
 
         #region New/Edit Configuration
@@ -64,7 +65,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             var treeViewItem = StandardReportsTreeView.ItemContainerGenerator.ContainerFromIndex(StandardReportsTreeView.Items.Count - 1) as TreeViewItem;
             if (treeViewItem != null)
                 treeViewItem.IsSelected = true;
-            
+
             Render();
         }
 
@@ -125,9 +126,9 @@ namespace ATTrafficAnalayzer.Views.Controls
                 {
                     ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
                 }
-                
+
             _hasModeChanged = false;
-           
+
         }
 
         public void ClearSelectedConfig()
@@ -169,22 +170,31 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
+                    var backgroundWorker = new BackgroundWorker();
                     if (_mode.Equals(Mode.Report))
                     {
-                        _dataSource.RemoveReport(selectedItem);
+                        backgroundWorker.DoWork += (o, args) => _dataSource.RemoveReport(selectedItem);
+
                     }
                     else
                     {
-                        _dataSource.RemoveSummary(selectedItem);
+                        backgroundWorker.DoWork += (o, args) => _dataSource.RemoveSummary(selectedItem);
                     }
+                    backgroundWorker.RunWorkerCompleted +=
+                        (o, args) =>
+                            {
+                                messageBoxText = selectedItem + " was deleted";
+                                caption = "Delete successful";
+                                button = MessageBoxButton.OK;
+                                icon = MessageBoxImage.Information;
+                                MessageBox.Show(messageBoxText, caption, button, icon);
+                                //Refresh the view
+                                Render();
+                            };
+                    backgroundWorker.RunWorkerAsync();
+            
 
-                    messageBoxText = selectedItem + " was deleted";
-                    caption = "Delete successful";
-                    button = MessageBoxButton.OK;
-                    icon = MessageBoxImage.Information;
-                    MessageBox.Show(messageBoxText, caption, button, icon);
-
-                    Logger.Debug(selectedItem + " report deleted", "Reports panel");
+            Logger.Debug(selectedItem + " report deleted", "Reports panel");
                     break;
 
                 case MessageBoxResult.Cancel:
@@ -207,9 +217,9 @@ namespace ATTrafficAnalayzer.Views.Controls
             _mode = args.Mode;
             if (GetSelectedConfiguration() != null)
             {
-                _hasModeChanged = true;    
+                _hasModeChanged = true;
             }
-            
+
             Render();
         }
 
