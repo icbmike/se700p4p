@@ -16,13 +16,13 @@
                    x:FieldModifier="private"
                    Content="No Report Selected"
                    FontWeight="Bold" />
-            <Border BorderBrush="Black" 
+            <Border Name="OverallSummaryBorder"
+                    BorderBrush="Black"
                     BorderThickness="1"
                     Background="#44356199"
                     Margin="20,15,20,10"
                     Padding="5">
-                <TextBlock x:Name="OverallSummaryTextBlock"
-                       Visibility="Visible"/>
+                <TextBlock x:Name="OverallSummaryTextBlock" />
             </Border>
 
             <StackPanel Name="ApproachesStackPanel" />

@@ -7,6 +7,7 @@ using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
 using System;
+using System.Windows.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -52,13 +53,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void Render()
         {
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate, _configuration.Intersection))
-            {
-                MessageBox.Show("You haven't imported volume data for the selected date range");
-                return;
-            }
-
             ScreenTitle.Content = _configuration.ConfigName;
+            OverallSummaryBorder.Visibility = Visibility.Collapsed;
 
             //Clear all the things!
             ApproachesStackPanel.Children.Clear();
@@ -72,7 +68,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var timeSpan = _endDate - _startDate;
 
-            _countsDontMatch = false;
+            var hasVolumes = false;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _configuration.Approaches)
@@ -80,28 +76,28 @@ namespace ATTrafficAnalayzer.Views.Screens
                     var dataTable = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day);
                     if (dataTable == null)
                     {
-                        _countsDontMatch = true;
-                        break;
+                        var missingTable = new Label()
+                        {
+                            Content = string.Format("No traffic volume data for intersection {0} on {1}", approach.Name, _settings.StartDate.AddDays(day).ToLongDateString()),
+                            Margin = new Thickness(20, 5, 20, 5)
+                        };
+                        ApproachesStackPanel.Children.Add(missingTable);
                     }
+                    else
+                    {
+                        ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, dataTable, day));
 
-                    ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, dataTable, day));
+                        _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
+                        _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
+                        _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
+                        _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(),
+                            string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
+                        _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(),
+                            string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
 
-                    _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
-                    _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
-                    _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
-                    _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(),
-                        string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
-                    _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(),
-                        string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
+                        hasVolumes = true;
+                    }
                 }
-
-                if (_countsDontMatch) break;
-            }
-
-            if (_countsDontMatch)
-            {
-                if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
-                return;
             }
 
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
@@ -110,11 +106,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} with {1} vehicles\n", string.Join(", ", _maxPm.GetApproachesAsString()), _maxPm.GetValue())));
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} with {1} vehicles\n", string.Join(", ", _peakHourAm.GetApproachesAsString()), _peakHourAm.GetValue())));
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} with {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
+            OverallSummaryBorder.Visibility = hasVolumes ? Visibility.Visible : Visibility.Collapsed;
 
             Logger.Info("constructed view", "VS table");
-
-            
-
         }
 
         /// <summary>
