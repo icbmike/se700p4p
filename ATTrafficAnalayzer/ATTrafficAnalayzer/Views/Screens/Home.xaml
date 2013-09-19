@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="1100"
              d:DesignWidth="1720"
-             Margin="20">
+             Margin="40">
 
     <Grid>
         <Grid.RowDefinitions>

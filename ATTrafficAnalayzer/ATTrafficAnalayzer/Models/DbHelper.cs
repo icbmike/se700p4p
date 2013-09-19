@@ -588,6 +588,11 @@ namespace ATTrafficAnalayzer.Models
             return volumes;
         }
 
+        public Boolean VolumesExist(DateTime date)
+        {
+            return VolumesExist(date, date.AddDays(1));
+        }
+
         public Boolean VolumesExist(DateTime startDate, DateTime endDate)
         {
             endDate = endDate.AddSeconds(-1);
@@ -933,7 +938,6 @@ namespace ATTrafficAnalayzer.Models
                         if (reader.Read())
                         {
                             var configArray = JArray.Parse(reader.GetString(0));
-
                             summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string)summaryJson["route_name"], (int)summaryJson["intersection_in"], (int)summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int)t).ToList(), summaryJson["detectors_out"].Select(t => (int)t).ToList(), (int)summaryJson["div_factor_in"], (int)summaryJson["div_factor_out"])));
                         }
                         reader.Close();
