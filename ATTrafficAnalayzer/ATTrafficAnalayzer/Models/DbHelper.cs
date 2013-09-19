@@ -682,8 +682,7 @@ namespace ATTrafficAnalayzer.Models
                         query.Parameters.AddWithValue("@startDateTime", date);
                         query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
 
-                        object result = query.ExecuteScalar();
-                        volume += Convert.ToInt32(result);
+                        volume += Convert.ToInt32(query.ExecuteScalar());
                     }
                 }
                 conn.Close();

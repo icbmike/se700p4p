@@ -118,7 +118,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public interface ICalculator
         {
-            int GetVolume(DateTime date, SummaryRow summary);
+            int? GetVolume(DateTime date, SummaryRow summary);
         }
 
         public class AmPeakCalculator : ICalculator
@@ -130,12 +130,19 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 _hour = hour;
             }
 
-            public int GetVolume(DateTime date, SummaryRow summary)
+            public int? GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
                 date = date.AddHours(_hour);
-                return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
-                    dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
+                if (dbHelper.VolumesExist(date))
+                {
+                    return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
+                        dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -148,22 +155,36 @@ namespace ATTrafficAnalayzer.Models.Configuration
                 _hour = hour;
             }
 
-            public int GetVolume(DateTime date, SummaryRow summary)
+            public int? GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
                 date = date.AddHours(_hour + 12);
-                return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
-                    dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
+                if (dbHelper.VolumesExist(date))
+                {
+                    return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
+                        dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
         public class SumCalculator : ICalculator
         {
-            public int GetVolume(DateTime date, SummaryRow summary)
+            public int? GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DbHelper.GetDbHelper();
-                return dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionIn, summary.DetectorsIn) +
-                             dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionOut, summary.DetectorsOut);
+                if (dbHelper.VolumesExist(date))
+                {
+                    return dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionIn, summary.DetectorsIn) +
+                                 dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionOut, summary.DetectorsOut);
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
