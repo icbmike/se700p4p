@@ -47,13 +47,14 @@ namespace ATTrafficAnalayzer.Models
             {
                 dbConnection.Open();
 
-                SQLiteDataReader reader;
                 using (var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql })
                 {
-                    reader = createConfigsTableCommand.ExecuteReader();
+                    using (SQLiteDataReader reader = createConfigsTableCommand.ExecuteReader())
+                    {
+                        dataTable.Load(reader);
+                    }
                 }
-                dataTable.Load(reader);
-                reader.Close();
+
 
                 dbConnection.Close();
             }
@@ -438,10 +439,11 @@ namespace ATTrafficAnalayzer.Models
                 using (var query = new SQLiteCommand(conn))
                 {
                     query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
-                    var reader = query.ExecuteReader();
-
-                    while (reader.Read())
-                        intersections.Add(reader.GetInt32(0));
+                    using (var reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            intersections.Add(reader.GetInt32(0));
+                    }
                 }
                 conn.Close();
             }
@@ -459,11 +461,12 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
                     query.Parameters.AddWithValue("@intersection", intersection);
-                    var reader = query.ExecuteReader();
-
-                    while (reader.Read())
+                    using (var reader = query.ExecuteReader())
                     {
-                        detectors.Add(reader.GetInt32(0));
+                        while (reader.Read())
+                        {
+                            detectors.Add(reader.GetInt32(0));
+                        }
                     }
                 }
                 conn.Close();
@@ -486,12 +489,14 @@ namespace ATTrafficAnalayzer.Models
                     query.Parameters.AddWithValue("@detector", detector);
                     query.Parameters.AddWithValue("@dateTime", dateTime);
 
-                    var reader = query.ExecuteReader();
-                    if (reader.RecordsAffected != 1)
+                    using (var reader = query.ExecuteReader())
                     {
-                        throw new Exception("WHOAH");
+                        if (reader.RecordsAffected != 1)
+                        {
+                            throw new Exception("WHOAH");
+                        }
+                        volume = reader.GetInt32(0);
                     }
-                    volume = reader.GetInt32(0);
                 }
                 conn.Close();
             }
@@ -569,10 +574,12 @@ namespace ATTrafficAnalayzer.Models
                     query.Parameters.AddWithValue("@startDate", startDate);
                     //TODO change between to exclude upper limit instead of subtracting a second from endDate
                     query.Parameters.AddWithValue("@endDate", endDate.AddSeconds(-1));
-                    var reader = query.ExecuteReader();
-                    while (reader.Read())
+                    using (var reader = query.ExecuteReader())
                     {
-                        volumes.Add(reader.GetInt32(0));
+                        while (reader.Read())
+                        {
+                            volumes.Add(reader.GetInt32(0));
+                        }
                     }
                 }
                 conn.Close();
@@ -595,8 +602,10 @@ namespace ATTrafficAnalayzer.Models
                                         "WHERE (datetime BETWEEN @startDate AND @endDate);";
                     query.Parameters.AddWithValue("@startDate", startDate);
                     query.Parameters.AddWithValue("@endDate", endDate);
-                    var reader = query.ExecuteReader();
-                    result = reader.HasRows;
+                    using (var reader = query.ExecuteReader())
+                    {
+                        result = reader.HasRows;
+                    }
                 }
                 conn.Close();
             }
@@ -646,8 +655,10 @@ namespace ATTrafficAnalayzer.Models
                     query.Parameters.AddWithValue("@startDate", startDate);
                     query.Parameters.AddWithValue("@endDate", endDate);
                     query.Parameters.AddWithValue("@intersection", intersection);
-                    var reader = query.ExecuteReader();
-                    result = reader.HasRows;
+                    using (var reader = query.ExecuteReader())
+                    {
+                        result = reader.HasRows;
+                    }
                 }
                 conn.Close();
             }
@@ -707,10 +718,11 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText = "SELECT config FROM configs WHERE name = @name;";
                     query.Parameters.AddWithValue("@name", name);
-                    var reader = query.ExecuteReader();
-
-                    if (reader.Read())
-                        configJson = JObject.Parse(reader.GetString(0));
+                    using (var reader = query.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            configJson = JObject.Parse(reader.GetString(0));
+                    }
                 }
                 if (configJson != null)
                 {
@@ -722,11 +734,14 @@ namespace ATTrafficAnalayzer.Models
                             query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
                             query.Parameters.AddWithValue("@id", approachID);
 
-                            var reader = query.ExecuteReader();
-                            JObject approachJson = null;
+                            JObject approachJson;
+                            using (var reader = query.ExecuteReader())
+                            {
+                                approachJson = null;
 
-                            if (reader.Read())
-                                approachJson = JObject.Parse(reader.GetString(0));
+                                if (reader.Read())
+                                    approachJson = JObject.Parse(reader.GetString(0));
+                            }
 
                             approaches.Add(new Approach((string)approachJson["name"],
                                                         approachJson["detectors"].Select(t => (int)t).ToList()));
@@ -749,12 +764,16 @@ namespace ATTrafficAnalayzer.Models
                 using (var command = new SQLiteCommand(conn))
                 {
                     command.CommandText = "SELECT name FROM configs;";
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
+                    using (var reader = command.ExecuteReader())
                     {
-                        names.Add(reader.GetString(0));
+                        while (reader.Read())
+                        {
+                            names.Add(reader.GetString(0));
+                        }
+                        reader.Close();
                     }
                 }
+                conn.Close();
             }
             return names;
         }
@@ -848,6 +867,35 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        public void RemoveReport(string name)
+        {
+            RemoveConfig(name, true);
+        }
+
+        public void RemoveSummary(string name)
+        {
+            RemoveConfig(name, false);
+        }
+
+        private void RemoveConfig(string name, bool report) //or summary
+        {
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText = report ? "DELETE FROM configs WHERE name = @name" : "DELETE FROM monthly_summaries WHERE name = @name";
+                    query.Parameters.AddWithValue("@name", name);
+
+                    query.ExecuteNonQuery();
+
+                }
+                conn.Close();
+            }
+        }
+
+
         public IEnumerable<SummaryRow> GetSummaryConfig(string name)
         {
             var summaries = new List<SummaryRow>();
@@ -861,15 +909,16 @@ namespace ATTrafficAnalayzer.Models
                     query.CommandText = "SELECT config FROM monthly_summaries WHERE name = @name";
                     query.Parameters.AddWithValue("@name", name);
 
-                    var reader = query.ExecuteReader();
-
-                    if (reader.Read())
+                    using (var reader = query.ExecuteReader())
                     {
-                        var configArray = JArray.Parse(reader.GetString(0));
+                        if (reader.Read())
+                        {
+                            var configArray = JArray.Parse(reader.GetString(0));
 
-                        summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string)summaryJson["route_name"], (int)summaryJson["intersection_in"], (int)summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int)t).ToList(), summaryJson["detectors_out"].Select(t => (int)t).ToList(), (int)summaryJson["div_factor_in"], (int)summaryJson["div_factor_out"])));
+                            summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string)summaryJson["route_name"], (int)summaryJson["intersection_in"], (int)summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int)t).ToList(), summaryJson["detectors_out"].Select(t => (int)t).ToList(), (int)summaryJson["div_factor_in"], (int)summaryJson["div_factor_out"])));
+                        }
+                        reader.Close();
                     }
-                    reader.Close();
                 }
                 conn.Close();
             }
@@ -885,10 +934,13 @@ namespace ATTrafficAnalayzer.Models
                 using (var command = new SQLiteCommand(conn))
                 {
                     command.CommandText = "SELECT name FROM monthly_summaries;";
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
+                    using (var reader = command.ExecuteReader())
                     {
-                        names.Add(reader.GetString(0));
+                        while (reader.Read())
+                        {
+                            names.Add(reader.GetString(0));
+                        }
+                        reader.Close();
                     }
                 }
             }
@@ -931,10 +983,12 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText =
                         "SELECT DISTINCT strftime('%Y-%m-%d', dateTime) FROM volumes ORDER BY DATE(dateTime) ASC;";
-                    var reader = query.ExecuteReader();
-                    while (reader.Read())
+                    using (var reader = query.ExecuteReader())
                     {
-                        importedDates.Add(reader.GetDateTime(0));
+                        while (reader.Read())
+                        {
+                            importedDates.Add(reader.GetDateTime(0));
+                        }
                     }
                 }
                 conn.Close();
@@ -986,18 +1040,19 @@ namespace ATTrafficAnalayzer.Models
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
 
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
+                    using (var reader = command.ExecuteReader())
                     {
-                        var currentIntersection = reader.GetInt32(0);
-                        suspectedFaults.Add(currentIntersection, new List<int>());
-                        foreach (var detector in reader.GetString(1).Split(new[] { "," }, StringSplitOptions.None))
+                        while (reader.Read())
                         {
-                            suspectedFaults[currentIntersection].Add(int.Parse(detector));
-                        }
+                            var currentIntersection = reader.GetInt32(0);
+                            suspectedFaults.Add(currentIntersection, new List<int>());
+                            foreach (var detector in reader.GetString(1).Split(new[] { "," }, StringSplitOptions.None))
+                            {
+                                suspectedFaults[currentIntersection].Add(int.Parse(detector));
+                            }
                        
+                        }
                     }
-                    
                 }
             }
 

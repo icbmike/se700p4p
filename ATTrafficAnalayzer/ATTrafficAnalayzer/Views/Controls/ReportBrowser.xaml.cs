@@ -61,8 +61,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
         {
-            _dataTableHelper.SyncConfigs(_mode);
-            
             var treeViewItem = StandardReportsTreeView.ItemContainerGenerator.ContainerFromIndex(StandardReportsTreeView.Items.Count - 1) as TreeViewItem;
             if (treeViewItem != null)
                 treeViewItem.IsSelected = true;
@@ -156,8 +154,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void removeBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            var selectedRow = StandardReportsTreeView.SelectedItem as DataRowView;
-            var selectedItem = selectedRow.Row["name"] as string;
+            var selectedItem = StandardReportsTreeView.SelectedItem as string;
 
             //Configure the message box to be displayed 
             var messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
@@ -172,7 +169,14 @@ namespace ATTrafficAnalayzer.Views.Controls
             switch (isConfirmedDeletion)
             {
                 case MessageBoxResult.OK:
-                    _dataTableHelper.RemoveReport(selectedItem, _mode);
+                    if (_mode.Equals(Mode.Report))
+                    {
+                        _dataSource.RemoveReport(selectedItem);
+                    }
+                    else
+                    {
+                        _dataSource.RemoveSummary(selectedItem);
+                    }
 
                     messageBoxText = selectedItem + " was deleted";
                     caption = "Delete successful";

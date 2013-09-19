@@ -53,7 +53,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 try
                 {
-                    DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Summary);
+                    _dbHelper.RemoveSummary(_oldName);
                 }
                 catch (Exception exception)
                 {

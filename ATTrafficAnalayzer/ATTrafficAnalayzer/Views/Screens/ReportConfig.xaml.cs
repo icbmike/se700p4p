@@ -129,7 +129,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Delete the previous config before inserting the new one
                 try
                 {
-                    DataTableHelper.GetDataTableHelper().RemoveReport(_oldName, Mode.Report);
+                    _dataSource.RemoveReport(_oldName);
                 }
                 catch (Exception exception)
                 {
