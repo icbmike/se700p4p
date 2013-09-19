@@ -1,4 +1,5 @@
-﻿using ATTrafficAnalayzer.Models.Settings;
+﻿using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +23,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            SettingsTray.StartDate = DateTime.Today.AddDays(-1); 
+            SettingsTray.StartDate = DbHelper.GetDbHelper().GetMostRecentImportedDate();
 
             ModeChanged += SwitchToolbar;
         }

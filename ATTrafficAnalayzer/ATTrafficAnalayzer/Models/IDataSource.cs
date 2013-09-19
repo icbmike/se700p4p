@@ -21,7 +21,9 @@ namespace ATTrafficAnalayzer.Models
         Boolean VolumesExist(DateTime startDate, DateTime endDate);
         Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection);
         bool VolumesExistForMonth(int month);
-       
+
+        DateTime GetMostRecentImportedDate();
+
         //Configuration Related Methods
         Report GetConfiguration(string name);
         List<Approach> GetApproaches(String configName);
