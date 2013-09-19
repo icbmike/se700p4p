@@ -723,7 +723,7 @@ namespace ATTrafficAnalayzer.Models
                     var result = command.ExecuteScalar();
                     DateTime maxDate;
                     
-                    maxDate = result != null ? Convert.ToDateTime(result) : DateTime.Today.AddDays(-1);
+                    maxDate = result != DBNull.Value ? Convert.ToDateTime(result) : DateTime.Today.AddDays(-1);
                     mostRecentDay = new DateTime(maxDate.Year, maxDate.Month, maxDate.Day);
                 }
             }
