@@ -41,7 +41,7 @@
                   ScrollViewer.CanContentScroll="False"
                   HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Disabled"
-                  FontSize="14"
+                  FontSize="12"
                   HorizontalContentAlignment="Stretch"
                   AreRowDetailsFrozen="False"
                   RowHeaderWidth="0"
@@ -78,7 +78,7 @@
                 Style="{StaticResource AtButtonStyle}" />
 
         <Label Name="Popup"
-               FontSize="30"
+               FontSize="25"
                Content="Construct your new report or select a report from the Report Browser"
                DockPanel.Dock="Top"
                Visibility="Collapsed"

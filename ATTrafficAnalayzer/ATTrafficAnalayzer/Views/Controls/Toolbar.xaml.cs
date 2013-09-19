@@ -60,8 +60,8 @@ namespace ATTrafficAnalayzer.Views.Controls
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Home));
             else if (sender.Equals(RegularReportsButton))
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Report));
-//            else if (sender.Equals(MonthlySummaryButton))
-//                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Summary));
+            else if (sender.Equals(MonthlySummaryButton))
+                ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Summary));
             else if (sender.Equals(FaultsButton))
                 ModeChanged(this, new ModeChangedEventHandlerArgs(Mode.Faults));
         }

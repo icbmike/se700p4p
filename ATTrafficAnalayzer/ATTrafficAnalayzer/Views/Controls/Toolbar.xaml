@@ -90,16 +90,18 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Padding="6, 3"
+                        Width="120"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
                         SelectedDateChanged="DateAndInterval_SelectionChanged"
-                        SelectedDateFormat="Long" />
+                        SelectedDateFormat="Short" />
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
                    Visibility="Collapsed"
                    FontSize="16"
                    Content="End Date:" />
+            
             <DatePicker Name="EndDatePicker"
                         Background="White"
                         SelectedDate="{Binding EndDate, Mode=TwoWay}"
@@ -108,10 +110,11 @@
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
+                        Width="120"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
                         SelectedDateChanged="DateAndInterval_SelectionChanged"
-                        SelectedDateFormat="Long" />
+                        SelectedDateFormat="Short" />
 
             <!--Report config-->
             <Label Name="IntervalLabel"
