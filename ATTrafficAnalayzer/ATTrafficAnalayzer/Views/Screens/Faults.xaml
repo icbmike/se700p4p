@@ -10,19 +10,19 @@
     <ScrollViewer HorizontalContentAlignment="Stretch">
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Label FontSize="28"
-                   Margin="20,0"
+                   Margin="40, 20"
                    FontWeight="Bold"
                    Content="Faulty Detectors"
                    Grid.Row="0"
@@ -33,7 +33,7 @@
                    Height="20"
                    Content="Fault threshold:"
                    Padding="0"
-                   Margin="50, 0, 0,0"/>
+                   Margin="10,20"/>
             
             <TextBox 
                 Grid.Row="0"
@@ -41,7 +41,8 @@
                 Name="FaultThresholdTextBox"
                 Text="{Binding FaultThreshold}"
                 Height="20"
-                Margin="10"/>
+                Width="60"
+                     Margin="10,20,2,20" />
             
             <Button
                 Grid.Row="0"
@@ -50,8 +51,8 @@
                 Click="RefreshFaults_OnClick"
                 Content="Refresh"
                 Width="50"
-                HorizontalAlignment="Left"
-                Height="20"/>
+                Height="20"
+                    Margin="2,10,40,10" />
             
             <DataGrid Name="FaultsDataGrid"
                       IsReadOnly="True"
@@ -67,7 +68,7 @@
                       RowHeaderWidth="0"
                       VerticalAlignment="Top"
                       ColumnWidth="*"
-                      Margin="20"
+                      Margin="40, 10"
                       CanUserSortColumns="False"
                       Grid.Row="1"
                       Grid.Column="0"

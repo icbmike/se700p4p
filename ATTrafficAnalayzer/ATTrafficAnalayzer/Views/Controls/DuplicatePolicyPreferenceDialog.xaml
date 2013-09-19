@@ -34,7 +34,7 @@
                                  ConverterParameter=Skip}"
                          FontSize="16" />
             <RadioButton GroupName="Preference"
-                         Content="Re-import"
+                         Content="Overwrite"
                          IsChecked="{Binding Path=DefaultDuplicatePolicy, Mode=TwoWay, 
                                  Converter={StaticResource EnumConverter},
                                  ConverterParameter=Continue}"

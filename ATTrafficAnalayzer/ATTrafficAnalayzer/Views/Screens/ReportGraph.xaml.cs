@@ -93,12 +93,8 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Get volume info from db
                 var approachVolumes = approach.GetVolumesList(intersection, _startDate, _endDate);
                 for (int i=0; i < approachVolumes.Count(); i++) {
-                    if ((approachVolumes[i] == 2047 || approachVolumes[i] == 255) && _interval == 5)
-                        approachVolumes[i] = -10;
-                        var point = new CircleElementPointMarker();
-                    point.Fill = Brushes.Red;
-                    point.Size = 5.0;
-                    point.SetPosition(point.CreateMarker(), new Point(i, -10);
+                    if (approachVolumes[i] >= 150 && _interval == 5)
+                        approachVolumes[i] = 150;
                 }                                           
                     
                     

@@ -39,7 +39,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _dbHelper = DbHelper.GetDbHelper();
             DataContext = this;
             InitializeComponent();
-            FaultThreshold = 100;
+            FaultThreshold = 150;
             Render();
         }
 
