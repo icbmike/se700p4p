@@ -182,19 +182,19 @@ namespace ATTrafficAnalayzer.Views.Controls
                     }
                     backgroundWorker.RunWorkerCompleted +=
                         (o, args) =>
-                            {
-                                messageBoxText = selectedItem + " was deleted";
-                                caption = "Delete successful";
-                                button = MessageBoxButton.OK;
-                                icon = MessageBoxImage.Information;
-                                MessageBox.Show(messageBoxText, caption, button, icon);
-                                //Refresh the view
-                                Render();
-                            };
+                        {
+                            messageBoxText = selectedItem + " was deleted";
+                            caption = "Delete successful";
+                            button = MessageBoxButton.OK;
+                            icon = MessageBoxImage.Information;
+                            MessageBox.Show(messageBoxText, caption, button, icon);
+                            //Refresh the view
+                            Render();
+                        };
                     backgroundWorker.RunWorkerAsync();
-            
 
-            Logger.Debug(selectedItem + " report deleted", "Reports panel");
+
+                    Logger.Debug(selectedItem + " report deleted", "Reports panel");
                     break;
 
                 case MessageBoxResult.Cancel:
@@ -215,12 +215,13 @@ namespace ATTrafficAnalayzer.Views.Controls
         public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
         {
             _mode = args.Mode;
+            
             if (GetSelectedConfiguration() != null)
             {
                 _hasModeChanged = true;
             }
-
-            Render();
+            if(!_mode.Equals(args.Mode))
+            {Render();}
         }
 
         #endregion
