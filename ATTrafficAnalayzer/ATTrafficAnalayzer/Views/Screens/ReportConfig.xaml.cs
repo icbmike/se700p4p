@@ -160,7 +160,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             foreach (var detector in _detectorList)
             {
-                var newApproach = new ConfigApproachBox(Approaches, null, string.Format("Group {0}", detector))
+                var newApproach = new ConfigApproachBox(Approaches, null, string.Format("Approach {0}", detector))
                 {
                     Margin = new Thickness(20, 20, 0, 0)
                 };

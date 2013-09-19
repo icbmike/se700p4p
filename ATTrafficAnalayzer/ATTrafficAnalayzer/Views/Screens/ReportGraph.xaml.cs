@@ -92,6 +92,16 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 //Get volume info from db
                 var approachVolumes = approach.GetVolumesList(intersection, _startDate, _endDate);
+                for (int i=0; i < approachVolumes.Count(); i++) {
+                    if ((approachVolumes[i] == 2047 || approachVolumes[i] == 255) && _interval == 5)
+                        approachVolumes[i] = -10;
+                        var point = new CircleElementPointMarker();
+                    point.Fill = Brushes.Red;
+                    point.Size = 5.0;
+                    point.SetPosition(point.CreateMarker(), new Point(i, -10);
+                }                                           
+                    
+                    
 
                 //Check that we actually have volumes that we need
                 if (approachVolumes.Count / (_interval / 5) != dateList.Count)
@@ -123,7 +133,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name)));
 
-
+              
                 var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
                 
                 stackPanel.Children.Add( new Label {Content = approach.Name, Margin = new Thickness(0, -5, 0, 0) });
