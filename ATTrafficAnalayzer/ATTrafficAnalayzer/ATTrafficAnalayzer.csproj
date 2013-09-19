@@ -18,7 +18,6 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <Prefer32Bit>false</Prefer32Bit>
     <PublishUrl>C:\Users\Mike\Desktop\Traffic Reporter 2013\</PublishUrl>
-    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -28,14 +27,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -106,7 +101,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EnumMatchToBooleanConverter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
     <Compile Include="Models\Configuration\SummaryRow.cs" />
@@ -124,6 +118,7 @@
     <Compile Include="Views\Controls\DuplicatePolicyPreferenceDialog.xaml.cs">
       <DependentUpon>DuplicatePolicyPreferenceDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Views\Controls\TableApproachDisplay.xaml.cs">
       <DependentUpon>TableApproachDisplay.xaml</DependentUpon>
     </Compile>
