@@ -1,16 +1,12 @@
-﻿using System.ComponentModel;
-using System.Data;
+﻿using System.Data;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;
-using DataGridCell = System.Windows.Controls.DataGridCell;
 using System;
-using System.Windows.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
