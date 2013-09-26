@@ -24,6 +24,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly bool _isNewConfig = true;
         private readonly string _oldName;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public ReportConfig()
         {
             DataContext = this;
@@ -39,6 +42,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             Logger.Info("constructed view", "report config");
         }
 
+        /// <summary>
+        /// Constructor used to edit a configuration.
+        /// </summary>
+        /// <param name="configToBeEdited">The name of the configuration to be edited</param>
         public ReportConfig(string configToBeEdited) : this()
         {
             //Populate config screen
@@ -90,27 +97,39 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #region Control Event Handlers
 
+        /// <summary>
+        /// Drop handler for when detectors are dropped onto the plus sign.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewApproachDrop(object sender, DragEventArgs e)
         {
+            //Get the source listview
             var source = e.Data.GetData("source") as ListView;
+            //Get the items in that list view
             var items = e.Data.GetData("items") as List<int>;
             Debug.Assert(source != null, "source != null");
+            
             var dragSourceList = source.ItemsSource as ObservableCollection<int>;
 
+            //Check the source isnt the detectors list
             if (!Equals(source, DetectorListView))
             {
                 Debug.Assert(items != null, "items != null");
+                //If its from an ApproachBox remove the items from there
                 foreach (var item in items)
                 {
                     ((ObservableCollection<int>)source.ItemsSource).Remove(item);
                 }
             }
 
+            //Create a new approach box and add it to the screen
             var approach = new ConfigApproachBox(Approaches, items, "New Approach") { Margin = new Thickness(20, 20, 0, 0) };
-
             Approaches.Children.Add(approach);
 
             Debug.Assert(dragSourceList != null, "dragSourceList != null");
+            
+            //If we have emptied an approach box, remove it.
             if (dragSourceList.Count == 0)
             {
                 if (e.Data.GetDataPresent("approach"))
@@ -122,6 +141,13 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
 
+        /// <summary>
+        /// Save button click handler. Replaces configs if they are being edited, creates new entries in the database otherwise.
+        /// Fires ConfigurationSaved upon completion.
+        /// TODO: put saving in BackgroundWorker with some sort of indeterminate progress dialog.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (!_isNewConfig)
@@ -144,20 +170,30 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 var appCtrl = Approaches.Children[i] as ConfigApproachBox;
                 Debug.Assert(appCtrl != null, "appCtrl != null");
+                //Construct Approach objects from the controls. TODO: Move this into a method on ConfigApproachBox
                 approaches.Add(new Approach(appCtrl.ApproachName, appCtrl.Detectors.ToList()));
             }
 
+            //Do the database insertion.
             _dataSource.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
 
+            //Fire the saved event
             if (ConfigurationSaved != null)
                 ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 
+        /// <summary>
+        /// Button handler. Convenience button to distribute detectors into their own approach.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Distribute_Click(object sender, RoutedEventArgs e)
         {
+            //Remove all current approaches
             while (Approaches.Children.Count > 1)
                 Approaches.Children.RemoveAt(1);
 
+            //Add an approach per detector
             foreach (var detector in _detectorList)
             {
                 var newApproach = new ConfigApproachBox(Approaches, null, string.Format("Approach {0}", detector))
@@ -169,6 +205,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+        /// <summary>
+        /// Button click handler. Convenience button to group all detectors into one approach.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Group_Click(object sender, RoutedEventArgs e)
         {
             while (Approaches.Children.Count > 1)
@@ -184,6 +225,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                 newApproach.AddDetector(detector);
         }
 
+        /// <summary>
+        /// Method to automatically name the new report.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReportNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
             if (_isNewConfig)
@@ -245,7 +291,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
-
+        /// <summary>
+        /// Event handler to remove ugly red banner message.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
            private void UserControl_GotFocus_1(object sender, RoutedEventArgs e)
         {
             Popup.Visibility = Visibility.Collapsed;
