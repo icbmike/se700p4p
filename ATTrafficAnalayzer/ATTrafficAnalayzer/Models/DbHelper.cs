@@ -23,9 +23,11 @@ namespace ATTrafficAnalayzer.Models
         private static DbHelper _instance;
         private static readonly object SyncLock = new object();
 
+        /// <summary>
+        ///     Initialises database tables
+        /// </summary>
         private DbHelper()
         {
-
             CreateVolumesTableIfNotExists();
             CreateApproachesTableIfNotExists();
             CreateConfigsTableIfNotExists();
@@ -35,10 +37,10 @@ namespace ATTrafficAnalayzer.Models
         #region Helper functions
 
         /// <summary>
-        ///     Allows the programmer to run a query against the Database.
+        ///     Allows the programmer to run a query against the Database
         /// </summary>
         /// <param name="sql">The SQL to run</param>
-        /// <returns>A DataTable containing the result set.</returns>
+        /// <returns>A DataTable containing the result set</returns>
         private static DataTable GetDataTable(string sql)
         {
             var dataTable = new DataTable();
@@ -54,19 +56,27 @@ namespace ATTrafficAnalayzer.Models
                         dataTable.Load(reader);
                     }
                 }
-
-
                 dbConnection.Close();
             }
-
             return dataTable;
         }
 
+        /// <summary>
+        ///     Gets an adapter to the database
+        /// </summary>
+        /// <param name="sql">The sql query</param>
+        /// <returns>A data adapter for the given query</returns>
         private static SQLiteDataAdapter GetDataAdapter(string sql)
         {
             return GetDataAdapter(sql, null);
         }
 
+        /// <summary>
+        ///     Gets an adapter to the database
+        /// </summary>
+        /// <param name="sql">The sql query</param>
+        /// <param name="parameters">The parameters for the sql</param>
+        /// <returns>A data adapter for the given query</returns>
         private static SQLiteDataAdapter GetDataAdapter(string sql, Dictionary<string, object> parameters)
         {
             var dbConnection = new SQLiteConnection(DbPath);
@@ -262,6 +272,9 @@ namespace ATTrafficAnalayzer.Models
 
         #region Table Initialization
 
+        /// <summary>
+        /// Create the configs table in the database
+        /// </summary>
         private static void CreateConfigsTableIfNotExists()
         {
             const string createConfigsTableSql = @"CREATE TABLE IF NOT EXISTS [configs] ( 
@@ -274,6 +287,9 @@ namespace ATTrafficAnalayzer.Models
             ExecuteNonQuery(createConfigsTableSql);
         }
 
+        /// <summary>
+        /// Create the summaries table in the database
+        /// </summary>
         private static void CreateMonthlySummariesTableIfNotExists()
         {
             const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [monthly_summaries] ( 
@@ -286,6 +302,9 @@ namespace ATTrafficAnalayzer.Models
             ExecuteNonQuery(createVolumesTableSql);
         }
 
+        /// <summary>
+        /// Create the approaches table in the database
+        /// </summary>
         private static void CreateApproachesTableIfNotExists()
         {
             const string createApproachesTableSql = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
@@ -295,6 +314,9 @@ namespace ATTrafficAnalayzer.Models
             ExecuteNonQuery(createApproachesTableSql);
         }
 
+        /// <summary>
+        /// Create the volumes table in the database
+        /// </summary>
         private static void CreateVolumesTableIfNotExists()
         {
             const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
@@ -312,11 +334,23 @@ namespace ATTrafficAnalayzer.Models
 
         #region Volume Related Methods
 
+        /// <summary>
+        ///     Duplicate policy options
+        /// </summary>
         public enum DuplicatePolicy
         {
             Skip, SkipAll, Continue
         }
 
+        /// <summary>
+        ///     Imports a single file
+        /// </summary>
+        /// <param name="b">Worker thread</param>
+        /// <param name="w"></param>
+        /// <param name="filename">filename to import</param>
+        /// <param name="updateProgress"></param>
+        /// <param name="getDuplicatePolicy"></param>
+        /// <returns></returns>
         public static DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
@@ -429,6 +463,10 @@ namespace ATTrafficAnalayzer.Models
             return duplicatePolicy;
         }
 
+        /// <summary>
+        ///     Get a list of intersections
+        /// </summary>
+        /// <returns>All intersections which have volume data in the database</returns>
         public List<int> GetIntersections()
         {
             List<int> intersections;
@@ -450,6 +488,11 @@ namespace ATTrafficAnalayzer.Models
             return intersections;
         }
 
+        /// <summary>
+        ///     Get a list of detectors at a specified intersection
+        /// </summary>
+        /// <param name="intersection">The intersection ID</param>
+        /// <returns>List of detectors</returns>
         public List<int> GetDetectorsAtIntersection(int intersection)
         {
             List<int> detectors;
@@ -474,6 +517,13 @@ namespace ATTrafficAnalayzer.Models
             return detectors;
         }
 
+        /// <summary>
+        ///     Get the volumes for a detector for a 5 min period at a specific datetime
+        /// </summary>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="detector">Detector ID</param>
+        /// <param name="dateTime">Date & time</param>
+        /// <returns>Traffic volume for the five minute period</returns>
         public int GetVolume(int intersection, int detector, DateTime dateTime)
         {
             int volume;
@@ -503,6 +553,14 @@ namespace ATTrafficAnalayzer.Models
             return volume;
         }
 
+        /// <summary>
+        ///     Get the volumes for a detector at a specific datetime
+        /// </summary>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="detectorList">List of detector to query volumes for</param>
+        /// <param name="startDateTime">Start of the period</param>
+        /// <param name="endDateTime">End of the period</param>
+        /// <returns>The total volumes for the detectors between the start and end date</returns>
         public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
         {
             int volume;
@@ -534,6 +592,10 @@ namespace ATTrafficAnalayzer.Models
             return volume;
         }
 
+        /// <summary>
+        ///     Confirms if there is no data in the volumes table
+        /// </summary>
+        /// <returns>True if there is no data</returns>
         public static bool VolumesTableEmpty()
         {
             long reader;
@@ -554,6 +616,14 @@ namespace ATTrafficAnalayzer.Models
             return !reader.Equals(1);
         }
 
+        /// <summary>
+        ///     Get the volumes for a single detector at a specific datetime
+        /// </summary>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="detector">Detector ID</param>
+        /// <param name="startDate">datetime at the start of the period</param>
+        /// <param name="endDate">datetime at the end of the period</param>
+        /// <returns>Traffic volume for the five minute period</returns>
         public List<int> GetVolumes(int intersection, int detector, DateTime startDate, DateTime endDate)
         {
             List<int> volumes;
@@ -588,11 +658,22 @@ namespace ATTrafficAnalayzer.Models
             return volumes;
         }
 
+        /// <summary>
+        ///     Checks if volumes exist on a date
+        /// </summary>
+        /// <param name="date">Date to check</param>
+        /// <returns>True if there are volumes for the day</returns>
         public Boolean VolumesExist(DateTime date)
         {
             return VolumesExist(date, date.AddDays(1));
         }
 
+        /// <summary>
+        ///     Checks if there are volumes over a period of time
+        /// </summary>
+        /// <param name="startDate">Date at the start of the period</param>
+        /// <param name="endDate">Date at the end of the period</param>
+        /// <returns>True if there are volumes between the dates</returns>
         public Boolean VolumesExist(DateTime startDate, DateTime endDate)
         {
             endDate = endDate.AddSeconds(-1);
@@ -616,7 +697,12 @@ namespace ATTrafficAnalayzer.Models
             }
             return result;
         }
-
+        
+        /// <summary>
+        ///     Removes the traffic volume for a day
+        /// </summary>
+        /// <param name="date">Day</param>
+        /// <returns>True if the deletion was successful</returns>
         public bool RemoveVolumes(DateTime date)
         {
             var returnCode = true;
@@ -644,6 +730,13 @@ namespace ATTrafficAnalayzer.Models
             return returnCode;
         }
 
+        /// <summary>
+        ///     Checks if there are traffic volumes for an interseciton date
+        /// </summary>
+        /// <param name="startDate">date at the start of the time period</param>
+        /// <param name="endDate">date at the end of the time period</param>
+        /// <param name="intersection">intersection ID</param>
+        /// <returns>True if volumes exist</returns>
         public Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection)
         {
             endDate = endDate.AddSeconds(-1);
@@ -670,6 +763,13 @@ namespace ATTrafficAnalayzer.Models
             return result;
         }
 
+        /// <summary>
+        ///     Gets the daily total volumes for a list of detectors at an intersection
+        /// </summary>
+        /// <param name="date">Day</param>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="detectors">List of detector IDs</param>
+        /// <returns>Daily total</returns>
         public int GetTotalVolumeForDay(DateTime date, int intersection, List<int> detectors)
         {
             int volume;
@@ -705,12 +805,20 @@ namespace ATTrafficAnalayzer.Models
 
         #region Report Related Methods
 
+        /// <summary>
+        ///     Adapater to the report configuration database table
+        /// </summary>
+        /// <returns>Data adapter</returns>
         public SQLiteDataAdapter GetConfigsDataAdapter()
         {
             const string getCongifsSql = "SELECT name FROM configs;";
             return GetDataAdapter(getCongifsSql);
         }
 
+        /// <summary>
+        ///     Date of the most recently imported traffic volumes
+        /// </summary>
+        /// <returns>Date</returns>
         public DateTime GetMostRecentImportedDate()
         {
             DateTime mostRecentDay;
@@ -722,7 +830,7 @@ namespace ATTrafficAnalayzer.Models
                     command.CommandText = "SELECT MAX(dateTime) FROM volumes;";
                     var result = command.ExecuteScalar();
                     DateTime maxDate;
-                    
+
                     maxDate = result != DBNull.Value ? Convert.ToDateTime(result) : DateTime.Today.AddDays(-1);
                     mostRecentDay = new DateTime(maxDate.Year, maxDate.Month, maxDate.Day);
                 }
@@ -730,6 +838,11 @@ namespace ATTrafficAnalayzer.Models
             return mostRecentDay;
         }
 
+        /// <summary>
+        ///     Retrieve a report configuration
+        /// </summary>
+        /// <param name="name">Report name</param>
+        /// <returns>configuration</returns>
         public Report GetConfiguration(string name)
         {
             using (var conn = new SQLiteConnection(DbPath))
@@ -779,6 +892,10 @@ namespace ATTrafficAnalayzer.Models
             return null;
         }
 
+        /// <summary>
+        ///     Get a list of all reports
+        /// </summary>
+        /// <returns>List of all reports</returns>
         public List<string> GetReportNames()
         {
             var names = new List<string>();
@@ -802,6 +919,10 @@ namespace ATTrafficAnalayzer.Models
             return names;
         }
 
+        /// <summary>
+        ///     Create a report record in the database
+        /// </summary>
+        /// <param name="config">Report configuration</param>
         public void AddConfiguration(Report config)
         {
             var configJson = config.ToJson();
@@ -841,11 +962,21 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        /// <summary>
+        ///     List of all approaches in a configuration
+        /// </summary>
+        /// <param name="configName">Config name</param>
+        /// <returns>List of approaches</returns>
         public List<Approach> GetApproaches(String configName)
         {
             return GetConfiguration(configName).Approaches;
         }
 
+        /// <summary>
+        ///     Checks if a report exists
+        /// </summary>
+        /// <param name="name">Report name</param>
+        /// <returns>True if it exists</returns>
         public bool ReportExists(String name)
         {
             long reader;
@@ -871,6 +1002,11 @@ namespace ATTrafficAnalayzer.Models
 
         #region Summary Related Methods
 
+        /// <summary>
+        ///     Update summary configuration in the database
+        /// </summary>
+        /// <param name="configName">Summary name</param>
+        /// <param name="rows">New configuration contents</param>
         public void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows)
         {
             var config = new JArray { rows.Select(row => row.ToJson()) };
@@ -891,6 +1027,10 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        /// <summary>
+        ///     Delete report
+        /// </summary>
+        /// <param name="name">nameReport </param>
         public void RemoveReport(string name)
         {
             RemoveConfig(name, true);
@@ -901,6 +1041,11 @@ namespace ATTrafficAnalayzer.Models
             RemoveConfig(name, false);
         }
 
+        /// <summary>
+        ///     Delete the summary/report config from the database
+        /// </summary>
+        /// <param name="name">summary/report name</param>
+        /// <param name="report">not used</param>
         private void RemoveConfig(string name, bool report) //or summary
         {
             using (var conn = new SQLiteConnection(DbPath))
@@ -919,7 +1064,11 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
-
+        /// <summary>
+        ///     Get the summary configuration to create a report
+        /// </summary>
+        /// <param name="name">Name of summary</param>
+        /// <returns>Rows in the Summary</returns>
         public IEnumerable<SummaryRow> GetSummaryConfig(string name)
         {
             var summaries = new List<SummaryRow>();
@@ -948,6 +1097,10 @@ namespace ATTrafficAnalayzer.Models
             return summaries;
         }
 
+        /// <summary>
+        ///     Name of all monthly summaries
+        /// </summary>
+        /// <returns>List of summary names</returns>
         public List<string> GetSummaryNames()
         {
             var names = new List<string>();
@@ -970,6 +1123,11 @@ namespace ATTrafficAnalayzer.Models
             return names;
         }
 
+        /// <summary>
+        ///     Checks if there is a summary with the given name
+        /// </summary>
+        /// <param name="name">summary name</param>
+        /// <returns>True if the summary exists</returns>
         public bool SummaryExists(String name)
         {
             long reader;
@@ -995,6 +1153,10 @@ namespace ATTrafficAnalayzer.Models
 
         #region Miscellaneous
 
+        /// <summary>
+        ///     Dates of the data in the database
+        /// </summary>
+        /// <returns>Dates</returns>
         public List<DateTime> GetImportedDates()
         {
             var importedDates = new List<DateTime>();
@@ -1019,6 +1181,13 @@ namespace ATTrafficAnalayzer.Models
             return importedDates;
         }
 
+        /// <summary>
+        ///     Data adapter to the faults table
+        /// </summary>
+        /// <param name="startDate">date at the start of the time period</param>
+        /// <param name="endDate">date at the end of the time period</param>
+        /// <param name="faultThreshold">return all detectors with a value of this threshold</param>
+        /// <returns>data adapter</returns>
         public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate, int faultThreshold)
         {
             const string sql = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
@@ -1029,6 +1198,10 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
+        /// <summary>
+        ///     Provides the db helper singleton
+        /// </summary>
+        /// <returns>DB Helper instance</returns>
         public static DbHelper GetDbHelper()
         {
             lock (SyncLock)
@@ -1037,16 +1210,32 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        /// <summary>
+        ///     Returns a data adapter for the summary table
+        /// </summary>
+        /// <returns>Data adapter</returns>
         public SQLiteDataAdapter GetMonthlySummariesDataAdapter()
         {
             return GetDataAdapter("SELECT name FROM monthly_summaries;");
         }
 
+        /// <summary>
+        ///     Checks if there are traffic volumes in the database for a given month
+        /// </summary>
+        /// <param name="month">Month number</param>
+        /// <returns>True if there are volumes</returns>
         public bool VolumesExistForMonth(int month)
         {
             return true; //Needs to be implemented
         }
-
+                           
+        /// <summary>
+        ///     Get a list of all faulty detectors between two dates
+        /// </summary>
+        /// <param name="startDate">date at the start of the time period</param>
+        /// <param name="endDate">date at the end of the time period</param>
+        /// <param name="threshold">list all detectors with values over this value</param>
+        /// <returns>Detectors by intersection</returns>
         public Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold)
         {
             var suspectedFaults = new Dictionary<int, List<int>>();
@@ -1073,7 +1262,7 @@ namespace ATTrafficAnalayzer.Models
                             {
                                 suspectedFaults[currentIntersection].Add(int.Parse(detector));
                             }
-                       
+
                         }
                     }
                 }
