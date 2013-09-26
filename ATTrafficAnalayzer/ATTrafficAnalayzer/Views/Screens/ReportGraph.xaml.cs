@@ -26,6 +26,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         private int _interval;
         private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="settings"> Lets the Graph screen get the start and end date at the time of construction</param>
+        /// <param name="configName">The name of the report to display</param>
         public ReportGraph(SettingsTray settings, string configName)
         {
             _startDate = settings.StartDate;
@@ -35,6 +40,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             InitializeComponent();
 
+            //Remove mouse and keyboard navigation and hide the legend.
             _series = new List<LineAndMarker<MarkerPointsGraph>>();
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
@@ -43,6 +49,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
+        /// <summary>
+        /// Method to display and render the graph.
+        /// </summary>
         private void Render()
         {
             var dbHelper = DbHelper.GetDbHelper();
@@ -96,8 +105,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                     if (approachVolumes[i] >= 150 && _interval == 5)
                         approachVolumes[i] = 150;
                 }                                           
-                    
-                    
 
                 //Check that we actually have volumes that we need
                 if (approachVolumes.Count / (_interval / 5) != dateList.Count)
@@ -105,7 +112,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                     countsMatch = false;
                     break;
                 }
-
+                //Sum volumes based on the interval
                 var compressedVolumes = new int[dateList.Count];
                 var valuesPerCell = _interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
@@ -129,12 +136,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
                   new PenDescription(approach.Name)));
 
-              
+               //Add toggle checkboxes
                 var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
-                
                 stackPanel.Children.Add( new Label {Content = approach.Name, Margin = new Thickness(0, -5, 0, 0) });
                 stackPanel.Children.Add( new Border{Background = SeriesColours[(brushCounter)%SeriesColours.Count()], Height = 15, Width = 15, CornerRadius = new CornerRadius(5)});
-                //Add toggle checkboxes
+                
                 var checkbox = new CheckBox
                 {
                     Content = stackPanel,
@@ -147,6 +153,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 ToggleContainer.Children.Add(checkbox);
             }
 
+            //If previously counts didn't match, tell anyone who cares
             if (!countsMatch)
             {
                 if (VolumeDateCountsDontMatch != null)
@@ -156,6 +163,12 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+
+        /// <summary>
+        /// Event handler to toggle series on the graph corresponding to the checked checkbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void checkbox_Checked(object sender, RoutedEventArgs e)
         {
             var checkbox = sender as CheckBox;
