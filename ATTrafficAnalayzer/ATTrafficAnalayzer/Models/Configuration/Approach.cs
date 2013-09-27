@@ -27,7 +27,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         ///     Creates the approach instance
         /// </summary>
         /// <param name="name">Name of the approach</param>
-        /// <param name="detectors"></param>
+        /// <param name="detectors">List of intersection </param>
         public Approach(string name, List<int> detectors)
         {
             Name = name;
@@ -36,18 +36,18 @@ namespace ATTrafficAnalayzer.Models.Configuration
         }
 
         /// <summary>
-        /// 
+        ///     Returns the name of the approach
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Approach name</returns>
         public override string ToString()
         {
             return Name;
         }
 
         /// <summary>
-        /// 
+        ///     Generates a json object which holds the approach data
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Approach as a JSON object</returns>
         public JObject ToJson()
         {
             var json = new JObject { { "name", Name } };
@@ -63,7 +63,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// <summary>
         /// Find the peak values for the approach
         /// </summary>
-        /// <param name="list"></param>
+        /// <param name="list">List of traffic volumes</param>
         /// <param name="limit">number of hour columns</param>
         /// <param name="offset">starting column</param>
         /// <returns>max volume record</returns>
@@ -73,12 +73,12 @@ namespace ATTrafficAnalayzer.Models.Configuration
         }
 
         /// <summary>
-        /// 
+        ///     Get a list of volumes
         /// </summary>
-        /// <param name="intersection"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <returns></returns>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="startDate">Start of the period</param>
+        /// <param name="endDate">End of the period</param>
+        /// <returns>List of volumes</returns>
         public List<int> GetVolumesList(int intersection, DateTime startDate, DateTime endDate)
         {
             var volumes = new List<int>();
@@ -97,14 +97,14 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return volumes;
         }
 
-        public void ResetMeasurements()
-        {
-
-        }
-
         /// <summary>
-        /// 
+        ///     Gets all traffic volume data
         /// </summary>
+        /// <param name="settings">Group of settings from </param>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="limit">Number of data items to get</param>
+        /// <param name="offset">Index of the starting data element</param>
+        /// <param name="day">Day the volumes are required for</param>
         /// <returns></returns>
         public DataTable GetDataTable(SettingsTray settings, int intersection, int limit, int offset, int day)
         {
@@ -173,22 +173,22 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// <summary>
         /// Calculates the total for each column in the datagrid
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="column"></param>
-        /// <param name="numberOfRows"></param>
-        /// <returns></returns>
+        /// <param name="data">A List of data values</param>
+        /// <param name="column">Column number</param>
+        /// <param name="numberOfRows">Number of items in the list</param>
+        /// <returns>Total traffic volume</returns>
         private static int CalculateColumnTotal(IList<int> data, int column, int numberOfRows)
         {
             return GetColumnData(data, column, numberOfRows).Sum();
         }
 
         /// <summary>
-        /// 
+        ///     Port the data for a column as an IEnumerable
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="column"></param>
-        /// <param name="numberOfRows"></param>
-        /// <returns></returns>
+        /// <param name="data">Data values</param>
+        /// <param name="column">Column number</param>
+        /// <param name="numberOfRows">Number of items in the list</param>
+        /// <returns>List of data</returns>
         private static IEnumerable<int> GetColumnData(IList<int> data, int column, int numberOfRows)
         {
             var columnList = new List<int>();
@@ -200,14 +200,18 @@ namespace ATTrafficAnalayzer.Models.Configuration
         }
 
         /// <summary>
-        /// 
+        ///     Total volume for the approach
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Total traffic volume for the approach</returns>
         public int GetTotal()
         {
             return _approachTotal;
         }
 
+        /// <summary>
+        ///     Return a string listing all detectors
+        /// </summary>
+        /// <returns>String listing all detectors</returns>
         public string GetDetectorsAsString()
         {
             return String.Join(", ", Detectors);
