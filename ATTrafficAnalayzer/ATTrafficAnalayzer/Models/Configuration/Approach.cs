@@ -12,6 +12,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
     {
         private readonly IDataSource _dbHelper;
 
+        /// <summary>
+        ///     Peak volumes
+        /// </summary>
         public VolumeMetric AmPeak = new VolumeMetric();
         public VolumeMetric PmPeak = new VolumeMetric();
         private int _approachTotal;
@@ -21,9 +24,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public int Id { get; set; }
 
         /// <summary>
-        /// 
+        ///     Creates the approach instance
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Name of the approach</param>
         /// <param name="detectors"></param>
         public Approach(string name, List<int> detectors)
         {

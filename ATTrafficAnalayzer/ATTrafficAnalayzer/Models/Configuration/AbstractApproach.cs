@@ -2,7 +2,15 @@
 {
     abstract class AbstractApproach
     {
+        /// <summary>
+        ///     Name of the Abstract
+        /// </summary>
         public string Name { get; set; }
-        public abstract int GetVolume();
+
+        /// <summary>
+        ///     Gets the volume for Abstract
+        /// </summary>
+        /// <returns>Traffic volume</returns>
+        public abstract int GetVolume();                                
     }
 }
