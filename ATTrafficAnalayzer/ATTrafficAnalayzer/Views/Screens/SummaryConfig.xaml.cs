@@ -20,9 +20,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public event ConfigurationSavedEventHander ConfigurationSaved;
 
+        /// <summary>
+        /// Default constructor for when constructing a new summary config
+        /// </summary>
         public SummaryConfig()
         {
-            
             if (_dbHelper == null) _dbHelper = DbHelper.GetDbHelper();
 
             Rows = new ObservableCollection<SummaryRow>();
@@ -31,6 +33,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             SummaryDataGrid.DataContext = this;
         }
 
+        /// <summary>
+        /// Constructor for when editing an existing summary config
+        /// </summary>
+        /// <param name="summaryToBeEdited">The summary config to be edited</param>
         public SummaryConfig(string summaryToBeEdited) : this()
         {
             IsNewConfig = false;
@@ -46,9 +52,14 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public ObservableCollection<SummaryRow> Rows { get; set; }
 
+        /// <summary>
+        /// Click handler for the save button.
+        /// </summary>
+        /// <param name="sender">The button</param>
+        /// <param name="e"></param>
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-
+            //If we're editing an existing config, delete it before saving it like a regular save
             if (!IsNewConfig)
             {
                 try
@@ -60,7 +71,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                     Logger.Error(exception, "SummaryConfig");
                 }
             }
-
+            //Get the config name
             var configName = ConfigNameTextBox.Text;
 
             //Check we're in a valid state
@@ -87,6 +98,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
         }
 
+        /// <summary>
+        /// Handler to automatically generate a name for a new config
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ConfigNameTextBox_Loaded(object sender, RoutedEventArgs e)
         {
             if (IsNewConfig)
@@ -104,6 +120,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+        /// <summary>
+        /// Handler to remove ugly red popup
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UserControl_GotFocus_1(object sender, RoutedEventArgs e)
         {
             Popup.Visibility = Visibility.Collapsed;

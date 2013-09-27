@@ -33,10 +33,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         private bool _countsDontMatch;
 
         /// <summary>
-        /// 
+        /// Constructor create a component displaying the specified config
         /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="configName"></param>
+        /// <param name="settings">Lets the graph view get the date range at the time of construction</param>
+        /// <param name="configName">The config to be displayed</param>
         public ReportTable(SettingsTray settings, string configName)
         {
             _configuration = _dbHelper.GetConfiguration(configName);
@@ -51,15 +51,19 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
+        /// <summary>
+        /// Displays the grid
+        /// </summary>
         private void Render()
         {
             ScreenTitle.Content = _configuration.ConfigName;
             OverallSummaryBorder.Visibility = Visibility.Collapsed;
 
-            //Clear all the things!
+            //Remove all exisitng approaches!
             ApproachesStackPanel.Children.Clear();
             OverallSummaryTextBlock.Inlines.Clear();
 
+            //Clear the calculated stats
             _maxAm.ClearApproaches();
             _maxPm.ClearApproaches();
             _maxTotal.ClearApproaches();
@@ -68,12 +72,17 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             var timeSpan = _endDate - _startDate;
 
+            //Per day
             var hasVolumes = false;
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
+                //Per approach
                 foreach (var approach in _configuration.Approaches)
                 {
+                    //Construct a datatable
                     var dataTable = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day);
+                    
+                    //If there isnt a data table tell the user.
                     if (dataTable == null)
                     {
                         var missingTable = new Label()
@@ -85,6 +94,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                     }
                     else
                     {
+                        //Display the datatable using the TableApproachDisplay control.
                         ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, dataTable, day));
 
                         _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
@@ -100,6 +110,8 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
             }
 
+
+            //Display overall stats
             OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} with {1} vehicles\n", string.Join(", ", _maxTotal.GetApproachesAsString()), _maxTotal.GetValue())));
             OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} with {1} vehicles\n", string.Join(", ", _maxAm.GetApproachesAsString()), _maxAm.GetValue())));
@@ -112,10 +124,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         /// <summary>
-        /// 
+        /// Creates a TableApproachDisplay from the given arguments.
         /// </summary>
-        /// <param name="approach"></param>
-        /// <param name="day"></param>
+        /// <param name="approach">The approach for the table</param>
+        /// <param name="day">The index of the day in the daterange specified in the Toolbar</param>
         /// <returns></returns>
         private TableApproachDisplay CreateApproachDisplay(Approach approach, DataTable dataTable, int day)
         {
@@ -133,6 +145,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             return approachDisplay;
         }                                                                                                                                                     
 
+        /// <summary>
+        /// Handler for DateRangeChanged event from Toolbar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
             if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate) || !args.Interval.Equals(_interval))
@@ -145,6 +162,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+        /// <summary>
+        /// Event Handler for ReportChanged event from Report Browser
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             if (!args.SelectionCleared && !_configuration.ConfigName.Equals(args.ReportName) && args.ReportName != null)
@@ -157,10 +179,4 @@ namespace ATTrafficAnalayzer.Views.Screens
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
 
-    internal class ApproachDisplayRequirements
-    {
-        public Approach Approach { get; set; }
-        public DataTable DataTable { get; set; }
-        public int Day { get; set; }
-    }
 }

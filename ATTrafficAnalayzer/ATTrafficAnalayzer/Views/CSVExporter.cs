@@ -23,6 +23,14 @@ namespace ATTrafficAnalayzer.Views
         private int _amPeakIndex = 8;
         private int _pmPeakIndex = 4;
 
+        /// <summary>
+        /// Constructor for a CSVExporter
+        /// </summary>
+        /// <param name="outputFilename">Filename of output csv file</param>
+        /// <param name="settings">SettingsTray for daterange and interval</param>
+        /// <param name="configName">Name of the config to be exported</param>
+        /// <param name="AmPeakHour">...</param>
+        /// <param name="PmPeakHour">...</param>
         public CSVExporter(String outputFilename, SettingsTray settings, string configName, int AmPeakHour, int PmPeakHour)
         {
             _outputFilename = outputFilename;
@@ -38,6 +46,9 @@ namespace ATTrafficAnalayzer.Views
             _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
         }
 
+        /// <summary>
+        /// Exports a report
+        /// </summary>
         public void ExportReport()
         {
             var lines = new List<string>();
@@ -57,6 +68,7 @@ namespace ATTrafficAnalayzer.Views
 
             var timeSpan = _settings.EndDate - _settings.StartDate;
 
+            //Same loop as in ReportTable
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
                 foreach (var approach in _reportConfig.Approaches)
@@ -80,6 +92,9 @@ namespace ATTrafficAnalayzer.Views
             WriteToFile(lines);
         }
 
+        /// <summary>
+        /// Exports a summary
+        /// </summary>
         public void ExportSummary()
         {
             var lines = new List<string>();
@@ -147,6 +162,10 @@ namespace ATTrafficAnalayzer.Views
             WriteToFile(lines);
         }
 
+        /// <summary>
+        /// private method to write the prepared lines to the filename specified.
+        /// </summary>
+        /// <param name="lines"></param>
         private void WriteToFile(List<string> lines)
         {
             try
