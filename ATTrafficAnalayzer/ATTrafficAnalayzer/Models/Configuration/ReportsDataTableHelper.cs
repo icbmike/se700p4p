@@ -23,6 +23,15 @@ namespace ATTrafficAnalayzer.Models.Configuration
         {
         }
 
+        /// <summary>
+        ///     Create a datatable to display the summary data
+        /// </summary>
+        /// <param name="calculator">Calculator wich summarieses the data</param>
+        /// <param name="_startDate">Date at the start of the period</param>
+        /// <param name="_endDate">Date at the end of the period</param>
+        /// <param name="_summaryConfig">Summary configuration</param>
+        /// <param name="hasWeekends">Include weekends in the summary</param>
+        /// <returns>Data table of daily metrics</returns>
         public DataTable GetSummaryDataTable(ICalculator calculator, DateTime _startDate, DateTime _endDate, IEnumerable<SummaryRow> _summaryConfig, bool hasWeekends)
         {
             var dataTable = new DataTable();
@@ -49,11 +58,17 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return dataTable;
         }
 
+        /// <summary>
+        ///     Calculator interface
+        /// </summary>
         public interface ICalculator
         {
             int? GetVolume(DateTime date, SummaryRow summary);
         }
 
+        /// <summary>
+        ///     Calculates the traffic volumes for each morning peak period
+        /// </summary>
         public class AmPeakCalculator : ICalculator
         {
             private readonly int _hour;
@@ -79,6 +94,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
             }
         }
 
+        /// <summary>
+        ///     Calculates the traffic volumes for each afternoon peak period
+        /// </summary>
         public class PmPeakCalculator : ICalculator
         {
             private readonly int _hour;
@@ -104,6 +122,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
             }
         }
 
+        /// <summary>
+        ///     Calculates the total for each day
+        /// </summary>
         public class SumCalculator : ICalculator
         {
             public int? GetVolume(DateTime date, SummaryRow summary)
