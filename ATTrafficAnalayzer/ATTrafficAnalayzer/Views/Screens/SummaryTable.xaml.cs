@@ -29,6 +29,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         private int _amPeakHour = 8;
         private int _pmPeakHour = 4;
 
+        /// <summary>
+        /// Constructor to display a summary table with the date range at the time of construction and the specified config
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="configName">Name of config to be displayed</param>
         public SummaryTable(SettingsTray settings, string configName)
         {
             _configName = configName;
@@ -40,13 +45,18 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
-        public void Render()
+        /// <summary>
+        /// Display the table
+        /// </summary>
+        private void Render()
         {
             _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
             ScreenTitle.Content = _configName;
 
+            //Remove all previous tables
             ApproachesStackPanel.Children.Clear();
 
+            //Create the AM Peak table
             var amPeakApproachDisplay = new TableApproachDisplay
             {
                 ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakHour), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
@@ -55,6 +65,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             amPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
             ApproachesStackPanel.Children.Add(amPeakApproachDisplay);
 
+            //Create the PM Peak table
             var pmPeakApproachDisplay = new TableApproachDisplay
             {
                 ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakHour), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
@@ -62,6 +73,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             pmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
             ApproachesStackPanel.Children.Add(pmPeakApproachDisplay);
 
+            //Creat the totals table
             var sumApproachDisplay = new TableApproachDisplay
             {
                 ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
@@ -72,6 +84,11 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #region Event Handlers
 
+        /// <summary>
+        /// Handler for when the date range changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
         {
             _startDate = _settings.StartDate;
@@ -83,6 +100,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             Render();
         }
 
+        /// <summary>
+        /// Handler for when the selected report changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             if (!args.SelectionCleared)
@@ -99,6 +121,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #endregion
 
+        //Event handler for when weekends checkbox state changes
         private void WeekendsCheckbox_Checked(object sender, RoutedEventArgs e)
         {
             if (!_hasWeekends)
@@ -108,6 +131,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
+        //Event handler for when weekends checkbox state changes
         private void WeekendsCheckbox_Unchecked(object sender, RoutedEventArgs e)
         {
             if (_hasWeekends)
