@@ -9,6 +9,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
     {
         private IDataSource _dataSource;
 
+        /// <summary>
+        ///     Creates a summary row
+        /// </summary>
         public SummaryRow()
         {
             DetectorsIn = new List<int>();
@@ -16,6 +19,16 @@ namespace ATTrafficAnalayzer.Models.Configuration
             _dataSource = DbHelper.GetDbHelper();
         }
 
+        /// <summary>
+        ///     Creates a summary row
+        /// </summary>
+        /// <param name="routeName">Name of the summary</param>
+        /// <param name="intersectionIn">Name of the inbound intersection</param>
+        /// <param name="intersectionOut">Name of the outbound intersection</param>
+        /// <param name="detectorsIn">List of inbound detectors</param>
+        /// <param name="detectorsOut">List of outbound detectors</param>
+        /// <param name="dividingFactorIn">Dividing factor inbound</param>
+        /// <param name="dividingFactorOut">Dividing factor outbound</param>
         public SummaryRow(string routeName, int intersectionIn, int intersectionOut, List<int> detectorsIn,
             List<int> detectorsOut, int dividingFactorIn, int dividingFactorOut)
         {
@@ -30,6 +43,9 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         private ObservableCollection<int> _intersections;
 
+        /// <summary>
+        ///     Collection of intersections
+        /// </summary>
         public ObservableCollection<int> Intersections
         {
             get {
@@ -37,11 +53,17 @@ namespace ATTrafficAnalayzer.Models.Configuration
             }
         }
 
+        /// <summary>
+        ///     Checks if the summary configuration is valid
+        /// </summary>
         public bool IsValid
         {
             get { return SelectedIntersectionIn != 0 && SelectedIntersectionOut != 0 && !RouteName.Equals(""); }
         }
 
+        /// <summary>
+        ///     Summary row properties
+        /// </summary>
         public string RouteName { get; set; }
         public int SelectedIntersectionIn { get; set; }
         public int SelectedIntersectionOut { get; set; }
@@ -50,6 +72,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public int DividingFactorIn { get; set; }
         public int DividingFactorOut { get; set; }
 
+        /// <summary>
+        ///     Returns a plain text value for the summary row
+        /// </summary>
+        /// <returns>A string detailing the info of the summary row</returns>
         public override string ToString()
         {
             return "RouteName: " + RouteName + " Intersection In: " + SelectedIntersectionIn + " Intersection Out: " +
@@ -57,6 +83,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
                    " Detectors In: " + DetectorsIn + " Detectors Out: " + DetectorsOut;
         }
 
+        /// <summary>
+        ///     Outputs a JSON object for the summary row
+        /// </summary>
+        /// <returns>JSON object for the summary row</returns>
         public JObject ToJson()
         {
             return new JObject {{"route_name", RouteName}, 
@@ -69,11 +99,19 @@ namespace ATTrafficAnalayzer.Models.Configuration
                                 };
         }
 
+        /// <summary>
+        ///     Outputs a list of outbound detectors
+        /// </summary>
+        /// <returns>String of detectors</returns>
         public string GetDetectorsInAsString()
         {
             return String.Join(", ", DetectorsIn);
         }
 
+        /// <summary>
+        ///     Outputs a list of inbound detectors
+        /// </summary>
+        /// <returns>String of detectors</returns>
         public string GetDetectorsOutAsString()
         {
             return String.Join(", ", DetectorsOut);

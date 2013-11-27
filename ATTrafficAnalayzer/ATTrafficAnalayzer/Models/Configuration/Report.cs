@@ -10,6 +10,12 @@ namespace ATTrafficAnalayzer.Models.Configuration
         public string ConfigName { get; set; }
         public int Intersection { get; set; }
 
+        /// <summary>
+        ///     Creates a report object
+        /// </summary>
+        /// <param name="configName">Name of the report</param>
+        /// <param name="intersection">Intersection of the report</param>
+        /// <param name="approaches">List of approaches contained in the report</param>
         public Report(string configName, int intersection, List<Approach> approaches)
         {
             ConfigName = configName;
@@ -17,6 +23,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
             Approaches = approaches;
         }
 
+        /// <summary>
+        ///     Export the report components in JSON format
+        /// </summary>
+        /// <returns>Report in JSON format</returns>
         public JObject ToJson()
         {
             var json = new JObject { { "intersection", Intersection } };
@@ -26,6 +36,10 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return json;
         }
 
+        /// <summary>
+        ///     Data table to configure the summary
+        /// </summary>
+        /// <returns>Summary data table</returns>
         public DataTable GetSummaryTable()
         {
             var dataTable = new DataTable();
