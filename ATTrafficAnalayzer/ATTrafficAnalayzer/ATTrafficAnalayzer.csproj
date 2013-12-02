@@ -65,6 +65,18 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Database Metrics|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Database Metrics\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ATTrafficAnalayzer.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamicDataDisplay">
       <HintPath>d3\DynamicDataDisplay\DynamicDataDisplay.dll</HintPath>
@@ -103,6 +115,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
+    <Compile Include="Models\DatabaseMetrics.cs" />
     <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
     <Compile Include="Models\Configuration\SummaryRow.cs" />
     <Compile Include="Models\IDataSource.cs" />
