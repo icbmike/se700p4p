@@ -39,8 +39,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="configName">The config to be displayed</param>
         public ReportTable(SettingsTray settings, string configName, IDataSource dataSource)
         {
-            _configuration = _dataSource.GetConfiguration(configName);
             _dataSource = dataSource;
+            _configuration = _dataSource.GetConfiguration(configName);
             _settings = settings;
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;

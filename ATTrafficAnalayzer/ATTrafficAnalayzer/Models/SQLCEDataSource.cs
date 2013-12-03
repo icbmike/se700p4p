@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SqlServerCe;
+using ATTrafficAnalayzer.Models.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
@@ -161,17 +163,61 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public Configuration.Report GetConfiguration(string name)
+        public Report GetConfiguration(string name)
+        {
+            using (var conn = new SqlCeConnection(connectionString))
+            {
+                conn.Open();
+
+                JObject configJson = null;
+
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT config FROM configs WHERE name = @name;";
+                    query.Parameters.AddWithValue("@name", name);
+                    using (var reader = query.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            configJson = JObject.Parse(reader.GetString(0));
+                    }
+                }
+                if (configJson != null)
+                {
+                    var approaches = new List<Approach>();
+                    foreach (var approachID in (JArray)configJson["approaches"])
+                    {
+                        using (var query = conn.CreateCommand())
+                        {
+                            query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
+                            query.Parameters.AddWithValue("@id", approachID.ToString());
+
+                            JObject approachJson;
+                            using (var reader = query.ExecuteReader())
+                            {
+                                approachJson = null;
+
+                                if (reader.Read())
+                                    approachJson = JObject.Parse(reader.GetString(0));
+                            }
+
+                            approaches.Add(new Approach((string)approachJson["name"],
+                                                        approachJson["detectors"].Select(t => (int)t).ToList()));
+                        }
+                    }
+                    conn.Close();
+                    return new Report(name, (int)configJson["intersection"], approaches);
+                }
+                conn.Close();
+            }
+            return null;
+        }
+
+        public List<Approach> GetApproaches(string configName)
         {
             throw new NotImplementedException();
         }
 
-        public List<Configuration.Approach> GetApproaches(string configName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Configuration.SummaryRow> GetSummaryConfig(string name)
+        public IEnumerable<SummaryRow> GetSummaryConfig(string name)
         {
             throw new NotImplementedException();
         }
@@ -213,7 +259,23 @@ namespace ATTrafficAnalayzer.Models
 
         public bool ReportExists(string name)
         {
-            throw new NotImplementedException();
+            long count;
+
+            using (var conn = new SqlCeConnection(connectionString))
+            {
+                conn.Open();
+
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT COUNT(*) FROM configs WHERE name = @configName;";
+                    query.Parameters.AddWithValue("@configName", name);
+                    count = (Int32)query.ExecuteScalar();
+                }
+
+                conn.Close();
+            }
+
+            return count.Equals(1); 
         }
 
         public Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold)

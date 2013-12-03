@@ -12,6 +12,7 @@
         mc:Ignorable="d"
         Height="1200"
         Width="1920">
+    
 
     <DockPanel LastChildFill="True">
 
@@ -71,7 +72,8 @@
         <controls:ReportBrowser x:Name="ReportBrowser"
                                 EditConfigurationEvent="ReportBrowser_OnEditConfigurationEvent"
                                 Visibility="Collapsed"
-                                ExportEvent="ReportBrowser_OnExportEvent" />
+                                ExportEvent="ReportBrowser_OnExportEvent"
+ />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="ScreenContentControl"
