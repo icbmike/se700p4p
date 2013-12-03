@@ -37,7 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// Constructor for when editing an existing summary config
         /// </summary>
         /// <param name="summaryToBeEdited">The summary config to be edited</param>
-        public SummaryConfig(string summaryToBeEdited) : this()
+        public SummaryConfig(string summaryToBeEdited, IDataSource dataSource) : this(dataSource)
         {
             IsNewConfig = false;
             _oldName = summaryToBeEdited;

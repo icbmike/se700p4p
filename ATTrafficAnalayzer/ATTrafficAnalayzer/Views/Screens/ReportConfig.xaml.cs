@@ -46,7 +46,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// Constructor used to edit a configuration.
         /// </summary>
         /// <param name="configToBeEdited">The name of the configuration to be edited</param>
-        public ReportConfig(string configToBeEdited) : this()
+        public ReportConfig(string configToBeEdited, IDataSource dataSource) : this(dataSource)
         {
             //Populate config screen
             var config = _dataSource.GetConfiguration(configToBeEdited);
