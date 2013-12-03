@@ -74,7 +74,23 @@ namespace ATTrafficAnalayzer.Models
 
         public List<int> GetIntersections()
         {
-            throw new NotImplementedException();
+            List<int> intersections;
+            using (var conn = new SqlCeConnection(connectionString))
+            {
+                conn.Open();
+                intersections = new List<int>();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
+                    using (var reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            intersections.Add(reader.GetInt32(0));
+                    }
+                }
+                conn.Close();
+            }
+            return intersections;
         }
 
         public List<int> GetDetectorsAtIntersection(int intersection)
