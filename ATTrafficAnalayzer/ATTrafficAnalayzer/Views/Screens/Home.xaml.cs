@@ -13,7 +13,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class Home
     {
 
-        IDataSource _helper;
+        IDataSource _dataSource;
 
         #region events
 
@@ -26,10 +26,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Constructor
         /// </summary>
-        public Home()
+        public Home(IDataSource dataSource)
         {
             InitializeComponent();
-            _helper = DbHelper.GetDbHelper();
+            _dataSource = dataSource;
             Render();
             Logger.Info("constructed view", "homescreen");
         }
@@ -64,7 +64,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="e"></param>
         private void DoWorkHandler(object sender, DoWorkEventArgs e)
         {
-            e.Result = _helper.GetImportedDates();
+            e.Result = _dataSource.GetImportedDates();
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (DateTime date in ImportedDatesList.SelectedItems)
-                _helper.RemoveVolumes(date);
+                _dataSource.RemoveVolumes(date);
             Render(); 
         }
     }

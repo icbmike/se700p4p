@@ -27,13 +27,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Default constructor
         /// </summary>
-        public ReportConfig()
+        public ReportConfig(IDataSource dataSource)
         {
             DataContext = this;
             _intersectionList = new ObservableCollection<int>();
             _detectorList = new ObservableCollection<int>();
 
-            _dataSource = DbHelper.GetDbHelper();
+            _dataSource = dataSource;
             foreach (var intersection in _dataSource.GetIntersections())
                 _intersectionList.Add(intersection);
 

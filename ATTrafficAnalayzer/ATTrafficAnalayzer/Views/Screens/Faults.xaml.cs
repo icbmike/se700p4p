@@ -17,7 +17,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class Faults : IView, INotifyPropertyChanged
     {
-        private readonly DbHelper _dbHelper;
+        private readonly IDataSource _dataSource;
         private DateTime _endDate;
         private DateTime _startDate;
         private int _faultThreshold;
@@ -42,11 +42,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// TODO: replace with DateTimes
         /// 
         ///  </param>
-        public Faults(SettingsTray settings)
+        public Faults(SettingsTray settings, IDataSource dataSource)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
-            _dbHelper = DbHelper.GetDbHelper();
+            _dataSource = dataSource;
             DataContext = this;
             InitializeComponent();
             FaultThreshold = 150;
@@ -61,7 +61,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
-            var faults = _dbHelper.GetSuspectedFaults(_startDate, _endDate, FaultThreshold);
+            var faults = _dataSource.GetSuspectedFaults(_startDate, _endDate, FaultThreshold);
             var transformedFaults = faults.Keys.ToDictionary(key => key, key => String.Join(", ", faults[key].Distinct().OrderBy(x => x)));
             FaultsDataGrid.ItemsSource = transformedFaults;
         }

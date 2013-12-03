@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class SummaryConfig : IConfigScreen
     {
-        private readonly IDataSource _dbHelper;
+        private readonly IDataSource _dataSource;
         private bool IsNewConfig = true;
         private string _oldName;
 
@@ -23,9 +23,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Default constructor for when constructing a new summary config
         /// </summary>
-        public SummaryConfig()
+        public SummaryConfig(IDataSource dataSource)
         {
-            if (_dbHelper == null) _dbHelper = DbHelper.GetDbHelper();
+            _dataSource = dataSource;
 
             Rows = new ObservableCollection<SummaryRow>();
 
@@ -43,7 +43,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _oldName = summaryToBeEdited;
             ConfigNameTextBox.Text = summaryToBeEdited;
 
-            foreach (var summaryRow in _dbHelper.GetSummaryConfig(summaryToBeEdited))
+            foreach (var summaryRow in _dataSource.GetSummaryConfig(summaryToBeEdited))
             {
                 Rows.Add(summaryRow);
             }
@@ -64,7 +64,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 try
                 {
-                    _dbHelper.RemoveSummary(_oldName);
+                    _dataSource.RemoveSummary(_oldName);
                 }
                 catch (Exception exception)
                 {
@@ -111,7 +111,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dbHelper.SummaryExists("Summary " + count))
+                    if (!_dataSource.SummaryExists("Summary " + count))
                     {
                         configTextBox.Text = "Summary " + count;
                         break;

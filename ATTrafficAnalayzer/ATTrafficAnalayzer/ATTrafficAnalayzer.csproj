@@ -177,7 +177,7 @@
       <DependentUpon>ReportGraph.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Screens\IConfigScreen.cs" />
-    <Compile Include="Views\Screens\Iview.cs" />
+    <Compile Include="Views\Screens\IView.cs" />
     <Compile Include="Views\Screens\SummaryTable.xaml.cs">
       <DependentUpon>SummaryTable.xaml</DependentUpon>
     </Compile>

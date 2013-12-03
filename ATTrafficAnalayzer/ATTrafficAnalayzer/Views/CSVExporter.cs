@@ -15,7 +15,7 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly string _outputFilename;
         private readonly SettingsTray _settings;
-        private readonly IDataSource _dbHelper;
+        private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dtHelper;
         private readonly Report _reportConfig;
         private readonly IEnumerable<SummaryRow> _summaryConfig;
@@ -31,19 +31,19 @@ namespace ATTrafficAnalayzer.Views
         /// <param name="configName">Name of the config to be exported</param>
         /// <param name="AmPeakHour">...</param>
         /// <param name="PmPeakHour">...</param>
-        public CSVExporter(String outputFilename, SettingsTray settings, string configName, int AmPeakHour, int PmPeakHour)
+        public CSVExporter(String outputFilename, SettingsTray settings, string configName, int AmPeakHour, int PmPeakHour, IDataSource dataSource)
         {
             _outputFilename = outputFilename;
             _settings = settings;
-            _dbHelper = DbHelper.GetDbHelper();
+            _dataSource = dataSource;
             _dtHelper = DataTableHelper.GetDataTableHelper();
             _configName = configName;
             _amPeakIndex = AmPeakHour;
             _pmPeakIndex = PmPeakHour;
 
             //Retrieve the config for the supplied name
-            _reportConfig = _dbHelper.GetConfiguration(configName);
-            _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
+            _reportConfig = _dataSource.GetConfiguration(configName);
+            _summaryConfig = _dataSource.GetSummaryConfig(_configName);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace ATTrafficAnalayzer.Views
             lines.Add(string.Format("Evening peak hour: {0} PM", (_pmPeakIndex == 0) ? 12 : _pmPeakIndex));
             lines.Add("");
 
-            var config = _dbHelper.GetSummaryConfig(_configName);
+            var config = _dataSource.GetSummaryConfig(_configName);
             string[] configColumnNames = { "Route Name", "Inbound Intersection", "Inbound Detectors", "Inbound Dividing Factor", "Outbound Intersection", "Outbound Detectors", "Outbound Dividing Factor" };
             var configColumnNamesString = string.Join(",", configColumnNames);
             lines.Add(configColumnNamesString);

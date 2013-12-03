@@ -29,7 +29,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private Report _configuration;
 
-        readonly IDataSource _dbHelper = DbHelper.GetDbHelper();
+        readonly IDataSource _dataSource;
         private bool _countsDontMatch;
 
         /// <summary>
@@ -37,10 +37,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings">Lets the graph view get the date range at the time of construction</param>
         /// <param name="configName">The config to be displayed</param>
-        public ReportTable(SettingsTray settings, string configName)
+        public ReportTable(SettingsTray settings, string configName, IDataSource dataSource)
         {
-            _configuration = _dbHelper.GetConfiguration(configName);
-
+            _configuration = _dataSource.GetConfiguration(configName);
+            _dataSource = dataSource;
             _settings = settings;
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
@@ -171,7 +171,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             if (!args.SelectionCleared && !_configuration.ConfigName.Equals(args.ReportName) && args.ReportName != null)
             {
-                _configuration = _dbHelper.GetConfiguration(args.ReportName);
+                _configuration = _dataSource.GetConfiguration(args.ReportName);
                 Render();
             }
         }

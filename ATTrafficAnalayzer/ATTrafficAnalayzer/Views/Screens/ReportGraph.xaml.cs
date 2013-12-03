@@ -25,19 +25,20 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DateTime _endDate;
         private int _interval;
         private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
+        private IDataSource _dataSource;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings"> Lets the Graph screen get the start and end date at the time of construction</param>
         /// <param name="configName">The name of the report to display</param>
-        public ReportGraph(SettingsTray settings, string configName)
+        public ReportGraph(SettingsTray settings, string configName, IDataSource dataSource)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;
             _interval = settings.Interval;
             _configName = configName;
-
+            _dataSource = dataSource;
             InitializeComponent();
 
             //Remove mouse and keyboard navigation and hide the legend.
@@ -54,8 +55,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            var dbHelper = DbHelper.GetDbHelper();
-            var configuation = dbHelper.GetConfiguration(_configName);
+            var configuation = _dataSource.GetConfiguration(_configName);
 
             if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
             {

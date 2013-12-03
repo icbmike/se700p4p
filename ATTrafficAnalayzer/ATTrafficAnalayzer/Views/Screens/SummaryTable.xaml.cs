@@ -18,7 +18,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private string _configName;
 
         private IEnumerable<SummaryRow> _summaryConfig;
-        private readonly IDataSource _dbHelper = DbHelper.GetDbHelper();
+        private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dtHelper = DataTableHelper.GetDataTableHelper();
         private SettingsTray _settings;
 
@@ -34,13 +34,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="configName">Name of config to be displayed</param>
-        public SummaryTable(SettingsTray settings, string configName)
+        public SummaryTable(SettingsTray settings, string configName, IDataSource dataSource)
         {
             _configName = configName;
             _settings = settings;
             _startDate = _settings.StartDate;
             _endDate = _settings.EndDate;
-
+            _dataSource = dataSource;
             InitializeComponent();
             Render();
         }
@@ -50,7 +50,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            _summaryConfig = _dbHelper.GetSummaryConfig(_configName);
+            _summaryConfig = _dataSource.GetSummaryConfig(_configName);
             ScreenTitle.Content = _configName;
 
             //Remove all previous tables
