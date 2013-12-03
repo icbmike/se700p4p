@@ -431,7 +431,7 @@ namespace ATTrafficAnalayzer.Models
                                         }
                                         catch (SQLiteException e)
                                         {
-                                            if (e.ReturnCode.Equals(SQLiteErrorCode.Constraint) && !continuing)
+                                            if (e.ErrorCode.Equals(SQLiteErrorCode.Constraint) && !continuing)
                                             {
 
                                                 Logger.Error("DBHELPER",

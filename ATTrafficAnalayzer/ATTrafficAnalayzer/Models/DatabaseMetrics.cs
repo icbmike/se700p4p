@@ -14,9 +14,9 @@ namespace ATTrafficAnalayzer.Models
         private List<int> volumes;
         private int count;
 
-        public DatabaseMetrics()
+        public DatabaseMetrics(IDataSource dataSource)
         {
-            dataSource = DbHelper.GetDbHelper();
+            this.dataSource = dataSource;
             times = new List<long>();
             volumes = new List<int>();
             count = 0;
@@ -41,7 +41,7 @@ namespace ATTrafficAnalayzer.Models
 
         public void OutputResults()
         {
-            Console.WriteLine("----------------------\n\n\n\n");
+            Console.WriteLine("------------| "+ dataSource.ToString() +" |----------\n\n\n\n");
             Console.WriteLine("Count: " + count);
             Console.WriteLine("Average Elapsed Time: " + times.Average());
             Console.WriteLine("\n\n\n-----------------");
@@ -49,9 +49,13 @@ namespace ATTrafficAnalayzer.Models
 
         static void Main(string[] args)
         {
-            var dbm = new DatabaseMetrics();
-            dbm.Run();
-            dbm.OutputResults();
+            var dbmSqlite = new DatabaseMetrics(DbHelper.GetDbHelper());
+            dbmSqlite.Run();
+            dbmSqlite.OutputResults();
+
+            var dbmSqlCE = new DatabaseMetrics(new SQLCEDataSource());
+            dbmSqlCE.Run();
+            dbmSqlCE.OutputResults();
         }
     }
 }

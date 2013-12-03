@@ -75,7 +75,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>ATTrafficAnalayzer.App</StartupObject>
+    <StartupObject>ATTrafficAnalayzer.Models.DatabaseMetrics</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamicDataDisplay">
@@ -89,11 +89,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\packages\System.Data.SQLite.1.0.86.0\lib\net40\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.89.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.1.0.89.0\lib\net40\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.Linq">
-      <HintPath>..\packages\System.Data.SQLite.1.0.86.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.89.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.1.0.89.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SQL Server Compact Edition\v4.0\Desktop\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -120,6 +126,7 @@
     <Compile Include="Models\Configuration\SummaryRow.cs" />
     <Compile Include="Models\IDataSource.cs" />
     <Compile Include="Models\Settings\Mode.cs" />
+    <Compile Include="Models\SQLCEDataSource.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Annotations1.cs" />
@@ -279,6 +286,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\Images\at-banner.png" />
     <Resource Include="Resources\Images\at-logo.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_020_home.png" />
@@ -302,10 +312,10 @@
     <Resource Include="Resources\Images\Icons\glyphicons_331_dashboard.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_057_history.png" />
     <Resource Include="Resources\Images\Icons\glyphicons_280_settings.png" />
-    <Content Include="x64\SQLite.Interop.dll">
+    <Content Include="TA.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="x86\SQLite.Interop.dll">
+    <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
