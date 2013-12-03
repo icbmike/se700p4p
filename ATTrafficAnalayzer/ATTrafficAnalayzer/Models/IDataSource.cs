@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using ATTrafficAnalayzer.Models.Configuration;
 
 namespace ATTrafficAnalayzer.Models
@@ -43,5 +44,22 @@ namespace ATTrafficAnalayzer.Models
 
         //Faults Related Methods
         Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold);
+
+        /// <summary>
+        ///     Imports a single file
+        /// </summary>
+        /// <param name="b">Worker thread</param>
+        /// <param name="w"></param>
+        /// <param name="filename">filename to import</param>
+        /// <param name="updateProgress"></param>
+        /// <param name="getDuplicatePolicy"></param>
+        /// <returns></returns>
+        DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy);
+
+        /// <summary>
+        ///     Confirms if there is no data in the volumes table
+        /// </summary>
+        /// <returns>True if there is no data</returns>
+        bool VolumesTableEmpty();
     }
 }

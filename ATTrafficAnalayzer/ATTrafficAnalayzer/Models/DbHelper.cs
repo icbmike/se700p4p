@@ -343,7 +343,7 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="updateProgress"></param>
         /// <param name="getDuplicatePolicy"></param>
         /// <returns></returns>
-        public static DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
+        public DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
             FileStream fs;
@@ -588,7 +588,7 @@ namespace ATTrafficAnalayzer.Models
         ///     Confirms if there is no data in the volumes table
         /// </summary>
         /// <returns>True if there is no data</returns>
-        public static bool VolumesTableEmpty()
+        public bool VolumesTableEmpty()
         {
             long reader;
 

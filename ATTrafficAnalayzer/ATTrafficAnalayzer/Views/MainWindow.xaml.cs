@@ -19,6 +19,7 @@ namespace ATTrafficAnalayzer.Views
         private DefaultDupicatePolicy _defaultDupicatePolicy;
         private int _amPeakIndex = 8;
         private int _pmPeakIndex = 4;
+        private IDataSource dataSource;
 
         /// <summary>
         /// Default constructor used by App
@@ -26,13 +27,13 @@ namespace ATTrafficAnalayzer.Views
         public MainWindow()
         {
             Logger.Clear();
-
+            dataSource = DataSourceFactory.GetDataSource();
             DataContext = this;
 
             InitializeComponent();
 
             //Set the content screen to be a Home
-            var homeScreen = new Home();
+            var homeScreen = new Home(dataSource);
             homeScreen.ImportRequested += FileImportMenuItem_Click;
 
             SettingsToolbar.ModeChanged += ReportBrowser.ModeChangedHandler;
@@ -116,7 +117,7 @@ namespace ATTrafficAnalayzer.Views
                 case Mode.Home:
                     //Display the Home screen
                     ReportBrowser.Visibility = Visibility.Collapsed;
-                    var homeScreen = new Home();
+                    var homeScreen = new Home(dataSource);
                     homeScreen.ImportRequested += FileImportMenuItem_Click;
                     homeScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                     ChangeScreen(homeScreen);
@@ -128,7 +129,7 @@ namespace ATTrafficAnalayzer.Views
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
                         //Create new configuartion screen if we switched from a different mode
-                        var reportConfigurationScreen = new ReportConfig();
+                        var reportConfigurationScreen = new ReportConfig(dataSource);
                         reportConfigurationScreen.Popup.Visibility = Visibility.Visible;
                         reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
@@ -141,7 +142,7 @@ namespace ATTrafficAnalayzer.Views
                     else if (args.View.Equals(Toolbar.View.Graph))
                     {
                         //Create and display a new Graph
-                        var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration());
+                        var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration(), dataSource);
                         SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += graphScreen.ReportChangedHandler;
                         graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
@@ -150,7 +151,7 @@ namespace ATTrafficAnalayzer.Views
                     else if (args.View.Equals(Toolbar.View.Table))
                     {
                         //Create and display a new Table
-                        var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration());
+                        var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration(), dataSource);
                         SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += tableScreen.ReportChangedHandler;
                         tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
@@ -163,7 +164,7 @@ namespace ATTrafficAnalayzer.Views
                     if (ReportBrowser.GetSelectedConfiguration() == null)
                     {
                         //If we are switching from a different mode, display a config screen
-                        var summaryConfigScreen = new SummaryConfig { Popup = { Visibility = Visibility.Visible } };
+                        var summaryConfigScreen = new SummaryConfig(dataSource) { Popup = { Visibility = Visibility.Visible } };
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                         ReportBrowser.ReportChanged += ReportChangedHandler;
@@ -174,7 +175,7 @@ namespace ATTrafficAnalayzer.Views
                     {
                         //Else display a new Table
                         var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
-                        ReportBrowser.GetSelectedConfiguration());
+                        ReportBrowser.GetSelectedConfiguration(), dataSource);
                         SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += summaryScreen.ReportChangedHandler;
                         ChangeScreen(summaryScreen);
@@ -184,7 +185,7 @@ namespace ATTrafficAnalayzer.Views
                 case Mode.Faults:
                     //Display suspected faults
                     ReportBrowser.Visibility = Visibility.Collapsed;
-                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray);
+                    var faultsScreen = new Faults(SettingsToolbar.SettingsTray, dataSource);
                     SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     faultsScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                     ChangeScreen(faultsScreen);
@@ -208,10 +209,10 @@ namespace ATTrafficAnalayzer.Views
                     if (SettingsToolbar.StartDatePicker.SelectedDate != null && SettingsToolbar.EndDatePicker.SelectedDate != null)
                     {
                         //Check if volumes exist for the selected range
-                        if (DbHelper.GetDbHelper().VolumesExist((DateTime) SettingsToolbar.StartDatePicker.SelectedDate, (DateTime) SettingsToolbar.EndDatePicker.SelectedDate))
+                        if (dataSource.VolumesExist((DateTime) SettingsToolbar.StartDatePicker.SelectedDate, (DateTime) SettingsToolbar.EndDatePicker.SelectedDate))
                         {
                             //Create and display a new Report config screen
-                            var reportConfigurationScreen = new ReportConfig();
+                            var reportConfigurationScreen = new ReportConfig(dataSource);
                             reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                             reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                             ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
@@ -226,10 +227,10 @@ namespace ATTrafficAnalayzer.Views
                 else
                 {
                     //Check volumes exist for specified date range
-                    if (DbHelper.GetDbHelper().VolumesExistForMonth(SettingsToolbar.Month))
+                    if (dataSource.VolumesExistForMonth(SettingsToolbar.Month))
                     {
                         //Create and display a new summary config screen
-                        var summaryConfigScreen = new SummaryConfig();
+                        var summaryConfigScreen = new SummaryConfig(dataSource);
                         summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                         summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
 
@@ -248,14 +249,14 @@ namespace ATTrafficAnalayzer.Views
                 //Open relevant config screen
                 if (_mode.Equals(Mode.Report))
                 {
-                    var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited);
+                    var reportConfigurationScreen = new ReportConfig(args.ConfigToBeEdited, dataSource);
                     reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                     reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
                     ImportCompleted += reportConfigurationScreen.ImportCompletedHandler;
                     ChangeScreen(reportConfigurationScreen);
                 }else if (_mode.Equals(Mode.Summary))
                 {
-                    var summaryConfigScreen = new SummaryConfig(args.ConfigToBeEdited);
+                    var summaryConfigScreen = new SummaryConfig(args.ConfigToBeEdited, dataSource);
                     summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                     summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
 
@@ -287,14 +288,14 @@ namespace ATTrafficAnalayzer.Views
             //Display the appropriate Table view
             if (_mode.Equals(Mode.Report))
             {
-                var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name);
+                var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name, dataSource);
                 SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
                 ReportBrowser.ReportChanged += reportTableScreen.ReportChangedHandler;
                 ChangeScreen(reportTableScreen);
             }
             else if (_mode.Equals(Mode.Summary))
             {
-                var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name);
+                var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name, dataSource);
                 SettingsToolbar.DateRangeChanged += summaryTableScreen.DateRangeChangedHandler;
                 ReportBrowser.ReportChanged += summaryTableScreen.ReportChangedHandler;
                 ChangeScreen(summaryTableScreen);
@@ -320,7 +321,7 @@ namespace ATTrafficAnalayzer.Views
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DbHelper.VolumesTableEmpty())
+            if (dataSource.VolumesTableEmpty())
                 BulkImport();
         }
 
@@ -380,7 +381,7 @@ namespace ATTrafficAnalayzer.Views
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 
-                        skipAllOrOne = DbHelper.ImportFile(b, w, filename,
+                        skipAllOrOne = dataSource.ImportFile(b, w, filename,
                                                            progress =>
                                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
                                                            GetDuplicatePolicy); //Function to determine a duplicate policy
@@ -466,7 +467,7 @@ namespace ATTrafficAnalayzer.Views
 
             if (dlg.ShowDialog() == true)
             {
-                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited, _amPeakIndex, _pmPeakIndex);
+                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.SettingsTray, args.ConfigToBeEdited, _amPeakIndex, _pmPeakIndex, dataSource);
 
                 if (_mode.Equals(Mode.Report))
                     csvExporter.ExportReport();
@@ -525,7 +526,7 @@ namespace ATTrafficAnalayzer.Views
         {
             MessageBox.Show("You don't have volume data imported for the range you specified");
 
-            var homeScreen = new Home();
+            var homeScreen = new Home(dataSource);
             homeScreen.ImportRequested += FileImportMenuItem_Click;
             ChangeScreen(homeScreen);
         }

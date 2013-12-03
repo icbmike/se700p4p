@@ -6,11 +6,11 @@ using System.Data.SqlServerCe;
 
 namespace ATTrafficAnalayzer.Models
 {
-    class SQLCEDataSource : IDataSource
+    class SqlceDataSource : IDataSource
     {
         private string connectionString;
 
-        public SQLCEDataSource()
+        public SqlceDataSource()
         {
             var connectionSb = new SqlCeConnectionStringBuilder();
             connectionSb.DataSource = "TA.sdf";
@@ -182,6 +182,17 @@ namespace ATTrafficAnalayzer.Models
         }
 
         public Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public DuplicatePolicy ImportFile(System.ComponentModel.BackgroundWorker b, System.ComponentModel.DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VolumesTableEmpty()
         {
             throw new NotImplementedException();
         }

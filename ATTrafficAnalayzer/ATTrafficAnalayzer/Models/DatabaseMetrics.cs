@@ -53,7 +53,7 @@ namespace ATTrafficAnalayzer.Models
             dbmSqlite.Run();
             dbmSqlite.OutputResults();
 
-            var dbmSqlCE = new DatabaseMetrics(new SQLCEDataSource());
+            var dbmSqlCE = new DatabaseMetrics(new SqlceDataSource());
             dbmSqlCE.Run();
             dbmSqlCE.OutputResults();
         }
