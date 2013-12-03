@@ -103,7 +103,26 @@ namespace ATTrafficAnalayzer.Models
 
         public List<DateTime> GetImportedDates()
         {
-            throw new NotImplementedException();
+            var importedDates = new List<DateTime>();
+
+            using (var conn = new SqlCeConnection(connectionString))
+            {
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT DISTINCT CONVERT(DATETIME, CONVERT(NVARCHAR(11), dateTime, 101)) AS [DD-MM-YYYY] FROM volumes";
+                     
+                    using (var reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            importedDates.Add(reader.GetDateTime(0));
+                        }
+                    }
+                }
+                conn.Close();
+            }
+            return importedDates;
         }
 
         public bool VolumesExist(DateTime startDate, DateTime endDate)
@@ -194,7 +213,17 @@ namespace ATTrafficAnalayzer.Models
 
         public bool VolumesTableEmpty()
         {
-            throw new NotImplementedException();
+            var count = 0;
+            using(var conn = new SqlCeConnection(connectionString)){
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT COUNT(*) FROM volumes;";
+                    count = (Int32)query.ExecuteScalar();
+                }
+            }
+
+            return count.Equals(0);
         }
     }
 }
