@@ -7,6 +7,7 @@ using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
 using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace ATTrafficAnalayzer.Views
 {
@@ -151,11 +152,15 @@ namespace ATTrafficAnalayzer.Views
                     else if (args.View.Equals(Toolbar.View.Table))
                     {
                         //Create and display a new Table
+                        var sw = new Stopwatch();
+                        sw.Start();
                         var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration(), dataSource);
                         SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
                         ReportBrowser.ReportChanged += tableScreen.ReportChangedHandler;
                         tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(tableScreen);
+                        sw.Stop();
+                        System.Windows.Forms.MessageBox.Show("Elapsed Time: " + sw.ElapsedMilliseconds + "ms");
                     }
                     break;
 
@@ -288,10 +293,14 @@ namespace ATTrafficAnalayzer.Views
             //Display the appropriate Table view
             if (_mode.Equals(Mode.Report))
             {
+                var sw = new Stopwatch();
+                sw.Start();
                 var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name, dataSource);
                 SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
                 ReportBrowser.ReportChanged += reportTableScreen.ReportChangedHandler;
                 ChangeScreen(reportTableScreen);
+                sw.Stop();
+                System.Windows.Forms.MessageBox.Show("Elapsed Time: " + sw.ElapsedMilliseconds + "ms");
             }
             else if (_mode.Equals(Mode.Summary))
             {

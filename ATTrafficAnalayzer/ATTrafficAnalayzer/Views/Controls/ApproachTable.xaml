@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ATTrafficAnalayzer.Views.Controls.TableApproachDisplay"
+﻿<UserControl x:Class="ATTrafficAnalayzer.Views.Controls.ApproachTable"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,22 +19,16 @@
                    IsEnabled="False">
             </TextBlock>
 
-            <DataGrid Name="ApproachDataGrid"
+            <ListView Name="ApproachListView"
                   Margin="5,10,5,10"
-                  IsReadOnly="True"
-                  FrozenColumnCount="1"
-                  CanUserReorderColumns="False"
-                  CanUserResizeColumns="False"
-                  CanUserSortColumns="False"
                   ScrollViewer.CanContentScroll="False"
-                  HorizontalScrollBarVisibility="Disabled"
-                  VerticalScrollBarVisibility="Disabled"
                   FontSize="10"
                   HorizontalContentAlignment="Stretch"
-                  AreRowDetailsFrozen="True"
-                  RowHeaderWidth="0"
-                  ColumnWidth="*" >
-            </DataGrid>
+                  >
+                <ListView.View>
+                    <GridView />
+                </ListView.View>
+            </ListView>
 
         </StackPanel>
     </Border>

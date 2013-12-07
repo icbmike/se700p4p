@@ -143,14 +143,13 @@
       <DependentUpon>DuplicatePolicyPreferenceDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\EnumMatchToBooleanConverter.cs" />
-    <Compile Include="Views\Controls\TableApproachDisplay.xaml.cs">
-      <DependentUpon>TableApproachDisplay.xaml</DependentUpon>
+    <Compile Include="Views\Controls\ApproachTable.xaml.cs">
+      <DependentUpon>ApproachTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\Parago\WindowSettings.cs" />
     <Compile Include="Views\Controls\ReportBrowser.xaml.cs">
       <DependentUpon>ReportBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Configuration\AbstractApproach.cs" />
     <Compile Include="Models\Configuration\Approach.cs" />
     <Compile Include="Models\Volume\DateTimeRecord.cs" />
     <Compile Include="Models\Settings\IntervalConverter.cs" />
@@ -205,7 +204,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\TableApproachDisplay.xaml">
+    <Page Include="Views\Controls\ApproachTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -280,7 +279,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

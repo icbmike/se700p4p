@@ -70,80 +70,9 @@ namespace ATTrafficAnalayzer.Views.Screens
             _peakHourAm.ClearApproaches();
             _peakHourPm.ClearApproaches();
 
-            var timeSpan = _endDate - _startDate;
+            _configuration.Approaches.ForEach(approach => ApproachesStackPanel.Children.Add(new ApproachTable(approach, _configuration.Intersection, _settings)));
 
-            //Per day
-            var hasVolumes = false;
-            for (var day = 0; day < timeSpan.TotalDays; day++)
-            {
-                //Per approach
-                foreach (var approach in _configuration.Approaches)
-                {
-                    //Construct a datatable
-                    var dataTable = approach.GetDataTable(_settings, _configuration.Intersection, 24, 0, day);
-                    
-                    //If there isnt a data table tell the user.
-                    if (dataTable == null)
-                    {
-                        var missingTable = new Label()
-                        {
-                            Content = string.Format("No traffic volume data for intersection {0} on {1}", approach.Name, _settings.StartDate.AddDays(day).ToLongDateString()),
-                            Margin = new Thickness(20, 5, 20, 5)
-                        };
-                        ApproachesStackPanel.Children.Add(missingTable);
-                    }
-                    else
-                    {
-                        //Display the datatable using the TableApproachDisplay control.
-                        ApproachesStackPanel.Children.Add(CreateApproachDisplay(approach, dataTable, day));
-
-                        _maxTotal.CheckIfMax(approach.GetTotal(), approach.Name);
-                        _maxAm.CheckIfMax(approach.AmPeak.GetValue(), approach.Name);
-                        _maxPm.CheckIfMax(approach.PmPeak.GetValue(), approach.Name);
-                        _peakHourAm.CheckIfMax(approach.AmPeak.GetValue(),
-                            string.Format("{0} ({1})", approach.Name, approach.AmPeak.GetApproachesAsString()));
-                        _peakHourPm.CheckIfMax(approach.PmPeak.GetValue(),
-                            string.Format("{0} ({1})", approach.Name, approach.PmPeak.GetApproachesAsString()));
-
-                        hasVolumes = true;
-                    }
-                }
-            }
-
-
-            //Display overall stats
-            OverallSummaryTextBlock.Inlines.Add(new Bold(new Run(string.Format("{0} Overview\n", _configuration.ConfigName))));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest approach: {0} with {1} vehicles\n", string.Join(", ", _maxTotal.GetApproachesAsString()), _maxTotal.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest AM hour: {0} with {1} vehicles\n", string.Join(", ", _maxAm.GetApproachesAsString()), _maxAm.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("Busiest PM hour: {0} with {1} vehicles\n", string.Join(", ", _maxPm.GetApproachesAsString()), _maxPm.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("AM peak period: {0} with {1} vehicles\n", string.Join(", ", _peakHourAm.GetApproachesAsString()), _peakHourAm.GetValue())));
-            OverallSummaryTextBlock.Inlines.Add(new Run(string.Format("PM peak period: {0} with {1} vehicles", string.Join(", ", _peakHourPm.GetApproachesAsString()), _peakHourPm.GetValue())));
-            OverallSummaryBorder.Visibility = hasVolumes ? Visibility.Visible : Visibility.Collapsed;
-
-            Logger.Info("constructed view", "VS table");
-        }
-
-        /// <summary>
-        /// Creates a TableApproachDisplay from the given arguments.
-        /// </summary>
-        /// <param name="approach">The approach for the table</param>
-        /// <param name="day">The index of the day in the daterange specified in the Toolbar</param>
-        /// <returns></returns>
-        private TableApproachDisplay CreateApproachDisplay(Approach approach, DataTable dataTable, int day)
-        {
-            var approachDisplay = new TableApproachDisplay();
-
-            approachDisplay.ApproachDataGrid.DataContext = dataTable;
-            approachDisplay.ApproachDataGrid.ItemsSource = dataTable.AsDataView();
-
-            approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Date: {0}\n", _startDate.AddDays(day).ToLongDateString()))));
-            approachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run(string.Format("Approach: {0} - Detectors: {1}\n", approach.Name, string.Join(", ", approach.Detectors)))));
-            approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("AM Peak: {0} vehicles @ {1}\n", approach.AmPeak.GetValue(), approach.AmPeak.GetApproachesAsString())));
-            approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("PM Peak: {0} vehicles @ {1}\n", approach.PmPeak.GetValue(), approach.PmPeak.GetApproachesAsString())));
-            approachDisplay.ApproachSummary.Inlines.Add(new Run(string.Format("Total volume: {0} vehicles", approach.GetTotal())));
-
-            return approachDisplay;
-        }                                                                                                                                                     
+        }                                                                                                                                                   
 
         /// <summary>
         /// Handler for DateRangeChanged event from Toolbar
