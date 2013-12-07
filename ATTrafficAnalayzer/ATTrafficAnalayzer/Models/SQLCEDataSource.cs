@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
-    class SqlceDataSource : IDataSource
+    public class SqlceDataSource : IDataSource
     {
         private string connectionString;
 
