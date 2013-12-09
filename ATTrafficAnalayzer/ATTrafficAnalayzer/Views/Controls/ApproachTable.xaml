@@ -22,11 +22,13 @@
             <ListView Name="ApproachListView"
                   Margin="5,10,5,10"
                   ScrollViewer.CanContentScroll="False"
-                  FontSize="10"
+                  FontSize="12"
+                  Width="Auto"
                   HorizontalContentAlignment="Stretch"
                   >
                 <ListView.View>
-                    <GridView />
+                    <GridView 
+                        />
                 </ListView.View>
             </ListView>
 

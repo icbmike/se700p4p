@@ -9,7 +9,7 @@
     <ToolBarPanel Name="ToolbarPanel"
                   Background="{x:Null}">
         <ToolBarPanel.DataContext>
-            <settings:SettingsTray />
+            <settings:DateSettings />
         </ToolBarPanel.DataContext>
         <ToolBar Name="MainToolbar"
                  Band="1"

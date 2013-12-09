@@ -32,7 +32,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings"> Lets the Graph screen get the start and end date at the time of construction</param>
         /// <param name="configName">The name of the report to display</param>
-        public ReportGraph(SettingsTray settings, string configName, IDataSource dataSource)
+        public ReportGraph(DateSettings settings, string configName, IDataSource dataSource)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;

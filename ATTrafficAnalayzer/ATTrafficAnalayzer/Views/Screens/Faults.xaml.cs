@@ -42,7 +42,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// TODO: replace with DateTimes
         /// 
         ///  </param>
-        public Faults(SettingsTray settings, IDataSource dataSource)
+        public Faults(DateSettings settings, IDataSource dataSource)
         {
             _startDate = settings.StartDate;
             _endDate = settings.EndDate;

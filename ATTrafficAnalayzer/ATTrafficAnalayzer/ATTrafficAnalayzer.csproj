@@ -167,7 +167,7 @@
     <Compile Include="Views\Screens\ReportConfig.xaml.cs">
       <DependentUpon>ReportConfig.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Settings\SettingsTray.cs" />
+    <Compile Include="Models\Settings\DateSettings.cs" />
     <Compile Include="Models\Configuration\Report.cs" />
     <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />

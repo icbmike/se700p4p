@@ -14,7 +14,7 @@ namespace ATTrafficAnalayzer.Views
     public class CSVExporter
     {
         private readonly string _outputFilename;
-        private readonly SettingsTray _settings;
+        private readonly DateSettings _settings;
         private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dtHelper;
         private readonly Report _reportConfig;
@@ -31,7 +31,7 @@ namespace ATTrafficAnalayzer.Views
         /// <param name="configName">Name of the config to be exported</param>
         /// <param name="AmPeakHour">...</param>
         /// <param name="PmPeakHour">...</param>
-        public CSVExporter(String outputFilename, SettingsTray settings, string configName, int AmPeakHour, int PmPeakHour, IDataSource dataSource)
+        public CSVExporter(String outputFilename, DateSettings settings, string configName, int AmPeakHour, int PmPeakHour, IDataSource dataSource)
         {
             _outputFilename = outputFilename;
             _settings = settings;

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Volume;
 using Newtonsoft.Json.Linq;
+using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.Configuration
 {
@@ -106,7 +107,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// <param name="offset">Index of the starting data element</param>
         /// <param name="day">Day the volumes are required for</param>
         /// <returns></returns>
-        public DataTable GetDataTable(SettingsTray settings, int intersection, int limit, int offset, int day)
+        public DataTable GetDataTable(DateSettings settings, int intersection, int offset, int day, int limit = 24)
         {
             var dataTable = new DataTable();
 
@@ -131,7 +132,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
             for (var rowIndex = 0; rowIndex < 60; rowIndex += settings.Interval)
             {
                 var row = dataTable.NewRow();
-                for (var columnIndex = 0; columnIndex < limit + 1; columnIndex++)
+                for (var columnIndex = 0; columnIndex <= limit; columnIndex++)
                 {
                     if (columnIndex == 0)
                         row[columnIndex] = rowIndex + " mins";

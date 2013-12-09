@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="TestSQLCEDataSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSqliteDataSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ATTrafficAnalayzer\ATTrafficAnalayzer.csproj">

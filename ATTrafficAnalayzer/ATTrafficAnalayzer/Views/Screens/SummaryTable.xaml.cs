@@ -20,7 +20,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private IEnumerable<SummaryRow> _summaryConfig;
         private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dtHelper = DataTableHelper.GetDataTableHelper();
-        private SettingsTray _settings;
+        private DateSettings _settings;
 
         private DateTime _startDate;
         private DateTime _endDate;
@@ -34,7 +34,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="configName">Name of config to be displayed</param>
-        public SummaryTable(SettingsTray settings, string configName, IDataSource dataSource)
+        public SummaryTable(DateSettings settings, string configName, IDataSource dataSource)
         {
             _configName = configName;
             _settings = settings;

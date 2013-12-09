@@ -4,7 +4,7 @@ using ATTrafficAnalayzer.Annotations;
 
 namespace ATTrafficAnalayzer.Models.Settings
 {
-    public class SettingsTray : INotifyPropertyChanged
+    public class DateSettings : INotifyPropertyChanged
     {
         private DateTime _startDate;
         private DateTime _endDate;

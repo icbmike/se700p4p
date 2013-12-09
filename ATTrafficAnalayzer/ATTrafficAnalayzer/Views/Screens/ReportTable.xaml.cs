@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly VolumeMetric _peakHourAm = new VolumeMetric();
         private readonly VolumeMetric _peakHourPm = new VolumeMetric();
 
-        private readonly SettingsTray _settings;
+        private readonly DateSettings _settings;
         private DateTime _startDate;
         private DateTime _endDate;
         private int _interval;
@@ -37,7 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings">Lets the graph view get the date range at the time of construction</param>
         /// <param name="configName">The config to be displayed</param>
-        public ReportTable(SettingsTray settings, string configName, IDataSource dataSource)
+        public ReportTable(DateSettings settings, string configName, IDataSource dataSource)
         {
             _dataSource = dataSource;
             _configuration = _dataSource.GetConfiguration(configName);

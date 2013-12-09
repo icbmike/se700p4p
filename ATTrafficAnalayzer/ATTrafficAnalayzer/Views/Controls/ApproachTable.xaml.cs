@@ -4,6 +4,7 @@ using System.Windows.Data;
 using ATTrafficAnalayzer.Models.Configuration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
+using System.Windows;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -14,9 +15,9 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         private readonly Approach _approach;
         private readonly int _intersection;
-        private readonly SettingsTray _settings;
+        private readonly DateSettings _settings;
 
-        public ApproachTable(Approach approach, int intersection, SettingsTray settings)
+        public ApproachTable(Approach approach, int intersection, DateSettings settings)
         {
             _approach = approach;
             _intersection = intersection;
@@ -28,22 +29,21 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void Render()
         {
             var grid = new GridView();
-            var dataTable = _approach.GetDataTable(_settings, _intersection, 24, 0, 0);
+            var dataTable = _approach.GetDataTable(_settings, _intersection, 0, 0);
+            
             foreach (DataColumn col in dataTable.Columns)
             {
                 grid.Columns.Add(new GridViewColumn
                 {
                     Header = col.ColumnName,
-                    DisplayMemberBinding = new Binding(col.ColumnName)
+                    DisplayMemberBinding = new Binding(col.ColumnName),
+                    Width = col.ColumnName.Equals("Time") ? 55 : 44
                 });
             }
-            
+                     
             ApproachListView.View = grid;
-            ApproachListView.ItemsSource = dataTable.Rows;
+            ApproachListView.ItemsSource = dataTable.DefaultView;
             
-            DataContext = dataTable;
-
-            SetBinding(ListView.ItemsSourceProperty, new Binding());
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)

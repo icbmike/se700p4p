@@ -13,7 +13,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class Toolbar
     {
-        public SettingsTray SettingsTray { get { return ToolbarPanel.DataContext as SettingsTray; } }
+        public DateSettings SettingsTray { get { return ToolbarPanel.DataContext as DateSettings; } }
 
         public enum View { Table, Graph }
         private static View _view = View.Table;
