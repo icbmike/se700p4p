@@ -17,6 +17,7 @@
             <TextBlock x:Name="ApproachSummary"
                    Visibility="Visible"
                    IsEnabled="False">
+                
             </TextBlock>
 
             <ListView Name="ApproachListView"

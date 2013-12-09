@@ -22,12 +22,15 @@ namespace ATTrafficAnalayzer.Views.Controls
             _approach = approach;
             _intersection = intersection;
             _settings = settings;
+
             InitializeComponent();
             Render();
         }
 
         private void Render()
         {
+
+            //Display the table
             var grid = new GridView();
             var dataTable = _approach.GetDataTable(_settings, _intersection, 0, 0);
             
@@ -44,6 +47,10 @@ namespace ATTrafficAnalayzer.Views.Controls
             ApproachListView.View = grid;
             ApproachListView.ItemsSource = dataTable.DefaultView;
             
+            //Display the statistics
+            ApproachSummary.Inlines.Add("Peak Volume: " + _approach.GetPeak() + " Peak time: " + _approach.GetPeakTime());
+            ApproachSummary.Inlines.Add("AM Peak: " + _approach.GetAmPeak() + " Peak time: " + _approach.GetAMPeakTime());
+            ApproachSummary.Inlines.Add("Pm Peak: " + _approach.GetPmPeak() + " Peak time: " + _approach.GetPMPeakTime());
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
