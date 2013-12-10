@@ -16,7 +16,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         {
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
-            _dataSource = DbHelper.GetDbHelper();
+            _dataSource = SqliteDataSource.GetDbHelper();
         }
 
         /// <summary>

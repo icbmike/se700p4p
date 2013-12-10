@@ -13,20 +13,20 @@ using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
-    public class DbHelper : IDataSource
+    public class SqliteDataSource : IDataSource
     {
         private static readonly string DbPath = new SQLiteConnectionStringBuilder
             {
                 DataSource = "TAdb.db3"
             }.ConnectionString;
 
-        private static DbHelper _instance;
+        private static SqliteDataSource _instance;
         private static readonly object SyncLock = new object();
 
         /// <summary>
         ///     Initialises database tables
         /// </summary>
-        private DbHelper()
+        private SqliteDataSource()
         {
             CreateVolumesTableIfNotExists();
             CreateApproachesTableIfNotExists();
@@ -1194,11 +1194,11 @@ namespace ATTrafficAnalayzer.Models
         ///     Provides the db helper singleton
         /// </summary>
         /// <returns>DB Helper instance</returns>
-        public static DbHelper GetDbHelper()
+        public static SqliteDataSource GetDbHelper()
         {
             lock (SyncLock)
             {
-                return _instance ?? (_instance = new DbHelper());
+                return _instance ?? (_instance = new SqliteDataSource());
             }
         }
 

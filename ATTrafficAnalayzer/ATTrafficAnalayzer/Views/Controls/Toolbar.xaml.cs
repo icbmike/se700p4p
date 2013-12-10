@@ -23,7 +23,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            SettingsTray.StartDate = DbHelper.GetDbHelper().GetMostRecentImportedDate();
+            SettingsTray.StartDate = SqliteDataSource.GetDbHelper().GetMostRecentImportedDate();
 
             ModeChanged += SwitchToolbar;
         }

@@ -169,7 +169,7 @@
     </Compile>
     <Compile Include="Models\Settings\DateSettings.cs" />
     <Compile Include="Models\Configuration\Configuration.cs" />
-    <Compile Include="Models\DbHelper.cs" />
+    <Compile Include="Models\SqliteDataSource.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
     <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />
     <Compile Include="Views\Screens\Faults.xaml.cs">

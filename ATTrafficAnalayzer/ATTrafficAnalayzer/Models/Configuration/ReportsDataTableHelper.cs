@@ -80,7 +80,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
-                var dbHelper = DbHelper.GetDbHelper();
+                var dbHelper = SqliteDataSource.GetDbHelper();
                 date = date.AddHours(_hour);
                 if (dbHelper.VolumesExist(date))
                 {
@@ -108,7 +108,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
-                var dbHelper = DbHelper.GetDbHelper();
+                var dbHelper = SqliteDataSource.GetDbHelper();
                 date = date.AddHours(_hour + 12);
                 if (dbHelper.VolumesExist(date))
                 {
@@ -129,7 +129,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         {
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
-                var dbHelper = DbHelper.GetDbHelper();
+                var dbHelper = SqliteDataSource.GetDbHelper();
                 if (dbHelper.VolumesExist(date))
                 {
                     return dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionIn, summary.DetectorsIn) +

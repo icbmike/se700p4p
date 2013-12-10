@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
             DataContext = this;
             _mode = Mode.Report;
-            _dataSource = DbHelper.GetDbHelper();
+            _dataSource = SqliteDataSource.GetDbHelper();
             Render();
         }
 

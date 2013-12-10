@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             var configuation = _dataSource.GetConfiguration(_configName);
 
-            if (!DbHelper.GetDbHelper().VolumesExist(_startDate, _endDate))
+            if (!SqliteDataSource.GetDbHelper().VolumesExist(_startDate, _endDate))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;

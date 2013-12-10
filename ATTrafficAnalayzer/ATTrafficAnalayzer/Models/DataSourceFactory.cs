@@ -13,7 +13,7 @@ namespace ATTrafficAnalayzer.Models
                     return new SqlceDataSource();
                 case "sqlite":
                 default:
-                    return DbHelper.GetDbHelper();
+                    return SqliteDataSource.GetDbHelper();
             }
         }
     }
