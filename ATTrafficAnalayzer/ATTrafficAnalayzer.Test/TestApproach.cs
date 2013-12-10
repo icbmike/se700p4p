@@ -30,6 +30,14 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod]
+        public void TestToString()
+        {
+            var testApproach = new Approach("Test Approach", new List<int> { 1 }, _mockDataSource);
+            var toString = testApproach.ToString();
+            Assert.AreEqual("Test Approach", toString);
+        }
+
+        [TestMethod]
         public void TestGetTotal()
         {
             var testApproach = new Approach("Test Approach", new List<int> {1}, _mockDataSource);
