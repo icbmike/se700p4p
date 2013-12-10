@@ -14,7 +14,7 @@
                    FontSize="28"
                    Margin="20,0"
                    x:FieldModifier="private"
-                   Content="No Report Selected"
+                   Content="No Configuration Selected"
                    FontWeight="Bold" />
             <Border Name="OverallSummaryBorder"
                     BorderBrush="Black"

@@ -9,7 +9,7 @@
              d:DesignWidth="200">
     <DockPanel LastChildFill="True">
 
-        <Label Content="Report Browser"
+        <Label Content="Configuration Browser"
                FontWeight="Normal"
                FontSize="14"
                Foreground="White"

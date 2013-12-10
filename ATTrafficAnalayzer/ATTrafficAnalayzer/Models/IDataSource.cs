@@ -26,14 +26,14 @@ namespace ATTrafficAnalayzer.Models
         DateTime GetMostRecentImportedDate();
 
         //Configuration Related Methods
-        Report GetConfiguration(string name);
+        Configuration.Configuration GetConfiguration(string name);
         List<Approach> GetApproaches(String configName);
         IEnumerable<SummaryRow> GetSummaryConfig(string name);
 
         List<String> GetSummaryNames();
         List<String> GetReportNames();
         
-        void AddConfiguration(Report config);
+        void AddConfiguration(Configuration.Configuration config);
         void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows);
 
         void RemoveReport(String name);

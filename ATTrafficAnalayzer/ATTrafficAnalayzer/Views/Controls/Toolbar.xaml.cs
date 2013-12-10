@@ -83,7 +83,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             EndDateLabel.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
             EndDatePicker.Visibility = isHomeMode ? Visibility.Collapsed : Visibility.Visible;
 
-            // Report controls
+            // Configuration controls
             var isReportMode = e.Mode.Equals(Mode.Report);
             GraphButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;
             TableButton.Visibility = isReportMode ? Visibility.Visible : Visibility.Collapsed;

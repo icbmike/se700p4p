@@ -168,7 +168,7 @@
       <DependentUpon>ReportConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Settings\DateSettings.cs" />
-    <Compile Include="Models\Configuration\Report.cs" />
+    <Compile Include="Models\Configuration\Configuration.cs" />
     <Compile Include="Models\DbHelper.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
     <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />

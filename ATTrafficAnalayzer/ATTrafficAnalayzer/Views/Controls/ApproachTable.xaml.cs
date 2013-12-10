@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Data;
 using ATTrafficAnalayzer.Models.Configuration;
@@ -29,7 +30,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void Render()
         {
-
             //Display the table
             var grid = new GridView();
             var dataTable = _approach.GetDataTable(_settings, _intersection, 0);
@@ -48,9 +48,12 @@ namespace ATTrafficAnalayzer.Views.Controls
             ApproachListView.ItemsSource = dataTable.DefaultView;
             
             //Display the statistics
-            ApproachSummary.Inlines.Add("Peak Volume: " + _approach.GetPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetPeakTime(_settings, _intersection, 0));
-            ApproachSummary.Inlines.Add("AM Peak: " + _approach.GetAmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetAmPeakTime(_settings, _intersection, 0));
-            ApproachSummary.Inlines.Add("Pm Peak: " + _approach.GetPmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetPmPeakTime(_settings, _intersection, 0));
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Peak Volume: " + _approach.GetPeak(_settings, _intersection, 0) + " Peak time: " +
+                                     _approach.GetPeakTime(_settings, _intersection, 0));
+            stringBuilder.AppendLine("AM Peak: " + _approach.GetAmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetAmPeakTime(_settings, _intersection, 0));
+            stringBuilder.AppendLine("Pm Peak: " + _approach.GetPmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetPmPeakTime(_settings, _intersection, 0));
+            ApproachSummary.Inlines.Add(stringBuilder.ToString());
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)

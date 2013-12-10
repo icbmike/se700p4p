@@ -17,7 +17,7 @@ namespace ATTrafficAnalayzer.Views
         private readonly DateSettings _settings;
         private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dtHelper;
-        private readonly Report _reportConfig;
+        private readonly Configuration _config;
         private readonly IEnumerable<SummaryRow> _summaryConfig;
         private readonly string _configName;
         private int _amPeakIndex = 8;
@@ -42,7 +42,7 @@ namespace ATTrafficAnalayzer.Views
             _pmPeakIndex = PmPeakHour;
 
             //Retrieve the config for the supplied name
-            _reportConfig = _dataSource.GetConfiguration(configName);
+            _config = _dataSource.GetConfiguration(configName);
             _summaryConfig = _dataSource.GetSummaryConfig(_configName);
         }
 
@@ -71,9 +71,9 @@ namespace ATTrafficAnalayzer.Views
             //Same loop as in ReportTable
             for (var day = 0; day < timeSpan.TotalDays; day++)
             {
-                foreach (var approach in _reportConfig.Approaches)
+                foreach (var approach in _config.Approaches)
                 {
-                    var dataTable = approach.GetDataTable(_settings, _reportConfig.Intersection, day);
+                    var dataTable = approach.GetDataTable(_settings, _config.Intersection, day);
 
                     string[] columnNames = dataTable.Columns.Cast<DataColumn>().
                                                   Select(column => column.ColumnName).

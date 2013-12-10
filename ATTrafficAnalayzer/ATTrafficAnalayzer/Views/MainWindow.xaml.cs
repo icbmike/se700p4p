@@ -105,7 +105,7 @@ namespace ATTrafficAnalayzer.Views
             var prevMode = _mode;
             _mode = args.Mode;
 
-            //Tell the Report browser to clear its selected item if the mode has changed
+            //Tell the Configuration browser to clear its selected item if the mode has changed
             if (!prevMode.Equals(_mode) && ReportBrowser.GetSelectedConfiguration() != null)
                 ReportBrowser.ClearSelectedConfig();
 
@@ -197,7 +197,7 @@ namespace ATTrafficAnalayzer.Views
         /// <summary>
         /// Handler for when the report browser says that the user wants to create or edit a configuration.
         /// </summary>
-        /// <param name="sender">Report Browser</param>
+        /// <param name="sender">Configuration Browser</param>
         /// <param name="args"></param>
         private void ReportBrowser_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
         {
@@ -212,7 +212,7 @@ namespace ATTrafficAnalayzer.Views
                         //Check if volumes exist for the selected range
                         if (dataSource.VolumesExist((DateTime) SettingsToolbar.StartDatePicker.SelectedDate, (DateTime) SettingsToolbar.EndDatePicker.SelectedDate))
                         {
-                            //Create and display a new Report config screen
+                            //Create and display a new Configuration config screen
                             var reportConfigurationScreen = new ReportConfig(dataSource);
                             reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
                             reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
@@ -509,7 +509,7 @@ namespace ATTrafficAnalayzer.Views
         private void HelpAboutUsMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             // Configure the message box to be displayed 
-            const string messageBoxText = "Auckland Transport Traffic Report Viewer\n\n" +
+            const string messageBoxText = "Auckland Transport Traffic Configuration Viewer\n\n" +
                                           "Created by Michael Little and Andrew Luey";
             const string caption = "About Us";
             const MessageBoxButton button = MessageBoxButton.OK;

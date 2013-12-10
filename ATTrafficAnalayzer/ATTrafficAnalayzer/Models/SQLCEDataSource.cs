@@ -163,7 +163,7 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public Report GetConfiguration(string name)
+        public Configuration.Configuration GetConfiguration(string name)
         {
             using (var conn = new SqlCeConnection(connectionString))
             {
@@ -205,7 +205,7 @@ namespace ATTrafficAnalayzer.Models
                         }
                     }
                     conn.Close();
-                    return new Report(name, (int)configJson["intersection"], approaches);
+                    return new Configuration.Configuration(name, (int)configJson["intersection"], approaches);
                 }
                 conn.Close();
             }
@@ -232,7 +232,7 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public void AddConfiguration(Configuration.Report config)
+        public void AddConfiguration(Configuration.Configuration config)
         {
             throw new NotImplementedException();
         }

@@ -175,7 +175,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             //Do the database insertion.
-            _dataSource.AddConfiguration(new Report(configName, SelectedIntersection, approaches));
+            _dataSource.AddConfiguration(new Configuration(configName, SelectedIntersection, approaches));
 
             //Fire the saved event
             if (ConfigurationSaved != null)
@@ -238,9 +238,9 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dataSource.ReportExists("Report " + count))
+                    if (!_dataSource.ReportExists("Configuration " + count))
                     {
-                        configTextBox.Text = "Report " + count;
+                        configTextBox.Text = "Configuration " + count;
                         break;
                     }
                 }

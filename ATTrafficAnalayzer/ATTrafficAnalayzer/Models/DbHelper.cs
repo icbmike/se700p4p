@@ -795,7 +795,7 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
-        #region Report Related Methods
+        #region Configuration Related Methods
 
         /// <summary>
         ///     Adapater to the report configuration database table
@@ -833,9 +833,9 @@ namespace ATTrafficAnalayzer.Models
         /// <summary>
         ///     Retrieve a report configuration
         /// </summary>
-        /// <param name="name">Report name</param>
+        /// <param name="name">Configuration name</param>
         /// <returns>configuration</returns>
-        public Report GetConfiguration(string name)
+        public Configuration.Configuration GetConfiguration(string name)
         {
             using (var conn = new SQLiteConnection(DbPath))
             {
@@ -877,7 +877,7 @@ namespace ATTrafficAnalayzer.Models
                         }
                     }
                     conn.Close();
-                    return new Report(name, (int)configJson["intersection"], approaches);
+                    return new Configuration.Configuration(name, (int)configJson["intersection"], approaches);
                 }
                 conn.Close();
             }
@@ -914,8 +914,8 @@ namespace ATTrafficAnalayzer.Models
         /// <summary>
         ///     Create a report record in the database
         /// </summary>
-        /// <param name="config">Report configuration</param>
-        public void AddConfiguration(Report config)
+        /// <param name="config">Configuration configuration</param>
+        public void AddConfiguration(Configuration.Configuration config)
         {
             var configJson = config.ToJson();
             using (var conn = new SQLiteConnection(DbPath))
@@ -967,7 +967,7 @@ namespace ATTrafficAnalayzer.Models
         /// <summary>
         ///     Checks if a report exists
         /// </summary>
-        /// <param name="name">Report name</param>
+        /// <param name="name">Configuration name</param>
         /// <returns>True if it exists</returns>
         public bool ReportExists(String name)
         {

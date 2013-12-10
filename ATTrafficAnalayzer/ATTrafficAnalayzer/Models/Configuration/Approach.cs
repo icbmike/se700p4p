@@ -22,6 +22,8 @@ namespace ATTrafficAnalayzer.Models.Configuration
         private DataTable _dataTable;
         private int _amPeak = -1;
         private int _pmPeak = -1;
+        private DateTime _amPeakTime;
+        private DateTime _pmPeakTime;
 
         public string Name { get; set; }
         public List<int> Detectors { get; set; }
@@ -201,7 +203,15 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// <returns>Total traffic volume for the approach</returns>
         public int GetTotal(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            return _approachTotal;
+            if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
+            //The last row of the data table has totals in it
+            var sum = 0;
+            for (int i = 1; i < _dataTable.Rows[_dataTable.Rows.Count - 1].ItemArray.Length; i++)
+            {
+                var item = _dataTable.Rows[_dataTable.Rows.Count - 1].ItemArray[i];
+                sum += int.Parse(item as string);
+            }
+            return sum;
         }
 
         public int GetPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
@@ -211,24 +221,42 @@ namespace ATTrafficAnalayzer.Models.Configuration
             return Math.Max(_amPeak, _pmPeak);
         }
 
+        public void Invalidate()
+        {
+            _dataTable = null;
+            _amPeak = -1;
+            _pmPeak = -1;
+        }
+
         public int GetAmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
             if (_amPeak == -1)
             {
                 if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
-                int max = 0;
+                var max = -1;
+                var rowPos = 0;
+                var columnPos = 0; 
+
+                //Skip the last row so that we don't get totals
                 for (var rowIndex = 0; rowIndex < _dataTable.Rows.Count - 1; rowIndex++)
                 {
                     var row = _dataTable.Rows[rowIndex];
-                    for (var i = 1; i < row.ItemArray.Count(); i++)
+                    //Only go to the 12th column so that we're in the morning
+                    for (var i = 1; i < 13; i++)
                     {
                         var candidate = int.Parse(row.ItemArray[i] as string);
                         if (candidate > max)
                         {
                             max = candidate;
+                            //we can work out the datetime from the position in the table
+                            rowPos = rowIndex;
+                            columnPos = i;
                         }
                     }
                 }
+                //we can work out the datetime from the position in the table
+                //The hour maps to the column pos - 1
+                _amPeakTime = settings.StartDate.AddDays(day).AddHours(columnPos -1).AddMinutes(rowPos * settings.Interval);
                 _amPeak = max;
                 
             }
@@ -240,22 +268,27 @@ namespace ATTrafficAnalayzer.Models.Configuration
             if (_pmPeak == -1)
             {
                 if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
-                int max = 0;
+                var max = 0;
+                var rowPos = 0;
+                var columnPos = 0;
                 //Row count -1 so we dont get the totals
                 for (var rowIndex = 0; rowIndex < _dataTable.Rows.Count - 1; rowIndex++)
                 {
                     var row = _dataTable.Rows[rowIndex];
-                    //Start at 1st column so we dont get the time labels
-                    for (var i = 1; i < row.ItemArray.Count(); i++)
+                    //Start at the 13th column so we only get the afternoon
+                    for (var i = 13; i < row.ItemArray.Count(); i++)
                     {
                         var candidate = int.Parse(row.ItemArray[i] as string);
-                        Console.WriteLine(candidate);
                         if (candidate > max)
                         {
                             max = candidate;
+                            //we can work out the datetime from the position in the table
+                            rowPos = rowIndex;
+                            columnPos = i;
                         }
                     }
                 }
+                _pmPeakTime = settings.StartDate.AddDays(day).AddHours(columnPos - 1).AddMinutes(rowPos * settings.Interval);
                 _pmPeak = max;
 
             }
@@ -264,17 +297,28 @@ namespace ATTrafficAnalayzer.Models.Configuration
 
         public DateTime GetPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            throw new NotImplementedException();
+            if (_amPeak == -1) GetAmPeak(settings, intersection, day, limit, offset);
+            if (_pmPeak == -1) GetPmPeak(settings, intersection, day, limit, offset);
+            if (_amPeak > _pmPeak) return _amPeakTime;
+            else return _pmPeakTime;
         }
 
         public DateTime GetAmPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            throw new NotImplementedException();
+            if (_amPeak == -1)
+            {
+                GetAmPeak(settings, intersection, day, limit, offset);
+            }
+            return _amPeakTime;
         }
 
         public DateTime GetPmPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            throw new NotImplementedException();
+            if (_pmPeak == -1)
+            {
+                GetPmPeak(settings, intersection, day, limit, offset);
+            }
+            return _pmPeakTime;
         }
     }
 }

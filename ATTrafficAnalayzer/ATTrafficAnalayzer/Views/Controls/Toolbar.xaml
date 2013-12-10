@@ -42,7 +42,7 @@
                     Foreground="White">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources\Images\Icons\glyphicons_029_notes_2.png" />
-                    <ContentPresenter Content="Reports"
+                    <ContentPresenter Content="Configurations"
                                       VerticalAlignment="Center"
                                       Margin="6,0" />
                 </StackPanel>

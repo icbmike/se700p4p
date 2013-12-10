@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models.Configuration
 {
-    public class Report
+    public class Configuration
     {
         public List<Approach> Approaches { get; set; }
         public string ConfigName { get; set; }
@@ -16,7 +16,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// <param name="configName">Name of the report</param>
         /// <param name="intersection">Intersection of the report</param>
         /// <param name="approaches">List of approaches contained in the report</param>
-        public Report(string configName, int intersection, List<Approach> approaches)
+        public Configuration(string configName, int intersection, List<Approach> approaches)
         {
             ConfigName = configName;
             Intersection = intersection;
@@ -26,7 +26,7 @@ namespace ATTrafficAnalayzer.Models.Configuration
         /// <summary>
         ///     Export the report components in JSON format
         /// </summary>
-        /// <returns>Report in JSON format</returns>
+        /// <returns>Configuration in JSON format</returns>
         public JObject ToJson()
         {
             var json = new JObject { { "intersection", Intersection } };
@@ -66,6 +66,11 @@ namespace ATTrafficAnalayzer.Models.Configuration
             }
 
             return dataTable;
+        }
+
+        public void Invalidate()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

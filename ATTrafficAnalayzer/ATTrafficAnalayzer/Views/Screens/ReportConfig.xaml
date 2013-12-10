@@ -90,7 +90,7 @@
                Grid.ColumnSpan="2"
                Name="Popup"
                FontSize="25"
-               Content="Construct your new report or select a report from the Report Browser"
+               Content="Construct your new report or select a report from the Configuration Browser"
                Visibility="Collapsed"
                FontWeight="Bold"
                FontStretch="ExtraExpanded"

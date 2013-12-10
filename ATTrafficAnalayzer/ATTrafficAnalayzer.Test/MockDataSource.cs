@@ -8,6 +8,17 @@ namespace ATTrafficAnalayzer.Test
 {
     public class MockDataSource : IDataSource
     {
+        public int DummyIntersection { get; set; }
+
+        /// <summary>
+        /// Constructor for our dataSource used in testing
+        /// </summary>
+        /// <param name="dummyIntersection">Intersection used to check against if a "different" intersection has been used</param>
+        public MockDataSource(int dummyIntersection)
+        {
+            DummyIntersection = dummyIntersection;
+        }
+
         public int GetVolume(int intersection, int detector, DateTime dateTime)
         {
             throw new NotImplementedException();
@@ -26,9 +37,18 @@ namespace ATTrafficAnalayzer.Test
             {
                 volumes.Add(i++);
             }
-            //Ensure AM and PM peaks
-            volumes[20] = 450;
-            volumes[250] = 350;
+
+            if (intersection == DummyIntersection)
+            {
+                //Ensure AM and PM peaks
+                volumes[20] = 450; //1:40am
+                volumes[250] = 350; //20:50pm
+            }
+            else
+            {
+                volumes[30] = 500; //2:30am
+                volumes[220] = 600; //18:20pm
+            }
             return volumes;
         }
 
@@ -77,7 +97,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public Report GetConfiguration(string name)
+        public Configuration GetConfiguration(string name)
         {
             throw new NotImplementedException();
         }
@@ -102,7 +122,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public void AddConfiguration(Report config)
+        public void AddConfiguration(Configuration config)
         {
             throw new NotImplementedException();
         }

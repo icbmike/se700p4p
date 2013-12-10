@@ -27,7 +27,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private DateTime _endDate;
         private int _interval;
 
-        private Report _configuration;
+        private Configuration _configuration;
 
         readonly IDataSource _dataSource;
         private bool _countsDontMatch;
@@ -37,6 +37,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings">Lets the graph view get the date range at the time of construction</param>
         /// <param name="configName">The config to be displayed</param>
+        /// <param name="dataSource">The dataSource to get volume information from</param>
         public ReportTable(DateSettings settings, string configName, IDataSource dataSource)
         {
             _dataSource = dataSource;
@@ -63,13 +64,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             ApproachesStackPanel.Children.Clear();
             OverallSummaryTextBlock.Inlines.Clear();
 
-            //Clear the calculated stats
-            _maxAm.ClearApproaches();
-            _maxPm.ClearApproaches();
-            _maxTotal.ClearApproaches();
-            _peakHourAm.ClearApproaches();
-            _peakHourPm.ClearApproaches();
-
             _configuration.Approaches.ForEach(approach => ApproachesStackPanel.Children.Add(new ApproachTable(approach, _configuration.Intersection, _settings)));
 
         }                                                                                                                                                   
@@ -86,13 +80,13 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _startDate = args.StartDate;
                 _endDate = args.EndDate;
                 _interval = args.Interval;
-
+                _configuration.Approaches.ForEach(approach => approach.Invalidate());
                 Render();
             }
         }
 
         /// <summary>
-        /// Event Handler for ReportChanged event from Report Browser
+        /// Event Handler for ReportChanged event from Configuration Browser
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
