@@ -24,19 +24,6 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         }
 
         /// <summary>
-        ///     Export the report components in JSON format
-        /// </summary>
-        /// <returns>Configuration in JSON format</returns>
-        public JObject ToJson()
-        {
-            var json = new JObject { { "intersection", Intersection } };
-            var array = new JArray();
-            json.Add("approaches", array); // Add an empty array that will be filled in later with approach IDs once we know them
-
-            return json;
-        }
-
-        /// <summary>
         ///     Data table to configure the summary
         /// </summary>
         /// <returns>Summary data table</returns>

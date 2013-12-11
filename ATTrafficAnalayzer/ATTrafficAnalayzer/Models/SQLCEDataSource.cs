@@ -10,13 +10,13 @@ namespace ATTrafficAnalayzer.Models
 {
     public class SqlceDataSource : IDataSource
     {
-        private string connectionString;
+        private string _connectionString;
 
         public SqlceDataSource()
         {
             var connectionSb = new SqlCeConnectionStringBuilder();
             connectionSb.DataSource = "TA.sdf";
-            connectionString = connectionSb.ConnectionString;
+            _connectionString = connectionSb.ConnectionString;
         }
 
         public int GetVolume(int intersection, int detector, DateTime dateTime)
@@ -32,7 +32,7 @@ namespace ATTrafficAnalayzer.Models
         public List<int> GetVolumes(int intersection, int detector, DateTime startDate, DateTime endDate)
         {
             List<int> volumes;
-            using (var conn = new SqlCeConnection(connectionString))
+            using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
                 volumes = new List<int>();
@@ -77,7 +77,7 @@ namespace ATTrafficAnalayzer.Models
         public List<int> GetIntersections()
         {
             List<int> intersections;
-            using (var conn = new SqlCeConnection(connectionString))
+            using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
                 intersections = new List<int>();
@@ -98,7 +98,7 @@ namespace ATTrafficAnalayzer.Models
         public List<int> GetDetectorsAtIntersection(int intersection)
         {
             List<int> detectors;
-            using (var conn = new SqlCeConnection(connectionString))
+            using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
                 detectors = new List<int>();
@@ -123,7 +123,7 @@ namespace ATTrafficAnalayzer.Models
         {
             var importedDates = new List<DateTime>();
 
-            using (var conn = new SqlCeConnection(connectionString))
+            using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
                 using (var query = conn.CreateCommand())
@@ -163,9 +163,9 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public ReportConfiguration.Configuration GetConfiguration(string name)
+        public Configuration GetConfiguration(string name)
         {
-            using (var conn = new SqlCeConnection(connectionString))
+            using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
 
@@ -232,9 +232,50 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public void AddConfiguration(ReportConfiguration.Configuration config)
+        public void AddConfiguration(Configuration config)
         {
-            throw new NotImplementedException();
+            using (var conn = new SqlCeConnection(_connectionString))
+            {
+                conn.Open();
+                conn.BeginTransaction();
+                //Add configuration
+                //Foreach approach
+                    //Add approach
+                    //Add to config mapping table
+                    //Add to detector mapping table
+
+                Int32 configID;
+
+                //Insert into configs table
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText =
+                        "INSERT INTO configs (name, date_last_used) VALUES (@name, GETDATE()); SELECT @@Identity as ID;";
+                    query.Parameters.AddWithValue("@name", config.ConfigName);
+                    configID = (Int32)query.ExecuteScalar();
+                }
+
+
+                foreach (var approach in config.Approaches)
+                {
+                    Int32 approachID;
+                    //insert into approaches table
+                    using (var query = conn.CreateCommand())
+                    {
+                        query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);SELECT @@Identity as ID;";
+                        query.Parameters.AddWithValue("@approach", approach.Name);
+                        approachID = (Int32)query.ExecuteScalar();
+                    }
+
+                    //insert into approach_detector_mapping and config_approach_mapping
+                    using (var query = conn.CreateCommand())
+                    {
+                        new StringBuilder("INSERT INTO");
+                        
+                    }
+                }
+                conn.Close();
+            }
         }
 
         public void SaveMonthlySummaryConfig(string configName, IEnumerable<ReportConfiguration.SummaryRow> rows)
@@ -261,7 +302,7 @@ namespace ATTrafficAnalayzer.Models
         {
             long count;
 
-            using (var conn = new SqlCeConnection(connectionString))
+            using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
 
@@ -292,7 +333,7 @@ namespace ATTrafficAnalayzer.Models
         public bool VolumesTableEmpty()
         {
             var count = 0;
-            using(var conn = new SqlCeConnection(connectionString)){
+            using(var conn = new SqlCeConnection(_connectionString)){
                 conn.Open();
                 using (var query = conn.CreateCommand())
                 {

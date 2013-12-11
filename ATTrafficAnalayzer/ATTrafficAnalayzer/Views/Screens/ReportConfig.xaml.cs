@@ -20,7 +20,6 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
     {
         private readonly IDataSource _dataSource;
-        private readonly DataTableHelper _reportsDataTableHelper = DataTableHelper.GetDataTableHelper();
         private readonly bool _isNewConfig = true;
         private readonly string _oldName;
 
@@ -46,6 +45,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// Constructor used to edit a configuration.
         /// </summary>
         /// <param name="configToBeEdited">The name of the configuration to be edited</param>
+        /// <param name="dataSource">Where config will be retrieved from</param>
         public ReportConfig(string configToBeEdited, IDataSource dataSource) : this(dataSource)
         {
             //Populate config screen

@@ -1,47 +1,187 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using ATTrafficAnalayzer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ATTrafficAnalayzer.Test
+namespace ATTrafficAnalayzer.Models.Tests
 {
-    [TestClass]
-    public class TestSqlceDataSource
+    [TestClass()]
+    public class TestSqlCeDataSource
     {
-
-        private IDataSource _dataSource;
-
-        [TestInitialize]
-        public void TestInitialize()
+        [TestMethod()]
+        public void TestSqlceDataSource()
         {
-            _dataSource = new SqlceDataSource();
+            Assert.Fail();
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void TestGetVolume()
         {
-            //Get volume for intersection and detector that do exist
-           // var volume = _dataSource.GetVolume(1, 2, DateTime.Now);
-
+            Assert.Fail();
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void TestGetVolumeForTimePeriod()
         {
-            var volumeForTimePeriod = _dataSource.GetVolumeForTimePeriod(1, new List<int>(), DateTime.Now, DateTime.Now);
+            Assert.Fail();
         }
 
-        [TestMethod]
+        [TestMethod()]
+        public void TestGetVolumes()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
         public void TestGetTotalVolumeForDay()
         {
-            var totalVolumeForDay = _dataSource.GetTotalVolumeForDay(DateTime.Today, 405, new List<int>());
+            Assert.Fail();
         }
 
-        [TestMethod]
+        [TestMethod()]
+        public void TestRemoveVolumes()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
         public void TestGetIntersections()
         {
-            var intersections = _dataSource.GetIntersections();
-            Assert.AreEqual(1, intersections.Count);
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetDetectorsAtIntersection()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetImportedDates()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestVolumesExist()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestVolumesExist1()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestVolumesExistForMonth()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetMostRecentImportedDate()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetConfiguration()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetApproaches()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetSummaryConfig()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetSummaryNames()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetReportNames()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestAddConfiguration()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestSaveMonthlySummaryConfig()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestRemoveReport()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestRemoveSummary()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestSummaryExists()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestReportExists()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestGetSuspectedFaults()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestImportFile()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestVolumesTableEmpty()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestClearData()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void TestAddIntersection()
+        {
+            Assert.Fail();
         }
     }
 }

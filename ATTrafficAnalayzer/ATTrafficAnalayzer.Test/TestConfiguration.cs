@@ -27,15 +27,6 @@ namespace ATTrafficAnalayzer.Test
             testConfiguration.Invalidate();
         }
 
-        [TestMethod]
-        public void TestToJson()
-        {
-            var testConfiguration = GetTestConfiguration();
-            var jObject = testConfiguration.ToJson();
-            var approachesJson = jObject["approaches"] as JArray;
-            Assert.AreEqual(0, approachesJson.Count);
-        }
-
         private Configuration GetTestConfiguration()
         {
             var testApproach = new Approach("Test Approach", new List<int> { 1 }, _mockDataSource);

@@ -130,7 +130,7 @@
     <Compile Include="Models\IDataSource.cs" />
     <Compile Include="Models\ReportConfiguration\Approach.cs" />
     <Compile Include="Models\Settings\Mode.cs" />
-    <Compile Include="Models\SQLCEDataSource.cs" />
+    <Compile Include="Models\SqlceDataSource.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Annotations1.cs" />

@@ -20,7 +20,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private IEnumerable<SummaryRow> _summaryConfig;
         private readonly IDataSource _dataSource;
         private readonly DataTableHelper _dtHelper = DataTableHelper.GetDataTableHelper();
-        private DateSettings _settings;
+        private readonly DateSettings _settings;
 
         private DateTime _startDate;
         private DateTime _endDate;

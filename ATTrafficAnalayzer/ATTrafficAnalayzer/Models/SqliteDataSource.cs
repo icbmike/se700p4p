@@ -927,7 +927,6 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="config">Configuration configuration</param>
         public void AddConfiguration(ReportConfiguration.Configuration config)
         {
-            var configJson = config.ToJson();
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
@@ -938,7 +937,7 @@ namespace ATTrafficAnalayzer.Models
                     using (var query = new SQLiteCommand(conn))
                     {
                         query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
-                        query.Parameters.AddWithValue("@approach", approach.ToJson().ToString());
+                        query.Parameters.AddWithValue("@approach", approach.ToString());
                         query.ExecuteNonQuery();
                     }
                     //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
@@ -947,7 +946,7 @@ namespace ATTrafficAnalayzer.Models
                         query.CommandText = "SELECT last_insert_rowid();";
 
                         var rowID = (Int64)query.ExecuteScalar();
-                        ((JArray)configJson["approaches"]).Add(rowID);
+                       // ((JArray)configJson["approaches"]).Add(rowID);
                     }
                 }
 
@@ -956,22 +955,12 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
                     query.Parameters.AddWithValue("@name", config.ConfigName);
-                    query.Parameters.AddWithValue("@config", configJson.ToString());
+                    query.Parameters.AddWithValue("@config", config.ToString());
                     query.Parameters.AddWithValue("@last_used", DateTime.Today);
                     query.ExecuteNonQuery();
                 }
                 conn.Close();
             }
-        }
-
-        /// <summary>
-        ///     List of all approaches in a configuration
-        /// </summary>
-        /// <param name="configName">Config name</param>
-        /// <returns>List of approaches</returns>
-        public List<Approach> GetApproaches(String configName)
-        {
-            return GetConfiguration(configName).Approaches;
         }
 
         /// <summary>

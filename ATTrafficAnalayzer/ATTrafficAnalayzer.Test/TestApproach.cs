@@ -25,8 +25,7 @@ namespace ATTrafficAnalayzer.Test
                     Interval = 5,
                     StartDate = new DateTime(2013, 3, 11),
                     EndDate = new DateTime(2013, 3, 12)
-                };
-            
+                }; 
         }
 
         [TestMethod]
@@ -110,16 +109,6 @@ namespace ATTrafficAnalayzer.Test
             var testApproach = new Approach("Test Approach", new List<int> {1, 2, 3}, _mockDataSource);
             var pmPeakTime = testApproach.GetPmPeakTime(_dateSettings, _dummyIntersection, 0);
             Assert.AreEqual(new DateTime(2013, 3, 11, 20, 50, 0, 0), pmPeakTime);
-        }
-
-
-        [TestMethod]
-        public void TestToJson()
-        {
-            var testApproach = new Approach("Test Approach", new List<int> {1, 2, 3}, _mockDataSource);
-            var jObject = testApproach.ToJson();
-            Assert.IsNotNull(jObject["name"]);
-            Assert.AreEqual(3, (jObject["detectors"] as JArray).Count);
         }
     }
 }

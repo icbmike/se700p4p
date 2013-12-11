@@ -51,22 +51,6 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         }
 
         /// <summary>
-        ///     Generates a json object which holds the approach data
-        /// </summary>
-        /// <returns>Approach as a JSON object</returns>
-        public JObject ToJson()
-        {
-            var json = new JObject { { "name", Name } };
-
-            var array = new JArray();
-            foreach (var detector in Detectors)
-                array.Add(detector);
-            json.Add("detectors", array);
-
-            return json;
-        }
-
-        /// <summary>
         ///     Get a list of volumes
         /// </summary>
         /// <param name="intersection">Intersection ID</param>
