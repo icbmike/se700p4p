@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 
 namespace ATTrafficAnalayzer.Models
 {
     public interface IDataSource
     {
-
         #region Volume Related Methods
-        
-        int GetVolume(int intersection, int detector, DateTime dateTime);
 
         int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime);
 
@@ -42,9 +39,7 @@ namespace ATTrafficAnalayzer.Models
 
         #region Configuration Related Methods
         
-        Configuration.Configuration GetConfiguration(string name);
-        
-        List<Approach> GetApproaches(String configName);
+        Configuration GetConfiguration(string name);
         
         IEnumerable<SummaryRow> GetSummaryConfig(string name);
 
@@ -52,7 +47,7 @@ namespace ATTrafficAnalayzer.Models
         
         List<String> GetReportNames();
 
-        void AddConfiguration(Configuration.Configuration config);
+        void AddConfiguration(Configuration config);
         
         void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows);
 

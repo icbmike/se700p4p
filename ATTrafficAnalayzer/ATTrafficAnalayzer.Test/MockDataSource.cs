@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 
 namespace ATTrafficAnalayzer.Test
 {
@@ -169,6 +169,11 @@ namespace ATTrafficAnalayzer.Test
         }
 
         public void ClearData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddIntersection(int intersection, IEnumerable<int> detectors)
         {
             throw new NotImplementedException();
         }

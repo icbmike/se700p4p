@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 

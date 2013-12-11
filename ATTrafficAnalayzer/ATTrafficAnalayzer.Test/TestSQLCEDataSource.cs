@@ -21,7 +21,7 @@ namespace ATTrafficAnalayzer.Test
         public void TestGetVolume()
         {
             //Get volume for intersection and detector that do exist
-            var volume = _dataSource.GetVolume(1, 2, DateTime.Now);
+           // var volume = _dataSource.GetVolume(1, 2, DateTime.Now);
 
         }
 

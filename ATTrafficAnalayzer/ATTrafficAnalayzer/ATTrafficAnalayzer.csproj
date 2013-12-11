@@ -123,11 +123,12 @@
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
     <Compile Include="Models\DatabaseMetrics.cs" />
-    <Compile Include="Models\Configuration\ReportsDataTableHelper.cs" />
-    <Compile Include="Models\Configuration\SummaryRow.cs" />
+    <Compile Include="Models\ReportConfiguration\ReportsDataTableHelper.cs" />
+    <Compile Include="Models\ReportConfiguration\SummaryRow.cs" />
     <Compile Include="Models\DataSourceFactory.cs" />
     <Compile Include="Models\DuplicatePolicy.cs" />
     <Compile Include="Models\IDataSource.cs" />
+    <Compile Include="Models\ReportConfiguration\Approach.cs" />
     <Compile Include="Models\Settings\Mode.cs" />
     <Compile Include="Models\SQLCEDataSource.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
@@ -150,7 +151,6 @@
     <Compile Include="Views\Controls\ReportBrowser.xaml.cs">
       <DependentUpon>ReportBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Configuration\Approach.cs" />
     <Compile Include="Models\Volume\DateTimeRecord.cs" />
     <Compile Include="Models\Settings\IntervalConverter.cs" />
     <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialog.xaml.cs">
@@ -168,7 +168,7 @@
       <DependentUpon>ReportConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Settings\DateSettings.cs" />
-    <Compile Include="Models\Configuration\Configuration.cs" />
+    <Compile Include="Models\ReportConfiguration\Configuration.cs" />
     <Compile Include="Models\SqliteDataSource.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
     <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />

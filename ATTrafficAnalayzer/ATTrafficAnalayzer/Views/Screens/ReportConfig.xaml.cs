@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 
@@ -50,8 +50,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             //Populate config screen
             var config = _dataSource.GetConfiguration(configToBeEdited);
-            var approaches = _dataSource.GetApproaches(configToBeEdited);
-            foreach (var approach in approaches)
+           
+            foreach (var approach in config.Approaches)
             {
                 var configApproachBox = new ConfigApproachBox(Approaches, approach.Detectors, approach.Name)
                 {

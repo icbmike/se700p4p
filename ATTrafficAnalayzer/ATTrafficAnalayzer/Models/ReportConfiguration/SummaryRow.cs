@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json.Linq;
 
-namespace ATTrafficAnalayzer.Models.Configuration
+namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
     public class SummaryRow
     {

@@ -2,7 +2,7 @@
 using System.Data;
 using Newtonsoft.Json.Linq;
 
-namespace ATTrafficAnalayzer.Models.Configuration
+namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
     public class Configuration
     {

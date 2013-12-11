@@ -7,7 +7,7 @@ using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views;
 using ATTrafficAnalayzer.Views.Screens;
 
-namespace ATTrafficAnalayzer.Models.Configuration
+namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
     class DataTableHelper
     {

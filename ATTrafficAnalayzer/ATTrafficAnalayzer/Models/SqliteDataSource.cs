@@ -6,7 +6,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Screens;
 using Newtonsoft.Json.Linq;
@@ -613,6 +613,11 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
+        public void AddIntersection(int intersection, IEnumerable<int> detectors)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         ///     Get the volumes for a single detector at a specific datetime
         /// </summary>
@@ -840,7 +845,7 @@ namespace ATTrafficAnalayzer.Models
         /// </summary>
         /// <param name="name">Configuration name</param>
         /// <returns>configuration</returns>
-        public Configuration.Configuration GetConfiguration(string name)
+        public ReportConfiguration.Configuration GetConfiguration(string name)
         {
             using (var conn = new SQLiteConnection(DbPath))
             {
@@ -882,7 +887,7 @@ namespace ATTrafficAnalayzer.Models
                         }
                     }
                     conn.Close();
-                    return new Configuration.Configuration(name, (int)configJson["intersection"], approaches);
+                    return new ReportConfiguration.Configuration(name, (int)configJson["intersection"], approaches);
                 }
                 conn.Close();
             }
@@ -920,7 +925,7 @@ namespace ATTrafficAnalayzer.Models
         ///     Create a report record in the database
         /// </summary>
         /// <param name="config">Configuration configuration</param>
-        public void AddConfiguration(Configuration.Configuration config)
+        public void AddConfiguration(ReportConfiguration.Configuration config)
         {
             var configJson = config.ToJson();
             using (var conn = new SQLiteConnection(DbPath))

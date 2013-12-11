@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
 
@@ -137,9 +137,9 @@ namespace ATTrafficAnalayzer.Views
 
 
             Dictionary<string, DataTable> summaries = new Dictionary<string, DataTable>();
-            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
-            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
-            summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
+            summaries.Add("AM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.ReportConfiguration.DataTableHelper.AmPeakCalculator(_amPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
+            summaries.Add("PM Peak Hour Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.ReportConfiguration.DataTableHelper.PmPeakCalculator(_pmPeakIndex), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
+            summaries.Add("Total Traffic Volumes", _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.ReportConfiguration.DataTableHelper.SumCalculator(), _settings.StartDate, _settings.EndDate, _summaryConfig, result));
 
             foreach (var summary in summaries)
             {

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Configuration;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
 using ATTrafficAnalayzer.Views.Controls;

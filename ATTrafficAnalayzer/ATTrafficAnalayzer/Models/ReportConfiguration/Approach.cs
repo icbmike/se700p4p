@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
 using Newtonsoft.Json.Linq;
-using ATTrafficAnalayzer.Models.Settings;
 
-namespace ATTrafficAnalayzer.Models.Configuration
+namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
     public class Approach
     {
