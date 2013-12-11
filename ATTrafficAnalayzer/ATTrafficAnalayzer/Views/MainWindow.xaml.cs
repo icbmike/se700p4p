@@ -383,7 +383,7 @@ namespace ATTrafficAnalayzer.Views
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 
-                        skipAllOrOne = dataSource.ImportFile(b, w, filename,
+                        skipAllOrOne = dataSource.ImportFile(filename,
                                                            progress =>
                                                            ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
                                                            GetDuplicatePolicy); //Function to determine a duplicate policy

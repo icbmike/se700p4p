@@ -6,10 +6,6 @@ namespace ATTrafficAnalayzer.Test
     [TestClass]
     public class TestSqliteDataSource
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-
-        }
+     
     }
 }

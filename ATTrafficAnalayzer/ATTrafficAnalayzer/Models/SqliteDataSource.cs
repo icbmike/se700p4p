@@ -343,7 +343,7 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="updateProgress"></param>
         /// <param name="getDuplicatePolicy"></param>
         /// <returns></returns>
-        public DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
+        public DuplicatePolicy ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
             FileStream fs;
@@ -606,6 +606,11 @@ namespace ATTrafficAnalayzer.Models
             }
 
             return !reader.Equals(1);
+        }
+
+        void IDataSource.ClearData()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

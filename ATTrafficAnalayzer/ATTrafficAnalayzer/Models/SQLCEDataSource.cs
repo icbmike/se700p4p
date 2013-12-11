@@ -284,7 +284,7 @@ namespace ATTrafficAnalayzer.Models
         }
 
 
-        public DuplicatePolicy ImportFile(System.ComponentModel.BackgroundWorker b, System.ComponentModel.DoWorkEventArgs w, string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
+        public DuplicatePolicy ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             throw new NotImplementedException();
         }
@@ -302,6 +302,36 @@ namespace ATTrafficAnalayzer.Models
             }
 
             return count.Equals(0);
+        }
+
+
+
+        public void ClearData()
+        {
+            ClearIntersections();
+            ClearVolumes();
+            ClearConfigurations();
+            ClearApproaches();
+        }
+
+        private void ClearApproaches()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ClearConfigurations()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ClearVolumes()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ClearIntersections()
+        {
+            throw new NotImplementedException();
         }
     }
 }

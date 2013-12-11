@@ -157,13 +157,18 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public DuplicatePolicy ImportFile(BackgroundWorker b, DoWorkEventArgs w, string filename, Action<int> updateProgress,
+        public DuplicatePolicy ImportFile(string filename, Action<int> updateProgress,
                                           Func<DuplicatePolicy> getDuplicatePolicy)
         {
             throw new NotImplementedException();
         }
 
         public bool VolumesTableEmpty()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearData()
         {
             throw new NotImplementedException();
         }
