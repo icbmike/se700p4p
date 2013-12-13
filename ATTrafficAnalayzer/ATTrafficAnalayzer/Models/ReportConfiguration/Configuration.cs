@@ -16,7 +16,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <param name="configName">Name of the report</param>
         /// <param name="intersection">Intersection of the report</param>
         /// <param name="approaches">List of approaches contained in the report</param>
-        public Configuration(string configName, int intersection, List<Approach> approaches)
+        /// <param name="dataSource"></param>
+        public Configuration(string configName, int intersection, List<Approach> approaches, IDataSource dataSource)
         {
             ConfigName = configName;
             Intersection = intersection;

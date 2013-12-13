@@ -12,11 +12,11 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         ///     Creates a summary row
         /// </summary>
-        public SummaryRow()
+        public SummaryRow(IDataSource dataSource)
         {
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
-            _dataSource = SqliteDataSource.GetDbHelper();
+            _dataSource = dataSource;
         }
 
         /// <summary>

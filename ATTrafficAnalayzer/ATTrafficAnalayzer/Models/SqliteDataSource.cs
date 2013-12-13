@@ -229,26 +229,6 @@ namespace ATTrafficAnalayzer.Models
             return returnCode;
         }
 
-        /// <summary>
-        ///     Allows the programmer to easily delete all data from the DB.
-        /// </summary>
-        /// <returns>A boolean true or false to signify success or failure.</returns>
-        private static bool ClearDb()
-        {
-            try
-            {
-                var tables = GetDataTable("select NAME from SQLITE_MASTER where type='table' order by NAME;");
-                foreach (DataRow table in tables.Rows)
-                {
-                    ClearTable(table["NAME"].ToString());
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         /// <summary>
         ///     Allows the user to easily clear all data from a specific table.
@@ -887,7 +867,7 @@ namespace ATTrafficAnalayzer.Models
                         }
                     }
                     conn.Close();
-                    return new ReportConfiguration.Configuration(name, (int)configJson["intersection"], approaches);
+                    return new Configuration(name, (int)configJson["intersection"], approaches, this);
                 }
                 conn.Close();
             }

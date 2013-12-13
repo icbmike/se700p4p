@@ -175,7 +175,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             //Do the database insertion.
-            _dataSource.AddConfiguration(new Configuration(configName, SelectedIntersection, approaches));
+            _dataSource.AddConfiguration(new Configuration(configName, SelectedIntersection, approaches, _dataSource));
 
             //Fire the saved event
             if (ConfigurationSaved != null)

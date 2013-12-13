@@ -49,9 +49,9 @@ namespace ATTrafficAnalayzer.Models
 
         static void Main(string[] args)
         {
-            var dbmSqlite = new DatabaseMetrics(SqliteDataSource.GetDbHelper());
-            dbmSqlite.Run();
-            dbmSqlite.OutputResults();
+//            var dbmSqlite = new DatabaseMetrics(SqliteDataSource.GetDbHelper());
+//            dbmSqlite.Run();
+//            dbmSqlite.OutputResults();
 
             var dbmSqlCE = new DatabaseMetrics(new SqlceDataSource());
             dbmSqlCE.Run();

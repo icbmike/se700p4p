@@ -92,7 +92,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
 
             //Do save
-            SqliteDataSource.GetDbHelper().SaveMonthlySummaryConfig(configName, Rows);
+            _dataSource.SaveMonthlySummaryConfig(configName, Rows);
 
             //Fire saved event
             if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));

@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace ATTrafficAnalayzer.Models.Tests
+
+namespace ATTrafficAnalayzer.Test
 {
     [TestClass()]
     public class TestSqlCeDataSource
     {
-        [TestMethod()]
+        private static IDataSource _dataSource;
+
+
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
+        {
+            _dataSource = new SqlceDataSource();
+        }
+
+        [TestInitialize]
         public void TestSqlceDataSource()
         {
-            Assert.Fail();
+            _dataSource.ClearData();
         }
 
         [TestMethod()]
@@ -121,7 +128,11 @@ namespace ATTrafficAnalayzer.Models.Tests
         [TestMethod()]
         public void TestAddConfiguration()
         {
-            Assert.Fail();
+            var testApproach = new Approach("test_approach", new List<int>{1, 2, 3}, _dataSource);
+            var config = new Configuration("test_config", 1234, new List<Approach>{testApproach}, _dataSource);
+            _dataSource.AddConfiguration(config);
+            Assert.AreEqual(1, _dataSource.GetReportNames().Count);
+            Assert.AreEqual("test_config", _dataSource.GetReportNames()[0]);
         }
 
         [TestMethod()]

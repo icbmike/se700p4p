@@ -58,7 +58,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            if (!SqliteDataSource.GetDbHelper().VolumesExist(_startDate, _endDate))
+            if (!_dataSource.VolumesExist(_startDate, _endDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
             var faults = _dataSource.GetSuspectedFaults(_startDate, _endDate, FaultThreshold);

@@ -31,7 +31,7 @@ namespace ATTrafficAnalayzer.Test
         {
             var testApproach = new Approach("Test Approach", new List<int> { 1 }, _mockDataSource);
             var testConfiguration = new Configuration("Test Config", _dummyIntersection,
-                                                      new List<Approach> { testApproach });
+                                                      new List<Approach> { testApproach }, _mockDataSource);
             return testConfiguration;
         }
     }

@@ -80,9 +80,9 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
-                var dbHelper = SqliteDataSource.GetDbHelper();
+                var dbHelper = DataSourceFactory.GetDataSource();
                 date = date.AddHours(_hour);
-                if (dbHelper.VolumesExist(date))
+                if (dbHelper.VolumesExist(date,date.AddDays(1)))
                 {
                     return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
                         dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
@@ -108,9 +108,9 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
-                var dbHelper = SqliteDataSource.GetDbHelper();
+                var dbHelper = DataSourceFactory.GetDataSource();
                 date = date.AddHours(_hour + 12);
-                if (dbHelper.VolumesExist(date))
+                if (dbHelper.VolumesExist(date, date.AddDays(1)))
                 {
                     return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
                         dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
@@ -129,8 +129,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         {
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
-                var dbHelper = SqliteDataSource.GetDbHelper();
-                if (dbHelper.VolumesExist(date))
+                var dbHelper = DataSourceFactory.GetDataSource();
+                if (dbHelper.VolumesExist(date, date.AddDays(1)))
                 {
                     return dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionIn, summary.DetectorsIn) +
                                  dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionOut, summary.DetectorsOut);

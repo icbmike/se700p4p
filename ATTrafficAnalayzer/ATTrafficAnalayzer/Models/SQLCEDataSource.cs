@@ -205,7 +205,7 @@ namespace ATTrafficAnalayzer.Models
                         }
                     }
                     conn.Close();
-                    return new ReportConfiguration.Configuration(name, (int)configJson["intersection"], approaches);
+                    return new Configuration(name, (int)configJson["intersection"], approaches, this);
                 }
                 conn.Close();
             }
@@ -345,14 +345,36 @@ namespace ATTrafficAnalayzer.Models
             return count.Equals(0);
         }
 
-
-
         public void ClearData()
         {
-            ClearIntersections();
-            ClearVolumes();
-            ClearConfigurations();
-            ClearApproaches();
+            using (var conn = new SqlCeConnection(_connectionString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM approaches;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM approach_detector_mapping;";
+                    command.ExecuteNonQuery();
+                    
+                    command.CommandText = "DELETE FROM configs;";
+                    command.ExecuteNonQuery();
+                    
+                    command.CommandText = "DELETE FROM config_approach_mapping;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM intersections;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM monthly_summaries;";
+                    command.ExecuteNonQuery();
+                    
+                    command.CommandText = "DELETE FROM volumes;";
+                    command.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
         }
 
         public void AddIntersection(int intersection, IEnumerable<int> detectors)
@@ -360,24 +382,10 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        private void ClearApproaches()
-        {
-            throw new NotImplementedException();
-        }
+       
 
-        private void ClearConfigurations()
-        {
-            throw new NotImplementedException();
-        }
+        
 
-        private void ClearVolumes()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ClearIntersections()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

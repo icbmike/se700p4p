@@ -10,10 +10,11 @@ namespace ATTrafficAnalayzer.Models
             switch (ConfigurationManager.AppSettings["dataSource"])
             {
                 case "sqlce":
-                    return new SqlceDataSource();
-                case "sqlite":
                 default:
-                    return SqliteDataSource.GetDbHelper();
+                    return new SqlceDataSource();
+//                case "sqlite":
+//                default:
+//                    return SqliteDataSource.GetDbHelper();
             }
         }
     }
