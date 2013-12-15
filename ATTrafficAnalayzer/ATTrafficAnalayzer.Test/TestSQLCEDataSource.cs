@@ -56,7 +56,14 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestGetIntersections()
         {
-            Assert.Fail();
+            _dataSource.AddIntersection(1234, new List<int>{1, 2, 3});
+            _dataSource.AddIntersection(4321, new List<int> { 1, 2, 3 });
+            
+            var intersections = _dataSource.GetIntersections();
+            
+            Assert.AreEqual(2, intersections.Count);
+            Assert.AreEqual(1234, intersections[0]);
+            Assert.AreEqual(4321, intersections[1]);
         }
 
         [TestMethod()]
