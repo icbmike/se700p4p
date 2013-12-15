@@ -261,7 +261,7 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText =
                         "INSERT INTO configs (name, date_last_used) VALUES (@name, GETDATE());";
-                    query.Parameters.AddWithValue("@name", config.ConfigName);
+                    query.Parameters.AddWithValue("@name", config.Name);
                     query.ExecuteNonQuery();
 
                     query.CommandText = " SELECT CAST(@@Identity AS INT) as ID;";

@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            ScreenTitle.Content = _configuration.ConfigName;
+            ScreenTitle.Content = _configuration.Name;
             OverallSummaryBorder.Visibility = Visibility.Collapsed;
 
             //Remove all exisitng approaches!
@@ -92,7 +92,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="args"></param>
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
-            if (!args.SelectionCleared && !_configuration.ConfigName.Equals(args.ReportName) && args.ReportName != null)
+            if (!args.SelectionCleared && !_configuration.Name.Equals(args.ReportName) && args.ReportName != null)
             {
                 _configuration = _dataSource.GetConfiguration(args.ReportName);
                 Render();

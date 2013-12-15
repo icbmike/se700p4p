@@ -94,7 +94,14 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestGetConfiguration()
         {
-            Assert.Fail();
+            var testConfiguration = CreateTestConfiguration();
+            _dataSource.AddConfiguration(testConfiguration);
+            var configuration = _dataSource.GetConfiguration(testConfiguration.Name);
+
+            //TODO: Maybe should replace with just a straight comparison and then base validity of test from TestConfiguration suite.
+            Assert.AreEqual(testConfiguration.Name, configuration.Name);
+            Assert.AreEqual(testConfiguration.Intersection, configuration.Intersection);
+            Assert.AreEqual(testConfiguration.Approaches.Count, configuration.Approaches.Count);
         }
 
         [TestMethod()]
@@ -118,8 +125,8 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestAddConfiguration()
         {
-            var testApproach = new Approach("test_approach", new List<int>{1, 2, 3}, _dataSource);
-            var config = new Configuration("test_config", 1234, new List<Approach>{testApproach}, _dataSource);
+
+            var config = CreateTestConfiguration();
             _dataSource.AddConfiguration(config);
             Assert.AreEqual(1, _dataSource.GetReportNames().Count);
             Assert.AreEqual("test_config", _dataSource.GetReportNames()[0]);
@@ -152,8 +159,7 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestConfigurationExists()
         {
-            var testApproach = new Approach("test_approach", new List<int> { 1, 2, 3 }, _dataSource);
-            var config = new Configuration("test_config", 1234, new List<Approach> { testApproach }, _dataSource);
+            var config = CreateTestConfiguration();
             _dataSource.AddConfiguration(config);
 
             Assert.IsTrue(_dataSource.ConfigurationExists("test_config"));
@@ -184,6 +190,13 @@ namespace ATTrafficAnalayzer.Test
             var intersections = _dataSource.GetIntersections();
             Assert.AreEqual(1, intersections.Count);
             Assert.AreEqual(3, _dataSource.GetDetectorsAtIntersection(1234).Count);
+        }
+
+        private static Configuration CreateTestConfiguration()
+        {
+            var testApproach = new Approach("test_approach", new List<int> {1, 2, 3}, _dataSource);
+            var config = new Configuration("test_config", 1234, new List<Approach> {testApproach}, _dataSource);
+            return config;
         }
     }
 }
