@@ -14,8 +14,7 @@ namespace ATTrafficAnalayzer.Models
 
         public SqlceDataSource()
         {
-            var connectionSb = new SqlCeConnectionStringBuilder();
-            connectionSb.DataSource = "TA.sdf";
+            var connectionSb = new SqlCeConnectionStringBuilder {DataSource = "TA.sdf"};
             _connectionString = connectionSb.ConnectionString;
         }
 
@@ -229,7 +228,24 @@ namespace ATTrafficAnalayzer.Models
 
         public List<string> GetReportNames()
         {
-            throw new NotImplementedException();
+            var names = new List<String>();
+            using (var conn = new SqlCeConnection(_connectionString))
+            {
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT name FROM configs;";
+                    using (var reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            names.Add(reader.GetString(0));
+                        }
+                    }
+                }
+                conn.Close();
+            }
+            return names;
         }
 
         public void AddConfiguration(Configuration config)
@@ -238,11 +254,6 @@ namespace ATTrafficAnalayzer.Models
             {
                 conn.Open();
                 conn.BeginTransaction();
-                //Add configuration
-                //Foreach approach
-                    //Add approach
-                    //Add to config mapping table
-                    //Add to detector mapping table
 
                 Int32 configID;
 
@@ -250,11 +261,13 @@ namespace ATTrafficAnalayzer.Models
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText =
-                        "INSERT INTO configs (name, date_last_used) VALUES (@name, GETDATE()); SELECT @@Identity as ID;";
+                        "INSERT INTO configs (name, date_last_used) VALUES (@name, GETDATE());";
                     query.Parameters.AddWithValue("@name", config.ConfigName);
+                    query.ExecuteNonQuery();
+
+                    query.CommandText = " SELECT CAST(@@Identity AS INT) as ID;";
                     configID = (Int32)query.ExecuteScalar();
                 }
-
 
                 foreach (var approach in config.Approaches)
                 {
@@ -262,16 +275,36 @@ namespace ATTrafficAnalayzer.Models
                     //insert into approaches table
                     using (var query = conn.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);SELECT @@Identity as ID;";
+                        query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);";
                         query.Parameters.AddWithValue("@approach", approach.Name);
+                        query.ExecuteNonQuery();
+
+                        query.CommandText = "SELECT CAST(@@Identity AS INT) as ID;";
                         approachID = (Int32)query.ExecuteScalar();
                     }
 
-                    //insert into approach_detector_mapping and config_approach_mapping
+                    //insert into approach_detector_mapping 
                     using (var query = conn.CreateCommand())
                     {
-                        new StringBuilder("INSERT INTO");
+                        query.CommandText = "INSERT INTO approach_detector_mapping (approach_id, detector) VALUES (@approach_id, @detector)";                       
                         
+                        approach.Detectors.ForEach(d =>
+                        {
+                            query.Parameters.Clear();
+                            query.Parameters.AddWithValue("@approach_id", approachID);
+                            query.Parameters.AddWithValue("@detector", d);
+                            query.ExecuteNonQuery();
+                        });
+                        
+                    }
+
+                    //insert into config_approach_mapping
+                    using (var query = conn.CreateCommand())
+                    {
+                        query.CommandText = "INSERT INTO config_approach_mapping (config_id, approach_id) VALUES (@config_id, @approach_id);";
+                        query.Parameters.AddWithValue("@config_id", configID);
+                        query.Parameters.AddWithValue("@approach_id", approachID);
+                        query.ExecuteNonQuery();
                     }
                 }
                 conn.Close();

@@ -120,12 +120,6 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestGetReportNames()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
         public void TestAddConfiguration()
         {
             var testApproach = new Approach("test_approach", new List<int>{1, 2, 3}, _dataSource);
