@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Models
 
         bool SummaryExists(String name);
         
-        bool ReportExists(String name);
+        bool ConfigurationExists(String name);
 
         #endregion
 

@@ -77,11 +77,7 @@ namespace ATTrafficAnalayzer.Test
             Assert.Fail();
         }
 
-        [TestMethod()]
-        public void TestVolumesExist1()
-        {
-            Assert.Fail();
-        }
+       
 
         [TestMethod()]
         public void TestVolumesExistForMonth()
@@ -154,9 +150,13 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestReportExists()
+        public void TestConfigurationExists()
         {
-            Assert.Fail();
+            var testApproach = new Approach("test_approach", new List<int> { 1, 2, 3 }, _dataSource);
+            var config = new Configuration("test_config", 1234, new List<Approach> { testApproach }, _dataSource);
+            _dataSource.AddConfiguration(config);
+
+            Assert.IsTrue(_dataSource.ConfigurationExists("test_config"));
         }
 
         [TestMethod()]

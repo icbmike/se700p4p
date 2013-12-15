@@ -238,7 +238,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
                 for (var count = 1; ; count++)
                 {
-                    if (!_dataSource.ReportExists("Configuration " + count))
+                    if (!_dataSource.ConfigurationExists("Configuration " + count))
                     {
                         configTextBox.Text = "Configuration " + count;
                         break;

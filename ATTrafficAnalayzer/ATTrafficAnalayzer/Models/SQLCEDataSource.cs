@@ -330,7 +330,7 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public bool ReportExists(string name)
+        public bool ConfigurationExists(string name)
         {
             long count;
 

@@ -147,7 +147,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public bool ReportExists(string name)
+        public bool ConfigurationExists(string name)
         {
             throw new NotImplementedException();
         }
