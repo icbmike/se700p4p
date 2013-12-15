@@ -10,7 +10,7 @@ namespace ATTrafficAnalayzer.Models
 {
     public class SqlceDataSource : IDataSource
     {
-        private string _connectionString;
+        private readonly string _connectionString;
 
         public SqlceDataSource()
         {
