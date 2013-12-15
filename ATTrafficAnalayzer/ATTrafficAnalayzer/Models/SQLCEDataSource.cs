@@ -163,51 +163,53 @@ namespace ATTrafficAnalayzer.Models
 
         public Configuration GetConfiguration(string name)
         {
+            Configuration result = null;
             using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
-
-                JObject configJson = null;
-
+                
                 using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT config FROM configs WHERE name = @name;";
+                    query.CommandText = "SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector " +
+                                        "FROM configs " +
+                                        "INNER JOIN config_approach_mapping " +
+                                        "ON configs.config_id = config_approach_mapping.config_id " +
+                                        "INNER JOIN approaches " +
+                                        "ON approaches.approach_id = config_approach_mapping.approach_id " +
+                                        "INNER JOIN approach_detector_mapping " +
+                                        "ON approaches.approach_id = approach_detector_mapping.approach_id " +
+                                        "WHERE configs.name = @name";
                     query.Parameters.AddWithValue("@name", name);
                     using (var reader = query.ExecuteReader())
                     {
+                      
                         if (reader.Read())
-                            configJson = JObject.Parse(reader.GetString(0));
-                    }
-                }
-                if (configJson != null)
-                {
-                    var approaches = new List<Approach>();
-                    foreach (var approachID in (JArray)configJson["approaches"])
-                    {
-                        using (var query = conn.CreateCommand())
                         {
-                            query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
-                            query.Parameters.AddWithValue("@id", approachID.ToString());
+                            var intersection = reader.GetInt32(0);
+                            var approaches = new List<Approach>();
 
-                            JObject approachJson;
-                            using (var reader = query.ExecuteReader())
+                            var approachID = 0; //Seed id is 1, 0 should never be found in db
+                            Approach currentApproach = null;
+                            while (reader.Read())
                             {
-                                approachJson = null;
-
-                                if (reader.Read())
-                                    approachJson = JObject.Parse(reader.GetString(0));
+                                if (!reader.GetInt32(1).Equals(approachID))
+                                {
+                                    approachID = reader.GetInt32(1);
+                                    currentApproach = new Approach(reader.GetString(2), new List<int>(), this);
+                                    approaches.Add(currentApproach);
+                                    
+                                }
+                                currentApproach.Detectors.Add((reader.GetByte(3)));
                             }
 
-                            approaches.Add(new Approach((string)approachJson["name"],
-                                                        approachJson["detectors"].Select(t => (int)t).ToList(), this));
+                            result = new Configuration(name, intersection, approaches, this);
                         }
+                        
                     }
-                    conn.Close();
-                    return new Configuration(name, (int)configJson["intersection"], approaches, this);
                 }
                 conn.Close();
             }
-            return null;
+            return result;
         }
 
         public List<Approach> GetApproaches(string configName)
@@ -260,8 +262,9 @@ namespace ATTrafficAnalayzer.Models
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText =
-                        "INSERT INTO configs (name, date_last_used) VALUES (@name, GETDATE());";
+                        "INSERT INTO configs (name, date_last_used, intersection_id) VALUES (@name, GETDATE(), @intersection_id);";
                     query.Parameters.AddWithValue("@name", config.Name);
+                    query.Parameters.AddWithValue("@intersection_id", config.Intersection);
                     query.ExecuteNonQuery();
 
                     query.CommandText = " SELECT CAST(@@Identity AS INT) as ID;";
