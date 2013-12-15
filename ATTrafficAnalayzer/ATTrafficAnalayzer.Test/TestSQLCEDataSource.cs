@@ -178,15 +178,12 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestClearData()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
         public void TestAddIntersection()
         {
-            Assert.Fail();
+            _dataSource.AddIntersection(1234, new List<int>{1, 2, 3});
+            var intersections = _dataSource.GetIntersections();
+            Assert.AreEqual(1, intersections.Count);
+            Assert.AreEqual(3, _dataSource.GetDetectorsAtIntersection(1234).Count);
         }
     }
 }

@@ -82,7 +82,7 @@ namespace ATTrafficAnalayzer.Models
                 intersections = new List<int>();
                 using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
+                    query.CommandText = "SELECT DISTINCT intersection_id FROM intersections;";
                     using (var reader = query.ExecuteReader())
                     {
                         while (reader.Read())
@@ -96,20 +96,19 @@ namespace ATTrafficAnalayzer.Models
 
         public List<int> GetDetectorsAtIntersection(int intersection)
         {
-            List<int> detectors;
+            var detectors = new List<int>();
             using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
-                detectors = new List<int>();
                 using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
+                    query.CommandText = "SELECT detector FROM intersections WHERE intersection_id = @intersection;";
                     query.Parameters.AddWithValue("@intersection", intersection);
                     using (var reader = query.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            detectors.Add(reader.GetInt16(0));
+                            detectors.Add(reader.GetByte(0));
                         }
                     }
                 }
@@ -412,7 +411,23 @@ namespace ATTrafficAnalayzer.Models
 
         public void AddIntersection(int intersection, IEnumerable<int> detectors)
         {
-            throw new NotImplementedException();
+            using (var conn = new SqlCeConnection(_connectionString))
+            {
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText =
+                        "INSERT INTO intersections (intersection_id, detector) VALUES (@intersection_id, @detector);";
+                    foreach (var detector in detectors)
+                    {
+                        query.Parameters.Clear();
+                        query.Parameters.AddWithValue("@intersection_id", intersection);
+                        query.Parameters.AddWithValue("@detector", detector);
+                        query.ExecuteNonQuery();
+                    }
+                }
+                conn.Close();
+            }
         }
 
        
