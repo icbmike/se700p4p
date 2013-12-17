@@ -24,12 +24,6 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestGetVolume()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
         public void TestGetVolumeForTimePeriod()
         {
             Assert.Fail();
@@ -69,7 +63,12 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestGetDetectorsAtIntersection()
         {
-            Assert.Fail();
+            var testDetectors = new List<int> {1, 2, 3, 4, 5, 6};
+            _dataSource.AddIntersection(1234, testDetectors);
+
+            var detectorsAtIntersection = _dataSource.GetDetectorsAtIntersection(1234);
+            
+            CollectionAssert.AreEqual(testDetectors, detectorsAtIntersection);
         }
 
         [TestMethod()]
@@ -112,12 +111,6 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestGetApproaches()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
         public void TestGetSummaryConfig()
         {
             Assert.Fail();
@@ -134,8 +127,8 @@ namespace ATTrafficAnalayzer.Test
         {
             var config = CreateTestConfiguration();
             _dataSource.AddConfiguration(config);
-            Assert.AreEqual(1, _dataSource.GetReportNames().Count);
-            Assert.AreEqual("test_config", _dataSource.GetReportNames()[0]);
+            Assert.AreEqual(1, _dataSource.GetConfigurationNames().Count);
+            Assert.AreEqual("test_config", _dataSource.GetConfigurationNames()[0]);
             
         }
 
@@ -148,7 +141,13 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestRemoveReport()
         {
-            Assert.Fail();
+            var testConfig = CreateTestConfiguration();
+            
+            _dataSource.AddConfiguration(testConfig);
+            Assert.AreEqual(1,_dataSource.GetConfigurationNames().Count);
+
+            _dataSource.RemoveConfiguration(testConfig.Name);
+            Assert.AreEqual(0, _dataSource.GetConfigurationNames().Count);
         }
 
         [TestMethod()]

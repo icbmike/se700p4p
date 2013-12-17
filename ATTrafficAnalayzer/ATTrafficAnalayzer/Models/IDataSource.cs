@@ -45,13 +45,13 @@ namespace ATTrafficAnalayzer.Models
 
         List<String> GetSummaryNames();
         
-        List<String> GetReportNames();
+        List<String> GetConfigurationNames();
 
         void AddConfiguration(Configuration config);
         
         void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows);
 
-        void RemoveReport(String name);
+        void RemoveConfiguration(String name);
         
         void RemoveSummary(String name);
 

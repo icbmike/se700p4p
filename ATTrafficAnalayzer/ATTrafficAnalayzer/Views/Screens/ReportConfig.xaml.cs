@@ -155,7 +155,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Delete the previous config before inserting the new one
                 try
                 {
-                    _dataSource.RemoveReport(_oldName);
+                    _dataSource.RemoveConfiguration(_oldName);
                 }
                 catch (Exception exception)
                 {

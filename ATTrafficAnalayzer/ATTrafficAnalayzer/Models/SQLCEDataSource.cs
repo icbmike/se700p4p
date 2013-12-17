@@ -15,11 +15,6 @@ namespace ATTrafficAnalayzer.Models
             _connectionString = connectionSb.ConnectionString;
         }
 
-        public int GetVolume(int intersection, int detector, DateTime dateTime)
-        {
-            throw new NotImplementedException();
-        }
-
         public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
         {
             throw new NotImplementedException();
@@ -209,11 +204,6 @@ namespace ATTrafficAnalayzer.Models
             return result;
         }
 
-        public List<Approach> GetApproaches(string configName)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<SummaryRow> GetSummaryConfig(string name)
         {
             throw new NotImplementedException();
@@ -224,7 +214,7 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public List<string> GetReportNames()
+        public List<string> GetConfigurationNames()
         {
             var names = new List<String>();
             using (var conn = new SqlCeConnection(_connectionString))
@@ -315,9 +305,16 @@ namespace ATTrafficAnalayzer.Models
             throw new NotImplementedException();
         }
 
-        public void RemoveReport(string name)
+        public void RemoveConfiguration(string name)
         {
-            throw new NotImplementedException();
+            using (var conn = new SqlCeConnection(_connectionString))
+            {
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "DELETE FROM configs WHERE name = @name;";
+                    query.ExecuteNonQuery();
+                }
+            }
         }
 
         public void RemoveSummary(string name)

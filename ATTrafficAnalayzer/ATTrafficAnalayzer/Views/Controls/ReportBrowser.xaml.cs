@@ -32,7 +32,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         private void Render()
         {
             StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report)
-                                                      ? _dataSource.GetReportNames()
+                                                      ? _dataSource.GetConfigurationNames()
                                                       : _dataSource.GetSummaryNames();
             //StandardReportsTreeView.DisplayMemberPath = "name";
         }
@@ -179,7 +179,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                     var backgroundWorker = new BackgroundWorker();
                     if (_mode.Equals(Mode.Report))
                     {
-                        backgroundWorker.DoWork += (o, args) => _dataSource.RemoveReport(selectedItem);
+                        backgroundWorker.DoWork += (o, args) => _dataSource.RemoveConfiguration(selectedItem);
                     }
                     else
                     {

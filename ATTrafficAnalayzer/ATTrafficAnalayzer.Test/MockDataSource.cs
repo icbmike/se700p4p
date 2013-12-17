@@ -117,7 +117,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public List<string> GetReportNames()
+        public List<string> GetConfigurationNames()
         {
             throw new NotImplementedException();
         }
@@ -132,7 +132,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public void RemoveReport(string name)
+        public void RemoveConfiguration(string name)
         {
             throw new NotImplementedException();
         }
