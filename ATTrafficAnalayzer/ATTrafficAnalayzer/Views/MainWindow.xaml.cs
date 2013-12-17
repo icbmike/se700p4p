@@ -21,6 +21,7 @@ namespace ATTrafficAnalayzer.Views
         private int _amPeakIndex = 8;
         private int _pmPeakIndex = 4;
         private IDataSource dataSource;
+        private DuplicatePolicy _skipAllOrOne;
 
         /// <summary>
         /// Default constructor used by App
@@ -376,23 +377,23 @@ namespace ATTrafficAnalayzer.Views
                 var settings = new ProgressDialogSettings(true, false, false);
                 foreach (var filename in dlg.FileNames)
                 {
-                    //Default duplicate policy
-                    var skipAllOrOne = DuplicatePolicy.Skip;
+                    //Default duplicate policy should maybe be a field
+                    _skipAllOrOne = DuplicatePolicy.Skip;
 
-                    //Execture the background task of importing a file
+                    //Execute the background task of importing a file
                     ProgressDialog.Execute(this, "Importing VS File: " + filename.Substring(filename.LastIndexOf("\\") + 1), (b, w) =>
                     {
                         // Open document 
-                        skipAllOrOne = dataSource.ImportFile(filename,
+                        dataSource.ImportFile(filename,
                                                            progress =>
-                                                           ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
+                                                               ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
                                                            GetDuplicatePolicy); //Function to determine a duplicate policy
 
                         //Worker completed handler, emit ImportCompleted event.
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
 
                     }, settings);
-                    if (skipAllOrOne.Equals(DuplicatePolicy.SkipAll)) break;
+                    if (_skipAllOrOne.Equals(DuplicatePolicy.SkipAll)) break;
                 }
             }
         }
@@ -432,7 +433,7 @@ namespace ATTrafficAnalayzer.Views
             {
                 policy = DuplicatePolicy.Continue;
             }
-
+            _skipAllOrOne = policy;
             return policy;
         }
 

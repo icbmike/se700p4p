@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlServerCe;
+using System.IO;
+using System.Linq;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
+using ATTrafficAnalayzer.Models.Volume;
 
 namespace ATTrafficAnalayzer.Models
 {
@@ -354,9 +357,119 @@ namespace ATTrafficAnalayzer.Models
         }
 
 
-        public DuplicatePolicy ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
+        /// <summary>
+        ///     Imports a single file
+        /// </summary>
+        /// <param name="filename">filename to import</param>
+        /// <param name="updateProgress"></param>
+        /// <param name="getDuplicatePolicy"></param>
+        /// <param name="b">Worker thread</param>
+        /// <param name="w"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException">You may have passed in a bad filename</exception>
+        public void ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
-            throw new NotImplementedException();
+            //Open the db connection
+            FileStream fs;
+            DuplicatePolicy duplicatePolicy;
+            using (var dbConnection = new SqlCeConnection(_connectionString))
+            {
+                dbConnection.Open();
+
+                //Load the file into memory
+                fs = new FileStream(filename, FileMode.Open);
+                var sizeInBytes = (int)fs.Length;
+                var byteArray = new byte[sizeInBytes];
+                fs.Read(byteArray, 0, sizeInBytes);
+
+                var alreadyLoaded = false;
+
+                //Now decrypt it
+                var index = 0;
+                DateTimeRecord currentDateTime = null;
+                duplicatePolicy = DuplicatePolicy.Continue;
+                var continuing = false;
+
+                using (var cmd = dbConnection.CreateCommand())
+                {
+                    using (var transaction = dbConnection.BeginTransaction())
+                    {
+                        while (index < sizeInBytes) //seek through the byte array untill we reach the end
+                        {
+                            var recordSize = byteArray[index] + byteArray[index + 1] * 256;
+                            //The record size is stored in two bytes, little endian
+
+                            index += 2;
+                            var progress = (int)(((float)index / sizeInBytes) * 100);
+                            updateProgress(progress);
+
+
+                            byte[] record;
+                            if (recordSize % 2 == 0) //Records with odd record length have a trailing null byte.
+                            {
+                                record = byteArray.Skip(index).Take(recordSize).ToArray();
+                                index += recordSize;
+                            }
+                            else
+                            {
+                                record = byteArray.Skip(index).Take(recordSize + 1).ToArray();
+                                index += recordSize + 1;
+                            }
+
+                            //Find out what kind of data we have
+                            var recordType = VolumeRecordFactory.CheckRecordType(record);
+
+                            //Construct the appropriate record type
+                            switch (recordType)
+                            {
+                                case VolumeRecordType.Datetime:
+                                    currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
+                                    break;
+                                case VolumeRecordType.Volume:
+                                    var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
+
+                                    foreach (var detector in volumeRecord.GetDetectors())
+                                    {
+                                        cmd.CommandText =
+                                            "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
+
+                                        cmd.Parameters.Clear();
+
+                                        cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5));
+                                        //Make up for the fact that volumes are offset ahead 5 minutes
+                                        cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
+                                        cmd.Parameters.AddWithValue("@detector", detector);
+                                        cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
+
+                                        try
+                                        {
+                                            cmd.ExecuteNonQuery();
+                                        }
+                                        catch (SqlCeException e)
+                                        {
+                                            if (e.ErrorCode.Equals(5) && !continuing)
+                                            {
+                                                duplicatePolicy = getDuplicatePolicy();
+                                                if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
+                                                {
+                                                    alreadyLoaded = true;
+                                                    break;
+                                                }
+                                                continuing = true;
+                                            }
+                                        }
+                                    }
+                                    break;
+                            }
+                            if (alreadyLoaded) break;
+                        }
+                        transaction.Commit();
+                    }
+                }
+
+                dbConnection.Close();
+            }
+            fs.Close();
         }
 
         public bool VolumesTableEmpty()

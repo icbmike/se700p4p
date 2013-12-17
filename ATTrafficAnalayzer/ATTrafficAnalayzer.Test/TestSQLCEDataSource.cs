@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Runtime.Remoting.Messaging;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,7 +22,7 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestInitialize]
-        public void TestSqlceDataSource()
+        public void TestInitialize()
         {
             _dataSource.ClearData();
         }
@@ -180,7 +184,21 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestImportFile()
         {
-            Assert.Fail();
+            try
+            {
+                _dataSource.ImportFile("bad_filename.vs", i => { System.Console.WriteLine(i); }, () => DuplicatePolicy.SkipAll);
+                Assert.Fail();
+            }
+            catch (FileNotFoundException e)
+            {
+                
+            }
+            _dataSource.ImportFile("../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS", Console.WriteLine,
+                () => DuplicatePolicy.SkipAll);
+            Assert.AreNotEqual(0, _dataSource.GetIntersections().Count);
+            Assert.AreNotEqual(0,_dataSource.GetImportedDates().Count);
+            Assert.IsFalse(_dataSource.VolumesTableEmpty());
+
         }
 
         [TestMethod()]

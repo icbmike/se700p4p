@@ -64,18 +64,17 @@ namespace ATTrafficAnalayzer.Models
         #region Faults Related Methods
         Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold);
         #endregion
-        
-        
+
         /// <summary>
         ///     Imports a single file
         /// </summary>
-        /// <param name="b">Worker thread</param>
-        /// <param name="w"></param>
         /// <param name="filename">filename to import</param>
         /// <param name="updateProgress"></param>
         /// <param name="getDuplicatePolicy"></param>
+        /// <param name="b">Worker thread</param>
+        /// <param name="w"></param>
         /// <returns></returns>
-        DuplicatePolicy ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy);
+        void ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy);
 
         /// <summary>
         /// Clears the data source

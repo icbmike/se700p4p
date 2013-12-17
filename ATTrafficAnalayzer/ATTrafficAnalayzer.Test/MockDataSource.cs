@@ -157,8 +157,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public DuplicatePolicy ImportFile(string filename, Action<int> updateProgress,
-                                          Func<DuplicatePolicy> getDuplicatePolicy)
+        public void ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             throw new NotImplementedException();
         }
