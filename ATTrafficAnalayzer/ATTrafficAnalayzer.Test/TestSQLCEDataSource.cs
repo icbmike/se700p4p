@@ -132,7 +132,6 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestAddConfiguration()
         {
-
             var config = CreateTestConfiguration();
             _dataSource.AddConfiguration(config);
             Assert.AreEqual(1, _dataSource.GetReportNames().Count);

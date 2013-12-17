@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.SqlServerCe;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
-using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
 {
@@ -188,13 +185,13 @@ namespace ATTrafficAnalayzer.Models
                             var intersection = reader.GetInt32(0);
                             var approaches = new List<Approach>();
 
-                            var approachID = 0; //Seed id is 1, 0 should never be found in db
+                            var approachId = 0; //Seed id is 1, 0 should never be found in db
                             Approach currentApproach = null;
                             while (reader.Read())
                             {
-                                if (!reader.GetInt32(1).Equals(approachID))
+                                if (!reader.GetInt32(1).Equals(approachId))
                                 {
-                                    approachID = reader.GetInt32(1);
+                                    approachId = reader.GetInt32(1);
                                     currentApproach = new Approach(reader.GetString(2), new List<int>(), this);
                                     approaches.Add(currentApproach);
                                     
@@ -256,7 +253,7 @@ namespace ATTrafficAnalayzer.Models
                 conn.Open();
                 conn.BeginTransaction();
 
-                Int32 configID;
+                Int32 configId;
 
                 //Insert into configs table
                 using (var query = conn.CreateCommand())
@@ -268,12 +265,12 @@ namespace ATTrafficAnalayzer.Models
                     query.ExecuteNonQuery();
 
                     query.CommandText = " SELECT CAST(@@Identity AS INT) as ID;";
-                    configID = (Int32)query.ExecuteScalar();
+                    configId = (Int32)query.ExecuteScalar();
                 }
 
                 foreach (var approach in config.Approaches)
                 {
-                    Int32 approachID;
+                    Int32 approachId;
                     //insert into approaches table
                     using (var query = conn.CreateCommand())
                     {
@@ -282,7 +279,7 @@ namespace ATTrafficAnalayzer.Models
                         query.ExecuteNonQuery();
 
                         query.CommandText = "SELECT CAST(@@Identity AS INT) as ID;";
-                        approachID = (Int32)query.ExecuteScalar();
+                        approachId = (Int32)query.ExecuteScalar();
                     }
 
                     //insert into approach_detector_mapping 
@@ -293,7 +290,7 @@ namespace ATTrafficAnalayzer.Models
                         approach.Detectors.ForEach(d =>
                         {
                             query.Parameters.Clear();
-                            query.Parameters.AddWithValue("@approach_id", approachID);
+                            query.Parameters.AddWithValue("@approach_id", approachId);
                             query.Parameters.AddWithValue("@detector", d);
                             query.ExecuteNonQuery();
                         });
@@ -304,8 +301,8 @@ namespace ATTrafficAnalayzer.Models
                     using (var query = conn.CreateCommand())
                     {
                         query.CommandText = "INSERT INTO config_approach_mapping (config_id, approach_id) VALUES (@config_id, @approach_id);";
-                        query.Parameters.AddWithValue("@config_id", configID);
-                        query.Parameters.AddWithValue("@approach_id", approachID);
+                        query.Parameters.AddWithValue("@config_id", configId);
+                        query.Parameters.AddWithValue("@approach_id", approachId);
                         query.ExecuteNonQuery();
                     }
                 }
