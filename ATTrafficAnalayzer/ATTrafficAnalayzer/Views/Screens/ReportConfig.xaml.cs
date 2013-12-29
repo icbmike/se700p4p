@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
-using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens

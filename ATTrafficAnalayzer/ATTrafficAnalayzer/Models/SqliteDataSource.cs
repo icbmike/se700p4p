@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Volume;
 using Newtonsoft.Json.Linq;
@@ -110,30 +108,6 @@ namespace ATTrafficAnalayzer.Models
 
         #region Helper functions
 
-        /// <summary>
-        ///     Allows the programmer to run a query against the Database
-        /// </summary>
-        /// <param name="sql">The SQL to run</param>
-        /// <returns>A DataTable containing the result set</returns>
-        private static DataTable GetDataTable(string sql)
-        {
-            var dataTable = new DataTable();
-
-            using (var dbConnection = new SQLiteConnection(DbPath))
-            {
-                dbConnection.Open();
-
-                using (var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql })
-                {
-                    using (SQLiteDataReader reader = createConfigsTableCommand.ExecuteReader())
-                    {
-                        dataTable.Load(reader);
-                    }
-                }
-                dbConnection.Close();
-            }
-            return dataTable;
-        }
 
         /// <summary>
         ///     Gets an adapter to the database
@@ -170,52 +144,6 @@ namespace ATTrafficAnalayzer.Models
             dbConnection.Close();
 
             return dataAdapter;
-        }
-
-        /// <summary>
-        ///     Allows the programmer to interact with the database for purposes other than a query.
-        /// </summary>
-        /// <param name="sql">The SQL to be run.</param>
-        /// <returns>An Integer containing the number of rows updated.</returns>
-        private static int ExecuteNonQuery(string sql)
-        {
-            int rowsUpdated;
-
-            using (var dbConnection = new SQLiteConnection(DbPath))
-            {
-                dbConnection.Open();
-
-                using (var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql })
-                {
-                    rowsUpdated = createConfigsTableCommand.ExecuteNonQuery();
-                }
-
-                dbConnection.Close();
-            }
-
-            return rowsUpdated;
-        }
-
-       
-       
-
-
-        /// <summary>
-        ///     Allows the user to easily clear all data from a specific table.
-        /// </summary>
-        /// <param name="table">The name of the table to clear.</param>
-        /// <returns>A boolean true or false to signify success or failure.</returns>
-        private static bool ClearTable(String table)
-        {
-            try
-            {
-                ExecuteNonQuery(String.Format("delete from {0};", table));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         #endregion
