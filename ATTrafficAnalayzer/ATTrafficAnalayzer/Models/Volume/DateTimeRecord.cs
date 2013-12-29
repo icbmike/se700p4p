@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace ATTrafficAnalayzer.Models.Volume
 {
@@ -6,6 +8,7 @@ namespace ATTrafficAnalayzer.Models.Volume
     {
         public DateTime DateTime { get; set; }
         public bool FiveMinutePeriod { get; set; }
+        public List<VolumeRecord> VolumeRecords { get; set; }
 
         /// <summary>
         ///     Create a 
@@ -20,6 +23,7 @@ namespace ATTrafficAnalayzer.Models.Volume
         {
             DateTime = new DateTime(year, month, day, hour, minutes, 0);
             FiveMinutePeriod = fiveMinutePeriod;
+            VolumeRecords = new List<VolumeRecord>();
         }
     }
 }

@@ -47,15 +47,37 @@ namespace ATTrafficAnalayzer.Models
             Console.WriteLine("\n\n\n-----------------");
         }
 
+        public void DecodeFile()
+        {
+            var elapsedTimes = new List<long>();
+            for (var i = 0; i < 10; i++)
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+                var dateTimeRecords =
+                    VolumeStoreDecoder.DecodeFile("../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS");
+                sw.Stop();
+                elapsedTimes.Add(sw.ElapsedMilliseconds);
+            }
+            Console.WriteLine("On average it took " + elapsedTimes.Average() + "ms to decode file");
+        }
+
+
+        public void ImportFile()
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+            dataSource.ImportFile("../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS", Console.WriteLine,
+                () => DuplicatePolicy.SkipAll);
+            sw.Stop();
+            Console.WriteLine("------------| " + dataSource + " |----------\n\n\n\n");
+            Console.WriteLine("Took " + sw.ElapsedMilliseconds + "ms");
+        }
+
         static void Main(string[] args)
         {
-//            var dbmSqlite = new DatabaseMetrics(SqliteDataSource.GetDbHelper());
-//            dbmSqlite.Run();
-//            dbmSqlite.OutputResults();
-
-            var dbmSqlCE = new DatabaseMetrics(new SqlceDataSource());
-            dbmSqlCE.Run();
-            dbmSqlCE.OutputResults();
+            var dbmSqlite = new DatabaseMetrics(new SqliteDataSource());
+            dbmSqlite.DecodeFile();
         }
     }
 }

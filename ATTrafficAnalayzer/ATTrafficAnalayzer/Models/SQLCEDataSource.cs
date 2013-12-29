@@ -18,7 +18,8 @@ namespace ATTrafficAnalayzer.Models
             _connectionString = connectionSb.ConnectionString;
         }
 
-        public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
+        public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime,
+            DateTime endDateTime)
         {
             throw new NotImplementedException();
         }
@@ -56,7 +57,6 @@ namespace ATTrafficAnalayzer.Models
             return volumes;
         }
 
-          
 
         public int GetTotalVolumeForDay(DateTime date, int intersection, List<int> detectors)
         {
@@ -121,8 +121,9 @@ namespace ATTrafficAnalayzer.Models
                 conn.Open();
                 using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT DISTINCT CONVERT(DATETIME, CONVERT(NVARCHAR(11), dateTime, 101)) AS [DD-MM-YYYY] FROM volumes";
-                     
+                    query.CommandText =
+                        "SELECT DISTINCT CONVERT(DATETIME, CONVERT(NVARCHAR(11), dateTime, 101)) AS [DD-MM-YYYY] FROM volumes";
+
                     using (var reader = query.ExecuteReader())
                     {
                         while (reader.Read())
@@ -162,22 +163,22 @@ namespace ATTrafficAnalayzer.Models
             using (var conn = new SqlCeConnection(_connectionString))
             {
                 conn.Open();
-                
+
                 using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector " +
-                                        "FROM configs " +
-                                        "INNER JOIN config_approach_mapping " +
-                                        "ON configs.config_id = config_approach_mapping.config_id " +
-                                        "INNER JOIN approaches " +
-                                        "ON approaches.approach_id = config_approach_mapping.approach_id " +
-                                        "INNER JOIN approach_detector_mapping " +
-                                        "ON approaches.approach_id = approach_detector_mapping.approach_id " +
-                                        "WHERE configs.name = @name";
+                    query.CommandText =
+                        "SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector " +
+                        "FROM configs " +
+                        "INNER JOIN config_approach_mapping " +
+                        "ON configs.config_id = config_approach_mapping.config_id " +
+                        "INNER JOIN approaches " +
+                        "ON approaches.approach_id = config_approach_mapping.approach_id " +
+                        "INNER JOIN approach_detector_mapping " +
+                        "ON approaches.approach_id = approach_detector_mapping.approach_id " +
+                        "WHERE configs.name = @name";
                     query.Parameters.AddWithValue("@name", name);
                     using (var reader = query.ExecuteReader())
                     {
-                      
                         if (reader.Read())
                         {
                             var intersection = reader.GetInt32(0);
@@ -192,14 +193,12 @@ namespace ATTrafficAnalayzer.Models
                                     approachId = reader.GetInt32(1);
                                     currentApproach = new Approach(reader.GetString(2), new List<int>(), this);
                                     approaches.Add(currentApproach);
-                                    
                                 }
                                 currentApproach.Detectors.Add((reader.GetByte(3)));
                             }
 
                             result = new Configuration(name, intersection, approaches, this);
                         }
-                        
                     }
                 }
                 conn.Close();
@@ -258,7 +257,7 @@ namespace ATTrafficAnalayzer.Models
                     query.ExecuteNonQuery();
 
                     query.CommandText = " SELECT CAST(@@Identity AS INT) as ID;";
-                    configId = (Int32)query.ExecuteScalar();
+                    configId = (Int32) query.ExecuteScalar();
                 }
 
                 foreach (var approach in config.Approaches)
@@ -272,14 +271,15 @@ namespace ATTrafficAnalayzer.Models
                         query.ExecuteNonQuery();
 
                         query.CommandText = "SELECT CAST(@@Identity AS INT) as ID;";
-                        approachId = (Int32)query.ExecuteScalar();
+                        approachId = (Int32) query.ExecuteScalar();
                     }
 
                     //insert into approach_detector_mapping 
                     using (var query = conn.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO approach_detector_mapping (approach_id, detector) VALUES (@approach_id, @detector)";                       
-                        
+                        query.CommandText =
+                            "INSERT INTO approach_detector_mapping (approach_id, detector) VALUES (@approach_id, @detector)";
+
                         approach.Detectors.ForEach(d =>
                         {
                             query.Parameters.Clear();
@@ -287,13 +287,13 @@ namespace ATTrafficAnalayzer.Models
                             query.Parameters.AddWithValue("@detector", d);
                             query.ExecuteNonQuery();
                         });
-                        
                     }
 
                     //insert into config_approach_mapping
                     using (var query = conn.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO config_approach_mapping (config_id, approach_id) VALUES (@config_id, @approach_id);";
+                        query.CommandText =
+                            "INSERT INTO config_approach_mapping (config_id, approach_id) VALUES (@config_id, @approach_id);";
                         query.Parameters.AddWithValue("@config_id", configId);
                         query.Parameters.AddWithValue("@approach_id", approachId);
                         query.ExecuteNonQuery();
@@ -342,13 +342,13 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText = "SELECT COUNT(*) FROM configs WHERE name = @configName;";
                     query.Parameters.AddWithValue("@configName", name);
-                    count = (Int32)query.ExecuteScalar();
+                    count = (Int32) query.ExecuteScalar();
                 }
 
                 conn.Close();
             }
 
-            return count.Equals(1); 
+            return count.Equals(1);
         }
 
         public Dictionary<int, List<int>> GetSuspectedFaults(DateTime startDate, DateTime endDate, int threshold)
@@ -370,117 +370,110 @@ namespace ATTrafficAnalayzer.Models
         public void ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
-            FileStream fs;
-            DuplicatePolicy duplicatePolicy;
             using (var dbConnection = new SqlCeConnection(_connectionString))
             {
                 dbConnection.Open();
 
-                //Load the file into memory
-                fs = new FileStream(filename, FileMode.Open);
-                var sizeInBytes = (int)fs.Length;
-                var byteArray = new byte[sizeInBytes];
-                fs.Read(byteArray, 0, sizeInBytes);
-
-                var alreadyLoaded = false;
-
-                //Now decrypt it
-                var index = 0;
-                DateTimeRecord currentDateTime = null;
-                duplicatePolicy = DuplicatePolicy.Continue;
+                var shouldStopImporting = false;
                 var continuing = false;
 
-                using (var cmd = dbConnection.CreateCommand())
+                var decodedFile = VolumeStoreDecoder.DecodeFile(filename);
+
+                using (var transaction = dbConnection.BeginTransaction())
                 {
-                    using (var transaction = dbConnection.BeginTransaction())
+                    foreach (var dateTimeRecord in decodedFile)
                     {
-                        while (index < sizeInBytes) //seek through the byte array untill we reach the end
+                        //Should probably do an action on volume record as it is decoded so that we dont read the entire file into memory
+                        foreach (var volumeRecord in dateTimeRecord.VolumeRecords)
                         {
-                            var recordSize = byteArray[index] + byteArray[index + 1] * 256;
-                            //The record size is stored in two bytes, little endian
+                            //Check if the intersection for this volume record is already in the database
 
-                            index += 2;
-                            var progress = (int)(((float)index / sizeInBytes) * 100);
-                            updateProgress(progress);
-
-
-                            byte[] record;
-                            if (recordSize % 2 == 0) //Records with odd record length have a trailing null byte.
+                            bool intersectionExists;
+                            using (var command = dbConnection.CreateCommand())
                             {
-                                record = byteArray.Skip(index).Take(recordSize).ToArray();
-                                index += recordSize;
-                            }
-                            else
-                            {
-                                record = byteArray.Skip(index).Take(recordSize + 1).ToArray();
-                                index += recordSize + 1;
+                                command.CommandText =
+                                    "SELECT COUNT(intersection_id) FROM intersections WHERE intersection_id = @intersection_id;";
+                                command.Parameters.AddWithValue("@intersection_id",
+                                    volumeRecord.IntersectionNumber);
+                                intersectionExists = (Int32) command.ExecuteScalar() > 0;
                             }
 
-                            //Find out what kind of data we have
-                            var recordType = VolumeRecordFactory.CheckRecordType(record);
 
-                            //Construct the appropriate record type
-                            switch (recordType)
+                            foreach (var detector in volumeRecord.GetDetectors())
                             {
-                                case VolumeRecordType.Datetime:
-                                    currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
-                                    break;
-                                case VolumeRecordType.Volume:
-                                    var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
-
-                                    foreach (var detector in volumeRecord.GetDetectors())
+                                if (!intersectionExists)
+                                {
+                                    using (var command = dbConnection.CreateCommand())
                                     {
-                                        cmd.CommandText =
-                                            "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
-
-                                        cmd.Parameters.Clear();
-
-                                        cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5));
-                                        //Make up for the fact that volumes are offset ahead 5 minutes
-                                        cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
-                                        cmd.Parameters.AddWithValue("@detector", detector);
-                                        cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
-
+                                        command.CommandText =
+                                            "INSERT INTO intersections (intersection_id, detector) VALUES (@intersection_id, @detector);";
+                                        command.Parameters.AddWithValue("@intersection_id",
+                                            volumeRecord.IntersectionNumber);
+                                        command.Parameters.AddWithValue("@detector", detector);
                                         try
                                         {
-                                            cmd.ExecuteNonQuery();
+                                            command.ExecuteNonQuery();
                                         }
                                         catch (SqlCeException e)
                                         {
-                                            if (e.ErrorCode.Equals(5) && !continuing)
-                                            {
-                                                duplicatePolicy = getDuplicatePolicy();
-                                                if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
-                                                {
-                                                    alreadyLoaded = true;
-                                                    break;
-                                                }
-                                                continuing = true;
-                                            }
+                                            Console.WriteLine(e);
                                         }
                                     }
-                                    break;
-                            }
-                            if (alreadyLoaded) break;
-                        }
-                        transaction.Commit();
-                    }
-                }
+                                }
 
+                                using (var cmd = dbConnection.CreateCommand())
+                                {
+                                    cmd.CommandText =
+                                        "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
+
+                                    cmd.Parameters.Clear();
+
+                                    cmd.Parameters.AddWithValue("@dateTime", dateTimeRecord.DateTime.AddMinutes(-5));
+
+                                    //Make up for the fact that volumes are offset ahead 5 minutes
+                                    cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
+                                    cmd.Parameters.AddWithValue("@detector", detector);
+                                    cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
+
+                                    try
+                                    {
+                                    cmd.ExecuteNonQuery();
+                                    }
+                                    catch (SqlCeException e)
+                                    {
+                                        if (continuing) continue;
+                                        
+                                        var duplicatePolicy = getDuplicatePolicy();
+                                        if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
+                                        {
+                                            shouldStopImporting = true;
+                                            break;
+                                        }
+                                        continuing = true;
+                                    }
+                                    
+                                }
+                            }
+                            if (shouldStopImporting) break;
+                        }
+                        if (shouldStopImporting) break;
+                    }
+                    transaction.Commit();
+                }
                 dbConnection.Close();
             }
-            fs.Close();
         }
 
         public bool VolumesTableEmpty()
         {
             var count = 0;
-            using(var conn = new SqlCeConnection(_connectionString)){
+            using (var conn = new SqlCeConnection(_connectionString))
+            {
                 conn.Open();
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText = "SELECT COUNT(*) FROM volumes;";
-                    count = (Int32)query.ExecuteScalar();
+                    count = (Int32) query.ExecuteScalar();
                 }
             }
 
@@ -499,10 +492,10 @@ namespace ATTrafficAnalayzer.Models
 
                     command.CommandText = "DELETE FROM approach_detector_mapping;";
                     command.ExecuteNonQuery();
-                    
+
                     command.CommandText = "DELETE FROM configs;";
                     command.ExecuteNonQuery();
-                    
+
                     command.CommandText = "DELETE FROM config_approach_mapping;";
                     command.ExecuteNonQuery();
 
@@ -511,7 +504,7 @@ namespace ATTrafficAnalayzer.Models
 
                     command.CommandText = "DELETE FROM monthly_summaries;";
                     command.ExecuteNonQuery();
-                    
+
                     command.CommandText = "DELETE FROM volumes;";
                     command.ExecuteNonQuery();
                 }
@@ -539,11 +532,5 @@ namespace ATTrafficAnalayzer.Models
                 conn.Close();
             }
         }
-
-       
-
-        
-
-        
     }
 }

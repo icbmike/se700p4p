@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Volume;
-using ATTrafficAnalayzer.Views.Screens;
 using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models
@@ -17,21 +16,96 @@ namespace ATTrafficAnalayzer.Models
     {
         private static readonly string DbPath = new SQLiteConnectionStringBuilder
             {
-                DataSource = "TAdb.db3"
+                DataSource = "TAdb.db3",
+                JournalMode = SQLiteJournalModeEnum.Off
             }.ConnectionString;
 
-        private static SqliteDataSource _instance;
-        private static readonly object SyncLock = new object();
-
-        /// <summary>
-        ///     Initialises database tables
-        /// </summary>
-        private SqliteDataSource()
+        public SqliteDataSource()
         {
-            CreateVolumesTableIfNotExists();
-            CreateApproachesTableIfNotExists();
-            CreateConfigsTableIfNotExists();
-            CreateMonthlySummariesTableIfNotExists();
+            CreateTables();
+        }
+
+        private void CreateTables()
+        {
+            using (var connection = new SQLiteConnection(DbPath))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [monthly_summaries] (
+                                                             [name] nvarchar(100) NOT NULL
+                                                           , [config] ntext NULL
+                                                           , [last_used] datetime NULL
+                                                            , CONSTRAINT [PK_monthly_summaries] PRIMARY KEY ([name])
+                                                        );";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [intersections] (
+                                              [intersection_id] int NOT NULL
+                                            , [detector] tinyint NOT NULL
+                                            , CONSTRAINT [PK_intersections] PRIMARY KEY ([intersection_id],[detector])
+                                            );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [volumes] (
+                                                      [intersection] int NOT NULL
+                                                    , [detector] tinyint NOT NULL
+                                                    , [dateTime] datetime NOT NULL
+                                                    , [volume] smallint NULL
+                                                    , CONSTRAINT [PK_volumes] PRIMARY KEY ([intersection],[detector],[dateTime])
+                                                    , FOREIGN KEY ([intersection], [detector]) REFERENCES [intersections] ([intersection_id], [detector]) ON DELETE CASCADE ON UPDATE CASCADE
+                                                    );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [configs] (
+                                              [config_id] INTEGER NOT NULL
+                                            , [name] nvarchar(100) NULL
+                                            , [date_last_used] datetime NULL
+                                            , [intersection_id] int NULL
+                                            , CONSTRAINT [PK_configs] PRIMARY KEY ([config_id])
+                                            );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [config_approach_mapping] (
+                                                    [config_id] int NOT NULL
+                                                , [approach_id] int NOT NULL
+                                                , CONSTRAINT [PK_config_approach_mapping] PRIMARY KEY ([config_id],[approach_id])
+                                                , FOREIGN KEY ([config_id]) REFERENCES [configs] ([config_id]) ON DELETE CASCADE ON UPDATE CASCADE
+                                                );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [approaches] (
+                                                  [approach_id] INTEGER NOT NULL
+                                                , [name] nvarchar(100) NULL
+                                                , CONSTRAINT [PK_approaches] PRIMARY KEY ([approach_id])
+                                                );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [approach_detector_mapping] (
+                                              [approach_id] int NOT NULL
+                                            , [detector] tinyint NOT NULL
+                                            , CONSTRAINT [PK_approach_detector_mapping] PRIMARY KEY ([approach_id],[detector])
+                                            );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE UNIQUE INDEX IF NOT EXISTS [UQ__monthly_summaries__0000000000000050] ON [monthly_summaries] ([name] ASC);";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE INDEX IF NOT EXISTS [volumes_index] ON [volumes] ([intersection] ASC,[detector] ASC,[dateTime] ASC);";
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                connection.Close();
+            }
         }
 
         #region Helper functions
@@ -122,112 +196,8 @@ namespace ATTrafficAnalayzer.Models
             return rowsUpdated;
         }
 
-        /// <summary>
-        ///     Allows the programmer to retrieve single items from the DB.
-        /// </summary>
-        /// <param name="sql">The query to run.</param>
-        /// <returns>A string.</returns>
-        private static object ExecuteScalar(string sql)
-        {
-            object reader;
-
-            using (var dbConnection = new SQLiteConnection(DbPath))
-            {
-                dbConnection.Open();
-
-                using (var createConfigsTableCommand = new SQLiteCommand(dbConnection) { CommandText = sql })
-                {
-                    reader = createConfigsTableCommand.ExecuteScalar();
-                }
-
-                dbConnection.Close();
-            }
-
-            return reader;
-        }
-
-        /// <summary>
-        ///     Allows the programmer to easily update rows in the DB.
-        /// </summary>
-        /// <param name="tableName">The table to update.</param>
-        /// <param name="data">A dictionary containing Column names and their new values.</param>
-        /// <param name="where">The where clause for the update statement.</param>
-        /// <returns>A boolean true or false to signify success or failure.</returns>
-        private static bool Update(String tableName, Dictionary<String, String> data, String where)
-        {
-            var valuesToUpdate = "";
-            var returnCode = true;
-
-            if (data.Count >= 1)
-            {
-                valuesToUpdate = data.Aggregate(valuesToUpdate, (current, val) => current + String.Format(" {0} = {1},", val.Key, val.Value));
-                valuesToUpdate = valuesToUpdate.Substring(0, valuesToUpdate.Length - 1);
-            }
-            try
-            {
-                ExecuteNonQuery(String.Format("UPDATE {0} SET {1} WHERE {2};", tableName, valuesToUpdate, where));
-            }
-            catch
-            {
-                returnCode = false;
-            }
-            return returnCode;
-        }
-
-        /// <summary>
-        ///     Allows the programmer to easily delete rows from the DB.
-        /// </summary>
-        /// <param name="tableName">The table from which to delete.</param>
-        /// <param name="where">The where clause for the delete.</param>
-        /// <returns>A boolean true or false to signify success or failure.</returns>
-        private static bool Delete(String tableName, String where)
-        {
-            var returnCode = true;
-            try
-            {
-                System.Windows.Forms.MessageBox.Show(String.Format("DELETE FROM {0} WHERE {1};", tableName, where));
-                ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1};", tableName, where));
-            }
-            catch (Exception)
-            {
-                returnCode = false;
-            }
-            return returnCode;
-        }
-
-        /// <summary>
-        ///     Allows the programmer to easily insert into the DB
-        /// </summary>
-        /// <param name="tableName">The table into which we insert the data.</param>
-        /// <param name="data">A dictionary containing the column names and data for the insert.</param>
-        /// <returns>A boolean true or false to signify success or failure.</returns>
-        private static bool Insert(String tableName, Dictionary<String, String> data)
-        {
-            var columns = "";
-            var values = "";
-            var returnCode = true;
-
-            foreach (var val in data)
-            {
-                columns += String.Format(" {0},", val.Key);
-                values += String.Format(" '{0}',", val.Value);
-            }
-
-            columns = columns.Substring(0, columns.Length - 1);
-            values = values.Substring(0, values.Length - 1);
-
-            try
-            {
-                ExecuteNonQuery(String.Format("insert into {0}({1}) values({2});", tableName, columns, values));
-            }
-            catch (Exception fail)
-            {
-                MessageBox.Show(fail.Message);
-                returnCode = false;
-            }
-
-            return returnCode;
-        }
+       
+       
 
 
         /// <summary>
@@ -250,67 +220,7 @@ namespace ATTrafficAnalayzer.Models
 
         #endregion
 
-        #region Table Initialization
-
-        /// <summary>
-        /// Create the configs table in the database
-        /// </summary>
-        private static void CreateConfigsTableIfNotExists()
-        {
-            const string createConfigsTableSql = @"CREATE TABLE IF NOT EXISTS [configs] ( 
-                                    [name] TEXT  NULL,
-                                    [config] TEXT  NULL,
-                                    [last_used] DATETIME,
-
-                                    PRIMARY KEY (name)
-                                )";
-            ExecuteNonQuery(createConfigsTableSql);
-        }
-
-        /// <summary>
-        /// Create the summaries table in the database
-        /// </summary>
-        private static void CreateMonthlySummariesTableIfNotExists()
-        {
-            const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [monthly_summaries] ( 
-                                    [name] TEXT  NULL,
-                                    [config] TEXT  NULL,
-                                    [last_used] DATETIME,
-
-                                    PRIMARY KEY (name)
-                                )";
-            ExecuteNonQuery(createVolumesTableSql);
-        }
-
-        /// <summary>
-        /// Create the approaches table in the database
-        /// </summary>
-        private static void CreateApproachesTableIfNotExists()
-        {
-            const string createApproachesTableSql = @"CREATE TABLE IF NOT EXISTS [approaches] ( 
-                                    [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                                    [approach] TEXT  NULL
-                                )";
-            ExecuteNonQuery(createApproachesTableSql);
-        }
-
-        /// <summary>
-        /// Create the volumes table in the database
-        /// </summary>
-        private static void CreateVolumesTableIfNotExists()
-        {
-            const string createVolumesTableSql = @"CREATE TABLE IF NOT EXISTS [volumes] ( 
-                                    [dateTime] DATETIME DEFAULT CURRENT_TIMESTAMP NULL, 
-                                    [intersection] INTEGER  NULL,
-                                    [detector] INTEGER  NULL,
-                                    [volume] INTEGER  NULL,
-
-                                    PRIMARY KEY ( dateTime, intersection, detector)
-                                )";
-            ExecuteNonQuery(createVolumesTableSql);
-        }
-
-        #endregion
+    
 
         #region Volume Related Methods
 
@@ -323,7 +233,7 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="updateProgress"></param>
         /// <param name="getDuplicatePolicy"></param>
         /// <returns></returns>
-        public DuplicatePolicy ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
+        public void ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
             FileStream fs;
@@ -343,7 +253,6 @@ namespace ATTrafficAnalayzer.Models
                 //Now decrypt it
                 var index = 0;
                 DateTimeRecord currentDateTime = null;
-                duplicatePolicy = DuplicatePolicy.Continue;
                 var continuing = false;
 
                 using (var cmd = new SQLiteCommand(dbConnection))
@@ -432,7 +341,6 @@ namespace ATTrafficAnalayzer.Models
                 dbConnection.Close();
             }
             fs.Close();
-            return duplicatePolicy;
         }
 
         /// <summary>
@@ -448,7 +356,7 @@ namespace ATTrafficAnalayzer.Models
                 intersections = new List<int>();
                 using (var query = new SQLiteCommand(conn))
                 {
-                    query.CommandText = "SELECT DISTINCT intersection FROM volumes;";
+                    query.CommandText = "SELECT DISTINCT intersection_id FROM intersections;";
                     using (var reader = query.ExecuteReader())
                     {
                         while (reader.Read())
@@ -472,9 +380,9 @@ namespace ATTrafficAnalayzer.Models
             {
                 conn.Open();
                 detectors = new List<int>();
-                using (var query = new SQLiteCommand(conn))
+                using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT DISTINCT detector FROM volumes WHERE intersection = @intersection;";
+                    query.CommandText = "SELECT DISTINCT detector FROM intersections WHERE intersection_id = @intersection;";
                     query.Parameters.AddWithValue("@intersection", intersection);
                     using (var reader = query.ExecuteReader())
                     {
@@ -588,14 +496,58 @@ namespace ATTrafficAnalayzer.Models
             return !reader.Equals(1);
         }
 
-        void IDataSource.ClearData()
+
+        public void ClearData()
         {
-            throw new NotImplementedException();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM approaches;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM approach_detector_mapping;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM configs;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM config_approach_mapping;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM intersections;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM monthly_summaries;";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM volumes;";
+                    command.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
         }
 
         public void AddIntersection(int intersection, IEnumerable<int> detectors)
         {
-            throw new NotImplementedException();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText =
+                        "INSERT INTO intersections (intersection_id, detector) VALUES (@intersection_id, @detector);";
+                    foreach (var detector in detectors)
+                    {
+                        query.Parameters.Clear();
+                        query.Parameters.AddWithValue("@intersection_id", intersection);
+                        query.Parameters.AddWithValue("@detector", detector);
+                        query.ExecuteNonQuery();
+                    }
+                }
+                conn.Close();
+            }
         }
 
         /// <summary>
@@ -825,53 +777,53 @@ namespace ATTrafficAnalayzer.Models
         /// </summary>
         /// <param name="name">Configuration name</param>
         /// <returns>configuration</returns>
-        public ReportConfiguration.Configuration GetConfiguration(string name)
+        public Configuration GetConfiguration(string name)
         {
+            Configuration result = null;
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
 
-                JObject configJson = null;
-
-                using (var query = new SQLiteCommand(conn))
+                using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT config FROM configs WHERE name = @name;";
+                    query.CommandText =
+                        "SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector " +
+                        "FROM configs " +
+                        "INNER JOIN config_approach_mapping " +
+                        "ON configs.config_id = config_approach_mapping.config_id " +
+                        "INNER JOIN approaches " +
+                        "ON approaches.approach_id = config_approach_mapping.approach_id " +
+                        "INNER JOIN approach_detector_mapping " +
+                        "ON approaches.approach_id = approach_detector_mapping.approach_id " +
+                        "WHERE configs.name = @name";
                     query.Parameters.AddWithValue("@name", name);
                     using (var reader = query.ExecuteReader())
                     {
                         if (reader.Read())
-                            configJson = JObject.Parse(reader.GetString(0));
-                    }
-                }
-                if (configJson != null)
-                {
-                    var approaches = new List<Approach>();
-                    foreach (var approachID in (JArray)configJson["approaches"])
-                    {
-                        using (var query = new SQLiteCommand(conn))
                         {
-                            query.CommandText = "SELECT approach FROM approaches WHERE id = @id;";
-                            query.Parameters.AddWithValue("@id", approachID);
+                            var intersection = reader.GetInt32(0);
+                            var approaches = new List<Approach>();
 
-                            JObject approachJson;
-                            using (var reader = query.ExecuteReader())
+                            var approachId = 0; //Seed id is 1, 0 should never be found in db
+                            Approach currentApproach = null;
+                            while (reader.Read())
                             {
-                                approachJson = null;
-
-                                if (reader.Read())
-                                    approachJson = JObject.Parse(reader.GetString(0));
+                                if (!reader.GetInt32(1).Equals(approachId))
+                                {
+                                    approachId = reader.GetInt32(1);
+                                    currentApproach = new Approach(reader.GetString(2), new List<int>(), this);
+                                    approaches.Add(currentApproach);
+                                }
+                                currentApproach.Detectors.Add((reader.GetByte(3)));
                             }
 
-                            approaches.Add(new Approach((string)approachJson["name"],
-                                                        approachJson["detectors"].Select(t => (int)t).ToList(), this));
+                            result = new Configuration(name, intersection, approaches, this);
                         }
                     }
-                    conn.Close();
-                    return new Configuration(name, (int)configJson["intersection"], approaches, this);
                 }
                 conn.Close();
             }
-            return null;
+            return result;
         }
 
         /// <summary>
@@ -901,43 +853,97 @@ namespace ATTrafficAnalayzer.Models
             return names;
         }
 
+        public List<string> GetConfigurationNames()
+        {
+            var names = new List<String>();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT name FROM configs;";
+                    using (var reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            names.Add(reader.GetString(0));
+                        }
+                    }
+                }
+                conn.Close();
+            }
+            return names;
+        }
+
         /// <summary>
         ///     Create a report record in the database
         /// </summary>
         /// <param name="config">Configuration configuration</param>
-        public void AddConfiguration(ReportConfiguration.Configuration config)
+        public void AddConfiguration(Configuration config)
         {
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
-
-                foreach (var approach in config.Approaches)
+                using (var transaction = conn.BeginTransaction())
                 {
-                    //INSERT APPROACHES INTO TABLE
-                    using (var query = new SQLiteCommand(conn))
+
+                    Int64 configId;
+
+                    //Insert into configs table
+                    using (var query = conn.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO approaches (approach) VALUES (@approach);";
-                        query.Parameters.AddWithValue("@approach", approach.ToString());
+                        query.CommandText =
+                            "INSERT INTO configs (name, date_last_used, intersection_id) VALUES (@name, datetime('now'), @intersection_id);";
+                        query.Parameters.AddWithValue("@name", config.Name);
+                        query.Parameters.AddWithValue("@intersection_id", config.Intersection);
                         query.ExecuteNonQuery();
+
+                        query.CommandText = " SELECT last_insert_rowid();";
+                        configId = (Int64) query.ExecuteScalar();
+                        Console.WriteLine("Config id: " + configId);
                     }
-                    //GET IDS SO THAT WE CAN ADD IT TO THE REPORT CONFIGURATION
-                    using (var query = new SQLiteCommand(conn))
+
+                    foreach (var approach in config.Approaches)
                     {
-                        query.CommandText = "SELECT last_insert_rowid();";
+                        Int64 approachId;
+                        //insert into approaches table
+                        using (var query = conn.CreateCommand())
+                        {
+                            query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);";
+                            query.Parameters.AddWithValue("@approach", approach.Name);
+                            query.ExecuteNonQuery();
 
-                        var rowID = (Int64)query.ExecuteScalar();
-                       // ((JArray)configJson["approaches"]).Add(rowID);
+                            query.CommandText = "SELECT last_insert_rowid();";
+                            approachId = (Int64) query.ExecuteScalar();
+                            Console.WriteLine("Approach ID: " + approachId);
+                        }
+
+                        //insert into approach_detector_mapping 
+                        using (var query = conn.CreateCommand())
+                        {
+                            query.CommandText =
+                                "INSERT INTO approach_detector_mapping (approach_id, detector) VALUES (@approach_id, @detector)";
+
+                            approach.Detectors.ForEach(d =>
+                            {
+                                query.Parameters.Clear();
+                                query.Parameters.AddWithValue("@approach_id", approachId);
+                                query.Parameters.AddWithValue("@detector", d);
+                                query.ExecuteNonQuery();
+                            });
+                        }
+
+                        //insert into config_approach_mapping
+                        using (var query = conn.CreateCommand())
+                        {
+                            query.CommandText =
+                                "INSERT INTO config_approach_mapping (config_id, approach_id) VALUES (@config_id, @approach_id);";
+                            query.Parameters.AddWithValue("@config_id", configId);
+                            query.Parameters.AddWithValue("@approach_id", approachId);
+                            query.ExecuteNonQuery();
+                        }
                     }
-                }
-
-                //INSERT REPORT CONFIGURATION INTO TABLE
-                using (var query = new SQLiteCommand(conn))
-                {
-                    query.CommandText = "INSERT INTO configs (name, config, last_used) VALUES (@name, @config, @last_used);";
-                    query.Parameters.AddWithValue("@name", config.ConfigName);
-                    query.Parameters.AddWithValue("@config", config.ToString());
-                    query.Parameters.AddWithValue("@last_used", DateTime.Today);
-                    query.ExecuteNonQuery();
+                    transaction.Commit();
                 }
                 conn.Close();
             }
@@ -998,13 +1004,19 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
-        /// <summary>
-        ///     Delete report
-        /// </summary>
-        /// <param name="name">nameReport </param>
-        public void RemoveReport(string name)
+        public void RemoveConfiguration(string name)
         {
-            RemoveConfig(name, true);
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "DELETE FROM configs WHERE name = @name;";
+                    query.Parameters.AddWithValue("@name", name);
+                    query.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
         }
 
         public void RemoveSummary(string name)
@@ -1120,6 +1132,27 @@ namespace ATTrafficAnalayzer.Models
             return reader.Equals(1);
         }
 
+        public bool ConfigurationExists(string name)
+        {
+            long count;
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = "SELECT COUNT(*) FROM configs WHERE name = @configName;";
+                    query.Parameters.AddWithValue("@configName", name);
+                    count = (Int64)query.ExecuteScalar();
+                }
+
+                conn.Close();
+            }
+
+            return count.Equals(1);
+        }
+
         #endregion
 
         #region Miscellaneous
@@ -1168,18 +1201,6 @@ namespace ATTrafficAnalayzer.Models
         }
 
         #endregion
-
-        /// <summary>
-        ///     Provides the db helper singleton
-        /// </summary>
-        /// <returns>DB Helper instance</returns>
-        public static SqliteDataSource GetDbHelper()
-        {
-            lock (SyncLock)
-            {
-                return _instance ?? (_instance = new SqliteDataSource());
-            }
-        }
 
         /// <summary>
         ///     Returns a data adapter for the summary table

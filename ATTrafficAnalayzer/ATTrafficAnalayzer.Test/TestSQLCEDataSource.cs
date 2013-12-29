@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.IO;
-using System.Runtime.Remoting.Messaging;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -193,12 +192,15 @@ namespace ATTrafficAnalayzer.Test
             {
                 
             }
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             _dataSource.ImportFile("../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS", Console.WriteLine,
                 () => DuplicatePolicy.SkipAll);
-            Assert.AreNotEqual(0, _dataSource.GetIntersections().Count);
-            Assert.AreNotEqual(0,_dataSource.GetImportedDates().Count);
+            stopwatch.Stop();
+            Console.WriteLine("Took " + stopwatch.ElapsedMilliseconds + "ms");
             Assert.IsFalse(_dataSource.VolumesTableEmpty());
-
+            Assert.AreNotEqual(0, _dataSource.GetIntersections().Count);
+            Assert.AreNotEqual(0, _dataSource.GetImportedDates().Count);
         }
 
         [TestMethod()]
