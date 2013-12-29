@@ -12,7 +12,9 @@ namespace ATTrafficAnalayzer.Test
     public class TestSqliteDataSource
     {
         private static IDataSource _dataSource;
-
+        private const string TestFile11March2013 = "../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS";
+        private const string TestFile12March2013 = "../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130312.VS";
+        private const string TestFile13March2013 = "../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130313.VS";
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
@@ -81,7 +83,7 @@ namespace ATTrafficAnalayzer.Test
             Assert.AreEqual(0, importedDates.Count);
 
             //This file only contains one day's worth of volume data
-            _dataSource.ImportFile("../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS", i=>{}, () => DuplicatePolicy.SkipAll);
+            _dataSource.ImportFile(TestFile11March2013, i=>{}, () => DuplicatePolicy.SkipAll);
             importedDates = _dataSource.GetImportedDates();
             Assert.AreEqual(1, importedDates.Count);
 
@@ -104,7 +106,11 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestGetMostRecentImportedDate()
         {
-            Assert.Fail();
+            _dataSource.ImportFile(TestFile11March2013, i => { }, () => DuplicatePolicy.SkipAll);
+            Assert.AreEqual(new DateTime(2013, 3, 11), _dataSource.GetMostRecentImportedDate());
+            
+            _dataSource.ImportFile(TestFile12March2013, i => {}, () => DuplicatePolicy.SkipAll);
+            Assert.AreEqual(new DateTime(2013, 3, 12), _dataSource.GetMostRecentImportedDate());
         }
 
         [TestMethod()]
@@ -201,7 +207,7 @@ namespace ATTrafficAnalayzer.Test
             }
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            _dataSource.ImportFile("../../../ATTrafficAnalayzer.Test/test_files/MANWST_20130311.VS", i => { },
+            _dataSource.ImportFile(TestFile11March2013, i => { },
                 () => DuplicatePolicy.SkipAll);
             stopwatch.Stop();
             Console.WriteLine("Took " + stopwatch.ElapsedMilliseconds + "ms");

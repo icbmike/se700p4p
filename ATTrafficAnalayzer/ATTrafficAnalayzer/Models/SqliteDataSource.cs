@@ -164,111 +164,98 @@ namespace ATTrafficAnalayzer.Models
         public void ImportFile(string filename, Action<int> updateProgress, Func<DuplicatePolicy> getDuplicatePolicy)
         {
             //Open the db connection
-            FileStream fs;
-            DuplicatePolicy duplicatePolicy;
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
                 dbConnection.Open();
 
-                //Load the file into memory
-                fs = new FileStream(filename, FileMode.Open);
-                var sizeInBytes = (int)fs.Length;
-                var byteArray = new byte[sizeInBytes];
-                fs.Read(byteArray, 0, sizeInBytes);
-
-                var alreadyLoaded = false;
-
-                //Now decrypt it
-                var index = 0;
-                DateTimeRecord currentDateTime = null;
+                var shouldStopImporting = false;
                 var continuing = false;
 
-                using (var cmd = new SQLiteCommand(dbConnection))
+                var decodedFile = VolumeStoreDecoder.DecodeFile(filename);
+
+                using (var transaction = dbConnection.BeginTransaction())
                 {
-                    using (var transaction = dbConnection.BeginTransaction())
+                    foreach (var dateTimeRecord in decodedFile)
                     {
-                        while (index < sizeInBytes) //seek through the byte array untill we reach the end
+                        //Should probably do an action on volume record as it is decoded so that we dont read the entire file into memory
+                        foreach (var volumeRecord in dateTimeRecord.VolumeRecords)
                         {
-                            var recordSize = byteArray[index] + byteArray[index + 1] * 256;
-                            //The record size is stored in two bytes, little endian
+                            //Check if the intersection for this volume record is already in the database
 
-                            index += 2;
-                            var progress = (int)(((float)index / sizeInBytes) * 100);
-                            updateProgress(progress);
-
-
-                            byte[] record;
-                            if (recordSize % 2 == 0) //Records with odd record length have a trailing null byte.
+                            bool intersectionExists;
+                            using (var command = dbConnection.CreateCommand())
                             {
-                                record = byteArray.Skip(index).Take(recordSize).ToArray();
-                                index += recordSize;
-                            }
-                            else
-                            {
-                                record = byteArray.Skip(index).Take(recordSize + 1).ToArray();
-                                index += recordSize + 1;
+                                command.CommandText =
+                                    "SELECT COUNT(intersection_id) FROM intersections WHERE intersection_id = @intersection_id;";
+                                command.Parameters.AddWithValue("@intersection_id",
+                                    volumeRecord.IntersectionNumber);
+                                intersectionExists = (Int64)command.ExecuteScalar() > 0;
                             }
 
-                            //Find out what kind of data we have
-                            var recordType = VolumeRecordFactory.CheckRecordType(record);
 
-                            //Construct the appropriate record type
-                            switch (recordType)
+                            foreach (var detector in volumeRecord.GetDetectors())
                             {
-                                case VolumeRecordType.Datetime:
-                                    currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
-                                    break;
-                                case VolumeRecordType.Volume:
-                                    var volumeRecord = VolumeRecordFactory.CreateVolumeRecord(record, recordSize);
-
-                                    foreach (var detector in volumeRecord.GetDetectors())
+                                if (!intersectionExists)
+                                {
+                                    using (var command = dbConnection.CreateCommand())
                                     {
-                                        cmd.CommandText =
-                                            "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
-
-                                        cmd.Parameters.Clear();
-
-                                        cmd.Parameters.AddWithValue("@dateTime", currentDateTime.DateTime.AddMinutes(-5));
-                                        //Make up for the fact that volumes are offset ahead 5 minutes
-                                        cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
-                                        cmd.Parameters.AddWithValue("@detector", detector);
-                                        cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
-
+                                        command.CommandText =
+                                            "INSERT INTO intersections (intersection_id, detector) VALUES (@intersection_id, @detector);";
+                                        command.Parameters.AddWithValue("@intersection_id",
+                                            volumeRecord.IntersectionNumber);
+                                        command.Parameters.AddWithValue("@detector", detector);
                                         try
                                         {
-                                            cmd.ExecuteNonQuery();
+                                            command.ExecuteNonQuery();
                                         }
                                         catch (SQLiteException e)
                                         {
-                                            if (e.ErrorCode.Equals(SQLiteErrorCode.Constraint) && !continuing)
-                                            {
-
-                                                Logger.Error("DBHELPER",
-                                                             e + "\nDetector: " + detector + "\nIntersection: " +
-                                                             volumeRecord.IntersectionNumber + "\nDate Time: " +
-                                                             currentDateTime.DateTime);
-
-                                                duplicatePolicy = getDuplicatePolicy();
-                                                if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
-                                                {
-                                                    alreadyLoaded = true;
-                                                    break;
-                                                }
-                                                continuing = true;
-                                            }
+                                            Console.WriteLine(e);
                                         }
                                     }
-                                    break;
-                            }
-                            if (alreadyLoaded) break;
-                        }
-                        transaction.Commit();
-                    }
-                }
+                                }
 
+                                using (var cmd = dbConnection.CreateCommand())
+                                {
+                                    cmd.CommandText =
+                                        "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
+
+                                    cmd.Parameters.Clear();
+
+                                    cmd.Parameters.AddWithValue("@dateTime", dateTimeRecord.DateTime.AddMinutes(-5));
+
+                                    //Make up for the fact that volumes are offset ahead 5 minutes
+                                    cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
+                                    cmd.Parameters.AddWithValue("@detector", detector);
+                                    cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
+
+                                    try
+                                    {
+                                        cmd.ExecuteNonQuery();
+                                    }
+                                    catch (SQLiteException e)
+                                    {
+                                        if (e.ErrorCode.Equals(SQLiteErrorCode.Constraint) && continuing) continue;
+
+                                        var duplicatePolicy = getDuplicatePolicy();
+                                        if (!duplicatePolicy.Equals(DuplicatePolicy.Continue))
+                                        {
+                                            shouldStopImporting = true;
+                                            break;
+                                        }
+                                        continuing = true;
+                                    }
+
+                                }
+                            }
+                            if (shouldStopImporting) break;
+                        }
+                        if (shouldStopImporting) break;
+                    }
+                    transaction.Commit();
+                }
                 dbConnection.Close();
             }
-            fs.Close();
         }
 
         /// <summary>
