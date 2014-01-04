@@ -24,7 +24,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
+        public int GetTotalVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
         {
             throw new NotImplementedException();
         }
@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public bool RemoveVolumes(DateTime date)
+        public void RemoveVolumes(DateTime date)
         {
             throw new NotImplementedException();
         }
@@ -77,12 +77,12 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public bool VolumesExist(DateTime startDate, DateTime endDate)
+        public bool VolumesExistForDateRange(DateTime startDate, DateTime endDate)
         {
             throw new NotImplementedException();
         }
 
-        public bool VolumesExist(DateTime startDate, DateTime endDate, int intersection)
+        public bool VolumesExistForDateRange(DateTime startDate, DateTime endDate, int intersection)
         {
             throw new NotImplementedException();
         }
@@ -162,7 +162,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public bool VolumesTableEmpty()
+        public bool VolumesExist()
         {
             throw new NotImplementedException();
         }

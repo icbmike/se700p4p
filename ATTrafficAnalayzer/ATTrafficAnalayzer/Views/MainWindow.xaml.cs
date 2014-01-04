@@ -211,7 +211,7 @@ namespace ATTrafficAnalayzer.Views
                     if (SettingsToolbar.StartDatePicker.SelectedDate != null && SettingsToolbar.EndDatePicker.SelectedDate != null)
                     {
                         //Check if volumes exist for the selected range
-                        if (dataSource.VolumesExist((DateTime) SettingsToolbar.StartDatePicker.SelectedDate, (DateTime) SettingsToolbar.EndDatePicker.SelectedDate))
+                        if (dataSource.VolumesExistForDateRange((DateTime) SettingsToolbar.StartDatePicker.SelectedDate, (DateTime) SettingsToolbar.EndDatePicker.SelectedDate))
                         {
                             //Create and display a new Configuration config screen
                             var reportConfigurationScreen = new ReportConfig(dataSource);
@@ -324,7 +324,7 @@ namespace ATTrafficAnalayzer.Views
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (dataSource.VolumesTableEmpty())
+            if (dataSource.VolumesExist())
                 BulkImport();
         }
 

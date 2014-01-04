@@ -356,13 +356,13 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="startDateTime">Start of the period</param>
         /// <param name="endDateTime">End of the period</param>
         /// <returns>The total volumes for the detectors between the start and end date</returns>
-        public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
+        public int GetTotalVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
         {
-            int volume;
+            int totalVolume;
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
-                volume = 0;
+                totalVolume = 0;
                 using (var query = new SQLiteCommand(conn))
                 {
                     foreach (var detector in detectorList)
@@ -379,19 +379,19 @@ namespace ATTrafficAnalayzer.Models
                         query.Parameters.AddWithValue("@startDateTime", startDateTime);
                         query.Parameters.AddWithValue("@endDateTime", endDateTime);
 
-                        volume += Convert.ToInt32(query.ExecuteScalar());
+                        totalVolume += Convert.ToInt32(query.ExecuteScalar());
                     }
                 }
                 conn.Close();
             }
-            return volume;
+            return totalVolume;
         }
 
         /// <summary>
         ///     Confirms if there is no data in the volumes table
         /// </summary>
         /// <returns>True if there is no data</returns>
-        public bool VolumesTableEmpty()
+        public bool VolumesExist()
         {
             long reader;
 
@@ -514,7 +514,7 @@ namespace ATTrafficAnalayzer.Models
         /// <returns>True if there are volumes for the day</returns>
         public Boolean VolumesExist(DateTime date)
         {
-            return VolumesExist(date, date.AddDays(1));
+            return VolumesExistForDateRange(date, date.AddDays(1));
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="startDate">Date at the start of the period</param>
         /// <param name="endDate">Date at the end of the period</param>
         /// <returns>True if there are volumes between the dates</returns>
-        public Boolean VolumesExist(DateTime startDate, DateTime endDate)
+        public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate)
         {
             endDate = endDate.AddSeconds(-1);
             Boolean result;
@@ -551,32 +551,24 @@ namespace ATTrafficAnalayzer.Models
         ///     Removes the traffic volume for a day
         /// </summary>
         /// <param name="date">Day</param>
-        /// <returns>True if the deletion was successful</returns>
-        public bool RemoveVolumes(DateTime date)
+        public void RemoveVolumes(DateTime date)
         {
-            var returnCode = true;
-            try
+           
+            using (var dbConnection = new SQLiteConnection(DbPath))
             {
-                using (var dbConnection = new SQLiteConnection(DbPath))
+                dbConnection.Open();
+
+                using (var query = new SQLiteCommand(dbConnection))
                 {
-                    dbConnection.Open();
-
-                    using (var query = new SQLiteCommand(dbConnection))
-                    {
-                        query.CommandText = "DELETE FROM volumes WHERE (dateTime BETWEEN @startDate AND @endDate);";
-                        query.Parameters.AddWithValue("@startDate", date);
-                        query.Parameters.AddWithValue("@endDate", date.AddDays(1).AddSeconds(-1));
-                        query.ExecuteNonQuery();
-                    }
-
-                    dbConnection.Close();
+                    query.CommandText = "DELETE FROM volumes WHERE (dateTime BETWEEN @startDate AND @endDate);";
+                    query.Parameters.AddWithValue("@startDate", date);
+                    query.Parameters.AddWithValue("@endDate", date.AddDays(1).AddSeconds(-1));
+                    query.ExecuteNonQuery();
                 }
+
+                dbConnection.Close();
             }
-            catch (Exception)
-            {
-                returnCode = false;
-            }
-            return returnCode;
+           
         }
 
         /// <summary>
@@ -586,7 +578,7 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="endDate">date at the end of the time period</param>
         /// <param name="intersection">intersection ID</param>
         /// <returns>True if volumes exist</returns>
-        public Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection)
+        public Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate, int intersection)
         {
             endDate = endDate.AddSeconds(-1);
             Boolean result;

@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
-using System.Windows.Forms;
-using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views;
-using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
@@ -82,10 +77,10 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             {
                 var dbHelper = DataSourceFactory.GetDataSource();
                 date = date.AddHours(_hour);
-                if (dbHelper.VolumesExist(date,date.AddDays(1)))
+                if (dbHelper.VolumesExistForDateRange(date,date.AddDays(1)))
                 {
-                    return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
-                        dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
+                    return dbHelper.GetTotalVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
+                        dbHelper.GetTotalVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
                 }
                 else
                 {
@@ -110,10 +105,10 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             {
                 var dbHelper = DataSourceFactory.GetDataSource();
                 date = date.AddHours(_hour + 12);
-                if (dbHelper.VolumesExist(date, date.AddDays(1)))
+                if (dbHelper.VolumesExistForDateRange(date, date.AddDays(1)))
                 {
-                    return dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
-                        dbHelper.GetVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
+                    return dbHelper.GetTotalVolumeForTimePeriod(summary.SelectedIntersectionIn, summary.DetectorsIn, date, date.AddHours(1)) +
+                        dbHelper.GetTotalVolumeForTimePeriod(summary.SelectedIntersectionOut, summary.DetectorsOut, date, date.AddHours(1));
                 }
                 else
                 {
@@ -130,7 +125,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             public int? GetVolume(DateTime date, SummaryRow summary)
             {
                 var dbHelper = DataSourceFactory.GetDataSource();
-                if (dbHelper.VolumesExist(date, date.AddDays(1)))
+                if (dbHelper.VolumesExistForDateRange(date, date.AddDays(1)))
                 {
                     return dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionIn, summary.DetectorsIn) +
                                  dbHelper.GetTotalVolumeForDay(date, summary.SelectedIntersectionOut, summary.DetectorsOut);

@@ -9,17 +9,17 @@ namespace ATTrafficAnalayzer.Models
     {
         #region Volume Related Methods
 
-        int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime);
+        int GetTotalVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime);
 
         List<int> GetVolumes(int intersection, int detector, DateTime startDate, DateTime endDate);
         
         int GetTotalVolumeForDay(DateTime date, int intersection, List<int> detectors);
 
-        bool RemoveVolumes(DateTime date);
+        void RemoveVolumes(DateTime date);
 
-        Boolean VolumesExist(DateTime startDate, DateTime endDate);
+        Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate);
         
-        Boolean VolumesExist(DateTime startDate, DateTime endDate, int intersection);
+        Boolean VolumesExistForDateRange(DateTime startDate, DateTime endDate, int intersection);
         
         bool VolumesExistForMonth(int month);
 
@@ -27,7 +27,7 @@ namespace ATTrafficAnalayzer.Models
         ///     Confirms if there is no data in the volumes table
         /// </summary>
         /// <returns>True if there is no data</returns>
-        bool VolumesTableEmpty();
+        bool VolumesExist();
 
         #endregion
         

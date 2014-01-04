@@ -198,7 +198,7 @@ namespace ATTrafficAnalayzer.Test
                 () => DuplicatePolicy.SkipAll);
             stopwatch.Stop();
             Console.WriteLine("Took " + stopwatch.ElapsedMilliseconds + "ms");
-            Assert.IsFalse(_dataSource.VolumesTableEmpty());
+            Assert.IsFalse(_dataSource.VolumesExist());
             Assert.AreNotEqual(0, _dataSource.GetIntersections().Count);
             Assert.AreNotEqual(0, _dataSource.GetImportedDates().Count);
         }

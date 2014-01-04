@@ -29,15 +29,23 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestGetVolumeForTimePeriod()
+        public void TestTotalGetVolumeForTimePeriod()
         {
-            Assert.Fail();
+            var totalVolumeForTimePeriod = _dataSource.GetTotalVolumeForTimePeriod(4902, new List<int>{1, 2, 3}, new DateTime(2013, 3, 11), new DateTime(2013, 3, 12));
+            Assert.AreEqual(0, totalVolumeForTimePeriod);
+
+            _dataSource.ImportFile(TestFile11March2013, i => { }, () => DuplicatePolicy.SkipAll);
+            totalVolumeForTimePeriod = _dataSource.GetTotalVolumeForTimePeriod(4902, new List<int> { 1, 2, 3 }, new DateTime(2013, 3, 11), new DateTime(2013, 3, 12));
+            Assert.AreEqual(4, totalVolumeForTimePeriod);
         }
 
         [TestMethod()]
         public void TestGetVolumes()
         {
-            Assert.Fail();
+            _dataSource.ImportFile(TestFile11March2013, i => { }, () => DuplicatePolicy.SkipAll);
+
+            var volumes = _dataSource.GetVolumes(4902, 1, new DateTime(2013, 3, 11), new DateTime(2013, 3, 12));
+            Assert.AreNotEqual(0, volumes.Count);
         }
 
         [TestMethod()]
@@ -49,7 +57,11 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestRemoveVolumes()
         {
-            Assert.Fail();
+            _dataSource.ImportFile(TestFile11March2013, i => { }, () => DuplicatePolicy.SkipAll);
+
+            _dataSource.RemoveVolumes(new DateTime(2013, 3, 11));
+            var volumes = _dataSource.GetVolumes(4902, 1, new DateTime(2013, 3, 11), new DateTime(2013, 3, 12));
+            Assert.AreEqual(0, volumes.Count);
         }
 
         [TestMethod()]
@@ -90,9 +102,12 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod()]
-        public void TestVolumesExist()
+        public void TestVolumesExistForDateRange()
         {
-            Assert.Fail();
+            Assert.IsFalse(_dataSource.VolumesExistForDateRange(new DateTime(2013, 3, 11), new DateTime(2013, 3, 12)));
+            _dataSource.ImportFile(TestFile11March2013, i => { }, () => DuplicatePolicy.SkipAll);
+            Assert.IsTrue(_dataSource.VolumesExistForDateRange(new DateTime(2013, 3, 11), new DateTime(2013, 3, 12)));
+
         }
 
        
@@ -211,15 +226,17 @@ namespace ATTrafficAnalayzer.Test
                 () => DuplicatePolicy.SkipAll);
             stopwatch.Stop();
             Console.WriteLine("Took " + stopwatch.ElapsedMilliseconds + "ms");
-            Assert.IsFalse(_dataSource.VolumesTableEmpty());
+            Assert.IsFalse(_dataSource.VolumesExist());
             Assert.AreNotEqual(0, _dataSource.GetIntersections().Count);
             Assert.AreNotEqual(0, _dataSource.GetImportedDates().Count);
         }
 
         [TestMethod()]
-        public void TestVolumesTableEmpty()
+        public void TestVolumesExist()
         {
-            Assert.Fail();
+            Assert.IsTrue(_dataSource.VolumesExist());
+            _dataSource.ImportFile(TestFile11March2013, i => { }, () => DuplicatePolicy.SkipAll);
+            Assert.IsFalse(_dataSource.VolumesExist());
         }
 
         [TestMethod()]
