@@ -16,12 +16,6 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportTable : IView
     {
-        private readonly VolumeMetric _maxTotal = new VolumeMetric();
-        private readonly VolumeMetric _maxAm = new VolumeMetric();
-        private readonly VolumeMetric _maxPm = new VolumeMetric();
-        private readonly VolumeMetric _peakHourAm = new VolumeMetric();
-        private readonly VolumeMetric _peakHourPm = new VolumeMetric();
-
         private readonly DateSettings _settings;
         private DateTime _startDate;
         private DateTime _endDate;
@@ -58,11 +52,12 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void Render()
         {
             ScreenTitle.Content = _configuration.Name;
-            OverallSummaryBorder.Visibility = Visibility.Collapsed;
 
             //Remove all exisitng approaches!
             ApproachesStackPanel.Children.Clear();
             OverallSummaryTextBlock.Inlines.Clear();
+
+            OverallSummaryTextBlock.Inlines.Add("Heyo");
 
             _configuration.Approaches.ForEach(approach => ApproachesStackPanel.Children.Add(new ApproachTable(approach, _configuration.Intersection, _settings)));
 

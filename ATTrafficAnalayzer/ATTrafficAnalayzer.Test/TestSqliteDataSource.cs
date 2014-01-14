@@ -5,6 +5,7 @@ using System.IO;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace ATTrafficAnalayzer.Test
 {
@@ -205,7 +206,23 @@ namespace ATTrafficAnalayzer.Test
         [TestMethod()]
         public void TestGetSuspectedFaults()
         {
-            Assert.Fail();
+            _dataSource.ImportFile(TestFile11March2013, i => {}, ()=> DuplicatePolicy.SkipAll);
+
+            var suspectedFaults = _dataSource.GetSuspectedFaults(new DateTime(2013, 3, 11), new DateTime(2013, 3, 12), 100);
+            Assert.AreNotEqual(0, suspectedFaults.Count); // I don't know how many there are, only that there are some.
+
+            //Check that  the returned detectors actually have volumes higher than stuff.
+            foreach (var intersection in suspectedFaults.Keys)
+            {
+                foreach (var detector in suspectedFaults[intersection])
+                {
+                    var volumes = _dataSource.GetVolumes(intersection, detector, new DateTime(2013, 3, 11), new DateTime(2013, 3, 12));
+                    Assert.IsTrue(volumes.Max() >= 100);
+                }
+            }
+            
+            suspectedFaults = _dataSource.GetSuspectedFaults(new DateTime(2013, 3, 11), new DateTime(2013, 3, 12), 3000); //Max value is 2053 i think, cant quite remember
+            Assert.AreEqual(0, suspectedFaults.Count); // I don't know how many there are, only that there are some.
         }
 
         [TestMethod()]

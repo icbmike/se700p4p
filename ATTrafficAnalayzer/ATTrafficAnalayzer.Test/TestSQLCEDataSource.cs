@@ -8,7 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ATTrafficAnalayzer.Test
 {
-    [TestClass()]
+    [Ignore]
+    [TestClass]
     public class TestSqlCeDataSource
     {
         private static IDataSource _dataSource;
