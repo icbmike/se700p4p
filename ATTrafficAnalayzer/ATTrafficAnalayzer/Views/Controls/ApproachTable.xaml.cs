@@ -51,8 +51,9 @@ namespace ATTrafficAnalayzer.Views.Controls
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Peak Volume: " + _approach.GetPeak(_settings, _intersection, 0) + " Peak time: " +
                                      _approach.GetPeakTime(_settings, _intersection, 0));
-            stringBuilder.AppendLine("AM Peak: " + _approach.GetAmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetAmPeakTime(_settings, _intersection, 0));
-            stringBuilder.AppendLine("Pm Peak: " + _approach.GetPmPeak(_settings, _intersection, 0) + " Peak time: " + _approach.GetPmPeakTime(_settings, _intersection, 0));
+            stringBuilder.AppendLine("AM Peak: " + _approach.GetAmPeak(_settings, _intersection, 0) + " AM Peak time: " + _approach.GetAmPeakTime(_settings, _intersection, 0).ToShortTimeString());
+            stringBuilder.AppendLine("PM Peak: " + _approach.GetPmPeak(_settings, _intersection, 0) + " PM Peak time: " + _approach.GetPmPeakTime(_settings, _intersection, 0).ToShortTimeString());
+            stringBuilder.AppendLine("Total volume: " + _approach.GetTotal(_settings, _intersection, 0));
             ApproachSummary.Inlines.Add(stringBuilder.ToString());
         }
 

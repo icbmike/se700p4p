@@ -36,6 +36,8 @@ namespace ATTrafficAnalayzer.Test
             Assert.AreEqual("Test Approach", toString);
         }
 
+
+
         [TestMethod]
         public void TestGetTotal()
         {

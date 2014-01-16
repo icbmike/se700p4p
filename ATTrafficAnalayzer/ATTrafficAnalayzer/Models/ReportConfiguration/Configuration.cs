@@ -60,5 +60,31 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         {
             throw new System.NotImplementedException();
         }
+
+
+        public void GetBusiestApproach()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void GetBusiestAMPeriod()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void GetBusiestPMPeriod()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void GetAMPeakPeriod()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void GetPMPeakVolume()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

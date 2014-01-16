@@ -27,6 +27,41 @@ namespace ATTrafficAnalayzer.Test
             testConfiguration.Invalidate();
         }
 
+        [TestMethod]
+        public void TestGetBusiestApproach()
+        {
+            var testConfiguration = GetTestConfiguration();
+            testConfiguration.GetBusiestApproach();
+        }
+
+        [TestMethod]
+        public void TestGetBusiestAMPeriod()
+        {
+            var testConfiguration = GetTestConfiguration();
+            testConfiguration.GetBusiestAMPeriod();
+        }
+
+        [TestMethod]
+        public void TestGetBusiestPMPeriod()
+        {
+            var testConfiguration = GetTestConfiguration();
+            testConfiguration.GetBusiestPMPeriod();
+        }
+
+        [TestMethod]
+        public void TestGetAMPeakVolume()
+        {
+            var testConfiguration = GetTestConfiguration();
+            testConfiguration.GetAMPeakPeriod();
+        }
+
+        [TestMethod]
+        public void TestGetPMPeakVolume()
+        {
+            var testConfiguration = GetTestConfiguration();
+            testConfiguration.GetPMPeakVolume();
+        }
+
         private Configuration GetTestConfiguration()
         {
             var testApproach = new Approach("Test Approach", new List<int> { 1 }, _mockDataSource);
@@ -34,5 +69,7 @@ namespace ATTrafficAnalayzer.Test
                                                       new List<Approach> { testApproach }, _mockDataSource);
             return testConfiguration;
         }
+
+
     }
 }
