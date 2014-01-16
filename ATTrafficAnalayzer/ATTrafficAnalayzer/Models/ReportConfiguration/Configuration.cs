@@ -7,6 +7,11 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
     public class Configuration
     {
+        private Approach _currentBusiest;
+        private DateTime? _amPeakPeriod;
+        private DateTime? _pmPeakPeriod;
+        private int _amPeakVolume;
+        private int _pmPeakVolume;
         public List<Approach> Approaches { get; set; }
         public string Name { get; set; }
         public int Intersection { get; set; }
@@ -23,6 +28,12 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             Name = name;
             Intersection = intersection;
             Approaches = approaches;
+            
+            _currentBusiest = null;
+            _amPeakPeriod = null;
+            _pmPeakPeriod = null;
+            _amPeakVolume = -1;
+            _pmPeakVolume = -1;
         }
 
         /// <summary>
@@ -59,42 +70,70 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public void Invalidate()
         {
-            throw new NotImplementedException();
+            _currentBusiest = null;
+            _amPeakPeriod = null;
+            _pmPeakPeriod = null;
+            _amPeakVolume = -1;
+            _pmPeakVolume = -1;
+
         }
 
         public Approach GetBusiestApproach(DateSettings settings)
         {
-            Approach currentBusiest = null;
+            if (_currentBusiest != null) return _currentBusiest;
+
             foreach (var approach in Approaches)
             {
-                if (currentBusiest == null ||
-                    approach.GetTotal(settings, Intersection, 0) > currentBusiest.GetTotal(settings, Intersection, 0))
+                if (_currentBusiest == null ||
+                    approach.GetTotal(settings, Intersection, 0) >
+                    _currentBusiest.GetTotal(settings, Intersection, 0))
                 {
-                    currentBusiest = approach;
+                    _currentBusiest = approach;
                 }
             }
-
-            return currentBusiest;
+            return _currentBusiest;
         }
 
         public DateTime GetAMPeakPeriod()
         {
-            throw new NotImplementedException();
+            if (_amPeakPeriod != null) return _amPeakPeriod.Value;
+
+           
         }
 
         public DateTime GetPMPeakPeriod()
         {
-            throw new NotImplementedException();
+            if (_pmPeakPeriod != null) return _pmPeakPeriod.Value;
         }
 
-        public void GetAMPeakVolume()
+        public int GetAMPeakVolume(DateSettings settings)
         {
-            throw new NotImplementedException();
+            if (_amPeakVolume != -1) return _amPeakVolume;
+
+            foreach (var approach in Approaches)
+            {
+                if (approach.GetAmPeak(settings, Intersection, 0) > _amPeakVolume)
+                {
+                    _amPeakVolume = approach.GetAmPeak(settings, Intersection, 0);
+                }
+            }
+
+            return _amPeakVolume;
         }
 
-        public void GetPMPeakVolume()
+        public int GetPMPeakVolume(DateSettings settings)
         {
-            throw new NotImplementedException();
+            if (_pmPeakVolume != -1) return _pmPeakVolume;
+
+            foreach (var approach in Approaches)
+            {
+                if (approach.GetPmPeak(settings, Intersection, 0) > _pmPeakVolume)
+                {
+                    _pmPeakVolume = approach.GetPmPeak(settings, Intersection, 0);
+                }
+            }
+
+            return _pmPeakVolume;
         }
     }
 }
