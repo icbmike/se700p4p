@@ -7,7 +7,6 @@ using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views
 {

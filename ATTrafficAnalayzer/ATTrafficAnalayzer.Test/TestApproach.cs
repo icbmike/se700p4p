@@ -4,7 +4,6 @@ using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Test
 {

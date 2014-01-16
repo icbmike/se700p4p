@@ -7,7 +7,6 @@ using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
 using Microsoft.Win32;
-using System.Diagnostics;
 
 namespace ATTrafficAnalayzer.Views
 {

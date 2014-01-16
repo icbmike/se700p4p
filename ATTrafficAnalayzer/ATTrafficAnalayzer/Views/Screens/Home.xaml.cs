@@ -3,7 +3,6 @@ using System.Windows;
 using ATTrafficAnalayzer.Models;
 using System.ComponentModel;
 using System;
-using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {

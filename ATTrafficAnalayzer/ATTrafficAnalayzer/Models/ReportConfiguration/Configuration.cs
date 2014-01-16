@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using Newtonsoft.Json.Linq;
+using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
@@ -58,33 +59,42 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public void Invalidate()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-
-        public void GetBusiestApproach()
+        public Approach GetBusiestApproach(DateSettings settings)
         {
-            throw new System.NotImplementedException();
+            Approach currentBusiest = null;
+            foreach (var approach in Approaches)
+            {
+                if (currentBusiest == null ||
+                    approach.GetTotal(settings, Intersection, 0) > currentBusiest.GetTotal(settings, Intersection, 0))
+                {
+                    currentBusiest = approach;
+                }
+            }
+
+            return currentBusiest;
         }
 
-        public void GetBusiestAMPeriod()
+        public DateTime GetAMPeakPeriod()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public void GetBusiestPMPeriod()
+        public DateTime GetPMPeakPeriod()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public void GetAMPeakPeriod()
+        public void GetAMPeakVolume()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void GetPMPeakVolume()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

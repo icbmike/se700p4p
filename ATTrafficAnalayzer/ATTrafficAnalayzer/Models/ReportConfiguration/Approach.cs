@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Models.Volume;
-using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {

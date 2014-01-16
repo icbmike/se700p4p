@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
-using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {

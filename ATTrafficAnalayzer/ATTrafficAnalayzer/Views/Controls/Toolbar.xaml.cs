@@ -3,8 +3,6 @@ using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.ComponentModel;
-using ATTrafficAnalayzer.Annotations;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace ATTrafficAnalayzer.Test
 {
@@ -38,14 +36,14 @@ namespace ATTrafficAnalayzer.Test
         public void TestGetBusiestAMPeriod()
         {
             var testConfiguration = GetTestConfiguration();
-            testConfiguration.GetBusiestAMPeriod();
+            testConfiguration.GetAMPeakPeriod();
         }
 
         [TestMethod]
         public void TestGetBusiestPMPeriod()
         {
             var testConfiguration = GetTestConfiguration();
-            testConfiguration.GetBusiestPMPeriod();
+            testConfiguration.GetPMPeakPeriod();
         }
 
         [TestMethod]
@@ -68,6 +66,17 @@ namespace ATTrafficAnalayzer.Test
             var testConfiguration = new Configuration("Test Config", _dummyIntersection,
                                                       new List<Approach> { testApproach }, _mockDataSource);
             return testConfiguration;
+        }
+
+        private Configuration GetTestConfigurationWithMultipleApproaches()
+        {
+            return new Configuration("Test Config",
+                                    _dummyIntersection,
+                                    new List<Approach>
+                                    {
+                                        new Approach("TestApproach1", new List<int> { 1 }, _mockDataSource), 
+                                        new Approach("TestApproach2", new List<int> { 2 }, _mockDataSource)
+                                    }, _mockDataSource);
         }
 
 
