@@ -7,16 +7,15 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
     public class SummaryRow
     {
-        private IDataSource _dataSource;
 
         /// <summary>
         ///     Creates a summary row
         /// </summary>
-        public SummaryRow(IDataSource dataSource)
+        public SummaryRow()
         {
             DetectorsIn = new List<int>();
             DetectorsOut = new List<int>();
-            _dataSource = dataSource;
+            Intersections = new ObservableCollection<int>();
         }
 
         /// <summary>
@@ -40,18 +39,10 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             DividingFactorIn = dividingFactorIn;
             DividingFactorOut = dividingFactorOut;
         }
-
-        private ObservableCollection<int> _intersections;
-
         /// <summary>
         ///     Collection of intersections
         /// </summary>
-        public ObservableCollection<int> Intersections
-        {
-            get {
-                return _intersections ?? (_intersections = new ObservableCollection<int>(_dataSource.GetIntersections()));
-            }
-        }
+        public ObservableCollection<int> Intersections { get; set; }
 
         /// <summary>
         ///     Checks if the summary configuration is valid

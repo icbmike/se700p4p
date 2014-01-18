@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -25,11 +26,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         public SummaryConfig(IDataSource dataSource)
         {
             _dataSource = dataSource;
-
-            Rows = new ObservableCollection<SummaryRow>();
-
+            
             InitializeComponent();
             SummaryDataGrid.DataContext = this;
+            Rows = new ObservableCollection<SummaryRow>();
         }
 
         /// <summary>
@@ -127,6 +127,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void UserControl_GotFocus_1(object sender, RoutedEventArgs e)
         {
             Popup.Visibility = Visibility.Collapsed;
+        }
+
+
+        private void SummaryDataGridOnInitializingNewItem(object sender, InitializingNewItemEventArgs e)
+        {
+            var summaryRow = e.NewItem as SummaryRow;
+            _dataSource.GetIntersections().ForEach(i => summaryRow.Intersections.Add(i));
         }
     }
 }

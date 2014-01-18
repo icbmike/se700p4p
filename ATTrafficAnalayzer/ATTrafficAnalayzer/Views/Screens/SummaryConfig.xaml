@@ -38,6 +38,7 @@
                   CanUserResizeColumns="False"
                   CanUserSortColumns="True"
                   CanUserDeleteRows="True"
+                  CanUserAddRows="True"
                   ScrollViewer.CanContentScroll="False"
                   HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Disabled"
@@ -46,7 +47,9 @@
                   AreRowDetailsFrozen="False"
                   RowHeaderWidth="0"
                   ColumnWidth="*"
-                  ItemsSource="{Binding Rows}">
+                  ItemsSource="{Binding Rows}"
+                  InitializingNewItem="SummaryDataGridOnInitializingNewItem"
+                 >
             <DataGrid.Columns>
                 <DataGridTextColumn ClipboardContentBinding="{x:Null}"
                                     Header="Route Name"
