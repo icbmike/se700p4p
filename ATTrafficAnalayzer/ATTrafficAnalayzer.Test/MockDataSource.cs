@@ -37,17 +37,16 @@ namespace ATTrafficAnalayzer.Test
                 volumes.Add(i++);
             }
 
-            if (intersection == DummyIntersection)
+            //Ensure AM and PM peaks
+            volumes[20] = 450; //1:40am
+            volumes[250] = 350; //20:50pm
+
+            if (detector == 3)
             {
-                //Ensure AM and PM peaks
-                volumes[20] = 450; //1:40am
-                volumes[250] = 350; //20:50pm
+                volumes[20] = 700;
+                volumes[250] = 600;
             }
-            else
-            {
-                volumes[30] = 500; //2:30am
-                volumes[220] = 600; //18:20pm
-            }
+           
             return volumes;
         }
 

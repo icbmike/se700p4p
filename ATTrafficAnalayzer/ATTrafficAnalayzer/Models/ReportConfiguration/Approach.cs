@@ -203,7 +203,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return Math.Max(_amPeak, _pmPeak);
         }
 
-        public void Invalidate()
+        private void Invalidate()
         {
             _dataTable = null;
             _amPeak = -1;

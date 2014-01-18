@@ -48,12 +48,13 @@ namespace ATTrafficAnalayzer.Views.Controls
             
             //Display the statistics
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("Peak Volume: " + _approach.GetPeak(_settings, _intersection, 0) + " Peak time: " +
-                                     _approach.GetPeakTime(_settings, _intersection, 0));
-            stringBuilder.AppendLine("AM Peak: " + _approach.GetAmPeak(_settings, _intersection, 0) + " AM Peak time: " + _approach.GetAmPeakTime(_settings, _intersection, 0).ToShortTimeString());
-            stringBuilder.AppendLine("PM Peak: " + _approach.GetPmPeak(_settings, _intersection, 0) + " PM Peak time: " + _approach.GetPmPeakTime(_settings, _intersection, 0).ToShortTimeString());
-            stringBuilder.AppendLine("Total volume: " + _approach.GetTotal(_settings, _intersection, 0));
-            ApproachSummary.Inlines.Add(stringBuilder.ToString());
+            stringBuilder.AppendLine("Approach: [b]" + _approach.Name + "[/b]");
+            stringBuilder.AppendLine("Peak Volume: [b]" + _approach.GetPeak(_settings, _intersection, 0) + "[/b] Peak time: [b]" +
+                                     _approach.GetPeakTime(_settings, _intersection, 0).ToShortTimeString() + "[/b]");
+            stringBuilder.AppendLine("AM Peak: [b]" + _approach.GetAmPeak(_settings, _intersection, 0) + "[/b] AM Peak time: [b]" + _approach.GetAmPeakTime(_settings, _intersection, 0).ToShortTimeString() + "[/b]");
+            stringBuilder.AppendLine("PM Peak: [b]" + _approach.GetPmPeak(_settings, _intersection, 0) + "[/b] PM Peak time: [b]" + _approach.GetPmPeakTime(_settings, _intersection, 0).ToShortTimeString() + "[/b]");
+            stringBuilder.Append("Total volume: [b]" + _approach.GetTotal(_settings, _intersection, 0) + "[/b]");
+            ApproachSummary.Html = stringBuilder.ToString();
         }
 
         public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)

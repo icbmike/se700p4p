@@ -68,7 +68,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return dataTable;
         }
 
-        public void Invalidate()
+        private void Invalidate()
         {
             _currentBusiest = null;
             _amPeakPeriod = null;
@@ -94,16 +94,25 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return _currentBusiest;
         }
 
-        public DateTime GetAMPeakPeriod()
+        public DateTime GetAMPeakPeriod(DateSettings settings)
         {
             if (_amPeakPeriod != null) return _amPeakPeriod.Value;
+            
+            //This sets the peak period anyway
+            GetAMPeakVolume(settings);
 
-           
+            return _amPeakPeriod.Value;
+
         }
 
-        public DateTime GetPMPeakPeriod()
+        public DateTime GetPMPeakPeriod(DateSettings settings)
         {
             if (_pmPeakPeriod != null) return _pmPeakPeriod.Value;
+            
+            //This sets the peak period anyway
+            GetPMPeakVolume(settings);
+            
+            return _pmPeakPeriod.Value;
         }
 
         public int GetAMPeakVolume(DateSettings settings)
@@ -115,6 +124,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 if (approach.GetAmPeak(settings, Intersection, 0) > _amPeakVolume)
                 {
                     _amPeakVolume = approach.GetAmPeak(settings, Intersection, 0);
+                    _amPeakPeriod = approach.GetAmPeakTime(settings, Intersection, 0);
                 }
             }
 
@@ -130,6 +140,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 if (approach.GetPmPeak(settings, Intersection, 0) > _pmPeakVolume)
                 {
                     _pmPeakVolume = approach.GetPmPeak(settings, Intersection, 0);
+                    _pmPeakPeriod = approach.GetPmPeakTime(settings, Intersection, 0);
                 }
             }
 

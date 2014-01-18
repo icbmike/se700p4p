@@ -346,6 +346,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QuickZip.UserControls.HtmlTextBlock\QuickZip.UserControls.HtmlTextBlock.csproj">
+      <Project>{8e67c36f-4403-4724-96d4-af6e05744688}</Project>
+      <Name>QuickZip.UserControls.HtmlTextBlock</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

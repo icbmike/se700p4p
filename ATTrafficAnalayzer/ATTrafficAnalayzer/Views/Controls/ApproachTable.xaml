@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:qz="http://www.quickzip.org/UserControls"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="1680">
@@ -14,11 +15,11 @@
             Background="#22356199">
         <StackPanel>
 
-            <TextBlock x:Name="ApproachSummary"
+            <qz:HtmlTextBlock x:Name="ApproachSummary"
                    Visibility="Visible"
                    IsEnabled="False">
                 
-            </TextBlock>
+            </qz:HtmlTextBlock>
 
             <ListView Name="ApproachListView"
                   Margin="5,10,5,10"

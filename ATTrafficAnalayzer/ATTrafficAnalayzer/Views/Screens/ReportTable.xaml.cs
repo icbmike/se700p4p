@@ -1,4 +1,5 @@
-﻿using ATTrafficAnalayzer.Models;
+﻿using System.Text;
+using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
@@ -52,8 +53,22 @@ namespace ATTrafficAnalayzer.Views.Screens
             ApproachesStackPanel.Children.Clear();
             OverallSummaryTextBlock.Inlines.Clear();
 
-            OverallSummaryTextBlock.Inlines.Add("Heyo");
 
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append("Busiest Approach: ");
+            stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(_settings).Name + "[/b]");
+
+            stringBuilder.Append("Busiest AM Hour: ");
+            stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(_settings).ToShortTimeString() + "[/b]");
+            stringBuilder.Append(" with volume: ");
+            stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(_settings) + "[/b]");
+
+            stringBuilder.Append("Busiest PM Hour: ");
+            stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(_settings).ToShortTimeString() + "[/b]");
+            stringBuilder.Append(" with volume: ");
+            stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(_settings) + "[/b]");
+
+            OverallSummaryTextBlock.Html = stringBuilder.ToString();
             _configuration.Approaches.ForEach(approach => ApproachesStackPanel.Children.Add(new ApproachTable(approach, _configuration.Intersection, _settings)));
 
         }                                                                                                                                                   
@@ -70,7 +85,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                 _startDate = args.StartDate;
                 _endDate = args.EndDate;
                 _interval = args.Interval;
-                _configuration.Approaches.ForEach(approach => approach.Invalidate());
                 Render();
             }
         }

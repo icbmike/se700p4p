@@ -46,25 +46,6 @@ namespace ATTrafficAnalayzer.Test
         }
 
         [TestMethod]
-        public void TestInvalidate()
-        {
-            var testApproach = new Approach("Test Approach", new List<int> {1}, _mockDataSource);
-            //Getting the peak will force the approach to load a datatable
-            var peak = testApproach.GetPeak(_dateSettings, _dummyIntersection, 0);
-            Assert.AreEqual(450, peak);
-            
-            var newPeak = testApproach.GetPeak(_dateSettings, _dummyIntersection + 1, 0);
-            Assert.AreEqual(peak, newPeak);
-
-            testApproach.Invalidate();
-
-            //Provide a different intersection, simulates a change that in real application would get you different data
-            newPeak = testApproach.GetPeak(_dateSettings, _dummyIntersection + 1, 0); 
-            Assert.AreNotEqual(peak, newPeak);
-
-        }
-
-        [TestMethod]
         public void TestGetPeakOneDetector()
         {
             var testApproach = new Approach("Test Approach", new List<int> {1}, _mockDataSource);
