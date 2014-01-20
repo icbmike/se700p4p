@@ -189,18 +189,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void DateSettingsChanged(DateSettings newSettings)
         {
-
-            if (!newSettings.StartDate.Equals(_dateSettings.StartDate) || 
-                !newSettings.EndDate.Equals(_dateSettings.EndDate) || 
-                !newSettings.Interval.Equals(_dateSettings.Interval))
-            {
-                //InitializeGraph() is a time consuming operation.
-                //We dont want to do it if we don't have to.
-
-                _dateSettings = newSettings;
-
-                Render();
-            }
+            _dateSettings = newSettings;
+            Render();
         }
 
         public void SelectedReportChanged(string newSelection)

@@ -26,7 +26,7 @@ namespace ATTrafficAnalayzer.Views
         /// Constructor for a CSVExporter
         /// </summary>
         /// <param name="outputFilename">Filename of output csv file</param>
-        /// <param name="settings">SettingsTray for daterange and interval</param>
+        /// <param name="settings">DateSettings for daterange and interval</param>
         /// <param name="configName">Name of the config to be exported</param>
         /// <param name="AmPeakHour">...</param>
         /// <param name="PmPeakHour">...</param>

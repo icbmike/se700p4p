@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -83,21 +85,15 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         //Stuff changed
         public void DateSettingsChanged(DateSettings newDateSettings)
-        {
-            if (!_dateSettings.Equals(newDateSettings))
-            {
-                _dateSettings = newDateSettings;
-                Render();
-            }
+        {            
+            _dateSettings = newDateSettings;
+            Render();
         }
 
         public void SelectedReportChanged(string newSelection)
         {
-            if (!newSelection.Equals(_configName))
-            {
-                _configName = newSelection;
-                Render();
-            }
+            _configName = newSelection;
+            Render();
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;

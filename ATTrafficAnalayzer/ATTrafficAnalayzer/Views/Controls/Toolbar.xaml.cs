@@ -11,7 +11,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class Toolbar
     {
-        public DateSettings SettingsTray { get { return ToolbarPanel.DataContext as DateSettings; } }
+        public DateSettings DateSettings { get { return ToolbarPanel.DataContext as DateSettings; } }
 
         public enum View { Table, Graph }
         private static View _view = View.Table;
@@ -21,7 +21,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             InitializeComponent();
 
-            SettingsTray.StartDate = DataSourceFactory.GetDataSource().GetMostRecentImportedDate();
+            DateSettings.StartDate = DataSourceFactory.GetDataSource().GetMostRecentImportedDate();
 
             ModeChanged += SwitchToolbar;
         }
@@ -100,8 +100,8 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Toolbar Event Handlers
 
-        public DateTime StartDate { get { return SettingsTray.StartDate; } }
-        public DateTime EndDate { get { return SettingsTray.EndDate; } }
+        public DateTime StartDate { get { return DateSettings.StartDate; } }
+        public DateTime EndDate { get { return DateSettings.EndDate; } }
         public int Month { get { return StartDate.Month; } }
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventHandlerArgs args);
@@ -143,15 +143,15 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SettingsTray.StartDate.Equals(_prevStartDate) && SettingsTray.EndDate.Equals(_prevEndDate) && SettingsTray.Interval.Equals(_prevInterval))
+            if (DateSettings.StartDate.Equals(_prevStartDate) && DateSettings.EndDate.Equals(_prevEndDate) && DateSettings.Interval.Equals(_prevInterval))
             {
                 return;
             }
             else
             {
-                _prevStartDate = SettingsTray.StartDate;
-                _prevEndDate = SettingsTray.EndDate;
-                _prevInterval = SettingsTray.Interval;
+                _prevStartDate = DateSettings.StartDate;
+                _prevEndDate = DateSettings.EndDate;
+                _prevInterval = DateSettings.Interval;
             }
 
             if (sender.Equals(StartDatePicker))
@@ -172,7 +172,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
 
             if (DateRangeChanged != null)
-                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(SettingsTray.StartDate, SettingsTray.EndDate, SettingsTray.Interval));
+                DateRangeChanged(this, new DateRangeChangedEventHandlerArgs(DateSettings.StartDate, DateSettings.EndDate, DateSettings.Interval));
         }
 
         private void SummaryControls_SelectionChanged(object sender, SelectionChangedEventArgs e)
