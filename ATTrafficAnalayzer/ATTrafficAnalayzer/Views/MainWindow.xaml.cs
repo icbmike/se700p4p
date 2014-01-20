@@ -66,8 +66,6 @@ namespace ATTrafficAnalayzer.Views
         /// <param name="iView"></param>
         private void RemoveHandlers(IView iView)
         {
-            ReportBrowser.ReportChanged -= iView.ReportChangedHandler;
-            SettingsToolbar.DateRangeChanged -= iView.DateRangeChangedHandler;
             iView.VolumeDateCountsDontMatch -= OnVolumeDateCountsDontMatch;
         }
         /// <summary>
@@ -109,9 +107,6 @@ namespace ATTrafficAnalayzer.Views
             if (!prevMode.Equals(_mode) && ReportBrowser.GetSelectedConfiguration() != null)
                 ReportBrowser.ClearSelectedConfig();
 
-            //Get the selected configuration
-            var selectedConfiguration = ReportBrowser.GetSelectedConfiguration();
-
             //Detemine what mode we have changed to.
             switch (_mode)
             {
@@ -144,8 +139,6 @@ namespace ATTrafficAnalayzer.Views
                     {
                         //Create and display a new Graph
                         var graphScreen = new ReportGraph(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration(), dataSource);
-                        SettingsToolbar.DateRangeChanged += graphScreen.DateRangeChangedHandler;
-                        ReportBrowser.ReportChanged += graphScreen.ReportChangedHandler;
                         graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(graphScreen);
                     }
@@ -153,8 +146,6 @@ namespace ATTrafficAnalayzer.Views
                     {
                         //Create and display a new Table
                         var tableScreen = new ReportTable(SettingsToolbar.SettingsTray, ReportBrowser.GetSelectedConfiguration(), dataSource);
-                        SettingsToolbar.DateRangeChanged += tableScreen.DateRangeChangedHandler;
-                        ReportBrowser.ReportChanged += tableScreen.ReportChangedHandler;
                         tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                         ChangeScreen(tableScreen);
                     }
@@ -177,8 +168,6 @@ namespace ATTrafficAnalayzer.Views
                         //Else display a new Table
                         var summaryScreen = new SummaryTable(SettingsToolbar.SettingsTray,
                         ReportBrowser.GetSelectedConfiguration(), dataSource);
-                        SettingsToolbar.DateRangeChanged += summaryScreen.DateRangeChangedHandler;
-                        ReportBrowser.ReportChanged += summaryScreen.ReportChangedHandler;
                         ChangeScreen(summaryScreen);
                     }
                     break;
@@ -187,7 +176,6 @@ namespace ATTrafficAnalayzer.Views
                     //Display suspected faults
                     ReportBrowser.Visibility = Visibility.Collapsed;
                     var faultsScreen = new Faults(SettingsToolbar.SettingsTray, dataSource);
-                    SettingsToolbar.DateRangeChanged += faultsScreen.DateRangeChangedHandler;
                     faultsScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
                     ChangeScreen(faultsScreen);
                     break;
@@ -275,8 +263,12 @@ namespace ATTrafficAnalayzer.Views
         public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
         {
             //Run same code as when a configuration has been saved
-            if (!args.SelectionCleared && args.ReportName != null)
-                IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
+            if (args.SelectionCleared || args.ReportName == null) return;
+
+            IConfigScreen_ConfigurationSaved(this, new ConfigurationSavedEventArgs(args.ReportName));
+
+            var view = (ScreenContentControl.Content as IView);
+            if (view != null) view.SelectedReportChanged(args.ReportName);
         }
 
         /// <summary>
@@ -290,19 +282,17 @@ namespace ATTrafficAnalayzer.Views
             if (_mode.Equals(Mode.Report))
             {
                 var reportTableScreen = new ReportTable(SettingsToolbar.SettingsTray, args.Name, dataSource);
-                SettingsToolbar.DateRangeChanged += reportTableScreen.DateRangeChangedHandler;
-                ReportBrowser.ReportChanged += reportTableScreen.ReportChangedHandler;
                 ChangeScreen(reportTableScreen);
                 
             }
             else if (_mode.Equals(Mode.Summary))
             {
                 var summaryTableScreen = new SummaryTable(SettingsToolbar.SettingsTray, args.Name, dataSource);
-                SettingsToolbar.DateRangeChanged += summaryTableScreen.DateRangeChangedHandler;
-                ReportBrowser.ReportChanged += summaryTableScreen.ReportChangedHandler;
                 ChangeScreen(summaryTableScreen);
             }
         }
+
+        
 
         #endregion
 

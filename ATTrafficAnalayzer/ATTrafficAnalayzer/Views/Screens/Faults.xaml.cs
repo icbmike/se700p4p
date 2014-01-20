@@ -14,9 +14,8 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class Faults : IView, INotifyPropertyChanged
     {
+        private DateSettings _dateSettings;
         private readonly IDataSource _dataSource;
-        private DateTime _endDate;
-        private DateTime _startDate;
         private int _faultThreshold;
 
         /// <summary>
@@ -35,14 +34,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Constructor for this screen.
         /// </summary>
-        /// <param name="settings">A settings tray so that start date and end date can be retrieved on creation 
+        /// <param name="dateSettings">A dateSettings tray so that start date and end date can be retrieved on creation 
         /// TODO: replace with DateTimes
         /// 
         ///  </param>
-        public Faults(DateSettings settings, IDataSource dataSource)
+        public Faults(DateSettings dateSettings, IDataSource dataSource)
         {
-            _startDate = settings.StartDate;
-            _endDate = settings.EndDate;
+            _dateSettings = dateSettings;
             _dataSource = dataSource;
             DataContext = this;
             InitializeComponent();
@@ -55,10 +53,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            if (!_dataSource.VolumesExistForDateRange(_startDate, _endDate))
+            if (!_dataSource.VolumesExistForDateRange(_dateSettings.StartDate, _dateSettings.EndDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
-            var faults = _dataSource.GetSuspectedFaults(_startDate, _endDate, FaultThreshold);
+            var faults = _dataSource.GetSuspectedFaults(_dateSettings.StartDate, _dateSettings.EndDate, FaultThreshold);
             var transformedFaults = faults.Keys.ToDictionary(key => key, key => String.Join(", ", faults[key].Distinct().OrderBy(x => x)));
             FaultsDataGrid.ItemsSource = transformedFaults;
         }
@@ -73,12 +71,12 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="sender">The Toolbar</param>
         /// <param name="args">Event args containing the new start and end datetime objects</param>
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        /// <param name="newSettings"></param>
+        public void DateSettingsChanged(DateSettings newSettings)
         {
-            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate))
+            if (!newSettings.StartDate.Equals(_dateSettings.StartDate) || !newSettings.EndDate.Equals(_dateSettings.EndDate))
             {
-                _startDate = args.StartDate;
-                _endDate = args.EndDate;
+                _dateSettings = newSettings;
 
                 Render();
             }
@@ -88,9 +86,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        public void SelectedReportChanged(string newSelection)
         {
-            throw new NotImplementedException();
+            //Pass, we don't care
         }
 
         #endregion

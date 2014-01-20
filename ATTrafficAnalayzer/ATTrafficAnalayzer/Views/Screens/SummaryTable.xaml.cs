@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 
@@ -16,30 +13,27 @@ namespace ATTrafficAnalayzer.Views.Screens
     {
         private string _configName;
 
-        private IEnumerable<SummaryRow> _summaryConfig;
         private readonly IDataSource _dataSource;
-        private readonly DateSettings _settings;
-
-        private DateTime _startDate;
-        private DateTime _endDate;
+        private DateSettings _dateSettings;
+        private List<StatsTable> _statsTables;
         private bool _hasWeekends;
-
-        private int _amPeakHour = 8;
-        private int _pmPeakHour = 4;
 
         /// <summary>
         /// Constructor to display a summary table with the date range at the time of construction and the specified config
         /// </summary>
-        /// <param name="settings"></param>
+        /// <param name="dateSettings"></param>
         /// <param name="configName">Name of config to be displayed</param>
         /// <param name="dataSource">The source of the data</param>
-        public SummaryTable(DateSettings settings, string configName, IDataSource dataSource)
+        public SummaryTable(DateSettings dateSettings, string configName, IDataSource dataSource)
         {
             _configName = configName;
-            _settings = settings;
-            _startDate = _settings.StartDate;
-            _endDate = _settings.EndDate;
+            _dateSettings = dateSettings;
             _dataSource = dataSource;
+
+            _statsTables = new List<StatsTable>
+            {
+                new StatsTable(_dataSource, _dateSettings, _configName, "sample", (time, row) => time.Day)
+            };
             InitializeComponent();
 
             Render();
@@ -50,47 +44,32 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            _summaryConfig = _dataSource.GetSummaryConfig(_configName);
             ScreenTitle.Content = _configName;
 
             //Remove all previous tables
             StatsStackPanel.Children.Clear();
-
-            StatsStackPanel.Children.Add(new StatsTable(_dataSource, _settings, _summaryConfig, "sample", (time, row) => 0));
-            
  
+            _statsTables.ForEach(statsTable => StatsStackPanel.Children.Add(statsTable));
+
         }
 
-        #region Event Handlers
-
-        /// <summary>
-        /// Handler for when the date range changes
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void DateSettingsChanged(DateSettings newDateSettings)
         {
-            _startDate = _settings.StartDate;
-            _endDate = _settings.EndDate;
-
-            _amPeakHour = args.AmPeakHour;
-            _pmPeakHour = args.PmPeakHour;
-
+            _dateSettings = newDateSettings;
+            _statsTables.ForEach(table => table.DateSettingsChanged(newDateSettings));
+            
             Render();
         }
 
-        /// <summary>
-        /// Handler for when the selected report changes
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        public void SelectedReportChanged(string newSelection)
         {
-            if (!args.SelectionCleared)
+            if (newSelection != null)
             {
-                if (!_configName.Equals(args.ReportName))
+                if (!_configName.Equals(newSelection))
                 {
-                    _configName = args.ReportName;
+                    _configName = newSelection;
+
+                    _statsTables.ForEach(table => table.SelectedReportChanged(newSelection));
                     Render();
                 }
             }
@@ -98,7 +77,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
-        #endregion
 
         //Event handler for when weekends checkbox state changes
         private void WeekendsCheckbox_Checked(object sender, RoutedEventArgs e)

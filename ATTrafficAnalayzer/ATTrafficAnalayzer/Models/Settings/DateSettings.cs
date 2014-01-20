@@ -44,5 +44,29 @@ namespace ATTrafficAnalayzer.Models.Settings
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        protected bool Equals(DateSettings other)
+        {
+            return _startDate.Equals(other._startDate) && _endDate.Equals(other._endDate) && Interval == other.Interval;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((DateSettings) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = _startDate.GetHashCode();
+                hashCode = (hashCode*397) ^ _endDate.GetHashCode();
+                hashCode = (hashCode*397) ^ Interval;
+                return hashCode;
+            }
+        }
     }
 }

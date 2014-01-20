@@ -15,13 +15,13 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         private readonly Approach _approach;
         private readonly int _intersection;
-        private readonly DateSettings _settings;
+        private DateSettings _dateSettings;
 
-        public ApproachTable(Approach approach, int intersection, DateSettings settings)
+        public ApproachTable(Approach approach, int intersection, DateSettings dateSettings)
         {
             _approach = approach;
             _intersection = intersection;
-            _settings = settings;
+            _dateSettings = dateSettings;
 
             InitializeComponent();
             Render();
@@ -31,7 +31,7 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             //Display the table
             var grid = new GridView();
-            var dataTable = _approach.GetDataTable(_settings, _intersection, 0);
+            var dataTable = _approach.GetDataTable(_dateSettings, _intersection, 0);
             
             foreach (DataColumn col in dataTable.Columns)
             {
@@ -49,22 +49,22 @@ namespace ATTrafficAnalayzer.Views.Controls
             //Display the statistics
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Approach: [b]" + _approach.Name + "[/b]");
-            stringBuilder.AppendLine("Peak Volume: [b]" + _approach.GetPeak(_settings, _intersection, 0) + "[/b] Peak time: [b]" +
-                                     _approach.GetPeakTime(_settings, _intersection, 0).ToShortTimeString() + "[/b]");
-            stringBuilder.AppendLine("AM Peak: [b]" + _approach.GetAmPeak(_settings, _intersection, 0) + "[/b] AM Peak time: [b]" + _approach.GetAmPeakTime(_settings, _intersection, 0).ToShortTimeString() + "[/b]");
-            stringBuilder.AppendLine("PM Peak: [b]" + _approach.GetPmPeak(_settings, _intersection, 0) + "[/b] PM Peak time: [b]" + _approach.GetPmPeakTime(_settings, _intersection, 0).ToShortTimeString() + "[/b]");
-            stringBuilder.Append("Total volume: [b]" + _approach.GetTotal(_settings, _intersection, 0) + "[/b]");
+            stringBuilder.AppendLine("Peak Volume: [b]" + _approach.GetPeak(_dateSettings, _intersection, 0) + "[/b] Peak time: [b]" +
+                                     _approach.GetPeakTime(_dateSettings, _intersection, 0).ToShortTimeString() + "[/b]");
+            stringBuilder.AppendLine("AM Peak: [b]" + _approach.GetAmPeak(_dateSettings, _intersection, 0) + "[/b] AM Peak time: [b]" + _approach.GetAmPeakTime(_dateSettings, _intersection, 0).ToShortTimeString() + "[/b]");
+            stringBuilder.AppendLine("PM Peak: [b]" + _approach.GetPmPeak(_dateSettings, _intersection, 0) + "[/b] PM Peak time: [b]" + _approach.GetPmPeakTime(_dateSettings, _intersection, 0).ToShortTimeString() + "[/b]");
+            stringBuilder.Append("Total volume: [b]" + _approach.GetTotal(_dateSettings, _intersection, 0) + "[/b]");
             ApproachSummary.Html = stringBuilder.ToString();
         }
 
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void DateSettingsChanged(DateSettings newDateSettings)
         {
-            throw new System.NotImplementedException();
+           //Don't do anything, approach tables aren't recycled
         }
 
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        public void SelectedReportChanged(string newSelection)
         {
-            throw new System.NotImplementedException();
+            //Don't do anything, approach tables aren't recycled
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;

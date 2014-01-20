@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -19,23 +10,23 @@ using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
-
     /// <summary>
     /// Interaction logic for StatsTable.xaml
     /// </summary>
-    public partial class StatsTable :IView
+    public partial class StatsTable : IView
     {
         private readonly IDataSource _dataSource;
-        private readonly DateSettings _dateSettings;
-        private readonly IEnumerable<SummaryRow> _summaryConfig;
+        private DateSettings _dateSettings;
+        private string _configName;
         private readonly string _title;
         private readonly Func<DateTime, SummaryRow, int> _calculate;
 
-        public StatsTable(IDataSource dataSource, DateSettings dateSettings, IEnumerable<SummaryRow> summaryConfig, string title, Func<DateTime, SummaryRow, int> calculate)
+        public StatsTable(IDataSource dataSource, DateSettings dateSettings,
+            string configName, string title, Func<DateTime, SummaryRow, int> calculate)
         {
             _dataSource = dataSource;
             _dateSettings = dateSettings;
-            _summaryConfig = summaryConfig;
+            _configName = configName;
             _title = title;
             _calculate = calculate;
             InitializeComponent();
@@ -45,32 +36,70 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void Render()
         {
+            var summaryConfig = _dataSource.GetSummaryConfig(_configName);
             StatsSummary.Html = "[b]" + _title + "[/b]";
 
-            foreach (var summaryRow in _summaryConfig)
+            //Setup the grid
+            var grid = new GridView();
+            var dataTable = new DataTable();
+
+            //The date column
+            var dateColumn = dataTable.Columns.Add("Date");
+            grid.Columns.Add(new GridViewColumn
             {
-                for (var day = _dateSettings.StartDate; day < _dateSettings.EndDate; day = day.AddDays(1))
+                Header = dateColumn.ColumnName,
+                DisplayMemberBinding = new Binding(dateColumn.ColumnName),
+            });
+
+            //Each route column
+            foreach (var summaryRow in summaryConfig)
+            {
+                var routeColumn = dataTable.Columns.Add(summaryRow.RouteName);
+                grid.Columns.Add(new GridViewColumn
                 {
-                    Console.Write(_calculate(day, summaryRow));
-                    
+                    Header = routeColumn.ColumnName,
+                    DisplayMemberBinding = new Binding(routeColumn.ColumnName),
+                });
+            }
+
+            //Reapply the datatable to the grid/listview
+            StatsListView.View = grid;
+            StatsListView.ItemsSource = dataTable.DefaultView;
+
+
+            //Each day apply the calculation we were given
+            for (var day = _dateSettings.StartDate; day < _dateSettings.EndDate; day = day.AddDays(1))
+            {
+                var dataRow = dataTable.NewRow();
+                dataRow["Date"] = day.ToShortDateString();
+                foreach (var summaryRow in summaryConfig)
+                {
+                    var volume = _calculate(day, summaryRow);
+                    dataRow[summaryRow.RouteName] = volume;
                 }
-                Console.WriteLine();
+                dataTable.Rows.Add(dataRow);
             }
         }
 
-
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        //Stuff changed
+        public void DateSettingsChanged(DateSettings newDateSettings)
         {
-            throw new NotImplementedException();
+            if (!_dateSettings.Equals(newDateSettings))
+            {
+                _dateSettings = newDateSettings;
+                Render();
+            }
         }
 
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        public void SelectedReportChanged(string newSelection)
         {
-            throw new NotImplementedException();
+            if (!newSelection.Equals(_configName))
+            {
+                _configName = newSelection;
+                Render();
+            }
         }
 
         public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
-
-
 }

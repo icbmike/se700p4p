@@ -1,4 +1,5 @@
-﻿using ATTrafficAnalayzer.Views.Controls;
+﻿using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -14,10 +15,9 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public interface IView
     {
-        void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args);
-        void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args);
+        void DateSettingsChanged(DateSettings newDateSettings);
+        void SelectedReportChanged(string newSelection);
         
-
         event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
     }
 }

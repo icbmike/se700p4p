@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views.Controls;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Research.DynamicDataDisplay.PointMarkers;
@@ -20,25 +20,22 @@ namespace ATTrafficAnalayzer.Views.Screens
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black, Brushes.DarkOrange };
 
-        private string _configName;
-        private DateTime _startDate;
-        private DateTime _endDate;
-        private int _interval;
+        private DateSettings _dateSettings;
         private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
-        private IDataSource _dataSource;
+        private readonly IDataSource _dataSource;
+        private Configuration _configuration;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="settings"> Lets the Graph screen get the start and end date at the time of construction</param>
+        /// <param name="dateSettings"> Lets the Graph screen get the start and end date at the time of construction</param>
         /// <param name="configName">The name of the report to display</param>
-        public ReportGraph(DateSettings settings, string configName, IDataSource dataSource)
+        public ReportGraph(DateSettings dateSettings, string configName, IDataSource dataSource)
         {
-            _startDate = settings.StartDate;
-            _endDate = settings.EndDate;
-            _interval = settings.Interval;
-            _configName = configName;
+            _dateSettings = dateSettings;
             _dataSource = dataSource;
+            _configuration = _dataSource.GetConfiguration(configName);
+
             InitializeComponent();
 
             //Remove mouse and keyboard navigation and hide the legend.
@@ -55,23 +52,22 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
-            var configuation = _dataSource.GetConfiguration(_configName);
 
-            if (!_dataSource.VolumesExistForDateRange(_startDate, _endDate))
+            if (!_dataSource.VolumesExistForDateRange(_dateSettings.StartDate, _dateSettings.EndDate))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
             }
 
-            if (configuation == null)
+            if (_configuration == null)
             {
                 MessageBox.Show("Construct your new report or select a report from the list on the left");
                 return;
             }
 
-            ScreenTitle.Content = _configName;
+            ScreenTitle.Content = _configuration.Name;
 
-            var intersection = configuation.Intersection;
+            var intersection = _configuration.Intersection;
 
             //Clear anything that's already on the graph
             foreach (var graph in _series)
@@ -87,9 +83,9 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             // List dates
             var dateList = new List<DateTime>();
-            for (var date = _startDate;
-                date < _endDate;
-                date = date.AddMinutes(_interval))
+            for (var date = _dateSettings.StartDate;
+                date < _dateSettings.EndDate;
+                date = date.AddMinutes(_dateSettings.Interval))
                 dateList.Add(date);
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
@@ -97,29 +93,29 @@ namespace ATTrafficAnalayzer.Views.Screens
             
             var brushCounter = 0;
             var countsMatch = true;
-            foreach (var approach in configuation.Approaches)
+            foreach (var approach in _configuration.Approaches)
             {
                 //Get volume info from db
-                var approachVolumes = approach.GetVolumesList(intersection, _startDate, _endDate);
+                var approachVolumes = approach.GetVolumesList(intersection, _dateSettings.StartDate, _dateSettings.EndDate);
                 for (int i=0; i < approachVolumes.Count(); i++) {
-                    if (approachVolumes[i] >= 150 && _interval == 5)
+                    if (approachVolumes[i] >= 150 && _dateSettings.Interval == 5)
                         approachVolumes[i] = 150;
                 }                                           
 
                 //Check that we actually have volumes that we need
-                if (approachVolumes.Count / (_interval / 5) != dateList.Count)
+                if (approachVolumes.Count / (_dateSettings.Interval / 5) != dateList.Count)
                 {
                     countsMatch = false;
                     break;
                 }
                 //Sum volumes based on the interval
                 var compressedVolumes = new int[dateList.Count];
-                var valuesPerCell = _interval / 5;
+                var valuesPerCell = _dateSettings.Interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
                 {
                     var cellValue = 0;
 
-                    for (var i = 0; i < _interval / 5; i++)
+                    for (var i = 0; i < _dateSettings.Interval / 5; i++)
                     {
                         cellValue += approachVolumes[i + valuesPerCell * j];
                     }
@@ -191,31 +187,28 @@ namespace ATTrafficAnalayzer.Views.Screens
             Plotter.Legend.Visibility = Visibility.Collapsed;
         }
 
-        public void DateRangeChangedHandler(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
+        public void DateSettingsChanged(DateSettings newSettings)
         {
 
-            if (!args.StartDate.Equals(_startDate) || !args.EndDate.Equals(_endDate) || !args.Interval.Equals(_interval))
+            if (!newSettings.StartDate.Equals(_dateSettings.StartDate) || 
+                !newSettings.EndDate.Equals(_dateSettings.EndDate) || 
+                !newSettings.Interval.Equals(_dateSettings.Interval))
             {
                 //InitializeGraph() is a time consuming operation.
                 //We dont want to do it if we don't have to.
 
-                _startDate = args.StartDate;
-                _endDate = args.EndDate;
-                _interval = args.Interval;
+                _dateSettings = newSettings;
 
                 Render();
             }
         }
 
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
+        public void SelectedReportChanged(string newSelection)
         {
-            if (!args.SelectionCleared)
+            if (newSelection != null && !_configuration.Name.Equals(newSelection))
             {
-                if (!_configName.Equals(args.ReportName))
-                {
-                    _configName = args.ReportName;
-                    Render();
-                }
+                _configuration = _dataSource.GetConfiguration(newSelection);
+                Render();
             }
         }
 
