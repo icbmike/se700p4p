@@ -15,7 +15,6 @@ namespace ATTrafficAnalayzer.Views.Controls
     public partial class ReportBrowser
     {
         private readonly IDataSource _dataSource;
-        private readonly DataTableHelper _dataTableHelper = DataTableHelper.GetDataTableHelper();
         private bool _hasModeChanged;
         private Mode _mode;
         private bool _selectionCleared;

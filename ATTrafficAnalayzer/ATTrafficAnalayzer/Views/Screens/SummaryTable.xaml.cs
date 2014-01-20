@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Documents;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -17,7 +18,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private IEnumerable<SummaryRow> _summaryConfig;
         private readonly IDataSource _dataSource;
-        private readonly DataTableHelper _dtHelper = DataTableHelper.GetDataTableHelper();
         private readonly DateSettings _settings;
 
         private DateTime _startDate;
@@ -32,6 +32,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="configName">Name of config to be displayed</param>
+        /// <param name="dataSource">The source of the data</param>
         public SummaryTable(DateSettings settings, string configName, IDataSource dataSource)
         {
             _configName = configName;
@@ -40,6 +41,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _endDate = _settings.EndDate;
             _dataSource = dataSource;
             InitializeComponent();
+
             Render();
         }
 
@@ -52,32 +54,11 @@ namespace ATTrafficAnalayzer.Views.Screens
             ScreenTitle.Content = _configName;
 
             //Remove all previous tables
-            ApproachesStackPanel.Children.Clear();
+            StatsStackPanel.Children.Clear();
 
-//            //Create the AM Peak table
-//            var amPeakApproachDisplay = new ApproachTable
-//            {
-//                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.AmPeakCalculator(_amPeakHour), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
-//
-//            };
-//            amPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("AM Peak Hour Volumes")));
-//            ApproachesStackPanel.Children.Add(amPeakApproachDisplay);
-//
-//            //Create the PM Peak table
-//            var pmPeakApproachDisplay = new ApproachTable
-//            {
-//                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.PmPeakCalculator(_pmPeakHour), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
-//            };
-//            pmPeakApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("PM Peak Hour Volumes")));
-//            ApproachesStackPanel.Children.Add(pmPeakApproachDisplay);
-//
-//            //Creat the totals table
-//            var sumApproachDisplay = new ApproachTable
-//            {
-//                ApproachDataGrid = { ItemsSource = _dtHelper.GetSummaryDataTable(new ATTrafficAnalayzer.Models.Configuration.DataTableHelper.SumCalculator(), _startDate, _endDate, _summaryConfig, _hasWeekends).AsDataView() }
-//            };
-//            sumApproachDisplay.ApproachSummary.Inlines.Add(new Bold(new Run("Daily Volume Totals")));
-//            ApproachesStackPanel.Children.Add(sumApproachDisplay);
+            StatsStackPanel.Children.Add(new StatsTable(_dataSource, _settings, _summaryConfig, "sample", (time, row) => 0));
+            
+ 
         }
 
         #region Event Handlers

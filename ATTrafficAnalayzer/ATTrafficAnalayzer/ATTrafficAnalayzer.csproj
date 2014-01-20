@@ -123,7 +123,6 @@
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
     <Compile Include="Models\DatabaseMetrics.cs" />
-    <Compile Include="Models\ReportConfiguration\ReportsDataTableHelper.cs" />
     <Compile Include="Models\ReportConfiguration\SummaryRow.cs" />
     <Compile Include="Models\DataSourceFactory.cs" />
     <Compile Include="Models\DuplicatePolicy.cs" />
@@ -162,6 +161,9 @@
     <Compile Include="Views\Controls\Parago\ProgressDialog\ProgressDialogSettings.cs" />
     <Compile Include="Models\Volume\VolumeRecordFactory.cs" />
     <Compile Include="Models\Volume\VolumeRecordType.cs" />
+    <Compile Include="Views\Controls\StatsTable.xaml.cs">
+      <DependentUpon>StatsTable.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\Toolbar.xaml.cs">
       <DependentUpon>Toolbar.xaml</DependentUpon>
     </Compile>
@@ -206,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\ApproachTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\StatsTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
