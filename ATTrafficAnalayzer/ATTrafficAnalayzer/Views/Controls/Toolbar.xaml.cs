@@ -13,7 +13,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         public DateSettings DateSettings { get { return ToolbarPanel.DataContext as DateSettings; } }
 
-        public enum View { Table, Graph }
+        public enum View { Table, Graph, None }
         private static View _view = View.Table;
         private static Mode _mode = Mode.Home;
 
@@ -32,20 +32,16 @@ namespace ATTrafficAnalayzer.Views.Controls
         public event ModeChangedEventHandler ModeChanged;
         public class ModeChangedEventHandlerArgs
         {
-            public ModeChangedEventHandlerArgs(Mode mode, View view)
-            {
-                _mode = mode;
-                _view = view;
-            }
-
             public ModeChangedEventHandlerArgs(View view)
             {
                 _view = view;
+                _mode = Mode.Report;
             }
 
             public ModeChangedEventHandlerArgs(Mode mode)
             {
                 _mode = mode;
+                _view = View.None;
             }
 
             public Mode Mode { get { return _mode; } }

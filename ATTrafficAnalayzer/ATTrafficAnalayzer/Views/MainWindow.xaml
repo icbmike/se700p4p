@@ -72,6 +72,7 @@
         <controls:ReportBrowser x:Name="ReportBrowser"
                                 EditConfigurationEvent="ReportBrowser_OnEditConfigurationEvent"
                                 Visibility="Collapsed"
+                                ReportChanged="ReportChangedHandler"
                                 ExportEvent="ReportBrowser_OnExportEvent"
  />
 

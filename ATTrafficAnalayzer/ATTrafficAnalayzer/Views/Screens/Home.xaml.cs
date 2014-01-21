@@ -11,8 +11,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class Home
     {
-
-        IDataSource _dataSource;
+        readonly IDataSource _dataSource;
 
         #region events
 
@@ -90,8 +89,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             bw.RunWorkerCompleted += WorkerCompletedHandler;
             bw.RunWorkerAsync();
         }
-
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
 
         /// <summary>
         /// Delete button click handler, does long running call and then rerenders list. TODO: do the deletion in BackgroundWorker

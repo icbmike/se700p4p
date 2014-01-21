@@ -107,12 +107,14 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (!_hasModeChanged)
                 if (_selectionCleared)
                 {
-                    ReportChanged(this, new SelectedReportChangeEventHandlerArgs(_selectionCleared));
+                    if (ReportChanged != null)
+                        ReportChanged(this, new SelectedReportChangeEventHandlerArgs(_selectionCleared));
                     _selectionCleared = false;
                 }
                 else
                 {
-                    ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
+                    if (ReportChanged != null)
+                        ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
                 }
 
             _hasModeChanged = false;
