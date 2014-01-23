@@ -1,11 +1,14 @@
 ﻿using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 using Amib.Threading;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using System;
+using Action = Amib.Threading.Action;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -63,21 +66,14 @@ namespace ATTrafficAnalayzer.Views.Screens
             stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(_dateSettings) + "[/b]");
 
             OverallSummaryTextBlock.Html = stringBuilder.ToString();
-            var smartThreadPool = new SmartThreadPool();
-            _configuration.Approaches.ForEach(approach => smartThreadPool.QueueWorkItem(CreateApproachTable, approach, PostExecuteWorkItemCallback));
 
-        }
+            
+            _configuration.Approaches.ForEach(approach =>
+            {
+                var approachTable = new ApproachTable(approach, _configuration.Intersection, _dateSettings);
+                ApproachesStackPanel.Children.Add(approachTable);
+            });
 
-        private void PostExecuteWorkItemCallback(IWorkItemResult wir)
-        {
-            var approachTable = wir.GetResult() as ApproachTable;
-            ApproachesStackPanel.Children.Add(approachTable);
-        }
-
-        private object CreateApproachTable(object parameter)
-        {
-            var approach = parameter as Approach;
-            return new ApproachTable(approach, _configuration.Intersection, _dateSettings);
         }
 
         /// <summary>
