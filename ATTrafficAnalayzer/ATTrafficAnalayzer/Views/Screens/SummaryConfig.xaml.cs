@@ -86,7 +86,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
             if (configName.Equals(""))
             {
-                MessageBox.Show("Summary Name is empty");
+                MessageBox.Show("Summary ApproachName is empty");
                 return;
             }
 

@@ -814,7 +814,7 @@ namespace ATTrafficAnalayzer.Models
                         using (var query = conn.CreateCommand())
                         {
                             query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);";
-                            query.Parameters.AddWithValue("@approach", approach.Name);
+                            query.Parameters.AddWithValue("@approach", approach.ApproachName);
                             query.ExecuteNonQuery();
 
                             query.CommandText = "SELECT last_insert_rowid();";
@@ -954,7 +954,7 @@ namespace ATTrafficAnalayzer.Models
         /// <summary>
         ///     Get the summary configuration to create a report
         /// </summary>
-        /// <param name="name">Name of summary</param>
+        /// <param name="name">ApproachName of summary</param>
         /// <returns>Rows in the Summary</returns>
         public IEnumerable<SummaryRow> GetSummaryConfig(string name)
         {
@@ -985,7 +985,7 @@ namespace ATTrafficAnalayzer.Models
         }
 
         /// <summary>
-        ///     Name of all monthly summaries
+        ///     ApproachName of all monthly summaries
         /// </summary>
         /// <returns>List of summary names</returns>
         public List<string> GetSummaryNames()

@@ -6,9 +6,10 @@
              xmlns:qz="http://www.quickzip.org/UserControls"
              mc:Ignorable="d"
              d:DesignHeight="200"
-             d:DesignWidth="1680">
+             d:DesignWidth="1680"
+             Loaded="ApproachTableOnLoaded">
     
-    <Border BorderBrush="Black"
+        <Border BorderBrush="Black"
             BorderThickness="1"
             Margin="20,15,20,5"
             Padding="5"
@@ -17,7 +18,8 @@
 
             <qz:HtmlTextBlock x:Name="ApproachSummary"
                    Visibility="Visible"
-                   IsEnabled="False">
+                   IsEnabled="False"
+                              Html="{Binding ApproachName}">
                 
             </qz:HtmlTextBlock>
 
@@ -27,12 +29,7 @@
                   FontSize="12"
                   Width="Auto"
                   HorizontalContentAlignment="Stretch"
-                  >
-                <ListView.View>
-                    <GridView 
-                        />
-                </ListView.View>
-            </ListView>
+                  />
 
         </StackPanel>
     </Border>

@@ -21,9 +21,9 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         ///     Creates a summary row
         /// </summary>
-        /// <param name="routeName">Name of the summary</param>
-        /// <param name="intersectionIn">Name of the inbound intersection</param>
-        /// <param name="intersectionOut">Name of the outbound intersection</param>
+        /// <param name="routeName">ApproachName of the summary</param>
+        /// <param name="intersectionIn">ApproachName of the inbound intersection</param>
+        /// <param name="intersectionOut">ApproachName of the outbound intersection</param>
         /// <param name="detectorsIn">List of inbound detectors</param>
         /// <param name="detectorsOut">List of outbound detectors</param>
         /// <param name="dividingFactorIn">Dividing factor inbound</param>

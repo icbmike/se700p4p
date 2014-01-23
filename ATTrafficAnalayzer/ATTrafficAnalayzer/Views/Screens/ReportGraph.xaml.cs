@@ -130,11 +130,11 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Add the series to the graph
                _series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
                   new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
-                  new PenDescription(approach.Name)));
+                  new PenDescription(approach.ApproachName)));
 
                //Add toggle checkboxes
                 var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
-                stackPanel.Children.Add( new Label {Content = approach.Name, Margin = new Thickness(0, -5, 0, 0) });
+                stackPanel.Children.Add( new Label {Content = approach.ApproachName, Margin = new Thickness(0, -5, 0, 0) });
                 stackPanel.Children.Add( new Border{Background = SeriesColours[(brushCounter)%SeriesColours.Count()], Height = 15, Width = 15, CornerRadius = new CornerRadius(5)});
                 
                 var checkbox = new CheckBox

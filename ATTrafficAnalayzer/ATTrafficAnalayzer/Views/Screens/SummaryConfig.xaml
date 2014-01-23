@@ -52,7 +52,7 @@
                  >
             <DataGrid.Columns>
                 <DataGridTextColumn ClipboardContentBinding="{x:Null}"
-                                    Header="Route Name"
+                                    Header="Route ApproachName"
                                     Binding="{Binding RouteName}" />
                 <DataGridComboBoxColumn Header="Inbound Intersection"
                                         SelectedValueBinding="{Binding SelectedIntersectionIn}"

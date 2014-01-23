@@ -158,7 +158,7 @@ namespace ATTrafficAnalayzer.Annotations
   ///   {}
   ///
   ///   private string _name;
-  ///   public string Name
+  ///   public string ApproachName
   ///   {
   ///     get { return _name; }
   ///     set

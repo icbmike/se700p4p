@@ -19,7 +19,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         ///     Creates a report object
         /// </summary>
-        /// <param name="name">Name of the report</param>
+        /// <param name="name">ApproachName of the report</param>
         /// <param name="intersection">Intersection of the report</param>
         /// <param name="approaches">List of approaches contained in the report</param>
         /// <param name="dataSource"></param>
@@ -44,7 +44,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add("Route Name", typeof(string));
+            dataTable.Columns.Add("Route ApproachName", typeof(string));
             dataTable.Columns.Add("Inbound Intersections", typeof(string));
             dataTable.Columns.Add("Inbound Detectors", typeof(string));
             dataTable.Columns.Add("Inbound Dividing Factor", typeof(string));
@@ -55,7 +55,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             foreach (var app in Approaches)
             {
                 var newRow = dataTable.NewRow();
-                newRow["Route Name"] = app.Name;
+                newRow["Route ApproachName"] = app.ApproachName;
                 newRow["Inbound Intersections"] = Intersection;
                 newRow["Inbound Detectors"] = string.Join(", ", app.Detectors);
                 newRow["Inbound Dividing Factor"] = "";

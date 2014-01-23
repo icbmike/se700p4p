@@ -265,7 +265,7 @@ namespace ATTrafficAnalayzer.Models
                     using (var query = conn.CreateCommand())
                     {
                         query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);";
-                        query.Parameters.AddWithValue("@approach", approach.Name);
+                        query.Parameters.AddWithValue("@approach", approach.ApproachName);
                         query.ExecuteNonQuery();
 
                         query.CommandText = "SELECT CAST(@@Identity AS INT) as ID;";

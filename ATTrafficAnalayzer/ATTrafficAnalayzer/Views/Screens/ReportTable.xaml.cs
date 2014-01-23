@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -8,6 +9,7 @@ using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using System;
+using Microsoft.Research.DynamicDataDisplay;
 using Action = Amib.Threading.Action;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -17,12 +19,15 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportTable : IView
     {
-        private DateSettings _dateSettings;
+        public DateSettings DateSettings { get; set; }
+        public int Intersection { get { return _configuration.Intersection; }  }
      
         private Configuration _configuration;
 
         readonly IDataSource _dataSource;
 
+
+        public ObservableCollection<Approach> Approaches { get; set; }
         /// <summary>
         /// Constructor create a component displaying the specified config
         /// </summary>
@@ -33,8 +38,12 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _dataSource = dataSource;
             _configuration = _dataSource.GetConfiguration(configName);
-            _dateSettings = dateSettings;
-           
+            DateSettings = dateSettings;
+
+            Approaches = new ObservableCollection<Approach>();
+            Approaches.AddMany(_configuration.Approaches);
+            DataContext = this;
+            
             InitializeComponent();
 
             Render();
@@ -48,31 +57,23 @@ namespace ATTrafficAnalayzer.Views.Screens
             ScreenTitle.Content = _configuration.Name;
 
             //Remove all exisitng approaches!
-            ApproachesStackPanel.Children.Clear();
             OverallSummaryTextBlock.Inlines.Clear();
 
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Busiest Approach: ");
-            stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(_dateSettings).Name + "[/b]");
-
-            stringBuilder.Append("Busiest AM Hour: ");
-            stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(_dateSettings).ToShortTimeString() + "[/b]");
-            stringBuilder.Append(" with volume: ");
-            stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(_dateSettings) + "[/b]");
-
-            stringBuilder.Append("Busiest PM Hour: ");
-            stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(_dateSettings).ToShortTimeString() + "[/b]");
-            stringBuilder.Append(" with volume: ");
-            stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(_dateSettings) + "[/b]");
-
-            OverallSummaryTextBlock.Html = stringBuilder.ToString();
-
-            
-            _configuration.Approaches.ForEach(approach =>
-            {
-                var approachTable = new ApproachTable(approach, _configuration.Intersection, _dateSettings);
-                ApproachesStackPanel.Children.Add(approachTable);
-            });
+//            var stringBuilder = new StringBuilder();
+//            stringBuilder.Append("Busiest Approach: ");
+//            stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(DateSettings).ApproachName + "[/b]");
+//
+//            stringBuilder.Append("Busiest AM Hour: ");
+//            stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+//            stringBuilder.Append(" with volume: ");
+//            stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(DateSettings) + "[/b]");
+//
+//            stringBuilder.Append("Busiest PM Hour: ");
+//            stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+//            stringBuilder.Append(" with volume: ");
+//            stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(DateSettings) + "[/b]");
+//
+//            OverallSummaryTextBlock.Html = stringBuilder.ToString();
 
         }
 
@@ -83,9 +84,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="args"></param>
         public void DateSettingsChanged(DateSettings newSettings)
         {
-            if (!newSettings.StartDate.Equals(_dateSettings.StartDate) || !newSettings.EndDate.Equals(_dateSettings.EndDate) || !newSettings.Interval.Equals(_dateSettings.Interval))
+            if (!newSettings.StartDate.Equals(DateSettings.StartDate) || !newSettings.EndDate.Equals(DateSettings.EndDate) || !newSettings.Interval.Equals(DateSettings.Interval))
             {
-                _dateSettings = newSettings;
+                DateSettings = newSettings;
                 Render();
             }
         }

@@ -22,7 +22,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// Constructor to display a summary table with the date range at the time of construction and the specified config
         /// </summary>
         /// <param name="dateSettings"></param>
-        /// <param name="configName">Name of config to be displayed</param>
+        /// <param name="configName">ApproachName of config to be displayed</param>
         /// <param name="dataSource">The source of the data</param>
         public SummaryTable(DateSettings dateSettings, string configName, IDataSource dataSource)
         {
