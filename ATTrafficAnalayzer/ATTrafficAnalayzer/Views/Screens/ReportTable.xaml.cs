@@ -1,16 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using Amib.Threading;
+using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views.Controls;
-using System;
-using Microsoft.Research.DynamicDataDisplay;
-using Action = Amib.Threading.Action;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -41,10 +35,26 @@ namespace ATTrafficAnalayzer.Views.Screens
             DateSettings = dateSettings;
 
             Approaches = new ObservableCollection<Approach>();
-            Approaches.AddMany(_configuration.Approaches);
+           
             DataContext = this;
-            
+            Loaded += ReportTable_Loaded;
             InitializeComponent();
+
+        }
+
+        private void ReportTable_Loaded(object sender, RoutedEventArgs e)
+        {
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+            var tasks = new List<Task>();
+            foreach (var approach in _configuration.Approaches)
+            {
+                tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Intersection, 0)));
+            }
+            Task.Factory.ContinueWhenAll(tasks.ToArray(), completedTasks =>
+            {
+               //
+            }).ContinueWith(task => _configuration.Approaches.ForEach(Approaches.Add), scheduler);
 
             Render();
         }

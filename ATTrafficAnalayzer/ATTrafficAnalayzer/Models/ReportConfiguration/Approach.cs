@@ -302,5 +302,10 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             }
             return _pmPeakTime;
         }
+
+        public void LoadDataTable(DateSettings dateSettings, int intersection, int day)
+        {
+            GetDataTable(dateSettings, intersection, day);
+        }
     }
 }
