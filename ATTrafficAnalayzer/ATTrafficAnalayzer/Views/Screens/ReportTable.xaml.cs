@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -45,12 +46,12 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void ReportTable_Loaded(object sender, RoutedEventArgs e)
         {
             var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
             var tasks = new List<Task>();
             foreach (var approach in _configuration.Approaches)
             {
                 tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Intersection, 0)));
             }
+
             Task.Factory.ContinueWhenAll(tasks.ToArray(), completedTasks =>
             {
                //
