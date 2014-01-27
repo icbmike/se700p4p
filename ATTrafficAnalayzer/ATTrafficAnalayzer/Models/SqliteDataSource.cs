@@ -714,6 +714,7 @@ namespace ATTrafficAnalayzer.Models
                             var currentApproach = new Approach(reader.GetString(2), new List<int>(), this);
                             approaches.Add(currentApproach);
                             currentApproach.Detectors.Add((reader.GetByte(3)));
+                            approachId = reader.GetInt32(1);
 
                             while (reader.Read())
                             {
