@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ATTrafficAnalayzer.Models;
@@ -45,17 +46,9 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void ReportTable_Loaded(object sender, RoutedEventArgs e)
         {
-            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            var tasks = new List<Task>();
-            foreach (var approach in _configuration.Approaches)
-            {
-                tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Intersection, 0)));
-            }
+            
 
-            Task.Factory.ContinueWhenAll(tasks.ToArray(), completedTasks =>
-            {
-               //
-            }).ContinueWith(task => _configuration.Approaches.ForEach(Approaches.Add), scheduler);
+
 
             Render();
         }
@@ -67,25 +60,39 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             ScreenTitle.Content = _configuration.Name;
 
-            //Remove all exisitng approaches!
-            OverallSummaryTextBlock.Inlines.Clear();
+            //Load the data for approaches using Task magic
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var tasks = new List<Task>();
+            foreach (var approach in _configuration.Approaches)
+            {
+                tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Intersection, 0)));
+            }
+            Task.Factory.ContinueWhenAll(tasks.ToArray(), completedTasks =>
+            {
+                //We don't care, this is just a synchronization point that lets us add the approaches in order
+            }).ContinueWith(task =>
+            {
+                _configuration.Approaches.ForEach(approach => Approaches.Add(approach)); 
 
-//            var stringBuilder = new StringBuilder();
-//            stringBuilder.Append("Busiest Approach: ");
-//            stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(DateSettings).ApproachName + "[/b]");
-//
-//            stringBuilder.Append("Busiest AM Hour: ");
-//            stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
-//            stringBuilder.Append(" with volume: ");
-//            stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(DateSettings) + "[/b]");
-//
-//            stringBuilder.Append("Busiest PM Hour: ");
-//            stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
-//            stringBuilder.Append(" with volume: ");
-//            stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(DateSettings) + "[/b]");
-//
-//            OverallSummaryTextBlock.Html = stringBuilder.ToString();
+                //Overall deets
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append("Busiest Approach: ");
+                stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(DateSettings).ApproachName + "[/b]");
 
+                stringBuilder.Append("Busiest AM Hour: ");
+                stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+                stringBuilder.Append(" with volume: ");
+                stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(DateSettings) + "[/b]");
+
+                stringBuilder.Append("Busiest PM Hour: ");
+                stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+                stringBuilder.Append(" with volume: ");
+                stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(DateSettings) + "[/b]");
+
+                OverallSummaryTextBlock.Html = stringBuilder.ToString();
+                
+
+            }, scheduler);
         }
 
         /// <summary>
