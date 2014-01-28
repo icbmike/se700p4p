@@ -2,7 +2,6 @@
         xmlns:ui="clr-namespace:ATTrafficAnalayzer.Views.Controls.Parago"
         Height="90"
         Width="300"
-        Title="ProgressDialog Test"
         FontFamily="Segoe UI"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"

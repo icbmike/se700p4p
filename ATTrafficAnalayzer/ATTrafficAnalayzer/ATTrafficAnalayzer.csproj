@@ -359,10 +359,6 @@
       <Project>{8e67c36f-4403-4724-96d4-af6e05744688}</Project>
       <Name>QuickZip.UserControls.HtmlTextBlock</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SmartThreadPool\SmartThreadPool.csproj">
-      <Project>{74d4c33f-7cc8-4b2a-a7df-d8b6e63b6ebd}</Project>
-      <Name>SmartThreadPool</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

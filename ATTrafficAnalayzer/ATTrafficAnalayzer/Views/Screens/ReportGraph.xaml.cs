@@ -42,6 +42,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             _series = new List<LineAndMarker<MarkerPointsGraph>>();
             Plotter.Children.Remove(Plotter.KeyboardNavigation);
             Plotter.Children.Remove(Plotter.MouseNavigation);
+            Plotter.Children.Remove(Plotter.DefaultContextMenu);
             Plotter.Legend.Visibility = Visibility.Collapsed;
 
             Render();
