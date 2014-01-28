@@ -27,6 +27,31 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         public List<int> Detectors { get; set; }
         public int Id { get; set; }
 
+        public int TotalVolume
+        {
+            get { return _approachTotal; }
+        }
+
+        public int AMPeakVolume
+        {
+            get { return _amPeak; }
+        }
+
+        public int PMPeakVolume
+        {
+            get { return _pmPeak; }
+        }
+
+        public DateTime AMPeakTime
+        {
+            get { return _amPeakTime; }
+        }
+
+        public DateTime PMPeakTime
+        {
+            get { return _pmPeakTime; }
+        }
+
         /// <summary>
         ///     Creates the approach instance
         /// </summary>
@@ -139,7 +164,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 {
                     var total = CalculateColumnTotal(approachVolumes, j, 12);
                     totalsRow[j + 1] = total;
-                    _approachTotal += total;
+                    _approachTotal = TotalVolume + total;
                     if (j < limit/2)
                         AmPeak.CheckIfMax(total, j + " hrs");
                     else
@@ -193,14 +218,15 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 var item = _dataTable.Rows[_dataTable.Rows.Count - 1].ItemArray[i];
                 sum += int.Parse(item as string);
             }
+            _approachTotal = sum;
             return sum;
         }
 
         public int GetPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1) GetAmPeak(settings, intersection, day, limit, offset);
-            if (_pmPeak == -1) GetPmPeak(settings, intersection, day, limit, offset);
-            return Math.Max(_amPeak, _pmPeak);
+            if (AMPeakVolume == -1) GetAmPeak(settings, intersection, day, limit, offset);
+            if (PMPeakVolume == -1) GetPmPeak(settings, intersection, day, limit, offset);
+            return Math.Max(AMPeakVolume, PMPeakVolume);
         }
 
         private void Invalidate()
@@ -212,7 +238,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public int GetAmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1)
+            if (AMPeakVolume == -1)
             {
                 if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
                 var max = -1;
@@ -242,12 +268,12 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 _amPeak = max;
                 
             }
-            return _amPeak;
+            return AMPeakVolume;
         }
 
         public int GetPmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_pmPeak == -1)
+            if (PMPeakVolume == -1)
             {
                 if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
                 var max = 0;
@@ -274,38 +300,41 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 _pmPeak = max;
 
             }
-            return _pmPeak;
+            return PMPeakVolume;
         }
 
         public DateTime GetPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1) GetAmPeak(settings, intersection, day, limit, offset);
-            if (_pmPeak == -1) GetPmPeak(settings, intersection, day, limit, offset);
-            if (_amPeak > _pmPeak) return _amPeakTime;
-            else return _pmPeakTime;
+            if (AMPeakVolume == -1) GetAmPeak(settings, intersection, day, limit, offset);
+            if (PMPeakVolume == -1) GetPmPeak(settings, intersection, day, limit, offset);
+            if (AMPeakVolume > PMPeakVolume) return AMPeakTime;
+            else return PMPeakTime;
         }
 
         public DateTime GetAmPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1)
+            if (AMPeakVolume == -1)
             {
                 GetAmPeak(settings, intersection, day, limit, offset);
             }
-            return _amPeakTime;
+            return AMPeakTime;
         }
 
         public DateTime GetPmPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_pmPeak == -1)
+            if (PMPeakVolume == -1)
             {
                 GetPmPeak(settings, intersection, day, limit, offset);
             }
-            return _pmPeakTime;
+            return PMPeakTime;
         }
 
         public void LoadDataTable(DateSettings dateSettings, int intersection, int day)
         {
             GetDataTable(dateSettings, intersection, day);
+            GetAmPeakTime(dateSettings, intersection, day);
+            GetPmPeakTime(dateSettings, intersection, day);
+            GetTotal(dateSettings, intersection, day);
         }
     }
 }

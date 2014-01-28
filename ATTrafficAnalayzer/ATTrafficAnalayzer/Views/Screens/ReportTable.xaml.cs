@@ -58,6 +58,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
+            OverallSummaryBorder.Visibility = Visibility.Hidden;
+            
             ScreenTitle.Content = _configuration.Name;
 
             //Load the data for approaches using Task magic
@@ -88,9 +90,10 @@ namespace ATTrafficAnalayzer.Views.Screens
                 stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
                 stringBuilder.Append(" with volume: ");
                 stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(DateSettings) + "[/b]");
+                stringBuilder.Append("Total volume: [b]" + _configuration.GetTotalVolume() +"[/b]");
 
                 OverallSummaryTextBlock.Html = stringBuilder.ToString();
-                
+                OverallSummaryBorder.Visibility = Visibility.Visible;
 
             }, scheduler);
         }

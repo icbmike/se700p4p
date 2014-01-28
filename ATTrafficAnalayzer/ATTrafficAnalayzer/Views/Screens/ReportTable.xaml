@@ -25,8 +25,9 @@
                     BorderThickness="1"
                     Background="#44356199"
                     Margin="20,15,20,10"
-                    Padding="5">
-                <qz:HtmlTextBlock x:Name="OverallSummaryTextBlock" />
+                    Padding="5"
+                    Visibility="Hidden">
+                <qz:HtmlTextBlock x:Name="OverallSummaryTextBlock" Padding="5"/>
             </Border>
 
             <ItemsControl ItemsSource="{Binding Approaches}">
@@ -36,6 +37,21 @@
                                                 Intersection="{Binding Intersection, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type screens:ReportTable}}}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Style.Triggers>
+                            <Trigger Property="HasItems" Value="false"   >
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <ProgressBar IsIndeterminate="True" Height="10"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
             </ItemsControl>
 
         </StackPanel>

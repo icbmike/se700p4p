@@ -4,12 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:qz="http://www.quickzip.org/UserControls"
+             xmlns:atTrafficAnalayzer="clr-namespace:ATTrafficAnalayzer"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="1680"
              Loaded="ApproachTableOnLoaded">
-    
-        <Border BorderBrush="Black"
+
+    <UserControl.Resources>
+        <atTrafficAnalayzer:ApproachSummaryConverter x:Key="approachSummaryConverter" />
+    </UserControl.Resources>
+    <Border BorderBrush="Black"
             BorderThickness="1"
             Margin="20,15,20,5"
             Padding="5"
@@ -19,7 +23,17 @@
             <qz:HtmlTextBlock x:Name="ApproachSummary"
                    Visibility="Visible"
                    IsEnabled="False"
-                              Html="{Binding ApproachName}">
+                   Padding="10, 0, 0, 0">
+                <qz:HtmlTextBlock.Html>
+                    <MultiBinding Converter="{StaticResource approachSummaryConverter}">
+                        <Binding Path="ApproachName"/>
+                        <Binding Path="AMPeakVolume"/>
+                        <Binding Path="AMPeakTime"/>
+                        <Binding Path="PMPeakVolume"/>
+                        <Binding Path="PMPeakTime"/>
+                        <Binding Path="TotalVolume"/>
+                    </MultiBinding>
+                </qz:HtmlTextBlock.Html>
                 
             </qz:HtmlTextBlock>
 

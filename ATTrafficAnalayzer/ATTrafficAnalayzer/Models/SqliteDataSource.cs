@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using System.Threading;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Newtonsoft.Json.Linq;
 
@@ -479,7 +480,6 @@ namespace ATTrafficAnalayzer.Models
             {
                 conn.Open();
                 volumes = new List<int>();
-
                 using (var query = new SQLiteCommand(conn))
                 {
                     query.CommandText = "SELECT volume " +

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.ReportConfiguration
@@ -12,6 +13,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         private DateTime? _pmPeakPeriod;
         private int _amPeakVolume;
         private int _pmPeakVolume;
+        private int _totalVolume;
         public List<Approach> Approaches { get; set; }
         public string Name { get; set; }
         public int Intersection { get; set; }
@@ -34,6 +36,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             _pmPeakPeriod = null;
             _amPeakVolume = -1;
             _pmPeakVolume = -1;
+            _totalVolume = -1;
         }
 
         /// <summary>
@@ -145,6 +148,15 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             }
 
             return _pmPeakVolume;
+        }
+
+        public int GetTotalVolume()
+        {
+             if (_totalVolume != -1) return _totalVolume;
+
+            _totalVolume = Approaches.Sum(approach => approach.TotalVolume);
+            
+            return _totalVolume;
         }
     }
 }
