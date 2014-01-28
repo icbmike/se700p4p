@@ -52,7 +52,7 @@ namespace ATTrafficAnalayzer.Views.Screens
            
             foreach (var approach in config.Approaches)
             {
-                var configApproachBox = new ConfigApproachBox(Approaches, approach.Detectors, approach.Name)
+                var configApproachBox = new ConfigApproachBox(Approaches, approach.Detectors, approach.ApproachName)
                 {
                     Margin = new Thickness(20, 20, 0, 0)
                 };

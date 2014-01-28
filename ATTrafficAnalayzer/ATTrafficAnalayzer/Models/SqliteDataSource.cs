@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using System.Threading;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using Newtonsoft.Json.Linq;
 
@@ -12,7 +13,8 @@ namespace ATTrafficAnalayzer.Models
         private static readonly string DbPath = new SQLiteConnectionStringBuilder
             {
                 DataSource = "TAdb.db3",
-                JournalMode = SQLiteJournalModeEnum.Off
+                JournalMode = SQLiteJournalModeEnum.Off,
+                ForeignKeys = true
             }.ConnectionString;
 
         public SqliteDataSource()
@@ -58,7 +60,7 @@ namespace ATTrafficAnalayzer.Models
 
                         command.CommandText = @"CREATE TABLE IF NOT EXISTS [configs] (
                                               [config_id] INTEGER NOT NULL
-                                            , [name] nvarchar(100) NULL
+                                            , [name] nvarchar(100) NOT NULL UNIQUE ON CONFLICT ABORT
                                             , [date_last_used] datetime NULL
                                             , [intersection_id] int NULL
                                             , CONSTRAINT [PK_configs] PRIMARY KEY ([config_id])
@@ -87,6 +89,7 @@ namespace ATTrafficAnalayzer.Models
                                               [approach_id] int NOT NULL
                                             , [detector] tinyint NOT NULL
                                             , CONSTRAINT [PK_approach_detector_mapping] PRIMARY KEY ([approach_id],[detector])
+                                            , FOREIGN KEY ([approach_id]) REFERENCES [approaches] ([approach_id]) ON DELETE CASCADE ON UPDATE CASCADE
                                             );";
 
                         command.ExecuteNonQuery();
@@ -477,7 +480,6 @@ namespace ATTrafficAnalayzer.Models
             {
                 conn.Open();
                 volumes = new List<int>();
-
                 using (var query = new SQLiteCommand(conn))
                 {
                     query.CommandText = "SELECT volume " +
@@ -709,7 +711,11 @@ namespace ATTrafficAnalayzer.Models
                             var approaches = new List<Approach>();
 
                             var approachId = 0; //Seed id is 1, 0 should never be found in db
-                            Approach currentApproach = null;
+                            var currentApproach = new Approach(reader.GetString(2), new List<int>(), this);
+                            approaches.Add(currentApproach);
+                            currentApproach.Detectors.Add((reader.GetByte(3)));
+                            approachId = reader.GetInt32(1);
+
                             while (reader.Read())
                             {
                                 if (!reader.GetInt32(1).Equals(approachId))
@@ -814,7 +820,7 @@ namespace ATTrafficAnalayzer.Models
                         using (var query = conn.CreateCommand())
                         {
                             query.CommandText = "INSERT INTO approaches (name) VALUES (@approach);";
-                            query.Parameters.AddWithValue("@approach", approach.Name);
+                            query.Parameters.AddWithValue("@approach", approach.ApproachName);
                             query.ExecuteNonQuery();
 
                             query.CommandText = "SELECT last_insert_rowid();";
@@ -913,6 +919,38 @@ namespace ATTrafficAnalayzer.Models
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
+
+                //GET the ids of mapped approaches so that we can delete them
+                var approachIds = new List<Int32>();
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = @"SELECT approach_id FROM config_approach_mapping
+                                        INNER JOIN configs
+                                        WHERE config_approach_mapping.config_id = configs.config_id
+                                        AND configs.name = @name";
+                    query.Parameters.AddWithValue("@name", name);
+                    using (var reader = query.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            approachIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                //DELETE THE APPROACHES
+                using (var query = conn.CreateCommand())
+                {
+                    query.CommandText = @"DELETE FROM approaches WHERE approach_id = @approach_id";
+                    
+                    foreach (var approachId in approachIds)
+                    {
+                        query.Parameters.AddWithValue("@approach_id", approachId);
+                        query.ExecuteNonQuery();
+                    }
+                }
+
+                //DELETE THE CONFIG
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText = "DELETE FROM configs WHERE name = @name;";
@@ -954,7 +992,7 @@ namespace ATTrafficAnalayzer.Models
         /// <summary>
         ///     Get the summary configuration to create a report
         /// </summary>
-        /// <param name="name">Name of summary</param>
+        /// <param name="name">ApproachName of summary</param>
         /// <returns>Rows in the Summary</returns>
         public IEnumerable<SummaryRow> GetSummaryConfig(string name)
         {
@@ -985,7 +1023,7 @@ namespace ATTrafficAnalayzer.Models
         }
 
         /// <summary>
-        ///     Name of all monthly summaries
+        ///     ApproachName of all monthly summaries
         /// </summary>
         /// <returns>List of summary names</returns>
         public List<string> GetSummaryNames()

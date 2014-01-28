@@ -1,9 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views.Controls;
-using System;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -12,12 +15,15 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class ReportTable : IView
     {
-        private DateSettings _dateSettings;
+        public DateSettings DateSettings { get; set; }
+        public int Intersection { get { return _configuration.Intersection; }  }
      
         private Configuration _configuration;
 
         readonly IDataSource _dataSource;
 
+
+        public ObservableCollection<Approach> Approaches { get; set; }
         /// <summary>
         /// Constructor create a component displaying the specified config
         /// </summary>
@@ -28,9 +34,21 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _dataSource = dataSource;
             _configuration = _dataSource.GetConfiguration(configName);
-            _dateSettings = dateSettings;
+            DateSettings = dateSettings;
+
+            Approaches = new ObservableCollection<Approach>();
            
+            DataContext = this;
+            Loaded += ReportTable_Loaded;
             InitializeComponent();
+
+        }
+
+        private void ReportTable_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+
+
 
             Render();
         }
@@ -40,30 +58,45 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         private void Render()
         {
+            OverallSummaryBorder.Visibility = Visibility.Hidden;
+            
             ScreenTitle.Content = _configuration.Name;
 
-            //Remove all exisitng approaches!
-            ApproachesStackPanel.Children.Clear();
-            OverallSummaryTextBlock.Inlines.Clear();
+            //Load the data for approaches using Task magic
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var tasks = new List<Task>();
+            foreach (var approach in _configuration.Approaches)
+            {
+                tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Intersection, 0)));
+            }
+            Task.Factory.ContinueWhenAll(tasks.ToArray(), completedTasks =>
+            {
+                //We don't care, this is just a synchronization point that lets us add the approaches in order
+            }).ContinueWith(task =>
+            {
+                _configuration.Approaches.ForEach(approach => Approaches.Add(approach)); 
 
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Busiest Approach: ");
-            stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(_dateSettings).Name + "[/b]");
+                //Overall deets
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append("Busiest Approach: ");
+                stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(DateSettings).ApproachName + "[/b]");
 
-            stringBuilder.Append("Busiest AM Hour: ");
-            stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(_dateSettings).ToShortTimeString() + "[/b]");
-            stringBuilder.Append(" with volume: ");
-            stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(_dateSettings) + "[/b]");
+                stringBuilder.Append("Busiest AM Hour: ");
+                stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+                stringBuilder.Append(" with volume: ");
+                stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(DateSettings) + "[/b]");
 
-            stringBuilder.Append("Busiest PM Hour: ");
-            stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(_dateSettings).ToShortTimeString() + "[/b]");
-            stringBuilder.Append(" with volume: ");
-            stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(_dateSettings) + "[/b]");
+                stringBuilder.Append("Busiest PM Hour: ");
+                stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+                stringBuilder.Append(" with volume: ");
+                stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(DateSettings) + "[/b]");
+                stringBuilder.Append("Total volume: [b]" + _configuration.GetTotalVolume() +"[/b]");
 
-            OverallSummaryTextBlock.Html = stringBuilder.ToString();
-            _configuration.Approaches.ForEach(approach => ApproachesStackPanel.Children.Add(new ApproachTable(approach, _configuration.Intersection, _dateSettings)));
+                OverallSummaryTextBlock.Html = stringBuilder.ToString();
+                OverallSummaryBorder.Visibility = Visibility.Visible;
 
-        }                                                                                                                                                   
+            }, scheduler);
+        }
 
         /// <summary>
         /// Handler for DateRangeChanged event from Toolbar
@@ -72,9 +105,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="args"></param>
         public void DateSettingsChanged(DateSettings newSettings)
         {
-            if (!newSettings.StartDate.Equals(_dateSettings.StartDate) || !newSettings.EndDate.Equals(_dateSettings.EndDate) || !newSettings.Interval.Equals(_dateSettings.Interval))
+            if (!newSettings.StartDate.Equals(DateSettings.StartDate) || !newSettings.EndDate.Equals(DateSettings.EndDate) || !newSettings.Interval.Equals(DateSettings.Interval))
             {
-                _dateSettings = newSettings;
+                DateSettings = newSettings;
                 Render();
             }
         }

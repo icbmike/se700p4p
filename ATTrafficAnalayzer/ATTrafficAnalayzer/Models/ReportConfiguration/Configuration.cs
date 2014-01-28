@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.ReportConfiguration
@@ -12,6 +13,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         private DateTime? _pmPeakPeriod;
         private int _amPeakVolume;
         private int _pmPeakVolume;
+        private int _totalVolume;
         public List<Approach> Approaches { get; set; }
         public string Name { get; set; }
         public int Intersection { get; set; }
@@ -19,7 +21,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         ///     Creates a report object
         /// </summary>
-        /// <param name="name">Name of the report</param>
+        /// <param name="name">ApproachName of the report</param>
         /// <param name="intersection">Intersection of the report</param>
         /// <param name="approaches">List of approaches contained in the report</param>
         /// <param name="dataSource"></param>
@@ -34,6 +36,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             _pmPeakPeriod = null;
             _amPeakVolume = -1;
             _pmPeakVolume = -1;
+            _totalVolume = -1;
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add("Route Name", typeof(string));
+            dataTable.Columns.Add("Route ApproachName", typeof(string));
             dataTable.Columns.Add("Inbound Intersections", typeof(string));
             dataTable.Columns.Add("Inbound Detectors", typeof(string));
             dataTable.Columns.Add("Inbound Dividing Factor", typeof(string));
@@ -55,7 +58,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             foreach (var app in Approaches)
             {
                 var newRow = dataTable.NewRow();
-                newRow["Route Name"] = app.Name;
+                newRow["Route ApproachName"] = app.ApproachName;
                 newRow["Inbound Intersections"] = Intersection;
                 newRow["Inbound Detectors"] = string.Join(", ", app.Detectors);
                 newRow["Inbound Dividing Factor"] = "";
@@ -145,6 +148,15 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             }
 
             return _pmPeakVolume;
+        }
+
+        public int GetTotalVolume()
+        {
+             if (_totalVolume != -1) return _totalVolume;
+
+            _totalVolume = Approaches.Sum(approach => approach.TotalVolume);
+            
+            return _totalVolume;
         }
     }
 }

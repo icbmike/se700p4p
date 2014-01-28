@@ -27,7 +27,7 @@ namespace ATTrafficAnalayzer.Views
         /// </summary>
         /// <param name="outputFilename">Filename of output csv file</param>
         /// <param name="settings">DateSettings for daterange and interval</param>
-        /// <param name="configName">Name of the config to be exported</param>
+        /// <param name="configName">ApproachName of the config to be exported</param>
         /// <param name="AmPeakHour">...</param>
         /// <param name="PmPeakHour">...</param>
         public CSVExporter(String outputFilename, DateSettings settings, string configName, int AmPeakHour, int PmPeakHour, IDataSource dataSource)
@@ -113,7 +113,7 @@ namespace ATTrafficAnalayzer.Views
             lines.Add("");
 
             var config = _dataSource.GetSummaryConfig(_configName);
-            string[] configColumnNames = { "Route Name", "Inbound Intersection", "Inbound Detectors", "Inbound Dividing Factor", "Outbound Intersection", "Outbound Detectors", "Outbound Dividing Factor" };
+            string[] configColumnNames = { "Route ApproachName", "Inbound Intersection", "Inbound Detectors", "Inbound Dividing Factor", "Outbound Intersection", "Outbound Detectors", "Outbound Dividing Factor" };
             var configColumnNamesString = string.Join(",", configColumnNames);
             lines.Add(configColumnNamesString);
 

@@ -19,42 +19,67 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         private int _approachTotal;
         private DataTable _dataTable;
         private int _amPeak = -1;
-        private int _pmPeak = -1;
+        private int _pmPeak = -1;   
         private DateTime _amPeakTime;
         private DateTime _pmPeakTime;
 
-        public string Name { get; set; }
+        public string ApproachName { get; set; }
         public List<int> Detectors { get; set; }
         public int Id { get; set; }
+
+        public int TotalVolume
+        {
+            get { return _approachTotal; }
+        }
+
+        public int AMPeakVolume
+        {
+            get { return _amPeak; }
+        }
+
+        public int PMPeakVolume
+        {
+            get { return _pmPeak; }
+        }
+
+        public DateTime AMPeakTime
+        {
+            get { return _amPeakTime; }
+        }
+
+        public DateTime PMPeakTime
+        {
+            get { return _pmPeakTime; }
+        }
 
         /// <summary>
         ///     Creates the approach instance
         /// </summary>
-        /// <param name="name">Name of the approach</param>
-        /// <param name="detectors">List of detectors </param>
-        /// /// <param name="dataSource">An IDataSource</param>
-        public Approach(string name, List<int> detectors, IDataSource dataSource)
+        /// <param ApproachName="approachName">ApproachName of the approach</param>
+        /// <param ApproachName="detectors">List of detectors </param>
+        /// /// <param ApproachName="dataSource">An IDataSource</param>
+        public Approach(string approachName, List<int> detectors, IDataSource dataSource)
         {
-            Name = name;
+            ApproachName = approachName;
             Detectors = detectors;
             _dataSource = dataSource;
         }
 
         /// <summary>
-        ///     Returns the name of the approach
+        ///     Returns the ApproachName of the approach
         /// </summary>
-        /// <returns>Approach name</returns>
+        /// <returns>Approach ApproachName</returns>
         public override string ToString()
         {
-            return Name;
+            return ApproachName;
         }
 
         /// <summary>
         ///     Get a list of volumes
         /// </summary>
-        /// <param name="intersection">Intersection ID</param>
-        /// <param name="startDate">Start of the period</param>
-        /// <param name="endDate">End of the period</param>
+        /// <param ApproachName="intersection">Intersection ID</param>
+        /// <param ApproachName="startDate">Start of the period</param>
+        /// <param ApproachName="endDate">End of the period</param>
         /// <returns>List of volumes</returns>
         public List<int> GetVolumesList(int intersection, DateTime startDate, DateTime endDate)
         {
@@ -77,11 +102,11 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         ///     Gets all traffic volume data
         /// </summary>
-        /// <param name="settings">Group of settings from </param>
-        /// <param name="intersection">Intersection ID</param>
-        /// <param name="limit">Number of data items to get</param>
-        /// <param name="offset">Index of the starting data element</param>
-        /// <param name="day">Day the volumes are required for</param>
+        /// <param ApproachName="settings">Group of settings from </param>
+        /// <param ApproachName="intersection">Intersection ID</param>
+        /// <param ApproachName="limit">Number of data items to get</param>
+        /// <param ApproachName="offset">Index of the starting data element</param>
+        /// <param ApproachName="day">Day the volumes are required for</param>
         /// <returns></returns>
         public DataTable GetDataTable(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
@@ -139,7 +164,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 {
                     var total = CalculateColumnTotal(approachVolumes, j, 12);
                     totalsRow[j + 1] = total;
-                    _approachTotal += total;
+                    _approachTotal = TotalVolume + total;
                     if (j < limit/2)
                         AmPeak.CheckIfMax(total, j + " hrs");
                     else
@@ -153,9 +178,9 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         /// Calculates the total for each column in the datagrid
         /// </summary>
-        /// <param name="data">A List of data values</param>
-        /// <param name="column">Column number</param>
-        /// <param name="numberOfRows">Number of items in the list</param>
+        /// <param ApproachName="data">A List of data values</param>
+        /// <param ApproachName="column">Column number</param>
+        /// <param ApproachName="numberOfRows">Number of items in the list</param>
         /// <returns>Total traffic volume</returns>
         private static int CalculateColumnTotal(IList<int> data, int column, int numberOfRows)
         {
@@ -165,9 +190,9 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <summary>
         ///     Port the data for a column as an IEnumerable
         /// </summary>
-        /// <param name="data">Data values</param>
-        /// <param name="column">Column number</param>
-        /// <param name="numberOfRows">Number of items in the list</param>
+        /// <param ApproachName="data">Data values</param>
+        /// <param ApproachName="column">Column number</param>
+        /// <param ApproachName="numberOfRows">Number of items in the list</param>
         /// <returns>List of data</returns>
         private static IEnumerable<int> GetColumnData(IList<int> data, int column, int numberOfRows)
         {
@@ -193,14 +218,15 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 var item = _dataTable.Rows[_dataTable.Rows.Count - 1].ItemArray[i];
                 sum += int.Parse(item as string);
             }
+            _approachTotal = sum;
             return sum;
         }
 
         public int GetPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1) GetAmPeak(settings, intersection, day, limit, offset);
-            if (_pmPeak == -1) GetPmPeak(settings, intersection, day, limit, offset);
-            return Math.Max(_amPeak, _pmPeak);
+            if (AMPeakVolume == -1) GetAmPeak(settings, intersection, day, limit, offset);
+            if (PMPeakVolume == -1) GetPmPeak(settings, intersection, day, limit, offset);
+            return Math.Max(AMPeakVolume, PMPeakVolume);
         }
 
         private void Invalidate()
@@ -212,7 +238,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public int GetAmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1)
+            if (AMPeakVolume == -1)
             {
                 if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
                 var max = -1;
@@ -242,12 +268,12 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 _amPeak = max;
                 
             }
-            return _amPeak;
+            return AMPeakVolume;
         }
 
         public int GetPmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_pmPeak == -1)
+            if (PMPeakVolume == -1)
             {
                 if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
                 var max = 0;
@@ -274,33 +300,41 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                 _pmPeak = max;
 
             }
-            return _pmPeak;
+            return PMPeakVolume;
         }
 
         public DateTime GetPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1) GetAmPeak(settings, intersection, day, limit, offset);
-            if (_pmPeak == -1) GetPmPeak(settings, intersection, day, limit, offset);
-            if (_amPeak > _pmPeak) return _amPeakTime;
-            else return _pmPeakTime;
+            if (AMPeakVolume == -1) GetAmPeak(settings, intersection, day, limit, offset);
+            if (PMPeakVolume == -1) GetPmPeak(settings, intersection, day, limit, offset);
+            if (AMPeakVolume > PMPeakVolume) return AMPeakTime;
+            else return PMPeakTime;
         }
 
         public DateTime GetAmPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_amPeak == -1)
+            if (AMPeakVolume == -1)
             {
                 GetAmPeak(settings, intersection, day, limit, offset);
             }
-            return _amPeakTime;
+            return AMPeakTime;
         }
 
         public DateTime GetPmPeakTime(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
-            if (_pmPeak == -1)
+            if (PMPeakVolume == -1)
             {
                 GetPmPeak(settings, intersection, day, limit, offset);
             }
-            return _pmPeakTime;
+            return PMPeakTime;
+        }
+
+        public void LoadDataTable(DateSettings dateSettings, int intersection, int day)
+        {
+            GetDataTable(dateSettings, intersection, day);
+            GetAmPeakTime(dateSettings, intersection, day);
+            GetPmPeakTime(dateSettings, intersection, day);
+            GetTotal(dateSettings, intersection, day);
         }
     }
 }

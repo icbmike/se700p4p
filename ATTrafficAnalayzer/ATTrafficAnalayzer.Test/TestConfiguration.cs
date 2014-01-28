@@ -39,7 +39,7 @@ namespace ATTrafficAnalayzer.Test
             var testConfiguration = GetTestConfigurationWithMultipleApproaches();
             var busiestApproach = testConfiguration.GetBusiestApproach(_dateSettings);
             
-            Assert.AreEqual("Busiest Approach", busiestApproach.Name);
+            Assert.AreEqual("Busiest Approach", busiestApproach.ApproachName);
 
         }
 
