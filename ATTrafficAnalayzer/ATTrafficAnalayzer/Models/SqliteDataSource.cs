@@ -176,7 +176,7 @@ namespace ATTrafficAnalayzer.Models
                 //Use transactions for sick Database rollbacks
                 using (var transaction = dbConnection.BeginTransaction())
                 {
-                    for (int index = 0; index < decodedFile.Count; index++)
+                    for (var index = 0; index < decodedFile.Count; index++)
                     {
                         var dateTimeRecord = decodedFile[index];
                         //Should probably do an action on volume record as it is decoded so that we dont read the entire file into memory
