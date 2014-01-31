@@ -12,7 +12,6 @@
         mc:Ignorable="d"
         Height="1200"
         Width="1920">
-    
 
     <DockPanel LastChildFill="True">
 

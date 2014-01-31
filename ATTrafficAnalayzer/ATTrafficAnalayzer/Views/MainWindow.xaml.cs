@@ -335,9 +335,8 @@ namespace ATTrafficAnalayzer.Views
                     {
                         // Open document 
                         _dataSource.ImportFile(filename,
-                                                           progress =>
-                                                               ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"),
-                                                           GetDuplicatePolicy); //Function to determine a duplicate policy
+                                            progress => ProgressDialog.ReportWithCancellationCheck(b, w, progress, "Reading File"), //Function to run on progress update
+                                            GetDuplicatePolicy); //Function to determine a duplicate policy
 
                         //Worker completed handler, emit ImportCompleted event.
                         b.RunWorkerCompleted += (sender, args) => { if (ImportCompleted != null) ImportCompleted(this); };
