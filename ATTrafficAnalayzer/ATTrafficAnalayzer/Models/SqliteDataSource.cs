@@ -173,10 +173,12 @@ namespace ATTrafficAnalayzer.Models
 
                 var decodedFile = VolumeStoreDecoder.DecodeFile(filename);
 
+                //Use transactions for sick Database rollbacks
                 using (var transaction = dbConnection.BeginTransaction())
                 {
-                    foreach (var dateTimeRecord in decodedFile)
+                    for (int index = 0; index < decodedFile.Count; index++)
                     {
+                        var dateTimeRecord = decodedFile[index];
                         //Should probably do an action on volume record as it is decoded so that we dont read the entire file into memory
                         foreach (var volumeRecord in dateTimeRecord.VolumeRecords)
                         {
@@ -189,9 +191,8 @@ namespace ATTrafficAnalayzer.Models
                                     "SELECT COUNT(intersection_id) FROM intersections WHERE intersection_id = @intersection_id;";
                                 command.Parameters.AddWithValue("@intersection_id",
                                     volumeRecord.IntersectionNumber);
-                                intersectionExists = (Int64)command.ExecuteScalar() > 0;
+                                intersectionExists = (Int64) command.ExecuteScalar() > 0;
                             }
-
 
                             foreach (var detector in volumeRecord.GetDetectors())
                             {
@@ -245,12 +246,13 @@ namespace ATTrafficAnalayzer.Models
                                         }
                                         continuing = true;
                                     }
-
                                 }
                             }
                             if (shouldStopImporting) break;
                         }
                         if (shouldStopImporting) break;
+
+                        updateProgress((int) (((float) index/decodedFile.Count)*100));
                     }
                     transaction.Commit();
                 }
