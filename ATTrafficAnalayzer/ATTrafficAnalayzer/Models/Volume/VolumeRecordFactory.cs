@@ -64,7 +64,7 @@ namespace ATTrafficAnalayzer.Models.Volume
                 newRecord.SetVolumeForDetector(detectorNumber, volume);
             }
 
-            return newRecord;
+             return newRecord;
         }
 
         public static VolumeRecordType CheckRecordType(byte[] recordBytes, int offset)
