@@ -71,18 +71,24 @@ namespace ATTrafficAnalayzer.Models.Volume
         public static VolumeRecordType CheckRecordType(byte[] recordBytes, int offset)
         {
             //Get the first four bytes and sum them, if the sum is zero, it is a comment record
-            var firstFourBytes = recordBytes.Skip(offset).Take(4).ToArray();
-            var sum = firstFourBytes.Sum(x => (int) x); //Using LINQ, casting individual bytes to ints
+
+            var sum = 0;
+            for (var i = 0; i < 4; i++)
+            {
+                sum += recordBytes[offset + i];
+            }
+
             if (sum == 0) return VolumeRecordType.Comment;
 
             //If the first two bytes sum to zero and it is not a comment record then it is a datetime record
-            var firstTwoBytes = recordBytes.Skip(offset).Take(2).ToArray();
-            sum = firstTwoBytes.Sum(x => (int) x);
-            if (sum == 0) return VolumeRecordType.Datetime;
-
             //Otherwise it is a volume record
+            sum = 0;
+            for (var i = 0; i < 2; i++)
+            {
+                sum += recordBytes[offset + i];
+            }
 
-            return VolumeRecordType.Volume;
+            return sum == 0 ? VolumeRecordType.Datetime : VolumeRecordType.Volume;
         }
 
         private static bool GetBit(byte b, int pos)

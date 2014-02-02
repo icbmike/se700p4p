@@ -179,7 +179,7 @@ namespace ATTrafficAnalayzer.Models
                     for (var index = 0; index < decodedFile.Count; index++)
                     {
                         var dateTimeRecord = decodedFile[index];
-                        //Should probably do an action on volume record as it is decoded so that we dont read the entire file into memory
+                        
                         foreach (var volumeRecord in dateTimeRecord.VolumeRecords)
                         {
                             //Check if the intersection for this volume record is already in the database
@@ -254,6 +254,7 @@ namespace ATTrafficAnalayzer.Models
 
                         updateProgress((int) (((float) index/decodedFile.Count)*100));
                     }
+
                     transaction.Commit();
                 }
                 dbConnection.Close();
