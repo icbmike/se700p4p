@@ -26,32 +26,28 @@ namespace ATTrafficAnalayzer.Models
                 //The record size is stored in two bytes, little endian
 
                 index += 2;
-                byte[] record;
-                if (recordSize%2 == 0) //Records with odd record length have a trailing null byte.
+                if (recordSize%2 != 0)
                 {
-                    record = byteArray.Skip(index).Take(recordSize).ToArray();
-                    index += recordSize;
-                }
-                else
-                {
-                    record = byteArray.Skip(index).Take(recordSize + 1).ToArray();
-                    index += recordSize + 1;
+                    //If record size is odd then an extra byte is added to make it even
+                    recordSize += 1;
                 }
 
                 //Find out what kind of data we have
-                var recordType = VolumeRecordFactory.CheckRecordType(record);
+                var recordType = VolumeRecordFactory.CheckRecordType(byteArray, index);
 
                 //Construct the appropriate record type
                 switch (recordType)
                 {
                     case VolumeRecordType.Datetime:
-                        currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(record);
+                        currentDateTime = VolumeRecordFactory.CreateDateTimeRecord(byteArray, index);
                         volumeStore.Add(currentDateTime);
                         break;
                     case VolumeRecordType.Volume:
-                        currentDateTime.VolumeRecords.Add(VolumeRecordFactory.CreateVolumeRecord(record, recordSize));
+                        currentDateTime.VolumeRecords.Add(VolumeRecordFactory.CreateVolumeRecord(byteArray, index, recordSize));
                         break;
                 }
+
+                index += recordSize;
             }
             fs.Close();
             return volumeStore;
