@@ -38,6 +38,7 @@ namespace ATTrafficAnalayzer.Models.Volume
         public static VolumeRecord CreateVolumeRecord(byte[] recordBytes, int offset, int recordSize)
         {
             var index = 0 + offset;
+            recordSize += offset;
             var intersectionNumber = recordBytes[index] + recordBytes[index + 1]*256;
             //recordSize -= 2; // record size includes the intersection number
             index += 2;
