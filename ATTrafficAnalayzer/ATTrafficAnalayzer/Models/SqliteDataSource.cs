@@ -11,11 +11,11 @@ namespace ATTrafficAnalayzer.Models
     public class SqliteDataSource : IDataSource
     {
         private static readonly string DbPath = new SQLiteConnectionStringBuilder
-            {
-                DataSource = "TAdb.db3",
-                JournalMode = SQLiteJournalModeEnum.Off,
-                ForeignKeys = true
-            }.ConnectionString;
+        {
+            DataSource = "TAdb.db3",
+            JournalMode = SQLiteJournalModeEnum.Off,
+            ForeignKeys = true
+        }.ConnectionString;
 
         public SqliteDataSource()
         {
@@ -94,10 +94,12 @@ namespace ATTrafficAnalayzer.Models
 
                         command.ExecuteNonQuery();
 
-                        command.CommandText = @"CREATE UNIQUE INDEX IF NOT EXISTS [UQ__monthly_summaries__0000000000000050] ON [monthly_summaries] ([name] ASC);";
+                        command.CommandText =
+                            @"CREATE UNIQUE INDEX IF NOT EXISTS [UQ__monthly_summaries__0000000000000050] ON [monthly_summaries] ([name] ASC);";
                         command.ExecuteNonQuery();
 
-                        command.CommandText = @"CREATE INDEX IF NOT EXISTS [volumes_index] ON [volumes] ([intersection] ASC,[detector] ASC,[dateTime] ASC);";
+                        command.CommandText =
+                            @"CREATE INDEX IF NOT EXISTS [volumes_index] ON [volumes] ([intersection] ASC,[detector] ASC,[dateTime] ASC);";
                         command.ExecuteNonQuery();
                     }
                     transaction.Commit();
@@ -107,7 +109,6 @@ namespace ATTrafficAnalayzer.Models
         }
 
         #region Helper functions
-
 
         /// <summary>
         ///     Gets an adapter to the database
@@ -130,7 +131,7 @@ namespace ATTrafficAnalayzer.Models
             var dbConnection = new SQLiteConnection(DbPath);
             dbConnection.Open();
 
-            var command = new SQLiteCommand(dbConnection) { CommandText = sql };
+            var command = new SQLiteCommand(dbConnection) {CommandText = sql};
 
             if (parameters != null)
             {
@@ -147,8 +148,6 @@ namespace ATTrafficAnalayzer.Models
         }
 
         #endregion
-
-    
 
         #region Volume Related Methods
 
@@ -176,32 +175,32 @@ namespace ATTrafficAnalayzer.Models
                 //Use transactions for sick Database rollbacks
                 using (var transaction = dbConnection.BeginTransaction())
                 {
-                    for (var index = 0; index < decodedFile.Count; index++)
+                    using (var command = dbConnection.CreateCommand())
                     {
-                        var dateTimeRecord = decodedFile[index];
-                        
-                        foreach (var volumeRecord in dateTimeRecord.VolumeRecords)
+                        for (var index = 0; index < decodedFile.Count; index++)
                         {
-                            //Check if the intersection for this volume record is already in the database
+                            var dateTimeRecord = decodedFile[index];
 
-                            bool intersectionExists;
-                            using (var command = dbConnection.CreateCommand())
+                            foreach (var volumeRecord in dateTimeRecord.VolumeRecords)
                             {
+                                //Check if the intersection for this volume record is already in the database
+
                                 command.CommandText =
                                     "SELECT COUNT(intersection_id) FROM intersections WHERE intersection_id = @intersection_id;";
+                                
+                                command.Parameters.Clear();
                                 command.Parameters.AddWithValue("@intersection_id",
                                     volumeRecord.IntersectionNumber);
-                                intersectionExists = (Int64) command.ExecuteScalar() > 0;
-                            }
+                                var intersectionExists = (Int64) command.ExecuteScalar() > 0;
 
-                            foreach (var detector in volumeRecord.GetDetectors())
-                            {
-                                if (!intersectionExists)
+                                foreach (var detector in volumeRecord.GetDetectors())
                                 {
-                                    using (var command = dbConnection.CreateCommand())
+                                    if (!intersectionExists)
                                     {
                                         command.CommandText =
                                             "INSERT INTO intersections (intersection_id, detector) VALUES (@intersection_id, @detector);";
+
+                                        command.Parameters.Clear();
                                         command.Parameters.AddWithValue("@intersection_id",
                                             volumeRecord.IntersectionNumber);
                                         command.Parameters.AddWithValue("@detector", detector);
@@ -214,25 +213,23 @@ namespace ATTrafficAnalayzer.Models
                                             Console.WriteLine(e);
                                         }
                                     }
-                                }
 
-                                using (var cmd = dbConnection.CreateCommand())
-                                {
-                                    cmd.CommandText =
+                                    command.CommandText =
                                         "INSERT INTO volumes (dateTime, intersection, detector, volume) VALUES (@dateTime, @intersection, @detector, @volume);";
 
-                                    cmd.Parameters.Clear();
+                                    command.Parameters.Clear();
 
-                                    cmd.Parameters.AddWithValue("@dateTime", dateTimeRecord.DateTime.AddMinutes(-5));
+                                    command.Parameters.AddWithValue("@dateTime", dateTimeRecord.DateTime.AddMinutes(-5));
 
                                     //Make up for the fact that volumes are offset ahead 5 minutes
-                                    cmd.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
-                                    cmd.Parameters.AddWithValue("@detector", detector);
-                                    cmd.Parameters.AddWithValue("@volume", volumeRecord.GetVolumeForDetector(detector));
+                                    command.Parameters.AddWithValue("@intersection", volumeRecord.IntersectionNumber);
+                                    command.Parameters.AddWithValue("@detector", detector);
+                                    command.Parameters.AddWithValue("@volume",
+                                        volumeRecord.GetVolumeForDetector(detector));
 
                                     try
                                     {
-                                        cmd.ExecuteNonQuery();
+                                        command.ExecuteNonQuery();
                                     }
                                     catch (SQLiteException e)
                                     {
@@ -247,14 +244,13 @@ namespace ATTrafficAnalayzer.Models
                                         continuing = true;
                                     }
                                 }
+                                if (shouldStopImporting) break;
                             }
                             if (shouldStopImporting) break;
+
+                            updateProgress((int) (((float) index/decodedFile.Count)*100));
                         }
-                        if (shouldStopImporting) break;
-
-                        updateProgress((int) (((float) index/decodedFile.Count)*100));
                     }
-
                     transaction.Commit();
                 }
                 dbConnection.Close();
@@ -300,7 +296,8 @@ namespace ATTrafficAnalayzer.Models
                 detectors = new List<int>();
                 using (var query = conn.CreateCommand())
                 {
-                    query.CommandText = "SELECT DISTINCT detector FROM intersections WHERE intersection_id = @intersection;";
+                    query.CommandText =
+                        "SELECT DISTINCT detector FROM intersections WHERE intersection_id = @intersection;";
                     query.Parameters.AddWithValue("@intersection", intersection);
                     using (var reader = query.ExecuteReader())
                     {
@@ -359,7 +356,8 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="startDateTime">Start of the period</param>
         /// <param name="endDateTime">End of the period</param>
         /// <returns>The total volumes for the detectors between the start and end date</returns>
-        public int GetTotalVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
+        public int GetTotalVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime,
+            DateTime endDateTime)
         {
             int totalVolume;
             using (var conn = new SQLiteConnection(DbPath))
@@ -403,9 +401,9 @@ namespace ATTrafficAnalayzer.Models
                 dbConnection.Open();
 
                 const string volumesNotEmptySql = "SELECT EXISTS(SELECT 1 FROM volumes LIMIT 1);";
-                using (var volumesNotEmptyCmd = new SQLiteCommand(dbConnection) { CommandText = volumesNotEmptySql })
+                using (var volumesNotEmptyCmd = new SQLiteCommand(dbConnection) {CommandText = volumesNotEmptySql})
                 {
-                    reader = (Int64)volumesNotEmptyCmd.ExecuteScalar();
+                    reader = (Int64) volumesNotEmptyCmd.ExecuteScalar();
                 }
 
                 dbConnection.Close();
@@ -548,14 +546,13 @@ namespace ATTrafficAnalayzer.Models
             }
             return result;
         }
-        
+
         /// <summary>
         ///     Removes the traffic volume for a day
         /// </summary>
         /// <param name="date">Day</param>
         public void RemoveVolumes(DateTime date)
         {
-           
             using (var dbConnection = new SQLiteConnection(DbPath))
             {
                 dbConnection.Open();
@@ -570,7 +567,6 @@ namespace ATTrafficAnalayzer.Models
 
                 dbConnection.Close();
             }
-           
         }
 
         /// <summary>
@@ -799,7 +795,6 @@ namespace ATTrafficAnalayzer.Models
                 conn.Open();
                 using (var transaction = conn.BeginTransaction())
                 {
-
                     Int64 configId;
 
                     //Insert into configs table
@@ -876,10 +871,10 @@ namespace ATTrafficAnalayzer.Models
                 dbConnection.Open();
 
                 const string configExistsSql = "SELECT EXISTS(SELECT 1 FROM configs WHERE name = @configName LIMIT 1);";
-                using (var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql })
+                using (var configExistsQuery = new SQLiteCommand(dbConnection) {CommandText = configExistsSql})
                 {
                     configExistsQuery.Parameters.AddWithValue("@configName", name);
-                    reader = (Int64)configExistsQuery.ExecuteScalar();
+                    reader = (Int64) configExistsQuery.ExecuteScalar();
                 }
 
                 dbConnection.Close();
@@ -899,7 +894,7 @@ namespace ATTrafficAnalayzer.Models
         /// <param name="rows">New configuration contents</param>
         public void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows)
         {
-            var config = new JArray { rows.Select(row => row.ToJson()) };
+            var config = new JArray {rows.Select(row => row.ToJson())};
 
             using (var conn = new SQLiteConnection(DbPath))
             {
@@ -945,7 +940,7 @@ namespace ATTrafficAnalayzer.Models
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText = @"DELETE FROM approaches WHERE approach_id = @approach_id";
-                    
+
                     foreach (var approachId in approachIds)
                     {
                         query.Parameters.AddWithValue("@approach_id", approachId);
@@ -982,11 +977,12 @@ namespace ATTrafficAnalayzer.Models
 
                 using (var query = new SQLiteCommand(conn))
                 {
-                    query.CommandText = report ? "DELETE FROM configs WHERE name = @name" : "DELETE FROM monthly_summaries WHERE name = @name";
+                    query.CommandText = report
+                        ? "DELETE FROM configs WHERE name = @name"
+                        : "DELETE FROM monthly_summaries WHERE name = @name";
                     query.Parameters.AddWithValue("@name", name);
 
                     query.ExecuteNonQuery();
-
                 }
                 conn.Close();
             }
@@ -1015,7 +1011,14 @@ namespace ATTrafficAnalayzer.Models
                         if (reader.Read())
                         {
                             var configArray = JArray.Parse(reader.GetString(0));
-                            summaries.AddRange(configArray.Select(summaryJson => new SummaryRow((string)summaryJson["route_name"], (int)summaryJson["intersection_in"], (int)summaryJson["intersection_out"], summaryJson["detectors_in"].Select(t => (int)t).ToList(), summaryJson["detectors_out"].Select(t => (int)t).ToList(), (int)summaryJson["div_factor_in"], (int)summaryJson["div_factor_out"])));
+                            summaries.AddRange(
+                                configArray.Select(
+                                    summaryJson =>
+                                        new SummaryRow((string) summaryJson["route_name"],
+                                            (int) summaryJson["intersection_in"], (int) summaryJson["intersection_out"],
+                                            summaryJson["detectors_in"].Select(t => (int) t).ToList(),
+                                            summaryJson["detectors_out"].Select(t => (int) t).ToList(),
+                                            (int) summaryJson["div_factor_in"], (int) summaryJson["div_factor_out"])));
                         }
                         reader.Close();
                     }
@@ -1064,11 +1067,12 @@ namespace ATTrafficAnalayzer.Models
             {
                 dbConnection.Open();
 
-                const string configExistsSql = "SELECT EXISTS(SELECT 1 FROM monthly_summaries WHERE name = @name LIMIT 1);";
-                using (var configExistsQuery = new SQLiteCommand(dbConnection) { CommandText = configExistsSql })
+                const string configExistsSql =
+                    "SELECT EXISTS(SELECT 1 FROM monthly_summaries WHERE name = @name LIMIT 1);";
+                using (var configExistsQuery = new SQLiteCommand(dbConnection) {CommandText = configExistsSql})
                 {
                     configExistsQuery.Parameters.AddWithValue("@name", name);
-                    reader = (Int64)configExistsQuery.ExecuteScalar();
+                    reader = (Int64) configExistsQuery.ExecuteScalar();
                 }
 
                 dbConnection.Close();
@@ -1089,7 +1093,7 @@ namespace ATTrafficAnalayzer.Models
                 {
                     query.CommandText = "SELECT COUNT(*) FROM configs WHERE name = @configName;";
                     query.Parameters.AddWithValue("@configName", name);
-                    count = (Int64)query.ExecuteScalar();
+                    count = (Int64) query.ExecuteScalar();
                 }
 
                 conn.Close();
@@ -1142,7 +1146,13 @@ namespace ATTrafficAnalayzer.Models
             const string sql = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
                                "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
                                "GROUP BY intersection";
-            return GetDataAdapter(sql, new Dictionary<string, object> { { "@startDate", startDate }, { "@endDate", endDate }, { "@faultThreshold", faultThreshold } });
+            return GetDataAdapter(sql,
+                new Dictionary<string, object>
+                {
+                    {"@startDate", startDate},
+                    {"@endDate", endDate},
+                    {"@faultThreshold", faultThreshold}
+                });
         }
 
         #endregion
@@ -1165,7 +1175,7 @@ namespace ATTrafficAnalayzer.Models
         {
             return true; //Needs to be implemented
         }
-                           
+
         /// <summary>
         ///     Get a list of all faulty detectors between two dates
         /// </summary>
@@ -1182,9 +1192,10 @@ namespace ATTrafficAnalayzer.Models
                 conn.Open();
                 using (var command = new SQLiteCommand(conn))
                 {
-                    command.CommandText = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
-                               "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
-                               "GROUP BY intersection";
+                    command.CommandText =
+                        "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
+                        "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
+                        "GROUP BY intersection";
                     command.Parameters.AddWithValue("@faultThreshold", threshold);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
@@ -1195,11 +1206,10 @@ namespace ATTrafficAnalayzer.Models
                         {
                             var currentIntersection = reader.GetInt32(0);
                             suspectedFaults.Add(currentIntersection, new List<int>());
-                            foreach (var detector in reader.GetString(1).Split(new[] { "," }, StringSplitOptions.None))
+                            foreach (var detector in reader.GetString(1).Split(new[] {","}, StringSplitOptions.None))
                             {
                                 suspectedFaults[currentIntersection].Add(int.Parse(detector));
                             }
-
                         }
                     }
                 }
