@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Screens;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -76,8 +73,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                 dataRow["Date"] = day.ToShortDateString();
                 foreach (var summaryRow in summaryConfig)
                 {
-                    var volume = _calculate(day, summaryRow);
-                    dataRow[summaryRow.RouteName] = volume;
+                    dataRow[summaryRow.RouteName] = _calculate(day, summaryRow);
                 }
                 dataTable.Rows.Add(dataRow);
             }

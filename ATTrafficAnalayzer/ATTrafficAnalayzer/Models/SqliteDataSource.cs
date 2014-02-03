@@ -621,11 +621,11 @@ namespace ATTrafficAnalayzer.Models
                     foreach (var detector in detectors)
                     {
                         query.CommandText =
-                            "SELECT SUM(volume) " +
-                            "FROM volumes " +
-                            "WHERE intersection = @intersection " +
-                            "AND detector = @detector " +
-                            "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+                           @"SELECT ifnull(SUM(volume), 0) 
+                            FROM volumes 
+                            WHERE intersection = @intersection 
+                            AND detector = @detector 
+                            AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
 
                         query.Parameters.AddWithValue("@intersection", intersection);
                         query.Parameters.AddWithValue("@detector", detector);

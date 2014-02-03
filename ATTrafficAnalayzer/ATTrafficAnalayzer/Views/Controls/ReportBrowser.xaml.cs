@@ -33,7 +33,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report)
                                                       ? _dataSource.GetConfigurationNames()
                                                       : _dataSource.GetSummaryNames();
-            //StandardReportsTreeView.DisplayMemberPath = "name";
         }
 
         #region New/Edit Configuration
@@ -180,15 +179,21 @@ namespace ATTrafficAnalayzer.Views.Controls
                     var backgroundWorker = new BackgroundWorker();
                     if (_mode.Equals(Mode.Report))
                     {
-                        backgroundWorker.DoWork += (o, args) => _dataSource.RemoveConfiguration(selectedItem);
+                        backgroundWorker.DoWork += (o, args) =>
+                        {
+                            _dataSource.RemoveConfiguration(selectedItem);
+                        };
+
                     }
                     else
                     {
                         backgroundWorker.DoWork += (o, args) => _dataSource.RemoveSummary(selectedItem);
                     }
+                    ProgressBar.Visibility = Visibility.Visible;
                     backgroundWorker.RunWorkerCompleted +=
                         (o, args) =>
                             {
+                                ProgressBar.Visibility = Visibility.Collapsed;
                                 messageBoxText = selectedItem + " was deleted";
                                 caption = "Delete successful";
                                 button = MessageBoxButton.OK;

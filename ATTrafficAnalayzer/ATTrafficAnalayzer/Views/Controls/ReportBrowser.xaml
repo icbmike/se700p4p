@@ -65,12 +65,9 @@
             </Button>
         </DockPanel>
 
-        <DockPanel LastChildFill="True"
+        <StackPanel 
                    DockPanel.Dock="Top">
-            <ScrollBar Width="20"
-                       DockPanel.Dock="Right" />
             <TreeView Name="StandardReportsTreeView"
-                      DockPanel.Dock="Right"
                       x:FieldModifier="private"
                       BorderBrush="{x:Null}"
                       SelectedItemChanged="StandardReportsTreeView_SelectedItemChanged">
@@ -97,7 +94,12 @@
                     </ContextMenu>
                 </TreeView.ContextMenu>
             </TreeView>
-        </DockPanel>
+            <ProgressBar 
+                Height="20"
+                Name="ProgressBar"
+                Visibility="Collapsed"
+                IsIndeterminate="True"/>
+        </StackPanel>
 
     </DockPanel>
 </UserControl>

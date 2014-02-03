@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 
@@ -32,11 +34,21 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             _statsTables = new List<StatsTable>
             {
-                new StatsTable(_dataSource, _dateSettings, _configName, "sample", (time, row) => time.Day)
+                new StatsTable(_dataSource, _dateSettings, _configName, "sample", (time, row) => time.Day),
+                new StatsTable(_dataSource, _dateSettings, _configName, "Daily Totals", CalulateDailyTotals)
             };
             InitializeComponent();
 
             Render();
+        }
+
+        private int CalulateDailyTotals(DateTime dateTime, SummaryRow summaryRow)
+        {
+            Console.WriteLine(dateTime);
+            var totalVolumeForDay = _dataSource.GetTotalVolumeForDay(dateTime.Date, summaryRow.SelectedIntersectionIn, summaryRow.DetectorsIn);
+            totalVolumeForDay += _dataSource.GetTotalVolumeForDay(dateTime.Date, summaryRow.SelectedIntersectionOut,
+                summaryRow.DetectorsOut);
+            return totalVolumeForDay;
         }
 
         /// <summary>
