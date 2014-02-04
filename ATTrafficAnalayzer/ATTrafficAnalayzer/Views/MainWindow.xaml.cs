@@ -242,17 +242,20 @@ namespace ATTrafficAnalayzer.Views
 
         private void ShowReportScreen(string configName)
         {
-            UserControl screen = null;
+            
             //Display the appropriate Table view
             if (_mode.Equals(Mode.Report))
             {
-                screen = new ReportTable(SettingsToolbar.DateSettings, configName, _dataSource);
+                var screen = new ReportTable(SettingsToolbar.DateSettings, configName, _dataSource);
+                screen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
+                ChangeScreen(screen);
             }
             else if (_mode.Equals(Mode.Summary))
             {
-                screen = new SummaryTable(SettingsToolbar.DateSettings, configName, _dataSource);
+                var screen = new SummaryTable(SettingsToolbar.DateSettings, configName, _dataSource);
+                ChangeScreen(screen);
+
             }
-            ChangeScreen(screen);
         }
 
         #endregion

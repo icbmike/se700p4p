@@ -47,9 +47,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void ReportTable_Loaded(object sender, RoutedEventArgs e)
         {
             
-
-
-
             Render();
         }
 
@@ -74,7 +71,15 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //We don't care, this is just a synchronization point that lets us add the approaches in order
             }).ContinueWith(task =>
             {
-                _configuration.Approaches.ForEach(approach => Approaches.Add(approach)); 
+                foreach (var approach in _configuration.Approaches)
+                {
+                    if (approach.HasDataForDate) Approaches.Add(approach);
+                    else
+                    {
+                        if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
+                        break;
+                    }
+                } 
 
                 //Overall deets
                 var stringBuilder = new StringBuilder();
