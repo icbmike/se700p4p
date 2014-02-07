@@ -19,7 +19,7 @@ namespace ATTrafficAnalayzer.Views
             ModeName = "Home";
             try
             {
-                Image = new BitmapImage(new Uri("Resources/Images/Icons/glyphicons_020_home.png", UriKind.Relative));
+                Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_020_home.png", UriKind.Relative));
             }
             catch (Exception e)
             {
