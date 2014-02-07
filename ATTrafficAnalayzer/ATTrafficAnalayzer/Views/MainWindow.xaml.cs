@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
@@ -17,10 +19,11 @@ namespace ATTrafficAnalayzer.Views
     {
         private Mode _mode;
         private DefaultDupicatePolicy _defaultDupicatePolicy;
-        private int _amPeakIndex = 8;
-        private int _pmPeakIndex = 4;
         private readonly IDataSource _dataSource;
         private DuplicatePolicy _skipAllOrOne;
+        private List<IMode> modes;
+        private int _amPeakIndex;
+        private int _pmPeakIndex;
 
         /// <summary>
         /// Default constructor used by App
@@ -277,8 +280,18 @@ namespace ATTrafficAnalayzer.Views
         /// <param configName="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            AddModes();
+
+
             if (_dataSource.VolumesExist())
                 BulkImport();
+        }
+
+        private void AddModes()
+        {
+            modes = new List<IMode>();
+
+            var homeMode = new HomeMode();
         }
 
         /// <summary>

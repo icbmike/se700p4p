@@ -24,12 +24,11 @@
             <Button Name="HomeButton"
                     Click="SwitchMode"
                     Style="{StaticResource AtToolbarButtonStyle}"
-                    MouseLeftButtonDown="SwitchMode"
-                    Background="{x:Null}"
-                    Foreground="White">
+                    MouseLeftButtonDown="SwitchMode">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
-                    <ContentPresenter Content="Home"
+                    <Label Content="Home"
+                           Foreground="White"
                                       Margin="6,0"
                                       VerticalAlignment="Center" />
                 </StackPanel>
