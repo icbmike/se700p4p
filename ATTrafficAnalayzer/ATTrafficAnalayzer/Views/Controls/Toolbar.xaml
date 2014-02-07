@@ -8,7 +8,8 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <ToolBarPanel Name="ToolbarPanel"
-                  Background="{x:Null}">
+                  Background="{x:Null}"
+                  Orientation="Horizontal">
         
         <ToolBar Name="ModeToolbar"
                  Band="1"
@@ -38,13 +39,11 @@
                    Margin="10,0,4,0"
                    Foreground="White"
                    FontSize="16"
-                   Content="Start Date:"
-                   Visibility="Collapsed" />
+                   Content="Start Date:"/>
             <DatePicker Name="StartDatePicker"
                         Background="White"
                         SelectedDate="{Binding StartDate, Mode=TwoWay}"
                         FontSize="14"
-                        Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Padding="6, 3"
@@ -56,7 +55,6 @@
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
                    Foreground="#FFF6F6F6"
-                   Visibility="Collapsed"
                    FontSize="16"
                    Content="End Date:" />
             
@@ -65,7 +63,6 @@
                         SelectedDate="{Binding EndDate, Mode=TwoWay}"
                         Padding="6, 3"
                         FontSize="14"
-                        Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Width="120"
