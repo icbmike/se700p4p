@@ -66,7 +66,8 @@
                               Canvas.Left="20"
                               x:Name="SettingsToolbar"
                               DateRangeChanged="SettingsToolbar_OnDateRangeChanged"
- />                           
+                              Loaded="SettingsToolbar_OnLoaded"
+                              />                           
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportBrowser"

@@ -4,6 +4,7 @@ using ATTrafficAnalayzer.Models.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using ATTrafficAnalayzer.Modes;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -14,7 +15,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         public DateSettings DateSettings { get { return DateRangeToolBar.DataContext as DateSettings; } }
 
-        public ObservableCollection<ToolbarButton> Modes { get; set; }
+        public ObservableCollection<BaseMode> Modes { get; set; }
         public int Month { get { return DateSettings.StartDate.Month; }  }
 
         public delegate void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args);
@@ -22,14 +23,22 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public Toolbar()
         {
+            
+            Modes = new ObservableCollection<BaseMode>();
+            
             InitializeComponent();
-            Modes = new ObservableCollection<ToolbarButton>();
+            
             DateSettings.StartDate = DataSourceFactory.GetDataSource().GetMostRecentImportedDate();
 
         }
 
         private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+        }
+
+        private void Toolbar_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 

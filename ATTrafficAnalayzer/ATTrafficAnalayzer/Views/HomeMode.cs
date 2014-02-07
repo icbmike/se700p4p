@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Modes;
-using ATTrafficAnalayzer.Properties;
-using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views
@@ -18,8 +16,15 @@ namespace ATTrafficAnalayzer.Views
 
         public HomeMode(Action<BaseMode> action, IDataSource dataSource) : base(action)
         {
-            ModeButton.ModeName = "Home";
-            ModeButton.ImagePath = "/Resources/Images/Icons/glyphicons_020_home.png";
+            ModeName = "Home";
+            try
+            {
+                Image = new BitmapImage(new Uri("Resources/Images/Icons/glyphicons_020_home.png", UriKind.Relative));
+            }
+            catch (Exception e)
+            {
+                
+            }
             _homeView = new Home(dataSource);
         }
 
@@ -43,6 +48,9 @@ namespace ATTrafficAnalayzer.Views
             return _homeView;
         }
 
-        public override ToolbarButton ModeButton { get; protected set; }
+        public override ImageSource Image { get; protected set; }
+        public override string ModeName { get; protected set; }
     }
+
+   
 }

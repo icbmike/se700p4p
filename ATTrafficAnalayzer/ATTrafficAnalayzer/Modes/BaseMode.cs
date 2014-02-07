@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Modes
@@ -14,8 +16,7 @@ namespace ATTrafficAnalayzer.Modes
         /// <param name="action"></param>
         protected BaseMode(Action<BaseMode> action)
         {
-            ModeButton = new ToolbarButton();
-            ModeButton.Click += (sender, args) => action(this);
+            ModeChange = new ModeChangeCommand(action, this);
         }
 
         /// <summary>
@@ -32,10 +33,35 @@ namespace ATTrafficAnalayzer.Modes
         public abstract void PopulateToolbar(ToolBar toolbar);
 
         public abstract UserControl GetView();
-        /// <summary>
-        /// Button that will be displayed in the toolbar to switch to this mode
-        /// </summary>
-        public abstract ToolbarButton ModeButton { get; protected set; }
 
+        public abstract ImageSource Image { get; protected set; }
+        public abstract String ModeName { get; protected set; }
+
+        public  ICommand ModeChange { get; protected set; }
+
+        public class ModeChangeCommand : ICommand
+        {
+            private readonly Action<BaseMode> _a;
+            private readonly BaseMode _b;
+
+            public ModeChangeCommand(Action<BaseMode> a, BaseMode b)
+            {
+                _a = a;
+                _b = b;
+            }
+
+            public void Execute(object parameter)
+            {
+                _a(_b);
+            }
+
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+
+            public event EventHandler CanExecuteChanged;
+        }
+        
     }
 }

@@ -18,8 +18,25 @@
                  HorizontalContentAlignment="Stretch"
                  ToolBarTray.IsLocked="True"
                  Background="{x:Null}"
-                 ItemsSource="{Binding Modes}">
-
+                 ItemsSource="{Binding Path=Modes, Mode=TwoWay}"
+                 OverflowMode="Never">
+            
+            <ToolBar.ItemTemplate>
+                <DataTemplate>
+                    <Button
+                        Style="{StaticResource AtToolbarButtonStyle}"
+                        Command="{Binding ModeChange}">
+                        <StackPanel>
+                            <Image Source="{Binding Image}" />
+                            <Label Content="{Binding ModeName}"
+                                   Foreground="White"
+                                    Margin="6,0"
+                                    VerticalAlignment="Center"
+                                   />
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ToolBar.ItemTemplate>
             </ToolBar>
         <ToolBar
             

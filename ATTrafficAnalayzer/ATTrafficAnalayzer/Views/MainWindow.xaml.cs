@@ -195,7 +195,6 @@ namespace ATTrafficAnalayzer.Views
         /// <param configName="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AddModes();
 
             if (_dataSource.VolumesExist())
                 BulkImport();
@@ -205,14 +204,18 @@ namespace ATTrafficAnalayzer.Views
         {
             var modes = new List<BaseMode>
             {
+                new HomeMode(ModeChange, _dataSource),
+                new HomeMode(ModeChange, _dataSource),
+                new HomeMode(ModeChange, _dataSource),
                 new HomeMode(ModeChange, _dataSource)
             };
 
-            SettingsToolbar.Modes.AddMany(modes.Select(mode => mode.ModeButton));
+            SettingsToolbar.Modes.AddMany(modes);
         }
 
         private void ModeChange(BaseMode mode)
         {
+            System.Windows.Forms.MessageBox.Show("Test");
             ContentScreen = mode.GetView();
             var reportBrowserItems = mode.PopulateReportBrowser();
             if (reportBrowserItems == null)
@@ -431,6 +434,11 @@ namespace ATTrafficAnalayzer.Views
         private void SettingsToolbar_OnDateRangeChanged(object sender, DateRangeChangedEventArgs args)
         {
             throw new NotImplementedException();
+        }
+
+        private void SettingsToolbar_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            AddModes();
         }
     }
 }
