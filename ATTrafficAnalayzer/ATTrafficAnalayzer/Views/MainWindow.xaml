@@ -65,7 +65,8 @@
             <controls:Toolbar Canvas.Top="55"
                               Canvas.Left="20"
                               x:Name="SettingsToolbar"
-                              DateRangeChanged="SettingsToolbar_DateRangeChanged" />
+                              DateRangeChanged="SettingsToolbar_OnDateRangeChanged"
+ />                           
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportBrowser"
@@ -76,7 +77,7 @@
  />
 
         <ContentControl DockPanel.Dock="Right"
-                        x:Name="ScreenContentControl"
+                        x:Name="ContentScreen"
                         Background="White" />
 
     </DockPanel>

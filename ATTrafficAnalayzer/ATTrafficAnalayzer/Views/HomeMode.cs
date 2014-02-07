@@ -16,8 +16,9 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly Home _homeView;
 
-        public HomeMode(Action action, IDataSource dataSource) : base(action)
+        public HomeMode(Action<BaseMode> action, IDataSource dataSource) : base(action)
         {
+            ModeButton.ModeName = "Home";
             _homeView = new Home(dataSource);
         }
 
@@ -41,6 +42,6 @@ namespace ATTrafficAnalayzer.Views
             return _homeView;
         }
 
-        public override Button ModeButton { get; protected set; }
+        public override ToolbarButton ModeButton { get; protected set; }
     }
 }

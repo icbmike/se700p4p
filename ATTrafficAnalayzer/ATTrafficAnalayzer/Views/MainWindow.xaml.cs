@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
@@ -8,6 +9,7 @@ using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
 using ATTrafficAnalayzer.Views.Screens;
+using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Win32;
 
 namespace ATTrafficAnalayzer.Views
@@ -21,7 +23,6 @@ namespace ATTrafficAnalayzer.Views
         private DefaultDupicatePolicy _defaultDupicatePolicy;
         private readonly IDataSource _dataSource;
         private DuplicatePolicy _skipAllOrOne;
-        private List<IMode> modes;
         private int _amPeakIndex;
         private int _pmPeakIndex;
 
@@ -35,9 +36,6 @@ namespace ATTrafficAnalayzer.Views
             DataContext = this;
 
             InitializeComponent();
-
-            SettingsToolbar.ModeChanged += ReportBrowser.ModeChangedHandler;
-            SettingsToolbar.ModeChanged += SettingsToolbar_OnModeChanged;
 
             //Set the content screen to be a Home
             var homeScreen = CreateHomeScreen();
@@ -55,90 +53,7 @@ namespace ATTrafficAnalayzer.Views
         /// <param configName="screen"></param>
         private void ChangeScreen(UserControl screen)
         {
-            ScreenContentControl.Content = screen;
-        }
-
-        /// <summary>
-        /// Mode changed handler
-        /// </summary>
-        /// <param configName="sender">Toolbar</param>
-        /// <param configName="args"></param>
-        private void SettingsToolbar_OnModeChanged(object sender, Toolbar.ModeChangedEventHandlerArgs args)
-        {
-            var prevMode = _mode;
-            _mode = args.Mode;
-
-            //Tell the Configuration browser to clear its selected item if the mode has changed
-            if (!prevMode.Equals(_mode) && ReportBrowser.GetSelectedConfiguration() != null)
-                ReportBrowser.ClearSelectedConfig();
-
-            //Determine what mode we have changed to.
-            switch (_mode)
-            {
-                case Mode.Home:
-                    //Display the Home screen
-                    ReportBrowser.Visibility = Visibility.Collapsed;
-                    var homeScreen = CreateHomeScreen();
-                    ChangeScreen(homeScreen);
-                    break;
-
-                case Mode.Report:
-                    //Display either a config screen, table or graph.
-                    ReportBrowser.Visibility = Visibility.Visible;
-
-                    if (ReportBrowser.GetSelectedConfiguration() == null)
-                    {
-                        if (!args.View.Equals(Toolbar.View.None))
-                        {
-                            System.Windows.Forms.MessageBox.Show("Please select a configuration from the browser");
-                            return;
-                        }
-                        var reportConfigurationScreen = CreateReportConfigurationScreen(null);
-                        ChangeScreen(reportConfigurationScreen);
-                    }
-                    //We havent changed mode, have only changed view
-                    else if (args.View.Equals(Toolbar.View.Graph))
-                    {
-                        //Create and display a new Graph
-                        var graphScreen = new ReportGraph(SettingsToolbar.DateSettings, ReportBrowser.GetSelectedConfiguration(), _dataSource);
-                        graphScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                        ChangeScreen(graphScreen);
-                    }
-                    else if (args.View.Equals(Toolbar.View.Table))
-                    {
-                        //Create and display a new Table
-                        var tableScreen = new ReportTable(SettingsToolbar.DateSettings, ReportBrowser.GetSelectedConfiguration(), _dataSource);
-                        tableScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                        ChangeScreen(tableScreen);
-                    }
-                    break;
-
-                case Mode.Summary:
-                    ReportBrowser.Visibility = Visibility.Visible;
-                    if (ReportBrowser.GetSelectedConfiguration() == null)
-                    {
-                        //If we are switching from a different mode, display a config screen
-                        var summaryConfigScreen = CreateSummaryConfigScreen(null);
-
-                        ChangeScreen(summaryConfigScreen);
-                    }
-                    else
-                    {
-                        //Else display a new Table
-                        var summaryScreen = new SummaryTable(SettingsToolbar.DateSettings,
-                        ReportBrowser.GetSelectedConfiguration(), _dataSource);
-                        ChangeScreen(summaryScreen);
-                    }
-                    break;
-
-                case Mode.Faults:
-                    //Display suspected faults
-                    ReportBrowser.Visibility = Visibility.Collapsed;
-                    var faultsScreen = new Faults(SettingsToolbar.DateSettings, _dataSource);
-                    faultsScreen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                    ChangeScreen(faultsScreen);
-                    break;
-            }
+            ContentScreen.Content = screen;
         }
 
         private ReportConfig CreateReportConfigurationScreen(String configToBeEdited)
@@ -229,7 +144,7 @@ namespace ATTrafficAnalayzer.Views
 
             ShowReportScreen(args.ReportName);
 
-            var view = (ScreenContentControl.Content as IView);
+            var view = (ContentScreen.Content as IView);
                 if (view != null) view.SelectedReportChanged(args.ReportName);
         }
 
@@ -282,16 +197,35 @@ namespace ATTrafficAnalayzer.Views
         {
             AddModes();
 
-
             if (_dataSource.VolumesExist())
                 BulkImport();
         }
 
         private void AddModes()
         {
-            modes = new List<IMode>();
+            var modes = new List<BaseMode>
+            {
+                new HomeMode(ModeChange, _dataSource)
+            };
 
-            var homeMode = new HomeMode();
+            SettingsToolbar.Modes.AddMany(modes.Select(mode => mode.ModeButton));
+        }
+
+        private void ModeChange(BaseMode mode)
+        {
+            ContentScreen = mode.GetView();
+            var reportBrowserItems = mode.PopulateReportBrowser();
+            if (reportBrowserItems == null)
+            {
+                ReportBrowser.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ReportBrowser.ItemsSource = reportBrowserItems;
+                ReportBrowser.Visibility = Visibility.Visible;
+            }
+            SettingsToolbar.CustomizableToolBar.Items.Clear();
+            mode.PopulateToolbar(SettingsToolbar.CustomizableToolBar);
         }
 
         /// <summary>
@@ -407,21 +341,6 @@ namespace ATTrafficAnalayzer.Views
         #region File Exporting
 
         /// <summary>
-        /// DateRangeChanged handler
-        /// </summary>
-        /// <param configName="sender"></param>
-        /// <param configName="args"></param>
-        private void SettingsToolbar_DateRangeChanged(object sender, Toolbar.DateRangeChangedEventHandlerArgs args)
-        {
-            _amPeakIndex = args.AmPeakHour;
-            _pmPeakIndex = args.PmPeakHour;
-
-            var view = ScreenContentControl.Content as IView;
-            if (view != null)
-                view.DateSettingsChanged(new DateSettings {EndDate = args.EndDate, StartDate = args.StartDate, Interval = args.Interval});
-        }
-
-        /// <summary>
         /// Handler for when the report browser asks to export a config
         /// Creates a dialog to ask the user for a filename and then uses a CSVExporter to do the deed.
         /// </summary>
@@ -507,6 +426,11 @@ namespace ATTrafficAnalayzer.Views
             var preferenceDialog = new DuplicatePolicyPreferenceDialog();
             preferenceDialog.ShowDialog();
             _defaultDupicatePolicy = preferenceDialog.DefaultDuplicatePolicy;
+        }
+
+        private void SettingsToolbar_OnDateRangeChanged(object sender, DateRangeChangedEventArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

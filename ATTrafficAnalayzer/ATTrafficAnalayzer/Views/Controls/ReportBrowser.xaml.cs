@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
@@ -27,6 +29,8 @@ namespace ATTrafficAnalayzer.Views.Controls
             _dataSource = DataSourceFactory.GetDataSource();
             Render();
         }
+
+        public List<IConfigurable> ItemsSource { get; set; }
 
         private void Render()
         {
@@ -221,21 +225,5 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #endregion
 
-        #region Other Event Handlers
-
-        public void ModeChangedHandler(object sender, Toolbar.ModeChangedEventHandlerArgs args)
-        {
-            if (GetSelectedConfiguration() != null)
-            {
-                _hasModeChanged = true;
-            }
-
-            if (_mode.Equals(args.Mode)) return;
-
-            _mode = args.Mode;
-            Render();
-        }
-
-        #endregion
     }
 }

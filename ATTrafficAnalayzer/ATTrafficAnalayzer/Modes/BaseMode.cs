@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Views.Controls;
 
@@ -15,10 +12,10 @@ namespace ATTrafficAnalayzer.Modes
         /// action to execute the passed in action.
         /// </summary>
         /// <param name="action"></param>
-        protected BaseMode(Action action)
+        protected BaseMode(Action<BaseMode> action)
         {
             ModeButton = new ToolbarButton();
-            ModeButton.Click += (sender, args) => action();
+            ModeButton.Click += (sender, args) => action(this);
         }
 
         /// <summary>
@@ -38,14 +35,7 @@ namespace ATTrafficAnalayzer.Modes
         /// <summary>
         /// Button that will be displayed in the toolbar to switch to this mode
         /// </summary>
-        public abstract Button ModeButton { get; protected set; }
+        public abstract ToolbarButton ModeButton { get; protected set; }
 
-    }
-
-    public interface IConfigurable
-    {
-        void Delete(string name);
-        void Edit(string name);
-        void View(string name);
     }
 }

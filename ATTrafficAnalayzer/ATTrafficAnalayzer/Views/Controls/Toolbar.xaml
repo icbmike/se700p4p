@@ -4,75 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:ATTrafficAnalayzer.Models.Settings"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <ToolBarPanel Name="ToolbarPanel"
                   Background="{x:Null}">
-        <ToolBarPanel.DataContext>
-            <settings:DateSettings />
-        </ToolBarPanel.DataContext>
-        <ToolBar Name="MainToolbar"
+        
+        <ToolBar Name="ModeToolbar"
                  Band="1"
                  BandIndex="1"
                  VerticalContentAlignment="Stretch"
                  HorizontalContentAlignment="Stretch"
                  ToolBarTray.IsLocked="True"
                  Background="{x:Null}"
-                 Loaded="MainToolbar_OnLoaded">
+                 ItemsSource="{Binding Modes}">
 
-            <!--Mode toggle-->
-            <Button Name="HomeButton"
-                    Click="SwitchMode"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    MouseLeftButtonDown="SwitchMode">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_020_home.png" />
-                    <Label Content="Home"
-                           Foreground="White"
-                                      Margin="6,0"
-                                      VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
-           
-            <Button Name="RegularReportsButton"
-                    Click="SwitchMode"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    Background="{x:Null}"
-                    Foreground="White">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_029_notes_2.png" />
-                    <ContentPresenter Content="Configurations"
-                                      VerticalAlignment="Center"
-                                      Margin="6,0" />
-                </StackPanel>
-            </Button>
+            </ToolBar>
+        <ToolBar
             
-            <Button Name="MonthlySummaryButton"
-                    Click="SwitchMode"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    Background="{x:Null}"
-                    Foreground="White">
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="24"
-                           Source="/Resources\Images\Icons\glyphicons_057_history.png" />
-                    <ContentPresenter Content="Summary"
-                                      Margin="6,0"
-                                      VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
-
-            <Button Name="FaultsButton"
-                    Click="SwitchMode"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    Background="{x:Null}"
-                    Foreground="White">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources\Images\Icons\glyphicons_078_warning_sign.png" />
-                    <ContentPresenter Content="Faults"
-                                      Margin="6,0"
-                                      VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+            Name="DateRangeToolBar"
+            Band="1"
+                 BandIndex="2"
+                 VerticalContentAlignment="Stretch"
+                 HorizontalContentAlignment="Stretch"
+                 ToolBarTray.IsLocked="True"
+                 Background="{x:Null}">
+            <ToolBar.DataContext>
+                <settings:DateSettings />
+            </ToolBar.DataContext>
 
             <!--Report date pickers-->
             <Label Name="StartDateLabel"
@@ -115,111 +74,12 @@
                         SelectedDateChanged="DateAndInterval_SelectionChanged"
                         SelectedDateFormat="Short" />
 
-            <!--Report config-->
-            <Label Name="IntervalLabel"
-                   Margin="20,0,0,0"
-                   Visibility="Collapsed"
-                   Foreground="White"
-                   FontSize="16"
-                   Content="Interval: " />
-            <ComboBox Height="23"
-                      Name="IntervalComboBox"
-                      SelectedValue="{Binding Path=Interval, Converter={settings:IntervalConverter}}"
-                      Visibility="Collapsed"
-                      SelectedValuePath="Content"
-                      Padding="6, 0"
-                      SelectedIndex="0"
-                      Foreground="Black"
-                      FontSize="14"
-                      HorizontalContentAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      SelectionChanged="DateAndInterval_SelectionChanged">
-                <ComboBoxItem>5 min</ComboBoxItem>
-                <ComboBoxItem>15 min</ComboBoxItem>
-                <ComboBoxItem>30 min</ComboBoxItem>
-                <ComboBoxItem>60 min</ComboBoxItem>
-            </ComboBox>
-
-            <!--Summary config-->
-            <Label Name="SummaryAmPeakLabel"
-                   Margin="20,0,0,0"
-                   Visibility="Collapsed"
-                   Foreground="White"
-                   FontSize="16"
-                   Content="AM Peak Period:" />
-            <ComboBox Height="23"
-                      Name="SummaryAmPeakComboBox"
-                      Visibility="Collapsed"
-                      SelectedIndex="8"
-                      Padding="6, 0"
-                      Foreground="Black"
-                      FontSize="14"
-                      HorizontalContentAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      SelectionChanged="SummaryControls_SelectionChanged">
-                <ComboBoxItem>Midnight</ComboBoxItem>
-                <ComboBoxItem>1 AM</ComboBoxItem>
-                <ComboBoxItem>2 AM</ComboBoxItem>
-                <ComboBoxItem>3 AM</ComboBoxItem>
-                <ComboBoxItem>4 AM</ComboBoxItem>
-                <ComboBoxItem>5 AM</ComboBoxItem>
-                <ComboBoxItem>6 AM</ComboBoxItem>
-                <ComboBoxItem>7 AM</ComboBoxItem>
-                <ComboBoxItem>8 AM</ComboBoxItem>
-                <ComboBoxItem>9 AM</ComboBoxItem>
-                <ComboBoxItem>10 AM</ComboBoxItem>
-                <ComboBoxItem>11 AM</ComboBoxItem>
-            </ComboBox>
-            <Label Name="SummaryPmPeakLabel"
-                   Margin="20,0,0,0"
-                   Visibility="Collapsed"
-                   Foreground="White"
-                   FontSize="16"
-                   Content="PM Peak Period:" />
-            <ComboBox Height="23"
-                      Name="SummaryPmPeakComboBox"
-                      Visibility="Collapsed"
-                      SelectedIndex="4"
-                      Foreground="Black"
-                      FontSize="14"
-                      Padding="6, 0"
-                      HorizontalContentAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      SelectionChanged="SummaryControls_SelectionChanged">
-                <ComboBoxItem>Midday</ComboBoxItem>
-                <ComboBoxItem>1 PM</ComboBoxItem>
-                <ComboBoxItem>2 PM</ComboBoxItem>
-                <ComboBoxItem>3 PM</ComboBoxItem>
-                <ComboBoxItem>4 PM</ComboBoxItem>
-                <ComboBoxItem>5 PM</ComboBoxItem>
-                <ComboBoxItem>6 PM</ComboBoxItem>
-                <ComboBoxItem>7 PM</ComboBoxItem>
-                <ComboBoxItem>8 PM</ComboBoxItem>
-                <ComboBoxItem>9 PM</ComboBoxItem>
-                <ComboBoxItem>10 PM</ComboBoxItem>
-                <ComboBoxItem>11 PM</ComboBoxItem>
-            </ComboBox>
-
-            <!--View toggle-->
-            <Button Name="TableButton"
-                    Margin="10,0,1,0"
-                    Click="SwitchView"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}"
-                    Visibility="Collapsed">
-                <Image Source="/Resources\Images\Icons\glyphicons_119_table.png" />
-            </Button>
-            <Button Name="GraphButton"
-                    Click="SwitchView"
-                    Style="{StaticResource AtToolbarButtonStyle}"
-                    Margin="1,0,1,0"
-                    Background="{x:Null}"
-                    Foreground="{x:Null}"
-                    Visibility="Collapsed">
-                <Image Source="/Resources\Images\Icons\glyphicons_040_stats.png" />
-            </Button>
-
         </ToolBar>
+        <ToolBar Name="CustomizableToolBar" Band="1"
+                 BandIndex="3"
+                 VerticalContentAlignment="Stretch"
+                 HorizontalContentAlignment="Stretch"
+                 ToolBarTray.IsLocked="True"
+                 Background="{x:Null}"/>
     </ToolBarPanel>
 </UserControl>

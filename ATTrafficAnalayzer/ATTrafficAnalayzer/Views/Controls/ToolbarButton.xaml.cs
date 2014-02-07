@@ -24,14 +24,9 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
         }
 
-        public String ImagePath
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public String ImagePath { get; set; }
 
-        public String ModeName
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public String ModeName { get; set; }
+
     }
 }
