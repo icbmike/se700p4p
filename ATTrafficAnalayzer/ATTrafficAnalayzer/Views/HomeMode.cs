@@ -41,6 +41,11 @@ namespace ATTrafficAnalayzer.Views
             return _homeView;
         }
 
+        public override UserControl GetConfigurationView()
+        {
+            return null; //Return null as we don't have a configuration screen to present
+        }
+
         public override ImageSource Image { get; protected set; }
         public override string ModeName { get; protected set; }
     }

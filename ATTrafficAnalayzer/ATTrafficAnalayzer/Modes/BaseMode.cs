@@ -33,6 +33,17 @@ namespace ATTrafficAnalayzer.Modes
         public abstract void PopulateToolbar(ToolBar toolbar);
 
         public abstract UserControl GetView();
+        public abstract UserControl GetConfigurationView();
+
+
+        public event EventHandler ConfigurationCreated;
+
+        protected virtual void OnConfigurationCreated()
+        {
+            var handler = ConfigurationCreated;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
 
         public abstract ImageSource Image { get; protected set; }
         public abstract String ModeName { get; protected set; }
