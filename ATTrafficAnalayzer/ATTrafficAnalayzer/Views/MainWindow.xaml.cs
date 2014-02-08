@@ -205,9 +205,7 @@ namespace ATTrafficAnalayzer.Views
             var modes = new List<BaseMode>
             {
                 new HomeMode(ModeChange, _dataSource),
-                new HomeMode(ModeChange, _dataSource),
-                new HomeMode(ModeChange, _dataSource),
-                new HomeMode(ModeChange, _dataSource)
+                new ReportMode(ModeChange, _dataSource)
             };
 
             SettingsToolbar.Modes.AddMany(modes);
@@ -215,8 +213,7 @@ namespace ATTrafficAnalayzer.Views
 
         private void ModeChange(BaseMode mode)
         {
-            System.Windows.Forms.MessageBox.Show("Test");
-            ContentScreen = mode.GetView();
+            ContentScreen.Content = mode.GetView();
             var reportBrowserItems = mode.PopulateReportBrowser();
             if (reportBrowserItems == null)
             {

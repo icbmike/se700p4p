@@ -17,14 +17,7 @@ namespace ATTrafficAnalayzer.Views
         public HomeMode(Action<BaseMode> action, IDataSource dataSource) : base(action)
         {
             ModeName = "Home";
-            try
-            {
-                Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_020_home.png", UriKind.Relative));
-            }
-            catch (Exception e)
-            {
-                
-            }
+            Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_020_home.png", UriKind.Relative));
             _homeView = new Home(dataSource);
         }
 
