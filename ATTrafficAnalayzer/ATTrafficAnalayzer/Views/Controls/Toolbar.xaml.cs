@@ -13,6 +13,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class Toolbar
     {
+        private bool startSettingEnd;
         public DateSettings DateSettings { get { return DateRangeToolBar.DataContext as DateSettings; } }
 
         public ObservableCollection<BaseMode> Modes { get; set; }
@@ -28,21 +29,39 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
             
             DateSettings.StartDate = DataSourceFactory.GetDataSource().GetMostRecentImportedDate();
-            DateSettings.EndDate = DateSettings.StartDate.AddDays(1);
 
         }
 
-        private void DateAndInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void StartDatePickerSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!StartDatePicker.IsDropDownOpen) return;
+
+            if (EndDatePicker != null)
+            {
+                EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
+            }
+
+            RaiseDateRangeChanged();
         }
 
-        private void Toolbar_OnLoaded(object sender, RoutedEventArgs e)
+        private void RaiseDateRangeChanged()
         {
-            
+            if (DateRangeChanged != null)
+                DateRangeChanged(this,
+                    new DateRangeChangedEventArgs {StartDate = DateSettings.StartDate, EndDate = DateSettings.EndDate});
+        }
+
+        private void EndDatePickerSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!EndDatePicker.IsDropDownOpen) return;
+
+            RaiseDateRangeChanged();            
         }
     }
 
     public class DateRangeChangedEventArgs
     {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

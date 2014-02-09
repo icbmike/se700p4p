@@ -274,15 +274,6 @@ namespace ATTrafficAnalayzer.Views
 
         #endregion
 
-        /// <summary>
-        /// Event handler for when an IView syas that volume and date cpunts dont match
-        /// </summary>
-        /// <param configName="sender"></param>
-        private void OnVolumeDateCountsDontMatch(IView sender)
-        {
-
-        }
-
         private void PreferencesMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var preferenceDialog = new DuplicatePolicyPreferenceDialog();
@@ -292,7 +283,7 @@ namespace ATTrafficAnalayzer.Views
 
         private void SettingsToolbar_OnDateRangeChanged(object sender, DateRangeChangedEventArgs args)
         {
-            throw new NotImplementedException();
+            //Breakpoint
         }
 
         private void SettingsToolbar_OnLoaded(object sender, RoutedEventArgs e)

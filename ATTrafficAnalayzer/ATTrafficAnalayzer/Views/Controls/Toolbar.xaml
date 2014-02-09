@@ -68,7 +68,7 @@
                         Width="120"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        SelectedDateChanged="DateAndInterval_SelectionChanged"
+                        SelectedDateChanged="StartDatePickerSelectionChanged"
                         SelectedDateFormat="Short" />
             <Label Name="EndDateLabel"
                    Margin="20,0,0,0"
@@ -86,7 +86,7 @@
                         Width="120"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        SelectedDateChanged="DateAndInterval_SelectionChanged"
+                        SelectedDateChanged="EndDatePickerSelectionChanged"
                         SelectedDateFormat="Short" />
 
         </ToolBar>

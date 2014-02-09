@@ -181,6 +181,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         }
 
         private int _interval;
+        private DateTime _startDate;
+        private DateTime _endDate;
 
         /// <summary>
         /// Calculates the total for each column in the datagrid
@@ -349,9 +351,15 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public void LoadDataTable(DateSettings dateSettings, int interval, int intersection, int day)
         {
-            if(interval != _interval) Invalidate();
+            if(interval != _interval || 
+                _startDate != dateSettings.StartDate || 
+                _endDate != dateSettings.EndDate) 
+                Invalidate();
 
+            _startDate = dateSettings.StartDate;
+            _endDate = dateSettings.EndDate;
             _interval = interval;
+
             try
             {
                 PopulateDataTable(dateSettings, intersection, day, 24, 0);
