@@ -172,8 +172,8 @@
       <DependentUpon>Toolbar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CSVExporter.cs" />
-    <Compile Include="Views\HomeMode.cs" />
-    <Compile Include="Views\ReportMode.cs" />
+    <Compile Include="Modes\HomeMode.cs" />
+    <Compile Include="Modes\ReportMode.cs" />
     <Compile Include="Views\Screens\ReportConfig.xaml.cs">
       <DependentUpon>ReportConfig.xaml</DependentUpon>
     </Compile>

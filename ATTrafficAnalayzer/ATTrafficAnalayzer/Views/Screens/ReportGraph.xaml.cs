@@ -25,6 +25,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly IDataSource _dataSource;
         private Configuration _configuration;
 
+        public int Interval { get; set; }
+
         public Configuration Configuration
         {
             get { return _configuration; }
@@ -51,8 +53,6 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Render();
         }
-
-       
 
         /// <summary>
         /// Method to display and render the graph.
@@ -92,7 +92,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             var dateList = new List<DateTime>();
             for (var date = _dateSettings.StartDate;
                 date < _dateSettings.EndDate;
-                date = date.AddMinutes(_dateSettings.Interval))
+                date = date.AddMinutes(Interval))
                 dateList.Add(date);
 
             var datesDataSource = new EnumerableDataSource<DateTime>(dateList.ToArray());
@@ -105,24 +105,24 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Get volume info from db
                 var approachVolumes = approach.GetVolumesList(intersection, _dateSettings.StartDate, _dateSettings.EndDate);
                 for (int i=0; i < approachVolumes.Count(); i++) {
-                    if (approachVolumes[i] >= 150 && _dateSettings.Interval == 5)
+                    if (approachVolumes[i] >= 150 && Interval == 5)
                         approachVolumes[i] = 150;
                 }                                           
 
                 //Check that we actually have volumes that we need
-                if (approachVolumes.Count / (_dateSettings.Interval / 5) != dateList.Count)
+                if (approachVolumes.Count / (Interval / 5) != dateList.Count)
                 {
                     countsMatch = false;
                     break;
                 }
                 //Sum volumes based on the interval
                 var compressedVolumes = new int[dateList.Count];
-                var valuesPerCell = _dateSettings.Interval / 5;
+                var valuesPerCell = Interval / 5;
                 for (var j = 0; j < dateList.Count; j++)
                 {
                     var cellValue = 0;
 
-                    for (var i = 0; i < _dateSettings.Interval / 5; i++)
+                    for (var i = 0; i < Interval / 5; i++)
                     {
                         cellValue += approachVolumes[i + valuesPerCell * j];
                     }

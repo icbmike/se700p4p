@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
@@ -14,6 +15,7 @@ using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Screens;
 using ToolBar = System.Windows.Controls.ToolBar;
 using UserControl = System.Windows.Controls.UserControl;
+using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace ATTrafficAnalayzer.Views
 {
@@ -23,12 +25,20 @@ namespace ATTrafficAnalayzer.Views
         private ReportViews _viewType;
         private readonly UserControl _view;
 
-        private ReportTable tableView;
-        private ReportGraph graphView;
+        private ReportTable _tableView;
+        private ReportGraph _graphView;
         private UserControl _configView;
         private Configuration _configuration;
+        private int _interval;
 
-        public int Interval { get; set; }
+        public int Interval
+        {
+            get { return _interval; }
+            set { _interval = value;
+                if (_tableView != null) _tableView.Interval = value;
+                if (_graphView != null) _graphView.Interval = value;
+            }
+        }
 
         enum ReportViews
         {
@@ -96,10 +106,18 @@ namespace ATTrafficAnalayzer.Views
                 if (_viewType == ReportViews.Graph) return;
 
                 _viewType = ReportViews.Graph;
-                 if (graphView == null) graphView = new ReportGraph(DateSettings, _dataSource);
-                _view.Content = graphView;
+                 if (_graphView == null) _graphView = CreateGraphView();
+                _view.Content = _graphView;
             };
             return graphButton;
+        }
+
+        private ReportGraph CreateGraphView()
+        {
+            var graphView = new ReportGraph(DateSettings, _dataSource){Interval = Interval};
+            graphView.VolumeDateCountsDontMatch +=
+                (sender, args) => MessageBox.Show("You don't have volume data imported for the range you specified");
+            return graphView;
         }
 
         private Button CreateTableButton()
@@ -119,10 +137,19 @@ namespace ATTrafficAnalayzer.Views
                 if (_viewType == ReportViews.Table) return;
 
                 _viewType = ReportViews.Table;
-                if(tableView == null) tableView = new ReportTable(DateSettings,_dataSource);
-                _view.Content = tableView;
+                if(_tableView == null) _tableView = CreateTableView();
+                _view.Content = _tableView;
             };
             return tableButton;
+        }
+
+        private ReportTable CreateTableView()
+        {
+            var tableView = new ReportTable(DateSettings,_dataSource) {Interval = Interval};
+            tableView.VolumeDateCountsDontMatch +=
+                (sender, args) => MessageBox.Show("You don't have volume data imported for the range you specified");
+            
+            return tableView;
         }
 
         private static Label CreateIntervalLabel()
@@ -184,16 +211,16 @@ namespace ATTrafficAnalayzer.Views
 
             if (_viewType == ReportViews.Table || _viewType == ReportViews.Configuration) //If we're coming from config view
             {
-                if (tableView == null) tableView = new ReportTable(DateSettings, _dataSource);
-                tableView.Configuration = _configuration;
-                _view.Content = tableView;
+                if (_tableView == null) _tableView = CreateTableView();
+                _tableView.Configuration = _configuration;
+                _view.Content = _tableView;
             }
             else if (_viewType == ReportViews.Graph)
             {
                 //Graph view should never be null at this point because it is not the default view, but....
-                if(graphView == null) graphView = new ReportGraph(DateSettings, _dataSource);
-                graphView.Configuration = _configuration;
-                _view.Content = graphView;
+                if (_graphView == null) _graphView = CreateGraphView();
+                _graphView.Configuration = _configuration;
+                _view.Content = _graphView;
             }
         }
 

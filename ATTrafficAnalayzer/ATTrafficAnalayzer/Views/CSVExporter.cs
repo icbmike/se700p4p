@@ -62,7 +62,6 @@ namespace ATTrafficAnalayzer.Views
 
             lines.Add(string.Format("Start date: {0}", start));
             lines.Add(string.Format("End date: {0}", end));
-            lines.Add(string.Format("Interval: {0} min", _settings.Interval));
             lines.Add("");
 
             var timeSpan = _settings.EndDate - _settings.StartDate;

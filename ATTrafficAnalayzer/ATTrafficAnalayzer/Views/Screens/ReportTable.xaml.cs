@@ -21,7 +21,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         readonly IDataSource _dataSource;
         private Configuration _configuration;
-
+        private int _interval;
 
         public ObservableCollection<Approach> Approaches { get; set; }
 
@@ -31,6 +31,16 @@ namespace ATTrafficAnalayzer.Views.Screens
             set {
                 _configuration = value;
                 Render();
+            }
+        }
+
+        public int Interval
+        {
+            get { return _interval; }
+            set
+            {
+                _interval = value;
+                if(_configuration != null)Render();
             }
         }
 
@@ -59,7 +69,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void Render()
         {
             OverallSummaryBorder.Visibility = Visibility.Hidden;
-            
+            Approaches.Clear();
             ScreenTitle.Content = _configuration.Name;
 
             //Load the data for approaches using Task magic
@@ -67,7 +77,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             var tasks = new List<Task>();
             foreach (var approach in _configuration.Approaches)
             {
-                tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Intersection, 0)));
+                tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Interval, Intersection, 0)));
             }
             Task.Factory.ContinueWhenAll(tasks.ToArray(), completedTasks =>
             {
@@ -113,7 +123,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="args"></param>
         public void DateSettingsChanged(DateSettings newSettings)
         {
-            if (!newSettings.StartDate.Equals(DateSettings.StartDate) || !newSettings.EndDate.Equals(DateSettings.EndDate) || !newSettings.Interval.Equals(DateSettings.Interval))
+            if (!newSettings.StartDate.Equals(DateSettings.StartDate) || !newSettings.EndDate.Equals(DateSettings.EndDate))
             {
                 DateSettings = newSettings;
                 Render();

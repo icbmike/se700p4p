@@ -15,9 +15,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #region events
 
-        public delegate void ImportRequestEventHandler(object sender, RoutedEventArgs e);
-
-        public event ImportRequestEventHandler ImportRequested;
+        public event EventHandler ImportRequested;
 
         #endregion
 
@@ -72,7 +70,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="e"></param>
         private void ImportButtonClick(object sender, RoutedEventArgs e)
         {
-            ImportRequested(this, e);
+            if (ImportRequested != null) ImportRequested(this, e);
         }
 
         /// <summary>

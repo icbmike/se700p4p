@@ -134,11 +134,11 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
             // List dates
             var dates = new List<DateTime>();
-            for (var date = settings.StartDate; date < settings.EndDate; date = date.AddMinutes(settings.Interval))
+            for (var date = settings.StartDate; date < settings.EndDate; date = date.AddMinutes(_interval))
                 dates.Add(date);
 
            
-            for (var rowIndex = 0; rowIndex < 60; rowIndex += settings.Interval)
+            for (var rowIndex = 0; rowIndex < 60; rowIndex += _interval)
             {
                 var row = _dataTable.NewRow();
                 for (var columnIndex = 0; columnIndex <= limit; columnIndex++)
@@ -148,7 +148,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                     else
                     {
                         var cellValue = 0;
-                        for (var i = 0; i < settings.Interval/5; i++)
+                        for (var i = 0; i < _interval/5; i++)
                         {
                             cellValue += approachVolumes[(offset + columnIndex - 1)*12 + rowIndex/5 + i];
                         }
@@ -179,6 +179,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             HasDataForDate = true;
             return _dataTable;
         }
+
+        private int _interval;
 
         /// <summary>
         /// Calculates the total for each column in the datagrid
@@ -246,13 +248,6 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return Math.Max(AMPeakVolume, PMPeakVolume);
         }
 
-        private void Invalidate()
-        {
-            _dataTable = null;
-            _amPeak = -1;
-            _pmPeak = -1;
-        }
-
         public int GetAmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
             //Return the value if we've already calculated it
@@ -283,9 +278,16 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             }
             //we can work out the datetime from the position in the table
             //The hour maps to the column pos - 1
-            _amPeakTime = settings.StartDate.AddDays(day).AddHours(columnPos -1).AddMinutes(rowPos * settings.Interval);
+            _amPeakTime = settings.StartDate.AddDays(day).AddHours(columnPos -1).AddMinutes(rowPos * _interval);
             _amPeak = max;
             return AMPeakVolume;
+        }
+
+        private void Invalidate()
+        {
+            _dataTable = null;
+            _amPeak = -1;
+            _pmPeak = -1;
         }
 
         public int GetPmPeak(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
@@ -314,7 +316,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
                     }
                 }
             }
-            _pmPeakTime = settings.StartDate.AddDays(day).AddHours(columnPos - 1).AddMinutes(rowPos * settings.Interval);
+            _pmPeakTime = settings.StartDate.AddDays(day).AddHours(columnPos - 1).AddMinutes(rowPos * _interval);
             _pmPeak = max;
             return PMPeakVolume;
         }
@@ -345,11 +347,14 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return PMPeakTime;
         }
 
-        public void LoadDataTable(DateSettings dateSettings, int intersection, int day)
+        public void LoadDataTable(DateSettings dateSettings, int interval, int intersection, int day)
         {
+            if(interval != _interval) Invalidate();
+
+            _interval = interval;
             try
             {
-                GetDataTable(dateSettings, intersection, day);
+                PopulateDataTable(dateSettings, intersection, day, 24, 0);
                 GetAmPeakTime(dateSettings, intersection, day);
                 GetPmPeakTime(dateSettings, intersection, day);
                 GetTotal(dateSettings, intersection, day);

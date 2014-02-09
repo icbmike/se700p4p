@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Screens;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Modes
 {
     public class HomeMode : BaseMode
     {
@@ -19,7 +17,15 @@ namespace ATTrafficAnalayzer.Views
             ModeName = "Home";
             Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_020_home.png", UriKind.Relative));
             _homeView = new Home(dataSource);
+            
         }
+
+        public event EventHandler ImportRequested
+        {
+            add { _homeView.ImportRequested += value; }
+            remove { _homeView.ImportRequested -= value; }
+        }
+        
 
         /// <summary>
         /// 

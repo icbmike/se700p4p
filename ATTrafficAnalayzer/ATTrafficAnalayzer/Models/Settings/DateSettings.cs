@@ -27,11 +27,6 @@ namespace ATTrafficAnalayzer.Models.Settings
             set { _endDate = value; OnPropertyChanged("EndDate"); }
         }
 
-        /// <summary>
-        ///     Time duration of each interval
-        /// </summary>
-        public int Interval { get; set; }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -47,7 +42,7 @@ namespace ATTrafficAnalayzer.Models.Settings
 
         protected bool Equals(DateSettings other)
         {
-            return _startDate.Equals(other._startDate) && _endDate.Equals(other._endDate) && Interval == other.Interval;
+            return _startDate.Equals(other._startDate) && _endDate.Equals(other._endDate);
         }
 
         public override bool Equals(object obj)
@@ -62,10 +57,7 @@ namespace ATTrafficAnalayzer.Models.Settings
         {
             unchecked
             {
-                var hashCode = _startDate.GetHashCode();
-                hashCode = (hashCode*397) ^ _endDate.GetHashCode();
-                hashCode = (hashCode*397) ^ Interval;
-                return hashCode;
+                return (_startDate.GetHashCode()*397) ^ _endDate.GetHashCode();
             }
         }
     }

@@ -72,6 +72,7 @@ namespace ATTrafficAnalayzer.Views
 
             SettingsToolbar.Modes.AddMany(modes);
 
+            homeMode.ImportRequested += (sender, args) => ImportFile();
             ContentScreen.Content = homeMode.GetView();
         }
 
@@ -279,7 +280,6 @@ namespace ATTrafficAnalayzer.Views
         /// <param configName="sender"></param>
         private void OnVolumeDateCountsDontMatch(IView sender)
         {
-            MessageBox.Show("You don't have volume data imported for the range you specified");
 
         }
 
