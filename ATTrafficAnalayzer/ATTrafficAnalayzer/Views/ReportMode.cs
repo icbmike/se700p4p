@@ -44,8 +44,9 @@ namespace ATTrafficAnalayzer.Views
             Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_029_notes_2.png", UriKind.Relative));
 
             _dataSource = dataSource;
-            _viewType = ReportViews.Table;
+            _viewType = ReportViews.Configuration;
             _view = new UserControl();
+            ShowConfigurationView();
             Interval = 5;
         }
 

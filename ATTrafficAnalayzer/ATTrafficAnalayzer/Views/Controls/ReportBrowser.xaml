@@ -6,7 +6,9 @@
              mc:Ignorable="d"
              Width="200"
              d:DesignHeight="1100"
-             d:DesignWidth="200">
+             d:DesignWidth="200"
+             BorderBrush="DimGray"
+             BorderThickness="0,0,1,0">
     <DockPanel LastChildFill="True">
 
         <Label Content="Configuration Browser"
