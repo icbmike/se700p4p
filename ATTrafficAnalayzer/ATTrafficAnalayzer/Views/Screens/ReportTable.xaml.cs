@@ -18,36 +18,39 @@ namespace ATTrafficAnalayzer.Views.Screens
         public DateSettings DateSettings { get; set; }
         public int Intersection { get { return _configuration.Intersection; }  }
      
-        private Configuration _configuration;
 
         readonly IDataSource _dataSource;
+        private Configuration _configuration;
 
 
         public ObservableCollection<Approach> Approaches { get; set; }
+
+        public Configuration Configuration
+        {
+            get { return _configuration; }
+            set {
+                _configuration = value;
+                Render();
+            }
+        }
+
         /// <summary>
         /// Constructor create a component displaying the specified config
         /// </summary>
         /// <param name="dateSettings">Lets the graph view get the date range at the time of construction</param>
-        /// <param name="configName">The config to be displayed</param>
         /// <param name="dataSource">The dataSource to get volume information from</param>
-        public ReportTable(DateSettings dateSettings, string configName, IDataSource dataSource)
+        /// <param name="configuration"></param>
+        /// <param name="configName">The config to be displayed</param>
+        public ReportTable(DateSettings dateSettings, IDataSource dataSource)
         {
             _dataSource = dataSource;
-            _configuration = _dataSource.GetConfiguration(configName);
             DateSettings = dateSettings;
 
             Approaches = new ObservableCollection<Approach>();
            
             DataContext = this;
-            Loaded += ReportTable_Loaded;
             InitializeComponent();
 
-        }
-
-        private void ReportTable_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-            Render();
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                     if (approach.HasDataForDate) Approaches.Add(approach);
                     else
                     {
-                        if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this);
+                        if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this, EventArgs.Empty);
                         break;
                     }
                 } 
@@ -117,20 +120,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        /// <summary>
-        /// Event Handler for ReportChanged event from Configuration Browser
-        /// </summary>
-        /// <param name="newSelection"></param>
-        public void SelectedReportChanged(string newSelection)
-        {
-            if (newSelection != null && !_configuration.Name.Equals(newSelection))
-            {
-                _configuration = _dataSource.GetConfiguration(newSelection);
-                Render();
-            }
-        }
-
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+        public event EventHandler VolumeDateCountsDontMatch;
     }
 
 }

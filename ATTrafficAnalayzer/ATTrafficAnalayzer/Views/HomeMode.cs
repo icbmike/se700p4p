@@ -14,22 +14,11 @@ namespace ATTrafficAnalayzer.Views
     {
         private readonly Home _homeView;
 
-        public HomeMode(Action<BaseMode> action, IDataSource dataSource) : base(action)
+        public HomeMode(Action<BaseMode> action, IDataSource dataSource) : base(action, null)
         {
             ModeName = "Home";
             Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_020_home.png", UriKind.Relative));
             _homeView = new Home(dataSource);
-        }
-
-        public override List<IConfigurable> PopulateReportBrowser()
-        {
-            //Home mode doesn't display anything in the report browser
-            return null;
-        }
-
-        public override void PopulateToolbar(ToolBar toolbar)
-        {
-            //Home mode doesn't do anything to the toolbar
         }
 
         /// <summary>
@@ -39,11 +28,6 @@ namespace ATTrafficAnalayzer.Views
         public override UserControl GetView()
         {
             return _homeView;
-        }
-
-        public override UserControl GetConfigurationView()
-        {
-            return null; //Return null as we don't have a configuration screen to present
         }
 
         public override ImageSource Image { get; protected set; }

@@ -30,7 +30,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             Render();
         }
 
-        public List<IConfigurable> ItemsSource { get; set; }
+        public List<Configurable> ItemsSource { get; set; }
 
         private void Render()
         {

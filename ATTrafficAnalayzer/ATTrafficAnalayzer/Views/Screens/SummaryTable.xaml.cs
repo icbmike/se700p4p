@@ -87,7 +87,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+        public event EventHandler VolumeDateCountsDontMatch;
 
 
         //Event handler for when weekends checkbox state changes

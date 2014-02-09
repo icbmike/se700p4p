@@ -63,7 +63,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         #region Event Handlers
 
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+        public event EventHandler VolumeDateCountsDontMatch;
 
 
         /// <summary>

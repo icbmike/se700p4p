@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -7,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Screens;
@@ -24,6 +26,7 @@ namespace ATTrafficAnalayzer.Views
         private ReportTable tableView;
         private ReportGraph graphView;
         private UserControl _configView;
+        private Configuration _configuration;
 
         public int Interval { get; set; }
 
@@ -34,17 +37,21 @@ namespace ATTrafficAnalayzer.Views
             Configuration
         }
 
-        public ReportMode(Action<BaseMode> modeChange, IDataSource dataSource) : base(modeChange)
+        public ReportMode(Action<BaseMode> modeChange, IDataSource dataSource, DateSettings dateSettings) : base(modeChange, dateSettings)
         {
+            //Base Mode stuff
+            ModeName = "Report";
+            Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_029_notes_2.png", UriKind.Relative));
+
             _dataSource = dataSource;
             _viewType = ReportViews.Table;
             _view = new UserControl();
             Interval = 5;
         }
 
-        public override List<IConfigurable> PopulateReportBrowser()
+        public override List<Configurable> PopulateReportBrowser()
         {
-            return null;
+            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this)).Cast<Configurable>().ToList();
         }
 
         public override void PopulateToolbar(ToolBar toolbar)
@@ -106,7 +113,7 @@ namespace ATTrafficAnalayzer.Views
                 if (_viewType != ReportViews.Graph) return;
 
                 _viewType = ReportViews.Table;
-                //if(tableView == null) tableView = new ReportTable(_dataSource);
+                if(tableView == null) tableView = new ReportTable(DateSettings,_dataSource);
                 _view.Content = tableView;
             };
             return tableButton;
@@ -153,12 +160,43 @@ namespace ATTrafficAnalayzer.Views
             return _view;
         }
 
-        public override UserControl GetConfigurationView()
+        public override void ShowConfigurationView()
         {
-            if (_configView != null) return _configView;
+            //Lazily instatiate config view
+            if (_configView == null)
+            {
+                _configView = new ReportConfig(_dataSource);
+            }
+            _viewType = ReportViews.Configuration;
+            _view.Content = _configView;
+        }
 
-            _configView = new ReportConfig(_dataSource);
-            return _configView;
+        public override void ShowConfigurable(Configurable configurable)
+        {
+            //Need to check if it's the same configuration before we go off and do a whole database call
+            _configuration = _dataSource.GetConfiguration(configurable.Name);
+
+            if (_viewType == ReportViews.Table )
+            {
+                tableView.Configuration = _configuration;
+                _view.Content = tableView;
+            }
+            else if (_viewType == ReportViews.Graph)
+            {
+                graphView.Configuration = _configuration;
+                _view.Content = graphView;
+            }
+        }
+
+        public override void EditConfigurable(Configurable configurable)
+        {
+            //Lazily instatiate config view
+            if (_configView == null)
+            {
+                _configView = new ReportConfig(configurable.Name, _dataSource);
+            }
+            _viewType = ReportViews.Configuration;
+            _view.Content = _configView;
         }
 
         public override ImageSource Image { get; protected set; }

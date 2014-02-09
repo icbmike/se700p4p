@@ -19,12 +19,9 @@ namespace ATTrafficAnalayzer.Views
     /// </summary>
     public partial class MainWindow
     {
-        private Mode _mode;
         private DefaultDupicatePolicy _defaultDupicatePolicy;
         private readonly IDataSource _dataSource;
         private DuplicatePolicy _skipAllOrOne;
-        private int _amPeakIndex;
-        private int _pmPeakIndex;
 
         /// <summary>
         /// Default constructor used by App
@@ -37,144 +34,9 @@ namespace ATTrafficAnalayzer.Views
 
             InitializeComponent();
 
-            //Set the content screen to be a Home
-            var homeScreen = CreateHomeScreen();
-            ImportCompleted += homeScreen.ImportCompletedHandler;
-
-            ChangeScreen(homeScreen);
-            _mode = Mode.Report;
         }
 
         #region Screen Switching
-
-        /// <summary>
-        /// Chang the content screen to be the supplied UserControl
-        /// </summary>
-        /// <param configName="screen"></param>
-        private void ChangeScreen(UserControl screen)
-        {
-            ContentScreen.Content = screen;
-        }
-
-        private ReportConfig CreateReportConfigurationScreen(String configToBeEdited)
-        {
-            ReportConfig reportConfigurationScreen;
-            if (configToBeEdited == null)
-            {
-                //Create new configuartion screen if we switched from a different mode
-                reportConfigurationScreen = new ReportConfig(_dataSource)
-                {
-                    Popup = {Visibility = Visibility.Visible},
-                    Visibility = Visibility.Visible
-                };
-            }
-            else
-            {
-                reportConfigurationScreen = new ReportConfig(configToBeEdited, _dataSource);
-            }
-
-            reportConfigurationScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-            reportConfigurationScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-            return reportConfigurationScreen;
-        }
-
-        private Home CreateHomeScreen()
-        {
-            var homeScreen = new Home(_dataSource);
-            homeScreen.ImportRequested += FileImportMenuItem_Click;
-            return homeScreen;
-        }
-
-        /// <summary>
-        /// Handler for when the report browser says that the user wants to create or edit a configuration.
-        /// </summary>
-        /// <param name="sender">Configuration Browser</param>
-        /// <param name="args"></param>
-        private void ReportBrowser_OnEditConfigurationEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
-        {
-            //Either a new Config or Summary
-            if (_mode.Equals(Mode.Report))
-            {
-                //Check if volumes exist for the selected range
-                if (_dataSource.VolumesExistForDateRange(SettingsToolbar.DateSettings.StartDate, SettingsToolbar.DateSettings.EndDate))
-                {
-                    //Create and display a new Configuration config screen
-                    var reportConfigurationScreen = CreateReportConfigurationScreen(args.New ? null : args.ConfigToBeEdited);
-                    ChangeScreen(reportConfigurationScreen);
-                }
-                else
-                {
-                    MessageBox.Show("You haven't imported volume data for the selected date range");
-                }
-            }
-            else
-            {
-                //Check volumes exist for specified date range
-                if (_dataSource.VolumesExistForMonth(SettingsToolbar.Month))
-                {
-                    var summaryConfigScreen = CreateSummaryConfigScreen(args.New ? null : args.ConfigToBeEdited);
-                    ChangeScreen(summaryConfigScreen);
-                }
-                else
-                {
-                    MessageBox.Show("You haven't imported volume data for the selected month");
-                }
-            }
-        }
-
-        private SummaryConfig CreateSummaryConfigScreen(string s)
-        {
-            //Create and display a new summary config screen
-            var summaryConfigScreen = new SummaryConfig(_dataSource);
-            summaryConfigScreen.ConfigurationSaved += ReportBrowser.ConfigurationSavedEventHandler;
-            summaryConfigScreen.ConfigurationSaved += IConfigScreen_ConfigurationSaved;
-            return summaryConfigScreen;
-        }
-
-        /// <summary>
-        /// Handler for when the selected report changes
-        /// </summary>
-        /// <param configName="sender"></param>
-        /// <param configName="args"></param>
-        /// <param name="sender"></param>
-        public void ReportChangedHandler(object sender, ReportBrowser.SelectedReportChangeEventHandlerArgs args)
-        {
-            //Run same code as when a configuration has been saved
-            if (args.SelectionCleared || args.ReportName == null) return;
-
-            ShowReportScreen(args.ReportName);
-
-            var view = (ContentScreen.Content as IView);
-                if (view != null) view.SelectedReportChanged(args.ReportName);
-        }
-
-        /// <summary>
-        /// Handler for when a configuration has been saved
-        /// </summary>
-        /// <param configName="sender"></param>
-        /// <param configName="args"></param>
-        void IConfigScreen_ConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
-        {
-            ShowReportScreen(args.Name);
-        }
-
-        private void ShowReportScreen(string configName)
-        {
-            
-            //Display the appropriate Table view
-            if (_mode.Equals(Mode.Report))
-            {
-                var screen = new ReportTable(SettingsToolbar.DateSettings, configName, _dataSource);
-                screen.VolumeDateCountsDontMatch += OnVolumeDateCountsDontMatch;
-                ChangeScreen(screen);
-            }
-            else if (_mode.Equals(Mode.Summary))
-            {
-                var screen = new SummaryTable(SettingsToolbar.DateSettings, configName, _dataSource);
-                ChangeScreen(screen);
-
-            }
-        }
 
         #endregion
 
@@ -205,7 +67,7 @@ namespace ATTrafficAnalayzer.Views
             var modes = new List<BaseMode>
             {
                 new HomeMode(ModeChange, _dataSource),
-                new ReportMode(ModeChange, _dataSource)
+                new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings)
             };
 
             SettingsToolbar.Modes.AddMany(modes);
@@ -358,12 +220,12 @@ namespace ATTrafficAnalayzer.Views
 
             if (dlg.ShowDialog() == true)
             {
-                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.DateSettings, args.ConfigToBeEdited, _amPeakIndex, _pmPeakIndex, _dataSource);
-
-                if (_mode.Equals(Mode.Report))
-                    csvExporter.ExportReport();
-                else if (_mode.Equals(Mode.Summary))
-                    csvExporter.ExportSummary();
+//                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.DateSettings, args.ConfigToBeEdited, _amPeakIndex, _pmPeakIndex, _dataSource);
+//
+//                if (_mode.Equals(Mode.Report))
+//                    csvExporter.ExportReport();
+//                else if (_mode.Equals(Mode.Summary))
+//                    csvExporter.ExportSummary();
             }
         }
 
@@ -417,8 +279,6 @@ namespace ATTrafficAnalayzer.Views
         {
             MessageBox.Show("You don't have volume data imported for the range you specified");
 
-            var homeScreen = CreateHomeScreen();
-            ChangeScreen(homeScreen);
         }
 
         private void PreferencesMenuItem_OnClick(object sender, RoutedEventArgs e)

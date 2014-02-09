@@ -92,6 +92,6 @@ namespace ATTrafficAnalayzer.Views.Controls
             Render();
         }
 
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+        public event EventHandler VolumeDateCountsDontMatch;
     }
 }

@@ -25,6 +25,12 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly IDataSource _dataSource;
         private Configuration _configuration;
 
+        public Configuration Configuration
+        {
+            get { return _configuration; }
+            set { _configuration = value; Render(); }
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -34,7 +40,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _dateSettings = dateSettings;
             _dataSource = dataSource;
-            _configuration = _dataSource.GetConfiguration(configName);
 
             InitializeComponent();
 
@@ -47,6 +52,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             Render();
         }
+
+       
 
         /// <summary>
         /// Method to display and render the graph.
@@ -155,7 +162,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 if (VolumeDateCountsDontMatch != null)
                 {
-                    VolumeDateCountsDontMatch(this);
+                    VolumeDateCountsDontMatch(this, EventArgs.Empty);
                 }
             }
         }
@@ -203,6 +210,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        public event VolumeAndDateCountsDontMatchHandler VolumeDateCountsDontMatch;
+        public event EventHandler VolumeDateCountsDontMatch;
     }
 }

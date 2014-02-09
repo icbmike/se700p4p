@@ -71,11 +71,7 @@
         </Canvas>
 
         <controls:ReportBrowser x:Name="ReportBrowser"
-                                EditConfigurationEvent="ReportBrowser_OnEditConfigurationEvent"
-                                Visibility="Collapsed"
-                                ReportChanged="ReportChangedHandler"
-                                ExportEvent="ReportBrowser_OnExportEvent"
- />
+                                Visibility="Collapsed" />
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="ContentScreen"
