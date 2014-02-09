@@ -23,6 +23,7 @@ namespace ATTrafficAnalayzer.Views
         private readonly IDataSource _dataSource;
         private DuplicatePolicy _skipAllOrOne;
         private BaseMode _currentMode;
+        private HomeMode _homeMode;
 
         /// <summary>
         /// Default constructor used by App
@@ -260,18 +261,30 @@ namespace ATTrafficAnalayzer.Views
 
         private void CreateModes()
         {
-            var homeMode = new HomeMode(ModeChange, _dataSource);
+            //Construct the modes
+            _homeMode = new HomeMode(ModeChange, _dataSource);
+            var reportMode = new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
+            
+            //Add them to the toolbar
             var modes = new List<BaseMode>
             {
-                homeMode,
-                new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings)
+                _homeMode,
+                reportMode
             };
-
             SettingsToolbar.Modes.AddMany(modes);
 
-            _currentMode = homeMode;
-            homeMode.ImportRequested += (sender, args) => ImportFile();
-            ContentScreen.Content = homeMode.GetView();
+            //Do specifics for each mode
+            _currentMode = _homeMode; //Make homeMode the starting mode
+            _homeMode.ImportRequested += (sender, args) => ImportFile();
+            ContentScreen.Content = _homeMode.GetView();
+
+            //Setup ReportMode
+            reportMode.DateVolumeCountsDontMatch += ReportModeOnDateVolumeCountsDontMatch;
+        }
+
+        private void ReportModeOnDateVolumeCountsDontMatch(object sender, EventArgs eventArgs)
+        {
+            ModeChange(_homeMode);
         }
 
         private void ModeChange(BaseMode mode)

@@ -37,6 +37,21 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
+        //Do some sweet event bubbling
+        public event EventHandler DateVolumeCountsDontMatch
+        {
+            add
+            {
+                _tableView.VolumeDateCountsDontMatch += value;
+                _graphView.VolumeDateCountsDontMatch += value;
+            }
+            remove
+            {
+                _tableView.VolumeDateCountsDontMatch -= value;
+                _graphView.VolumeDateCountsDontMatch -= value;
+            }
+        }
+
         enum ReportViews
         {
             Table,
@@ -60,6 +75,11 @@ namespace ATTrafficAnalayzer.Modes
             ShowConfigurationView();
             
             Interval = 5;
+
+            //Create the views
+            _graphView = CreateGraphView();
+            _tableView = CreateTableView();
+
         }
 
         public override void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args)
@@ -224,6 +244,7 @@ namespace ATTrafficAnalayzer.Modes
                 if (_tableView == null) _tableView = CreateTableView();
                 _tableView.Configuration = _configuration;
                 _view.Content = _tableView;
+                _currentView = ReportViews.Table;
             }
             else if (_currentView == ReportViews.Graph)
             {
@@ -231,6 +252,7 @@ namespace ATTrafficAnalayzer.Modes
                 if (_graphView == null) _graphView = CreateGraphView();
                 _graphView.Configuration = _configuration;
                 _view.Content = _graphView;
+                _currentView = ReportViews.Graph;
             }
         }
 
