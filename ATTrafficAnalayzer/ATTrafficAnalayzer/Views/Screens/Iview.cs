@@ -11,7 +11,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public interface IView
     {
-        void DateSettingsChanged(DateSettings newDateSettings);
+        void DateSettingsChanged();
         
         event EventHandler VolumeDateCountsDontMatch;
     }

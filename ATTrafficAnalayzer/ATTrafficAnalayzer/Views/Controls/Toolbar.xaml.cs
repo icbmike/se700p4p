@@ -34,12 +34,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void StartDatePickerSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!StartDatePicker.IsDropDownOpen) return;
-
+            
             if (EndDatePicker != null)
             {
                 EndDatePicker.SelectedDate = StartDatePicker.SelectedDate.Value.AddDays(1);
             }
+
+            if (!StartDatePicker.IsDropDownOpen) return;
 
             RaiseDateRangeChanged();
         }

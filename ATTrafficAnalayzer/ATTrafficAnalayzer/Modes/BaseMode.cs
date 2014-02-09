@@ -44,6 +44,11 @@ namespace ATTrafficAnalayzer.Modes
             //Do nothing
         }
 
+        public virtual void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args)
+        {
+            //Don't even care G
+        }
+
         /// <summary>
         /// All modes should have a view
         /// </summary>

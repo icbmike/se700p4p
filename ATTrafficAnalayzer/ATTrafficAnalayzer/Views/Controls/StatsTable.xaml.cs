@@ -80,9 +80,8 @@ namespace ATTrafficAnalayzer.Views.Controls
         }
 
         //Stuff changed
-        public void DateSettingsChanged(DateSettings newDateSettings)
+        public void DateSettingsChanged()
         {            
-            _dateSettings = newDateSettings;
             Render();
         }
 

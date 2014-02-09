@@ -121,13 +121,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        public void DateSettingsChanged(DateSettings newSettings)
+        public void DateSettingsChanged()
         {
-            if (!newSettings.StartDate.Equals(DateSettings.StartDate) || !newSettings.EndDate.Equals(DateSettings.EndDate))
-            {
-                DateSettings = newSettings;
-                Render();
-            }
+            Render();
         }
 
         public event EventHandler VolumeDateCountsDontMatch;

@@ -22,6 +22,7 @@ namespace ATTrafficAnalayzer.Views
         private DefaultDupicatePolicy _defaultDupicatePolicy;
         private readonly IDataSource _dataSource;
         private DuplicatePolicy _skipAllOrOne;
+        private BaseMode _currentMode;
 
         /// <summary>
         /// Default constructor used by App
@@ -35,10 +36,6 @@ namespace ATTrafficAnalayzer.Views
             InitializeComponent();
 
         }
-
-        #region Screen Switching
-
-        #endregion
 
         #region File Importing
 
@@ -61,37 +58,7 @@ namespace ATTrafficAnalayzer.Views
                 BulkImport();
         }
 
-        private void AddModes()
-        {
-            var homeMode = new HomeMode(ModeChange, _dataSource);
-            var modes = new List<BaseMode>
-            {
-                homeMode,
-                new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings)
-            };
-
-            SettingsToolbar.Modes.AddMany(modes);
-
-            homeMode.ImportRequested += (sender, args) => ImportFile();
-            ContentScreen.Content = homeMode.GetView();
-        }
-
-        private void ModeChange(BaseMode mode)
-        {
-            ContentScreen.Content = mode.GetView();
-            var reportBrowserItems = mode.PopulateReportBrowser();
-            if (reportBrowserItems == null)
-            {
-                ReportBrowser.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ReportBrowser.Configurables.AddMany(reportBrowserItems);
-                ReportBrowser.Visibility = Visibility.Visible;
-            }
-            SettingsToolbar.CustomizableToolBar.Items.Clear();
-            mode.PopulateToolbar(SettingsToolbar.CustomizableToolBar);
-        }
+       
 
         /// <summary>
         /// Asks the user to repeatedly import files
@@ -283,12 +250,46 @@ namespace ATTrafficAnalayzer.Views
 
         private void SettingsToolbar_OnDateRangeChanged(object sender, DateRangeChangedEventArgs args)
         {
-            //Breakpoint
+            _currentMode.DateRangeChangedEventHandler(sender, args);
         }
 
         private void SettingsToolbar_OnLoaded(object sender, RoutedEventArgs e)
         {
-            AddModes();
+            CreateModes();
+        }
+
+        private void CreateModes()
+        {
+            var homeMode = new HomeMode(ModeChange, _dataSource);
+            var modes = new List<BaseMode>
+            {
+                homeMode,
+                new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings)
+            };
+
+            SettingsToolbar.Modes.AddMany(modes);
+
+            _currentMode = homeMode;
+            homeMode.ImportRequested += (sender, args) => ImportFile();
+            ContentScreen.Content = homeMode.GetView();
+        }
+
+        private void ModeChange(BaseMode mode)
+        {
+            _currentMode = mode;
+            ContentScreen.Content = mode.GetView();
+            var reportBrowserItems = mode.PopulateReportBrowser();
+            if (reportBrowserItems == null)
+            {
+                ReportBrowser.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ReportBrowser.Configurables.AddMany(reportBrowserItems);
+                ReportBrowser.Visibility = Visibility.Visible;
+            }
+            SettingsToolbar.CustomizableToolBar.Items.Clear();
+            mode.PopulateToolbar(SettingsToolbar.CustomizableToolBar);
         }
     }
 }

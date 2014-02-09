@@ -72,14 +72,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <param name="sender">The Toolbar</param>
         /// <param name="args">Event args containing the new start and end datetime objects</param>
         /// <param name="newSettings"></param>
-        public void DateSettingsChanged(DateSettings newSettings)
+        public void DateSettingsChanged()
         {
-            if (!newSettings.StartDate.Equals(_dateSettings.StartDate) || !newSettings.EndDate.Equals(_dateSettings.EndDate))
-            {
-                _dateSettings = newSettings;
-
                 Render();
-            }
         }
         /// <summary>
         /// Not needed to be implemented for this screen, as it does not rely on reports

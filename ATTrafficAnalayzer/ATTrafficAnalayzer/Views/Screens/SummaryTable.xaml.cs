@@ -65,11 +65,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         }
 
-        public void DateSettingsChanged(DateSettings newDateSettings)
+        public void DateSettingsChanged()
         {
-            _dateSettings = newDateSettings;
-            _statsTables.ForEach(table => table.DateSettingsChanged(newDateSettings));
-            
             Render();
         }
 

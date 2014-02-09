@@ -5,24 +5,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Modes;
+using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Screens;
-using ToolBar = System.Windows.Controls.ToolBar;
-using UserControl = System.Windows.Controls.UserControl;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
-namespace ATTrafficAnalayzer.Views
+namespace ATTrafficAnalayzer.Modes
 {
     public class ReportMode : BaseMode
     {
         private readonly IDataSource _dataSource;
-        private ReportViews _viewType;
+        private ReportViews _currentView;
         private readonly UserControl _view;
 
         private ReportTable _tableView;
@@ -57,12 +54,25 @@ namespace ATTrafficAnalayzer.Views
             _dataSource = dataSource;
             
             //Make the starting view the configuration screen
-            _viewType = ReportViews.Configuration;
+            _currentView = ReportViews.Configuration;
             _view = new UserControl(); // A container that we give to the main window but populate ourselves
 
             ShowConfigurationView();
             
             Interval = 5;
+        }
+
+        public override void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args)
+        {
+            switch (_currentView)
+            {
+                case ReportViews.Table:
+                    _tableView.DateSettingsChanged();
+                    break;
+                case ReportViews.Graph:
+                    _graphView.DateSettingsChanged();
+                    break;
+            }
         }
 
         public override List<Configurable> PopulateReportBrowser()
@@ -103,9 +113,9 @@ namespace ATTrafficAnalayzer.Views
             };
             graphButton.Click += (sender, args) =>
             {
-                if (_viewType == ReportViews.Graph) return;
+                if (_currentView == ReportViews.Graph) return;
 
-                _viewType = ReportViews.Graph;
+                _currentView = ReportViews.Graph;
                  if (_graphView == null) _graphView = CreateGraphView();
                 _view.Content = _graphView;
             };
@@ -134,9 +144,9 @@ namespace ATTrafficAnalayzer.Views
             };
             tableButton.Click += (sender, args) =>
             {
-                if (_viewType == ReportViews.Table) return;
+                if (_currentView == ReportViews.Table) return;
 
-                _viewType = ReportViews.Table;
+                _currentView = ReportViews.Table;
                 if(_tableView == null) _tableView = CreateTableView();
                 _view.Content = _tableView;
             };
@@ -200,7 +210,7 @@ namespace ATTrafficAnalayzer.Views
             {
                 _configView = new ReportConfig(_dataSource);
             }
-            _viewType = ReportViews.Configuration;
+            _currentView = ReportViews.Configuration;
             _view.Content = _configView;
         }
 
@@ -209,13 +219,13 @@ namespace ATTrafficAnalayzer.Views
             //Need to check if it's the same configuration before we go off and do a whole database call
             _configuration = _dataSource.GetConfiguration(configurable.Name);
 
-            if (_viewType == ReportViews.Table || _viewType == ReportViews.Configuration) //If we're coming from config view
+            if (_currentView == ReportViews.Table || _currentView == ReportViews.Configuration) //If we're coming from config view
             {
                 if (_tableView == null) _tableView = CreateTableView();
                 _tableView.Configuration = _configuration;
                 _view.Content = _tableView;
             }
-            else if (_viewType == ReportViews.Graph)
+            else if (_currentView == ReportViews.Graph)
             {
                 //Graph view should never be null at this point because it is not the default view, but....
                 if (_graphView == null) _graphView = CreateGraphView();
@@ -231,7 +241,7 @@ namespace ATTrafficAnalayzer.Views
             {
                 _configView = new ReportConfig(configurable.Name, _dataSource);
             }
-            _viewType = ReportViews.Configuration;
+            _currentView = ReportViews.Configuration;
             _view.Content = _configView;
         }
 

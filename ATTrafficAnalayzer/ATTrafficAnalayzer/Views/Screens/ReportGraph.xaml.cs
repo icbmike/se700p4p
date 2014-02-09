@@ -194,9 +194,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             Plotter.Legend.Visibility = Visibility.Collapsed;
         }
 
-        public void DateSettingsChanged(DateSettings newSettings)
+        public void DateSettingsChanged()
         {
-            _dateSettings = newSettings;
             Render();
         }
 
