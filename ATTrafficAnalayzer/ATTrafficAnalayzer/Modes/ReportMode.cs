@@ -137,6 +137,7 @@ namespace ATTrafficAnalayzer.Modes
 
                 _currentView = ReportViews.Graph;
                  if (_graphView == null) _graphView = CreateGraphView();
+                if (_configuration != null) _graphView.Configuration = _configuration;
                 _view.Content = _graphView;
             };
             return graphButton;
@@ -168,6 +169,8 @@ namespace ATTrafficAnalayzer.Modes
 
                 _currentView = ReportViews.Table;
                 if(_tableView == null) _tableView = CreateTableView();
+                if (_configuration != null) _tableView.Configuration = _configuration;
+
                 _view.Content = _tableView;
             };
             return tableButton;
