@@ -1,14 +1,19 @@
-﻿namespace ATTrafficAnalayzer.Modes
+﻿using ATTrafficAnalayzer.Models;
+
+namespace ATTrafficAnalayzer.Modes
 {
     class ReportConfigurable : Configurable
     {
-        public ReportConfigurable(string name, BaseMode mode) : base(name, mode)
+        private readonly IDataSource _dataSource;
+
+        public ReportConfigurable(string name, BaseMode mode, IDataSource dataSource) : base(name, mode)
         {
+            _dataSource = dataSource;
         }
 
-        public override void Delete(Configurable configurable)
+        public override void Delete()
         {
-            
+            _dataSource.RemoveConfiguration(Name);   
         }
     }
 }

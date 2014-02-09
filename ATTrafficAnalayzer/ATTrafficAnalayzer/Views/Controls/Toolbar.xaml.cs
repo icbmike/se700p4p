@@ -23,7 +23,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public Toolbar()
         {
-            
             Modes = new ObservableCollection<BaseMode>();
             
             InitializeComponent();

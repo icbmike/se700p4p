@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,41 +21,24 @@ namespace ATTrafficAnalayzer.Views.Controls
         private bool _hasModeChanged;
         private Mode _mode;
         private bool _selectionCleared;
-        
+
         public ReportBrowser()
         {
-            InitializeComponent();
             DataContext = this;
-            _mode = Mode.Report;
+            Configurables = new ObservableCollection<Configurable>();
+            InitializeComponent();
+            
             _dataSource = DataSourceFactory.GetDataSource();
-            Render();
+
         }
 
-        public List<Configurable> ItemsSource { get; set; }
-
-        private void Render()
-        {
-            StandardReportsTreeView.ItemsSource = _mode.Equals(Mode.Report)
-                                                      ? _dataSource.GetConfigurationNames()
-                                                      : _dataSource.GetSummaryNames();
-        }
+        public ObservableCollection<Configurable> Configurables { get; set; }
 
         #region New/Edit Configuration
 
         public delegate void EditConfigurationEventHandler(object sender, EditConfigurationEventHandlerArgs args);
 
         public event EditConfigurationEventHandler EditConfigurationEvent;
-
-        public void ConfigurationSavedEventHandler(object sender, ConfigurationSavedEventArgs args)
-        {
-            var treeViewItem =
-                StandardReportsTreeView.ItemContainerGenerator.ContainerFromIndex(StandardReportsTreeView.Items.Count -
-                                                                                  1) as TreeViewItem;
-            if (treeViewItem != null)
-                treeViewItem.IsSelected = true;
-
-            Render();
-        }
 
         public class EditConfigurationEventHandlerArgs
         {
@@ -96,38 +80,10 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #region Selected Configuration
 
-        public delegate void SelectedReportChangeEventHandler(object sender, SelectedReportChangeEventHandlerArgs args);
 
-        public event SelectedReportChangeEventHandler ReportChanged;
-
-        public string GetSelectedConfiguration()
+        public Configurable GetSelectedConfiguration()
         {
-            return StandardReportsTreeView.SelectedItem as string;
-        }
-
-        private void StandardReportsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (!_hasModeChanged)
-                if (_selectionCleared)
-                {
-                    if (ReportChanged != null)
-                        ReportChanged(this, new SelectedReportChangeEventHandlerArgs(_selectionCleared));
-                    _selectionCleared = false;
-                }
-                else
-                {
-                    if (ReportChanged != null)
-                        ReportChanged(this, new SelectedReportChangeEventHandlerArgs(GetSelectedConfiguration()));
-                }
-
-            _hasModeChanged = false;
-        }
-
-        public void ClearSelectedConfig()
-        {
-            _selectionCleared = true;
-            (StandardReportsTreeView.ItemContainerGenerator.ContainerFromItem(StandardReportsTreeView.SelectedItem) as
-             TreeViewItem).IsSelected = false;
+            return (ConfigurablesListView.SelectedValue as Configurable);
         }
 
         public class SelectedReportChangeEventHandlerArgs
@@ -159,13 +115,13 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
+            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
         }
 
         private void removeBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            var selectedItem = StandardReportsTreeView.SelectedItem as string;
+            var selectedItem = ConfigurablesListView.SelectedItem as string;
 
             //Configure the message box to be displayed 
             string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
@@ -204,7 +160,6 @@ namespace ATTrafficAnalayzer.Views.Controls
                                 icon = MessageBoxImage.Information;
                                 MessageBox.Show(messageBoxText, caption, button, icon);
                                 //Refresh the view
-                                Render();
                             };
                     backgroundWorker.RunWorkerAsync();
 
@@ -220,10 +175,18 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void exportBtn_Click(object sender, RoutedEventArgs e)
         {
-            ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration()));
+            ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
         }
 
         #endregion
 
+        private void ConfigurablesListViewOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 1)
+            {
+                //The regular case
+                GetSelectedConfiguration().View();
+            }
+        }
     }
 }

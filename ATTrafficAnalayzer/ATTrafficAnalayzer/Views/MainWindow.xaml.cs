@@ -57,20 +57,22 @@ namespace ATTrafficAnalayzer.Views
         /// <param configName="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             if (_dataSource.VolumesExist())
                 BulkImport();
         }
 
         private void AddModes()
         {
+            var homeMode = new HomeMode(ModeChange, _dataSource);
             var modes = new List<BaseMode>
             {
-                new HomeMode(ModeChange, _dataSource),
+                homeMode,
                 new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings)
             };
 
             SettingsToolbar.Modes.AddMany(modes);
+
+            ContentScreen.Content = homeMode.GetView();
         }
 
         private void ModeChange(BaseMode mode)
@@ -83,7 +85,7 @@ namespace ATTrafficAnalayzer.Views
             }
             else
             {
-                ReportBrowser.ItemsSource = reportBrowserItems;
+                ReportBrowser.Configurables.AddMany(reportBrowserItems);
                 ReportBrowser.Visibility = Visibility.Visible;
             }
             SettingsToolbar.CustomizableToolBar.Items.Clear();

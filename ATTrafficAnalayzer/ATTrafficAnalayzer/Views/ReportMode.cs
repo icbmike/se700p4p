@@ -57,7 +57,7 @@ namespace ATTrafficAnalayzer.Views
 
         public override List<Configurable> PopulateReportBrowser()
         {
-            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this)).Cast<Configurable>().ToList();
+            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this, _dataSource)).Cast<Configurable>().ToList();
         }
 
         public override void PopulateToolbar(ToolBar toolbar)
@@ -182,13 +182,16 @@ namespace ATTrafficAnalayzer.Views
             //Need to check if it's the same configuration before we go off and do a whole database call
             _configuration = _dataSource.GetConfiguration(configurable.Name);
 
-            if (_viewType == ReportViews.Table )
+            if (_viewType == ReportViews.Table || _viewType == ReportViews.Configuration) //If we're coming from config view
             {
+                if (tableView == null) tableView = new ReportTable(DateSettings, _dataSource);
                 tableView.Configuration = _configuration;
                 _view.Content = tableView;
             }
             else if (_viewType == ReportViews.Graph)
             {
+                //Graph view should never be null at this point because it is not the default view, but....
+                if(graphView == null) graphView = new ReportGraph(DateSettings, _dataSource);
                 graphView.Configuration = _configuration;
                 _view.Content = graphView;
             }

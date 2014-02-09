@@ -16,17 +16,17 @@ namespace ATTrafficAnalayzer.Modes
             Mode = mode;
         }
 
-        public abstract void Delete(Configurable configurable);
+        public abstract void Delete();
         
 
-        public virtual void Edit(Configurable configurable)
+        public virtual void Edit()
         {
-            Mode.EditConfigurable(configurable);
+            Mode.EditConfigurable(this);
         }
 
-        public virtual void View(Configurable configurable)
+        public virtual void View()
         {
-            Mode.ShowConfigurable(configurable);
+            Mode.ShowConfigurable(this);
         }
     }
 }

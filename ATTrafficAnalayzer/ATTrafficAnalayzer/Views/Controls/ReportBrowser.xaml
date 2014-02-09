@@ -9,7 +9,8 @@
              d:DesignWidth="200"
              BorderBrush="DimGray"
              BorderThickness="0,0,1,0">
-    <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True"
+               >
 
         <Label Content="Configuration Browser"
                FontWeight="Normal"
@@ -67,41 +68,42 @@
             </Button>
         </DockPanel>
 
-        <StackPanel 
-                   DockPanel.Dock="Top">
-            <TreeView Name="StandardReportsTreeView"
-                      x:FieldModifier="private"
-                      BorderBrush="{x:Null}"
-                      SelectedItemChanged="StandardReportsTreeView_SelectedItemChanged">
-                <TreeView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="_Edit"
-                                  Click="editBtn_Click">
-                            <MenuItem.Icon>
-                                <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Export"
-                                  Click="exportBtn_Click">
-                            <MenuItem.Icon>
-                                <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Remove"
-                                  Click="removeBtn_Click">
-                            <MenuItem.Icon>
-                                <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </TreeView.ContextMenu>
-            </TreeView>
-            <ProgressBar 
-                Height="20"
-                Name="ProgressBar"
-                Visibility="Collapsed"
-                IsIndeterminate="True"/>
-        </StackPanel>
-
+        <ListView Name="ConfigurablesListView"
+                  x:FieldModifier="private"
+                  BorderBrush="{x:Null}"
+                  DockPanel.Dock="Top"
+                  ItemsSource="{Binding Configurables}"
+                  DisplayMemberPath="Name"
+                  SelectionChanged="ConfigurablesListViewOnSelectionChanged">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="_Edit"
+                              Click="editBtn_Click">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="_Export"
+                              Click="exportBtn_Click">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="_Remove"
+                              Click="removeBtn_Click">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+        <ProgressBar
+            DockPanel.Dock="Bottom"
+            VerticalAlignment="Bottom"
+            Height="20"
+            Name="ProgressBar"
+            Visibility="Collapsed"
+            IsIndeterminate="True" />
     </DockPanel>
 </UserControl>
