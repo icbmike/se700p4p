@@ -43,10 +43,15 @@ namespace ATTrafficAnalayzer.Views
             ModeName = "Report";
             Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\glyphicons_029_notes_2.png", UriKind.Relative));
 
+
             _dataSource = dataSource;
+            
+            //Make the starting view the configuration screen
             _viewType = ReportViews.Configuration;
-            _view = new UserControl();
+            _view = new UserControl(); // A container that we give to the main window but populate ourselves
+
             ShowConfigurationView();
+            
             Interval = 5;
         }
 
@@ -88,10 +93,10 @@ namespace ATTrafficAnalayzer.Views
             };
             graphButton.Click += (sender, args) =>
             {
-                if (_viewType != ReportViews.Table) return;
+                if (_viewType == ReportViews.Graph) return;
 
                 _viewType = ReportViews.Graph;
-                // if (graphView == null) graphView = new ReportGraph(_dataSource);
+                 if (graphView == null) graphView = new ReportGraph(DateSettings, _dataSource);
                 _view.Content = graphView;
             };
             return graphButton;
@@ -111,7 +116,7 @@ namespace ATTrafficAnalayzer.Views
             };
             tableButton.Click += (sender, args) =>
             {
-                if (_viewType != ReportViews.Graph) return;
+                if (_viewType == ReportViews.Table) return;
 
                 _viewType = ReportViews.Table;
                 if(tableView == null) tableView = new ReportTable(DateSettings,_dataSource);

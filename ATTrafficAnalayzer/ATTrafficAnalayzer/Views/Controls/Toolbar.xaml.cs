@@ -29,6 +29,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             InitializeComponent();
             
             DateSettings.StartDate = DataSourceFactory.GetDataSource().GetMostRecentImportedDate();
+            DateSettings.EndDate = DateSettings.StartDate.AddDays(1);
 
         }
 
