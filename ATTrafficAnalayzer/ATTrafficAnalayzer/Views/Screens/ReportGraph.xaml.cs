@@ -24,8 +24,17 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
         private readonly IDataSource _dataSource;
         private Configuration _configuration;
+        private int _interval;
 
-        public int Interval { get; set; }
+        public int Interval
+        {
+            get { return _interval; }
+            set
+            {
+                _interval = value;
+                if (_configuration != null) Render();
+            }
+        }
 
         public Configuration Configuration
         {
