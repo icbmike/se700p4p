@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
+using ATTrafficAnalayzer.Modes;
 
 namespace ATTrafficAnalayzer.Models
 {
@@ -82,5 +83,7 @@ namespace ATTrafficAnalayzer.Models
 
         void AddIntersection(int intersection, IEnumerable<int> detectors);
 
+        List<String> GetRedLightRunningConfigurationNames();
+        void RemoveRedLightRunningConfiguration(string name);
     }
 }

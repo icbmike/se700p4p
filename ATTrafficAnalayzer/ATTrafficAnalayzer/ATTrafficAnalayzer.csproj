@@ -134,6 +134,7 @@
     <Compile Include="Modes\Configurable.cs" />
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
+    <Compile Include="Modes\RedLightRunningMode.cs" />
     <Compile Include="Modes\ReportConfigurable.cs" />
     <Compile Include="Modes\SummaryConfigurable.cs" />
     <Compile Include="Modes\SummaryMode.cs" />

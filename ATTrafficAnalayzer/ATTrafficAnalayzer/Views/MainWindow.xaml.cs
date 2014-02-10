@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
@@ -326,26 +322,5 @@ namespace ATTrafficAnalayzer.Views
         {
             _currentMode.ShowConfigurationView();
         }
-    }
-
-    public class RedLightRunningMode : BaseMode
-    {
-        private readonly UserControl _viewContainer;
-
-        public RedLightRunningMode(Action<BaseMode> modeChange, IDataSource dataSource, DateSettings dateSettings) : base(modeChange,dateSettings)
-        {
-            _viewContainer = new UserControl();
-
-            ModeName = "Red Light Running";
-            Image = new BitmapImage(new Uri("/Resources\\Images\\Icons\\red_traffic_light.png", UriKind.Relative));
-        }
-
-        public override UserControl GetView()
-        {
-            return _viewContainer;
-        }
-
-        public override ImageSource Image { get; protected set; }
-        public override string ModeName { get; protected set; }
     }
 }

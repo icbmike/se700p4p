@@ -174,5 +174,15 @@ namespace ATTrafficAnalayzer.Test
         {
             throw new NotImplementedException();
         }
+
+        public List<string> GetRedLightRunningConfigurationNames()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveRedLightRunningConfiguration(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

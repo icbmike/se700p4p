@@ -466,6 +466,16 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        public List<string> GetRedLightRunningConfigurationNames()
+        {
+            return new List<string> {"One", "Two"};
+        }
+
+        public void RemoveRedLightRunningConfiguration(string name)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         ///     Get the volumes for a single detector at a specific datetime
         /// </summary>
