@@ -39,6 +39,7 @@ namespace ATTrafficAnalayzer.Modes
             //Specific mode stuff
             _siteConfigScreen = new ReportConfig(_dataSource);
             _configScreen = new RedLightRunningConfigScreen(_dataSource);
+            _configScreen.ConfigurationSaved += ConfigViewOnConfigurationSaved;
             _tableView = new RedLightRunningViewScreen(DateSettings, _dataSource);
 
             //Set the startup screen
@@ -55,6 +56,12 @@ namespace ATTrafficAnalayzer.Modes
         public override void PopulateToolbar(ToolBar toolbar)
         {
 
+        }
+
+        private void ConfigViewOnConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
+        {
+            args.Mode = this; //Set the mode now that we know it
+            OnConfigurationSaved(args); //Bubble the event up
         }
 
         public override void EditConfigurable(Configurable configurable)

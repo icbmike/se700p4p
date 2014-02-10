@@ -596,6 +596,42 @@ namespace ATTrafficAnalayzer.Models
             return new RedLightRunningConfiguration {Name = name, Sites = reportConfigurations};
         }
 
+        public void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration)
+        {
+            //Insert into regular table
+            using (var connection = new SQLiteConnection(DbPath))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "INSERT INTO red_light_running_configurations (name) VALUES (@name);";
+                    command.Parameters.AddWithValue("@name", configuration.Name);
+                    command.ExecuteNonQuery();
+
+                    command.Parameters.Clear();
+                    command.CommandText = "SELECT last_insert_rowid();";
+                    var rlrId = (Int64)command.ExecuteScalar();
+
+                    foreach (var reportConfiguration in configuration.Sites)
+                    {
+                        command.Parameters.Clear();
+                        command.CommandText = "SELECT config_id FROM configs WHERE name = @name;";
+                        command.Parameters.AddWithValue("@name", reportConfiguration.Name);
+                        var configId = (Int64)command.ExecuteScalar();
+
+                        command.Parameters.Clear();
+                        command.CommandText =
+                            @"INSERT INTO red_light_running_site_mapping (red_light_running_config_id, site_config_id) 
+                                                VALUES (@rlrId, @config_id);";
+                        command.Parameters.AddWithValue("@rlrId", rlrId);
+                        command.Parameters.AddWithValue("@config_id", configId);
+                        command.ExecuteNonQuery();
+
+                    }
+                }
+            }
+        }
+
         /// <summary>
         ///     Get the volumes for a single detector at a specific datetime
         /// </summary>

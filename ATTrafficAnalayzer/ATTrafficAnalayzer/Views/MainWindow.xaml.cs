@@ -281,11 +281,15 @@ namespace ATTrafficAnalayzer.Views
             ContentScreen.Content = _homeMode.GetView();
 
             //Setup ReportMode
-            reportMode.DateVolumeCountsDontMatch += ReportModeOnDateVolumeCountsDontMatch;
+            reportMode.DateVolumeCountsDontMatch += OnDateVolumeCountsDontMatch;
             reportMode.ConfigurationSaved += OnConfigurationCreated;
 
             //Setup SummaryMode
             summaryMode.ConfigurationSaved += OnConfigurationCreated;
+
+            //Setup Red Light Running Mode
+            reportMode.DateVolumeCountsDontMatch += OnDateVolumeCountsDontMatch;
+            redLightRunningMode.ConfigurationSaved += OnConfigurationCreated;
         }
 
         private void OnConfigurationCreated(object sender, ConfigurationSavedEventArgs eventArgs)
@@ -294,7 +298,7 @@ namespace ATTrafficAnalayzer.Views
             ReportBrowser.Configurables.AddMany(eventArgs.Mode.PopulateReportBrowser());
         }
 
-        private void ReportModeOnDateVolumeCountsDontMatch(object sender, EventArgs eventArgs)
+        private void OnDateVolumeCountsDontMatch(object sender, EventArgs eventArgs)
         {
             ModeChange(_homeMode);
         }

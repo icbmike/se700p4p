@@ -86,5 +86,6 @@ namespace ATTrafficAnalayzer.Models
         List<String> GetRedLightRunningConfigurationNames();
         void RemoveRedLightRunningConfiguration(string name);
         RedLightRunningConfiguration GetRedLightRunningConfiguration(string name);
+        void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration);
     }
 }

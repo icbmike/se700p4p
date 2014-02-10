@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using ATTrafficAnalayzer.Annotations;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
+using ATTrafficAnalayzer.Modes;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -39,8 +40,18 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void SaveButtonOnClick(object sender, RoutedEventArgs e)
         {
-            
+            Configuration.Sites = ReportConfigurations.Where(model => model.Selected)
+                .Select(model => _dataSource.GetConfiguration(model.Name))
+                .ToList();
+
+            _dataSource.SaveRedLightRunningConfiguration(Configuration);
+
+            //Fire the saved event
+            if (ConfigurationSaved != null)
+                ConfigurationSaved(this, new ConfigurationSavedEventArgs(Configuration.Name, null)); //We don't have a reference to the containing mode right now
         }
+
+        public event ConfigurationSavedEventHandler ConfigurationSaved;
 
         private void CheckboxHeaderOnChange(object sender, RoutedEventArgs e)
         {

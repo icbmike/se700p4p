@@ -80,7 +80,6 @@ namespace ATTrafficAnalayzer.Modes
             if (handler != null) handler(this, args);
         }
 
-
         public abstract ImageSource Image { get; protected set; }
         public abstract String ModeName { get; protected set; }
 

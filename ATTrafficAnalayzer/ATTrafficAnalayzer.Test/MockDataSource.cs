@@ -189,5 +189,10 @@ namespace ATTrafficAnalayzer.Test
         {
             throw new NotImplementedException();
         }
+
+        public void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
