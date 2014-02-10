@@ -993,7 +993,7 @@ namespace ATTrafficAnalayzer.Models
         /// </summary>
         /// <param name="name">ApproachName of summary</param>
         /// <returns>Rows in the Summary</returns>
-        public IEnumerable<SummaryRow> GetSummaryConfig(string name)
+        public SummaryConfiguration GetSummaryConfig(string name)
         {
             var summaries = new List<SummaryRow>();
 
@@ -1025,7 +1025,7 @@ namespace ATTrafficAnalayzer.Models
                 }
                 conn.Close();
             }
-            return summaries;
+            return new SummaryConfiguration {SummaryRows = summaries, Name = name};
         }
 
         /// <summary>

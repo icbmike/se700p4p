@@ -124,6 +124,7 @@
     <Compile Include="ApproachSummaryConverter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Models\DatabaseMetrics.cs" />
+    <Compile Include="Models\ReportConfiguration\SummaryConfiguration.cs" />
     <Compile Include="Models\ReportConfiguration\SummaryRow.cs" />
     <Compile Include="Models\DataSourceFactory.cs" />
     <Compile Include="Models\DuplicatePolicy.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
     <Compile Include="Modes\ReportConfigurable.cs" />
+    <Compile Include="Modes\SummaryConfigurable.cs" />
     <Compile Include="Modes\SummaryMode.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Annotations1.cs" />
@@ -194,8 +196,8 @@
     <Compile Include="Views\Screens\SummaryTable.xaml.cs">
       <DependentUpon>SummaryTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\SummaryConfig.xaml.cs">
-      <DependentUpon>SummaryConfig.xaml</DependentUpon>
+    <Compile Include="Views\Screens\SummaryConfigScreen.xaml.cs">
+      <DependentUpon>SummaryConfigScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Screens\ReportTable.xaml.cs">
       <DependentUpon>ReportTable.xaml</DependentUpon>
@@ -263,7 +265,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Screens\SummaryConfig.xaml">
+    <Page Include="Views\Screens\SummaryConfigScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

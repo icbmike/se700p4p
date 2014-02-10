@@ -40,7 +40,7 @@ namespace ATTrafficAnalayzer.Models
         
         Configuration GetConfiguration(string name);
         
-        IEnumerable<SummaryRow> GetSummaryConfig(string name);
+        SummaryConfiguration GetSummaryConfig(string name);
 
         List<String> GetSummaryNames();
         

@@ -13,7 +13,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class SummaryConfig
+    public partial class SummaryConfigScreen
     {
         private readonly IDataSource _dataSource;
         private bool IsNewConfig = true;
@@ -23,7 +23,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Default constructor for when constructing a new summary config
         /// </summary>
-        public SummaryConfig(IDataSource dataSource)
+        public SummaryConfigScreen(IDataSource dataSource)
         {
             _dataSource = dataSource;
             
@@ -36,13 +36,13 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// Constructor for when editing an existing summary config
         /// </summary>
         /// <param name="summaryToBeEdited">The summary config to be edited</param>
-        public SummaryConfig(string summaryToBeEdited, IDataSource dataSource) : this(dataSource)
+        public SummaryConfigScreen(string summaryToBeEdited, IDataSource dataSource) : this(dataSource)
         {
             IsNewConfig = false;
             _oldName = summaryToBeEdited;
             ConfigNameTextBox.Text = summaryToBeEdited;
 
-            foreach (var summaryRow in _dataSource.GetSummaryConfig(summaryToBeEdited))
+            foreach (var summaryRow in _dataSource.GetSummaryConfig(summaryToBeEdited).SummaryRows)
             {
                 Rows.Add(summaryRow);
             }
@@ -67,7 +67,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error(exception, "SummaryConfig");
+                    Logger.Error(exception, "SummaryConfigScreen");
                 }
             }
             //Get the config name

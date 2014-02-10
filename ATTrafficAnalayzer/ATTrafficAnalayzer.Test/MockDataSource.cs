@@ -105,7 +105,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public IEnumerable<SummaryRow> GetSummaryConfig(string name)
+        public SummaryConfiguration GetSummaryConfig(string name)
         {
             throw new NotImplementedException();
         }

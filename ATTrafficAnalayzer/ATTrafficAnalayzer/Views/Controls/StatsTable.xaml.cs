@@ -16,16 +16,16 @@ namespace ATTrafficAnalayzer.Views.Controls
     {
         private readonly IDataSource _dataSource;
         private DateSettings _dateSettings;
-        private string _configName;
+        private SummaryConfiguration _configuration;
         private readonly string _title;
         private readonly Func<DateTime, SummaryRow, int> _calculate;
 
         public StatsTable(IDataSource dataSource, DateSettings dateSettings,
-            string configName, string title, Func<DateTime, SummaryRow, int> calculate)
+            SummaryConfiguration configuration, string title, Func<DateTime, SummaryRow, int> calculate)
         {
             _dataSource = dataSource;
             _dateSettings = dateSettings;
-            _configName = configName;
+            _configuration = configuration;
             _title = title;
             _calculate = calculate;
             InitializeComponent();
@@ -35,7 +35,6 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void Render()
         {
-            var summaryConfig = _dataSource.GetSummaryConfig(_configName);
             StatsSummary.Html = "[b]" + _title + "[/b]";
 
             //Setup the grid
@@ -51,7 +50,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             });
 
             //Each route column
-            foreach (var summaryRow in summaryConfig)
+            foreach (var summaryRow in _configuration.SummaryRows)
             {
                 var routeColumn = dataTable.Columns.Add(summaryRow.RouteName);
                 grid.Columns.Add(new GridViewColumn
@@ -71,7 +70,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 var dataRow = dataTable.NewRow();
                 dataRow["Date"] = day.ToShortDateString();
-                foreach (var summaryRow in summaryConfig)
+                foreach (var summaryRow in _configuration.SummaryRows)
                 {
                     dataRow[summaryRow.RouteName] = _calculate(day, summaryRow);
                 }
@@ -84,13 +83,5 @@ namespace ATTrafficAnalayzer.Views.Controls
         {            
             Render();
         }
-
-        public void SelectedReportChanged(string newSelection)
-        {
-            _configName = newSelection;
-            Render();
-        }
-
-        public event EventHandler VolumeDateCountsDontMatch;
     }
 }

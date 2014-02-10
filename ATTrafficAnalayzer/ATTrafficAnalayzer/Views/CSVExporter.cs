@@ -17,7 +17,7 @@ namespace ATTrafficAnalayzer.Views
         private readonly IDataSource _dataSource;
 //        private readonly DataTableHelper _dtHelper;
         private readonly Configuration _config;
-        private readonly IEnumerable<SummaryRow> _summaryConfig;
+        private readonly SummaryConfiguration _summaryConfig;
         private readonly string _configName;
         private int _amPeakIndex = 8;
         private int _pmPeakIndex = 4;
@@ -116,7 +116,7 @@ namespace ATTrafficAnalayzer.Views
             var configColumnNamesString = string.Join(",", configColumnNames);
             lines.Add(configColumnNamesString);
 
-            foreach (var row in _summaryConfig)
+            foreach (var row in _summaryConfig.SummaryRows)
             {
                 string[] rowString = { row.RouteName, row.SelectedIntersectionIn.ToString(), string.Join(" ", row.DetectorsIn), row.DividingFactorIn.ToString(), row.SelectedIntersectionOut.ToString(), string.Join(" ", row.DetectorsOut), row.DividingFactorOut.ToString() };
                 lines.Add(string.Join(",", rowString));
