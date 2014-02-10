@@ -94,6 +94,25 @@ namespace ATTrafficAnalayzer.Models
 
                         command.ExecuteNonQuery();
 
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [red_light_running_configurations] (
+                                               [id] int NOT NULL
+                                              ,[name] nvarchar(100) NOT NULL
+                                              ,CONSTRAINT [PK_red_light_running_configurations] PRIMARY KEY ([id])
+                                              );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [red_light_running_site_mapping] (
+                                                [red_light_running_config_id] int NOT NULL
+                                              , [site_config_id] int NOT NULL
+                                              , CONSTRAINT [PK_red_light_running_site_mapping] PRIMARY KEY ([red_light_running_config_id], [site_config_id])
+                                              , FOREIGN KEY ([red_light_running_config_id]) REFERENCES [red_light_running_configurations] ([id]) ON DELETE CASCADE ON UPDATE CASCADE
+                                              , FOREIGN KEY ([site_config_id]) REFERENCES [configs] ([config_id]) ON DELETE CASCADE ON UPDATE CASCADE
+                                              );";
+
+                        command.ExecuteNonQuery();
+
                         command.CommandText =
                             @"CREATE UNIQUE INDEX IF NOT EXISTS [UQ__monthly_summaries__0000000000000050] ON [monthly_summaries] ([name] ASC);";
                         command.ExecuteNonQuery();
@@ -468,10 +487,32 @@ namespace ATTrafficAnalayzer.Models
 
         public List<string> GetRedLightRunningConfigurationNames()
         {
-            return new List<string> {"One", "Two"};
+            var names = new List<string>();
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "SELECT name FROM red_light_running_configurations;";
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            names.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+            return names;
         }
 
         public void RemoveRedLightRunningConfiguration(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RedLightRunningConfiguration GetRedLightRunningConfiguration(string name)
         {
             throw new NotImplementedException();
         }
@@ -692,9 +733,9 @@ namespace ATTrafficAnalayzer.Models
         /// </summary>
         /// <param name="name">Configuration name</param>
         /// <returns>configuration</returns>
-        public Configuration GetConfiguration(string name)
+        public ReportConfiguration.ReportConfiguration GetConfiguration(string name)
         {
-            Configuration result = null;
+            ReportConfiguration.ReportConfiguration result = null;
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
@@ -736,7 +777,7 @@ namespace ATTrafficAnalayzer.Models
                                 currentApproach.Detectors.Add((reader.GetByte(3)));
                             }
 
-                            result = new Configuration(name, intersection, approaches, this);
+                            result = new ReportConfiguration.ReportConfiguration(name, intersection, approaches, this);
                         }
                     }
                 }
@@ -798,7 +839,7 @@ namespace ATTrafficAnalayzer.Models
         ///     Create a report record in the database
         /// </summary>
         /// <param name="config">Configuration configuration</param>
-        public void AddConfiguration(Configuration config)
+        public void AddConfiguration(ReportConfiguration.ReportConfiguration config)
         {
             using (var conn = new SQLiteConnection(DbPath))
             {

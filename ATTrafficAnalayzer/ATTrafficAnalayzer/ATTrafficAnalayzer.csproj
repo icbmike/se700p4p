@@ -120,6 +120,7 @@
     <Compile Include="ApproachSummaryConverter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Models\DatabaseMetrics.cs" />
+    <Compile Include="Models\RedLightRunningConfiguration.cs" />
     <Compile Include="Models\ReportConfiguration\SummaryConfiguration.cs" />
     <Compile Include="Models\ReportConfiguration\SummaryRow.cs" />
     <Compile Include="Models\DataSourceFactory.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Modes\Configurable.cs" />
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
+    <Compile Include="Modes\RedLightRunningConfigurable.cs" />
     <Compile Include="Modes\RedLightRunningMode.cs" />
     <Compile Include="Modes\ReportConfigurable.cs" />
     <Compile Include="Modes\SummaryConfigurable.cs" />
@@ -175,11 +177,17 @@
     <Compile Include="Views\CSVExporter.cs" />
     <Compile Include="Modes\HomeMode.cs" />
     <Compile Include="Modes\ReportMode.cs" />
+    <Compile Include="Views\Screens\RedLightRunningConfigScreen.xaml.cs">
+      <DependentUpon>RedLightRunningConfigScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Screens\RedLightRunningViewScreen.xaml.cs">
+      <DependentUpon>RedLightRunningViewScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Screens\ReportConfig.xaml.cs">
       <DependentUpon>ReportConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Settings\DateSettings.cs" />
-    <Compile Include="Models\ReportConfiguration\Configuration.cs" />
+    <Compile Include="Models\ReportConfiguration\ReportConfiguration.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
     <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />
     <Compile Include="Views\Screens\Faults.xaml.cs">
@@ -240,6 +248,14 @@
     <Page Include="Views\Controls\Parago\ProgressDialog\ProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Screens\RedLightRunningConfigScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Screens\RedLightRunningViewScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Screens\ReportConfig.xaml">
       <SubType>Designer</SubType>

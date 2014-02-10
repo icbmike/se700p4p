@@ -95,7 +95,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public Configuration GetConfiguration(string name)
+        public ReportConfiguration GetConfiguration(string name)
         {
             throw new NotImplementedException();
         }
@@ -120,7 +120,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public void AddConfiguration(Configuration config)
+        public void AddConfiguration(ReportConfiguration config)
         {
             throw new NotImplementedException();
         }
@@ -181,6 +181,11 @@ namespace ATTrafficAnalayzer.Test
         }
 
         public void RemoveRedLightRunningConfiguration(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RedLightRunningConfiguration GetRedLightRunningConfiguration(string name)
         {
             throw new NotImplementedException();
         }

@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Modes
         private ReportTable _tableView;
         private ReportGraph _graphView;
         private ReportConfig _configView;
-        private Configuration _configuration;
+        private ReportConfiguration _configuration;
         private int _interval;
 
         public int Interval

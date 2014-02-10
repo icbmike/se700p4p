@@ -219,10 +219,10 @@ namespace ATTrafficAnalayzer.Test
             Assert.AreEqual(3, _dataSource.GetDetectorsAtIntersection(1234).Count);
         }
 
-        private static Configuration CreateTestConfiguration()
+        private static ReportConfiguration CreateTestConfiguration()
         {
             var testApproach = new Approach("test_approach", new List<int> {1, 2, 3}, _dataSource);
-            var config = new Configuration("test_config", 1234, new List<Approach> {testApproach}, _dataSource);
+            var config = new ReportConfiguration("test_config", 1234, new List<Approach> {testApproach}, _dataSource);
             return config;
         }
     }

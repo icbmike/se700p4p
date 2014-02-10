@@ -17,6 +17,14 @@ namespace ATTrafficAnalayzer.Modes
         private ReportConfig _siteConfigScreen;
         private RedLightRunningConfigScreen _configScreen;
         private RedLightRunningViewScreen _tableView;
+        private Views _currentView;
+
+        enum Views
+        {
+            SiteConfigScreen,
+            ViewScreen,
+            ConfigScreen
+        }
 
         public RedLightRunningMode(Action<BaseMode> modeChange, IDataSource dataSource, DateSettings dateSettings) : base(modeChange,dateSettings)
         {
@@ -33,6 +41,10 @@ namespace ATTrafficAnalayzer.Modes
             _configScreen = new RedLightRunningConfigScreen(_dataSource);
             _tableView = new RedLightRunningViewScreen(DateSettings, _dataSource);
 
+            //Set the startup screen
+            _currentView = Views.ConfigScreen;
+            _viewContainer.Content = _configScreen;
+
         }
 
         public override UserControl GetView()
@@ -42,6 +54,7 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void PopulateToolbar(ToolBar toolbar)
         {
+
         }
 
         public override void EditConfigurable(Configurable configurable)
@@ -51,6 +64,7 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void ShowConfigurable(Configurable configurable)
         {
+            _dataSource.GetRedLightRunningConfiguration(configurable.Name);
         }
 
         public override void ShowConfigurationView()

@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ATTrafficAnalayzer.Models;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
@@ -19,8 +20,11 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class RedLightRunningConfigScreen
     {
-        public RedLightRunningConfigScreen()
+        private readonly IDataSource _dataSource;
+
+        public RedLightRunningConfigScreen(IDataSource dataSource)
         {
+            _dataSource = dataSource;
             InitializeComponent();
         }
     }

@@ -29,7 +29,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         protected readonly IDataSource DataSource;
-        private Configuration _configuration;
+        private ReportConfiguration _configuration;
         private int _interval;
 
         protected BaseReportView(DateSettings dateSettings, IDataSource dataSource)
@@ -38,7 +38,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             DataSource = dataSource;
         }
 
-        public Configuration Configuration
+        public ReportConfiguration Configuration
         {
             get { return _configuration; }
             set

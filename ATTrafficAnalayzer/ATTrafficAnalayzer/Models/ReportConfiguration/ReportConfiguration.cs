@@ -6,7 +6,7 @@ using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models.ReportConfiguration
 {
-    public class Configuration
+    public class ReportConfiguration
     {
         private Approach _currentBusiest;
         private DateTime? _amPeakPeriod;
@@ -25,7 +25,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <param name="intersection">Intersection of the report</param>
         /// <param name="approaches">List of approaches contained in the report</param>
         /// <param name="dataSource"></param>
-        public Configuration(string name, int intersection, List<Approach> approaches, IDataSource dataSource)
+        public ReportConfiguration(string name, int intersection, List<Approach> approaches, IDataSource dataSource)
         {
             Name = name;
             Intersection = intersection;
