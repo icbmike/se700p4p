@@ -12,7 +12,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class Faults : IView, INotifyPropertyChanged
+    public partial class Faults :  INotifyPropertyChanged
     {
         private DateSettings _dateSettings;
         private readonly IDataSource _dataSource;

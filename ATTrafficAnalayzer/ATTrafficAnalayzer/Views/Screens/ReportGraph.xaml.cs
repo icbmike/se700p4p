@@ -16,40 +16,18 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSGraph.xaml
     /// </summary>
-    public partial class ReportGraph : IView
+    public partial class ReportGraph 
     {
         private static readonly Brush[] SeriesColours = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.BlueViolet, Brushes.Black, Brushes.DarkOrange };
 
-        private DateSettings _dateSettings;
         private readonly List<LineAndMarker<MarkerPointsGraph>> _series;
-        private readonly IDataSource _dataSource;
-        private Configuration _configuration;
-        private int _interval;
-
-        public int Interval
-        {
-            get { return _interval; }
-            set
-            {
-                _interval = value;
-                if (_configuration != null) Render();
-            }
-        }
-
-        public Configuration Configuration
-        {
-            get { return _configuration; }
-            set { _configuration = value; Render(); }
-        }
-
+       
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dateSettings"> Lets the Graph screen get the start and end date at the time of construction</param>
-        public ReportGraph(DateSettings dateSettings, IDataSource dataSource)
+        public ReportGraph(DateSettings dateSettings, IDataSource dataSource) : base(dateSettings, dataSource)
         {
-            _dateSettings = dateSettings;
-            _dataSource = dataSource;
 
             InitializeComponent();
 
@@ -66,24 +44,24 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Method to display and render the graph.
         /// </summary>
-        private void Render()
+        protected override void Render()
         {
 
-            if (!_dataSource.VolumesExistForDateRange(_dateSettings.StartDate, _dateSettings.EndDate))
+            if (!DataSource.VolumesExistForDateRange(DateSettings.StartDate, DateSettings.EndDate))
             {
                 MessageBox.Show("You haven't imported volume data for the selected date range");
                 return;
             }
 
-            if (_configuration == null)
+            if (Configuration == null)
             {
                 MessageBox.Show("Construct your new report or select a report from the list on the left");
                 return;
             }
 
-            ScreenTitle.Content = _configuration.Name;
+            ScreenTitle.Content = Configuration.Name;
 
-            var intersection = _configuration.Intersection;
+            var intersection = Configuration.Intersection;
 
             //Clear anything that's already on the graph
             foreach (var graph in _series)
@@ -99,8 +77,8 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             // List dates
             var dateList = new List<DateTime>();
-            for (var date = _dateSettings.StartDate;
-                date < _dateSettings.EndDate;
+            for (var date = DateSettings.StartDate;
+                date < DateSettings.EndDate;
                 date = date.AddMinutes(Interval))
                 dateList.Add(date);
 
@@ -109,10 +87,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             
             var brushCounter = 0;
             var countsMatch = true;
-            foreach (var approach in _configuration.Approaches)
+            foreach (var approach in Configuration.Approaches)
             {
                 //Get volume info from db
-                var approachVolumes = approach.GetVolumesList(intersection, _dateSettings.StartDate, _dateSettings.EndDate);
+                var approachVolumes = approach.GetVolumesList(intersection, DateSettings.StartDate, DateSettings.EndDate);
                 for (int i=0; i < approachVolumes.Count(); i++) {
                     if (approachVolumes[i] >= 150 && Interval == 5)
                         approachVolumes[i] = 150;
@@ -168,10 +146,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             //If previously counts didn't match, tell anyone who cares
             if (!countsMatch)
             {
-                if (VolumeDateCountsDontMatch != null)
-                {
-                    VolumeDateCountsDontMatch(this, EventArgs.Empty);
-                }
+               OnVolumeDateCountsDontMatch();
             }
         }
 
@@ -203,20 +178,5 @@ namespace ATTrafficAnalayzer.Views.Screens
             Plotter.Legend.Visibility = Visibility.Collapsed;
         }
 
-        public void DateSettingsChanged()
-        {
-            Render();
-        }
-
-        public void SelectedReportChanged(string newSelection)
-        {
-            if (newSelection != null && !_configuration.Name.Equals(newSelection))
-            {
-                _configuration = _dataSource.GetConfiguration(newSelection);
-                Render();
-            }
-        }
-
-        public event EventHandler VolumeDateCountsDontMatch;
     }
 }

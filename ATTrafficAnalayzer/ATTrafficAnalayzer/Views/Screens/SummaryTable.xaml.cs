@@ -11,7 +11,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class SummaryTable : IView
+    public partial class SummaryTable
     {
         private string _configName;
 

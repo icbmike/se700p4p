@@ -12,7 +12,7 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// <summary>
     /// Interaction logic for StatsTable.xaml
     /// </summary>
-    public partial class StatsTable : IView
+    public partial class StatsTable
     {
         private readonly IDataSource _dataSource;
         private DateSettings _dateSettings;

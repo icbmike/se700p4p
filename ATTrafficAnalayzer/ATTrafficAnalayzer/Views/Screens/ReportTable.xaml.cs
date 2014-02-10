@@ -13,49 +13,18 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for VSSCreen.xaml
     /// </summary>
-    public partial class ReportTable : IView
+    public partial class ReportTable
     {
-        public DateSettings DateSettings { get; set; }
-        public int Intersection { get { return _configuration.Intersection; }  }
-     
-
-        readonly IDataSource _dataSource;
-        private Configuration _configuration;
-        private int _interval;
-
+        public int Intersection { get { return Configuration.Intersection; }  }
         public ObservableCollection<Approach> Approaches { get; set; }
-
-        public Configuration Configuration
-        {
-            get { return _configuration; }
-            set {
-                _configuration = value;
-                Render();
-            }
-        }
-
-        public int Interval
-        {
-            get { return _interval; }
-            set
-            {
-                _interval = value;
-                if(_configuration != null)Render();
-            }
-        }
 
         /// <summary>
         /// Constructor create a component displaying the specified config
         /// </summary>
         /// <param name="dateSettings">Lets the graph view get the date range at the time of construction</param>
         /// <param name="dataSource">The dataSource to get volume information from</param>
-        /// <param name="configuration"></param>
-        /// <param name="configName">The config to be displayed</param>
-        public ReportTable(DateSettings dateSettings, IDataSource dataSource)
+        public ReportTable(DateSettings dateSettings, IDataSource dataSource): base(dateSettings, dataSource)
         {
-            _dataSource = dataSource;
-            DateSettings = dateSettings;
-
             Approaches = new ObservableCollection<Approach>();
            
             DataContext = this;
@@ -66,16 +35,16 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Displays the grid
         /// </summary>
-        private void Render()
+        protected override void Render()
         {
             OverallSummaryBorder.Visibility = Visibility.Hidden;
             Approaches.Clear();
-            ScreenTitle.Content = _configuration.Name;
+            ScreenTitle.Content = Configuration.Name;
 
             //Load the data for approaches using Task magic
             var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
             var tasks = new List<Task>();
-            foreach (var approach in _configuration.Approaches)
+            foreach (var approach in Configuration.Approaches)
             {
                 tasks.Add(Task.Factory.StartNew(() => approach.LoadDataTable(DateSettings, Interval, Intersection, 0)));
             }
@@ -84,12 +53,12 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //We don't care, this is just a synchronization point that lets us add the approaches in order
             }).ContinueWith(task =>
             {
-                foreach (var approach in _configuration.Approaches)
+                foreach (var approach in Configuration.Approaches)
                 {
                     if (approach.HasDataForDate) Approaches.Add(approach);
                     else
                     {
-                        if (VolumeDateCountsDontMatch != null) VolumeDateCountsDontMatch(this, EventArgs.Empty);
+                        OnVolumeDateCountsDontMatch();
                         break;
                     }
                 } 
@@ -97,18 +66,18 @@ namespace ATTrafficAnalayzer.Views.Screens
                 //Overall deets
                 var stringBuilder = new StringBuilder();
                 stringBuilder.Append("Busiest Approach: ");
-                stringBuilder.AppendLine("[b]" + _configuration.GetBusiestApproach(DateSettings).ApproachName + "[/b]");
+                stringBuilder.AppendLine("[b]" + Configuration.GetBusiestApproach(DateSettings).ApproachName + "[/b]");
 
                 stringBuilder.Append("Busiest AM Hour: ");
-                stringBuilder.Append("[b]" + _configuration.GetAMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+                stringBuilder.Append("[b]" + Configuration.GetAMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
                 stringBuilder.Append(" with volume: ");
-                stringBuilder.AppendLine("[b]" + _configuration.GetAMPeakVolume(DateSettings) + "[/b]");
+                stringBuilder.AppendLine("[b]" + Configuration.GetAMPeakVolume(DateSettings) + "[/b]");
 
                 stringBuilder.Append("Busiest PM Hour: ");
-                stringBuilder.Append("[b]" + _configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
+                stringBuilder.Append("[b]" + Configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
                 stringBuilder.Append(" with volume: ");
-                stringBuilder.AppendLine("[b]" + _configuration.GetPMPeakVolume(DateSettings) + "[/b]");
-                stringBuilder.Append("Total volume: [b]" + _configuration.GetTotalVolume() +"[/b]");
+                stringBuilder.AppendLine("[b]" + Configuration.GetPMPeakVolume(DateSettings) + "[/b]");
+                stringBuilder.Append("Total volume: [b]" + Configuration.GetTotalVolume() +"[/b]");
 
                 OverallSummaryTextBlock.Html = stringBuilder.ToString();
                 OverallSummaryBorder.Visibility = Visibility.Visible;
@@ -116,17 +85,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             }, scheduler);
         }
 
-        /// <summary>
-        /// Handler for DateRangeChanged event from Toolbar
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void DateSettingsChanged()
-        {
-            Render();
-        }
-
-        public event EventHandler VolumeDateCountsDontMatch;
     }
 
 }

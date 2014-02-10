@@ -188,7 +188,7 @@
     <Compile Include="Views\Screens\ReportGraph.xaml.cs">
       <DependentUpon>ReportGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\IView.cs" />
+    <Compile Include="Views\Screens\BaseReportView.cs" />
     <Compile Include="Views\Screens\SummaryTable.xaml.cs">
       <DependentUpon>SummaryTable.xaml</DependentUpon>
     </Compile>
