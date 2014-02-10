@@ -523,7 +523,35 @@ namespace ATTrafficAnalayzer.Models
 
         public RedLightRunningConfiguration GetRedLightRunningConfiguration(string name)
         {
-            throw new NotImplementedException();
+            var reportConfigurations = new List<ReportConfiguration.ReportConfiguration>();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    //Time for a sick join
+                    command.CommandText = @"SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector
+                                            FROM red_light_running_configurations AS RLRconfigs
+                                            INNER JOIN red_light_running_site_mapping AS RLRsiteMappings
+                                            ON RLRconfigs.id = RLRsiteMappings.red_light_running_config_id
+                                            INNER JOIN configs
+                                            ON RLRsiteMappings.site_config_id = configs.config_id
+                                            INNER JOIN config_approach_mapping
+                                            ON configs.config_id = config_approach_mapping.config_id
+                                            INNER JOIN approaches
+                                            ON approaches.approach_id = config_approach_mapping.approach_id
+                                            INNER JOIN approach_detector_mapping
+                                            ON approaches.approach_id = approach_detector_mapping.approach_id
+                                            WHERE RLRconfigs.name = @name";
+                    command.Parameters.AddWithValue("@name", name);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        
+                    }
+                }
+            }
+
+            return new RedLightRunningConfiguration {Name = name, Sites = reportConfigurations};
         }
 
         /// <summary>
@@ -752,15 +780,15 @@ namespace ATTrafficAnalayzer.Models
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText =
-                        "SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector " +
-                        "FROM configs " +
-                        "INNER JOIN config_approach_mapping " +
-                        "ON configs.config_id = config_approach_mapping.config_id " +
-                        "INNER JOIN approaches " +
-                        "ON approaches.approach_id = config_approach_mapping.approach_id " +
-                        "INNER JOIN approach_detector_mapping " +
-                        "ON approaches.approach_id = approach_detector_mapping.approach_id " +
-                        "WHERE configs.name = @name";
+                        @"SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector 
+                        FROM configs 
+                        INNER JOIN config_approach_mapping 
+                        ON configs.config_id = config_approach_mapping.config_id 
+                        INNER JOIN approaches 
+                        ON approaches.approach_id = config_approach_mapping.approach_id 
+                        INNER JOIN approach_detector_mapping 
+                        ON approaches.approach_id = approach_detector_mapping.approach_id 
+                        WHERE configs.name = @name";
                     query.Parameters.AddWithValue("@name", name);
                     using (var reader = query.ExecuteReader())
                     {
