@@ -139,6 +139,7 @@
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
     <Compile Include="Modes\ReportConfigurable.cs" />
+    <Compile Include="Modes\SummaryMode.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="Views\Controls\ConfigApproachBox.xaml.cs">

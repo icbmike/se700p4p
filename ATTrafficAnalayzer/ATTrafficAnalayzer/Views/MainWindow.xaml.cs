@@ -261,12 +261,14 @@ namespace ATTrafficAnalayzer.Views
             _homeMode = new HomeMode(ModeChange, _dataSource);
             var reportMode = new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
             var faultsMode = new FaultsMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
+            var summaryMode = new SummaryMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
             //Add them to the toolbar
             var modes = new List<BaseMode>
             {
                 _homeMode,
                 reportMode,
-                faultsMode
+                faultsMode,
+                summaryMode
             };
             SettingsToolbar.Modes.AddMany(modes);
 
@@ -278,6 +280,9 @@ namespace ATTrafficAnalayzer.Views
             //Setup ReportMode
             reportMode.DateVolumeCountsDontMatch += ReportModeOnDateVolumeCountsDontMatch;
             reportMode.ConfigurationSaved += OnConfigurationCreated;
+
+            //Setup SummaryMode
+            summaryMode.ConfigurationSaved += OnConfigurationCreated;
         }
 
         private void OnConfigurationCreated(object sender, ConfigurationSavedEventArgs eventArgs)
