@@ -150,11 +150,11 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return _pmPeakVolume;
         }
 
-        public int GetTotalVolume()
+        public int GetTotalVolume(DateSettings settings)
         {
              if (_totalVolume != -1) return _totalVolume;
 
-            _totalVolume = Approaches.Sum(approach => approach.TotalVolume);
+            _totalVolume = Approaches.Sum(approach => approach.GetTotal(settings, Intersection, 0));
             
             return _totalVolume;
         }

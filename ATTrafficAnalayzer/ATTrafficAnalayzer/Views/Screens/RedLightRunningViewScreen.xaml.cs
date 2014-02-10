@@ -1,4 +1,7 @@
-﻿using ATTrafficAnalayzer.Models;
+﻿using System.Data;
+using System.Windows.Controls;
+using System.Windows.Data;
+using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -8,10 +11,14 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// </summary>
     public partial class RedLightRunningViewScreen
     {
+        private readonly DateSettings _dateSettings;
+        private readonly IDataSource _dataSource;
         private RedLightRunningConfiguration _configuration;
 
         public RedLightRunningViewScreen(DateSettings dateSettings, IDataSource dataSource)
         {
+            _dateSettings = dateSettings;
+            _dataSource = dataSource;
             InitializeComponent();
         }
 
@@ -23,10 +30,24 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-
         private void Render()
         {
-            Content = Configuration.Name;
+            ScreenTitle.Content = Configuration.Name;
+
+            var dataTable = Configuration.GetDataTable(_dateSettings, _dataSource);
+
+            var grid = new GridView();
+            foreach (DataColumn col in dataTable.Columns)
+            {
+                grid.Columns.Add(new GridViewColumn
+                {
+                    Header = col.ColumnName,
+                    DisplayMemberBinding = new Binding(col.ColumnName),
+                });
+            }
+
+            Grid.View = grid;
+            Grid.ItemsSource = dataTable.DefaultView;
         }
     }
 }

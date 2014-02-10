@@ -70,8 +70,6 @@ namespace ATTrafficAnalayzer.Modes
             //Default, don't do anything
         }
 
-       
-
         public event ConfigurationSavedEventHandler ConfigurationSaved;
 
         protected virtual void OnConfigurationSaved(ConfigurationSavedEventArgs args)

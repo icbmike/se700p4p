@@ -632,6 +632,32 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        public int GetTotalVolumeForDay(DateTime date, int intersection)
+        {
+            int volume;
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText =
+                        @"SELECT ifnull(SUM(volume), 0) 
+                        FROM volumes 
+                        WHERE intersection = @intersection 
+                        AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    query.Parameters.AddWithValue("@startDateTime", date);
+                    query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
+
+                    volume = Convert.ToInt32(query.ExecuteScalar());
+                    
+                }
+                conn.Close();
+            }
+            return volume;
+        }
+
         /// <summary>
         ///     Get the volumes for a single detector at a specific datetime
         /// </summary>

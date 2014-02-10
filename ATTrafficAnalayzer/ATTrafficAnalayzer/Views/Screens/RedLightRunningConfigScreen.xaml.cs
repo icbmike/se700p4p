@@ -30,7 +30,15 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _dataSource = dataSource;
             Configuration = new RedLightRunningConfiguration();
-            ReportConfigurations = _dataSource.GetConfigurationNames().Select(name => new ReportConfigSelectedModel {Name = name, Selected = false}).ToList();
+            ReportConfigurations = _dataSource.GetConfigurationNames().
+                Select(name => _dataSource.GetConfiguration(name)).
+                Select(config => new ReportConfigSelectedModel
+                {
+                    Name = config.Name, 
+                    Selected = false,
+                    Intersection = config.Intersection
+                }).ToList();
+
             InitializeComponent();
         }
 
@@ -71,6 +79,8 @@ namespace ATTrafficAnalayzer.Views.Screens
             get { return _selected; }
             set { _selected = value;OnPropertyChanged("Selected"); }
         }
+
+        public int Intersection { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

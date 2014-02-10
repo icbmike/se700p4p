@@ -87,5 +87,6 @@ namespace ATTrafficAnalayzer.Models
         void RemoveRedLightRunningConfiguration(string name);
         RedLightRunningConfiguration GetRedLightRunningConfiguration(string name);
         void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration);
+        int GetTotalVolumeForDay(DateTime date, int intersection);
     }
 }

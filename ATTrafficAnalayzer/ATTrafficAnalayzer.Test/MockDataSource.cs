@@ -194,5 +194,10 @@ namespace ATTrafficAnalayzer.Test
         {
             throw new NotImplementedException();
         }
+
+        public int GetTotalVolumeForDay(DateTime startDate, int intersection)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

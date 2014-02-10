@@ -36,6 +36,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Configuration"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Intersection}" Header="Intersection"/>
                     <GridViewColumn >
                         <GridViewColumnHeader>
                             <GridViewColumnHeader.ContentTemplate>
