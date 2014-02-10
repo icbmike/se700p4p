@@ -96,7 +96,7 @@ namespace ATTrafficAnalayzer.Models
 
 
                         command.CommandText = @"CREATE TABLE IF NOT EXISTS [red_light_running_configurations] (
-                                               [id] int NOT NULL
+                                               [id] INTEGER NOT NULL
                                               ,[name] nvarchar(100) NOT NULL
                                               ,CONSTRAINT [PK_red_light_running_configurations] PRIMARY KEY ([id])
                                               );";
@@ -530,7 +530,7 @@ namespace ATTrafficAnalayzer.Models
                 using (var command = conn.CreateCommand())
                 {
                     //Time for a sick join
-                    command.CommandText = @"SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector
+                    command.CommandText = @"SELECT configs.config_id, configs.name, configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector
                                             FROM red_light_running_configurations AS RLRconfigs
                                             INNER JOIN red_light_running_site_mapping AS RLRsiteMappings
                                             ON RLRconfigs.id = RLRsiteMappings.red_light_running_config_id
@@ -546,7 +546,49 @@ namespace ATTrafficAnalayzer.Models
                     command.Parameters.AddWithValue("@name", name);
                     using (var reader = command.ExecuteReader())
                     {
+                        if (!reader.Read()) //No results
+                            return new RedLightRunningConfiguration {Name = name, Sites = reportConfigurations};
                         
+                        var configId = reader.GetInt32(0);
+                        var approachId = reader.GetInt32(3);
+
+                        var currentApproach = new Approach(reader.GetString(4), new List<int> {reader.GetByte(5)}, this);
+                        var currentConfig = new ReportConfiguration.ReportConfiguration(reader.GetString(1),  reader.GetInt32(2),
+                            new List<Approach>(), this);
+
+                        while (reader.Read())
+                        {
+                            if (reader.GetInt32(0) != configId) //Starting a new config and a new approach
+                            {
+                                //Add current approach to current config
+                                currentConfig.Approaches.Add(currentApproach);
+                                //Add current config to config list
+                                reportConfigurations.Add(currentConfig);
+                                //Reset both
+                                currentConfig = new ReportConfiguration.ReportConfiguration(reader.GetString(1),reader.GetInt32(2), new List<Approach>(), this);
+                                currentApproach = new Approach(reader.GetString(4), new List<int>(), this);
+                                //Reset configId and approachId
+                                configId = reader.GetInt32(0);
+                                approachId = reader.GetInt32(3);
+                            }
+
+                            else if (reader.GetInt32(3) != approachId) //Only starting a new approach 
+                            {
+                                //Add currentApproach to currentConfig
+                                currentConfig.Approaches.Add(currentApproach);
+                                //Start a new one
+                                currentApproach = new Approach(reader.GetString(4), new List<int>(), this);
+                                //Reset approachId
+                                approachId = reader.GetInt32(3);
+                            }
+
+                            currentApproach.Detectors.Add(reader.GetByte(5));
+                        }
+
+                        //Add final things to that which they should belong to
+                        currentConfig.Approaches.Add(currentApproach);
+                        //Add current config to config list
+                        reportConfigurations.Add(currentConfig);
                     }
                 }
             }

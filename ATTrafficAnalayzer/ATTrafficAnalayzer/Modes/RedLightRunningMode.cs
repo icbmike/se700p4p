@@ -64,7 +64,7 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void ShowConfigurable(Configurable configurable)
         {
-            _dataSource.GetRedLightRunningConfiguration(configurable.Name);
+            var redLightRunningConfiguration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
         }
 
         public override void ShowConfigurationView()
