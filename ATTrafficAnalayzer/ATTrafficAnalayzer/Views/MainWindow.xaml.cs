@@ -260,12 +260,13 @@ namespace ATTrafficAnalayzer.Views
             //Construct the modes
             _homeMode = new HomeMode(ModeChange, _dataSource);
             var reportMode = new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
-            
+            var faultsMode = new FaultsMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
             //Add them to the toolbar
             var modes = new List<BaseMode>
             {
                 _homeMode,
-                reportMode
+                reportMode,
+                faultsMode
             };
             SettingsToolbar.Modes.AddMany(modes);
 

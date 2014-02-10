@@ -5,17 +5,14 @@ using System.Windows;
 using ATTrafficAnalayzer.Annotations;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
-using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class Faults :  INotifyPropertyChanged
+    public partial class Faults : INotifyPropertyChanged
     {
-        private DateSettings _dateSettings;
-        private readonly IDataSource _dataSource;
         private int _faultThreshold;
 
         /// <summary>
@@ -38,10 +35,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// TODO: replace with DateTimes
         /// 
         ///  </param>
-        public Faults(DateSettings dateSettings, IDataSource dataSource)
+        public Faults(DateSettings dateSettings, IDataSource dataSource) : base(dateSettings, dataSource)
         {
-            _dateSettings = dateSettings;
-            _dataSource = dataSource;
             DataContext = this;
             InitializeComponent();
             FaultThreshold = 150;
@@ -51,42 +46,15 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Fetches data and displays it in the screen's data grid
         /// </summary>
-        private void Render()
+        protected override void Render()
         {
-            if (!_dataSource.VolumesExistForDateRange(_dateSettings.StartDate, _dateSettings.EndDate))
+            if (!DataSource.VolumesExistForDateRange(DateSettings.StartDate, DateSettings.EndDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
 
-            var faults = _dataSource.GetSuspectedFaults(_dateSettings.StartDate, _dateSettings.EndDate, FaultThreshold);
+            var faults = DataSource.GetSuspectedFaults(DateSettings.StartDate, DateSettings.EndDate, FaultThreshold);
             var transformedFaults = faults.Keys.ToDictionary(key => key, key => String.Join(", ", faults[key].Distinct().OrderBy(x => x)));
             FaultsDataGrid.ItemsSource = transformedFaults;
         }
-
-        #region Event Handlers
-
-        public event EventHandler VolumeDateCountsDontMatch;
-
-
-        /// <summary>
-        /// Handler for when the date range in the Toolbar is changed
-        /// </summary>
-        /// <param name="sender">The Toolbar</param>
-        /// <param name="args">Event args containing the new start and end datetime objects</param>
-        /// <param name="newSettings"></param>
-        public void DateSettingsChanged()
-        {
-                Render();
-        }
-        /// <summary>
-        /// Not needed to be implemented for this screen, as it does not rely on reports
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void SelectedReportChanged(string newSelection)
-        {
-            //Pass, we don't care
-        }
-
-        #endregion
 
         /// <summary>
         /// Click handler for the refresh button
