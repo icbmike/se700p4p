@@ -19,19 +19,20 @@
                  ToolBarTray.IsLocked="True"
                  Background="{x:Null}"
                  ItemsSource="{Binding Path=Modes, Mode=TwoWay}"
-                 OverflowMode="Never">
+                 OverflowMode="Never"
+                 Loaded="ToolBar_Loaded">
             
             <ToolBar.ItemTemplate>
                 <DataTemplate>
                     <Button
                         Style="{StaticResource AtToolbarButtonStyle}"
                         Command="{Binding ModeChange}"
-                        Margin="0 0 10 0">
+                        Margin="0 0 8 0">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{Binding Image}" />
                             <Label Content="{Binding ModeName}"
                                    Foreground="White"
-                                    Margin="6,0"
+                                    Margin="5,0"
                                     VerticalAlignment="Center"
                                    />
                         </StackPanel>
@@ -43,10 +44,12 @@
             
             Name="DateRangeToolBar"
             Band="1"
+            Loaded="ToolBar_Loaded"
                  BandIndex="2"
                  VerticalContentAlignment="Stretch"
                  HorizontalContentAlignment="Stretch"
                  ToolBarTray.IsLocked="True"
+                Margin="-20, 0, 0, 0"
                  Background="{x:Null}">
             <ToolBar.DataContext>
                 <settings:DateSettings />
@@ -54,7 +57,7 @@
 
             <!--Report date pickers-->
             <Label Name="StartDateLabel"
-                   Margin="10,0,4,0"
+                   Margin="0,0,4,0"
                    Foreground="White"
                    FontSize="16"
                    Content="Start Date:"/>
@@ -71,7 +74,7 @@
                         SelectedDateChanged="StartDatePickerSelectionChanged"
                         SelectedDateFormat="Short" />
             <Label Name="EndDateLabel"
-                   Margin="20,0,0,0"
+                   Margin="4,0,0,0"
                    Foreground="#FFF6F6F6"
                    FontSize="16"
                    Content="End Date:" />
@@ -96,6 +99,8 @@
                  HorizontalContentAlignment="Stretch"
                  ToolBarTray.IsLocked="True"
                  Background="{x:Null}"
+                 Margin="-17, 0, 0, 0"
+                 Loaded="ToolBar_Loaded"
                  >
             
         </ToolBar>

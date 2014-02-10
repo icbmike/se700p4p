@@ -58,7 +58,20 @@ namespace ATTrafficAnalayzer.Views.Controls
 
             RaiseDateRangeChanged();            
         }
+
+        private void ToolBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            var toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = Visibility.Collapsed;
+            }
+        }
     }
+
+
+
 
     public class DateRangeChangedEventArgs
     {
