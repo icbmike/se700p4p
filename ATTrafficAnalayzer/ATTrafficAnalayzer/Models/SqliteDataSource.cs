@@ -509,7 +509,16 @@ namespace ATTrafficAnalayzer.Models
 
         public void RemoveRedLightRunningConfiguration(string name)
         {
-            throw new NotImplementedException();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM red_light_running_configurations WHERE name = @name;";
+                    command.Parameters.AddWithValue("@name", name);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         public RedLightRunningConfiguration GetRedLightRunningConfiguration(string name)
