@@ -64,11 +64,15 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void ShowConfigurable(Configurable configurable)
         {
-            var redLightRunningConfiguration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
+            _tableView.Configuration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
+            _currentView = Views.ViewScreen;
+            _viewContainer.Content = _tableView;
         }
 
         public override void ShowConfigurationView()
         {
+            _currentView = Views.ConfigScreen;
+            _viewContainer.Content = _configScreen;
         }
 
         public override List<Configurable> PopulateReportBrowser()

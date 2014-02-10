@@ -2,10 +2,65 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox Name="ReportNameTextBox"
+                 Grid.Row="0"
+                 Grid.Column="0"
+                 FontSize="30"
+                 Margin="10"
+                 FontWeight="Bold"
+                 Padding="3,6"
+                 BorderThickness="1"
+                 Text="{Binding Configuration.Name}">
+            <TextBox.BorderBrush>
+                <SolidColorBrush Color="{StaticResource HighlightDark}" />
+            </TextBox.BorderBrush>
+        </TextBox>
+        
+        <ListView
+            Grid.Column="0"
+            Grid.Row="1"
+            Margin="10"
+            ItemsSource="{Binding ReportConfigurations}"
+            Name="ReportConfigListView"
+            >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Configuration"/>
+                    <GridViewColumn >
+                        <GridViewColumnHeader>
+                            <GridViewColumnHeader.ContentTemplate>
+                                <DataTemplate>
+                                    <CheckBox Checked="CheckboxHeaderOnChange" Unchecked="CheckboxHeaderOnChange"></CheckBox>
+                                </DataTemplate>
+                            </GridViewColumnHeader.ContentTemplate>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <Button Grid.Row="2"
+                HorizontalAlignment="Left"
+                Content="Save"
+                Style="{StaticResource AtButtonStyle}"
+                Click="SaveButtonOnClick"
+                Height="40"
+                Margin="10, 20"
+                Width="130"/>
     </Grid>
 </UserControl>
