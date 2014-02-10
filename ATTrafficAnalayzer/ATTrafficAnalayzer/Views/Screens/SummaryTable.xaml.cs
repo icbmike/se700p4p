@@ -24,7 +24,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         public SummaryConfiguration Configuration
         {
             get { return _configuration; }
-            set { _configuration = value; Render(); }
+            set {
+                _configuration = value;
+                Render();
+            }
         }
 
         public DateTime AMPeakTime
@@ -85,7 +88,6 @@ namespace ATTrafficAnalayzer.Views.Screens
                 new StatsTable(_dataSource, _dateSettings, Configuration, "sample", (time, row) => time.Day),
                 new StatsTable(_dataSource, _dateSettings, Configuration, "Daily Totals", CalulateDailyTotals)
             }.ForEach(statsTable => StatsStackPanel.Children.Add(statsTable));
-
         }
 
         public void DateSettingsChanged()

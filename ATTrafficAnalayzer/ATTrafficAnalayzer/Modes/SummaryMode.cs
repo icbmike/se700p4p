@@ -14,10 +14,10 @@ namespace ATTrafficAnalayzer.Modes
     public class SummaryMode : BaseMode
     {
         private readonly IDataSource _dataSource;
-        private UserControl _viewContainer;
+        private readonly UserControl _viewContainer;
         private SummaryConfigScreen _configView;
-        private SummaryTable _tableView;
-        private SummaryViews currentView;
+        private readonly SummaryTable _tableView;
+        private SummaryViews _currentView;
 
         enum SummaryViews
         {
@@ -41,7 +41,7 @@ namespace ATTrafficAnalayzer.Modes
 
             //Set the startup view
             _viewContainer.Content = _configView;
-            currentView = SummaryViews.Configuration;
+            _currentView = SummaryViews.Configuration;
 
         }
 
@@ -58,14 +58,15 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void ShowConfigurable(Configurable configurable)
         {
-            if (currentView == SummaryViews.Table)
-            {
-                _tableView.Configuration = _dataSource.GetSummaryConfig(configurable.Name);
-            }
+            _tableView.Configuration = _dataSource.GetSummaryConfig(configurable.Name);
+            _viewContainer.Content = _tableView;
+            _currentView = SummaryViews.Table;
         }
 
         public override void ShowConfigurationView()
         {
+            _viewContainer.Content = _configView;
+            _currentView = SummaryViews.Configuration;
         }
 
         public override void EditConfigurable(Configurable configurable)
@@ -74,7 +75,7 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args)
         {
-
+            _tableView.DateSettingsChanged();
         }
 
         public override UserControl GetView()
