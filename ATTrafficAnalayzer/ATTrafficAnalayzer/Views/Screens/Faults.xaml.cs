@@ -11,7 +11,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Faults.xaml
     /// </summary>
-    public partial class Faults : INotifyPropertyChanged
+    public partial class Faults
     {
         private int _faultThreshold;
 
@@ -24,7 +24,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             set
             {
                 _faultThreshold = value;
-                OnPropertyChanged("FaultThreshold");
+                Render();
             }
         }
 
@@ -56,23 +56,5 @@ namespace ATTrafficAnalayzer.Views.Screens
             FaultsDataGrid.ItemsSource = transformedFaults;
         }
 
-        /// <summary>
-        /// Click handler for the refresh button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RefreshFaults_OnClick(object sender, RoutedEventArgs e)
-        {
-            Render();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

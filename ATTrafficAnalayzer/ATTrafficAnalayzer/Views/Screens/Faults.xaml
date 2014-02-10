@@ -29,32 +29,6 @@
                    Grid.Row="0"
                    Grid.Column="0"/>
             
-            <Label Grid.Row="0"
-                   Grid.Column="1"
-                   Height="20"
-                   Content="Fault threshold:"
-                   Padding="0"
-                   Margin="10,20"/>
-            
-            <TextBox 
-                Grid.Row="0"
-                Grid.Column="2"
-                Name="FaultThresholdTextBox"
-                Text="{Binding FaultThreshold}"
-                Height="20"
-                Width="60"
-                     Margin="10,20,2,20" />
-            
-            <Button
-                Grid.Row="0"
-                Grid.Column="3"
-                Name="RefreshFaults"
-                Click="RefreshFaults_OnClick"
-                Content="Refresh"
-                Width="50"
-                Height="20"
-                    Margin="2,10,40,10" />
-            
             <DataGrid Name="FaultsDataGrid"
                       IsReadOnly="True"
                       AutoGenerateColumns="False"
