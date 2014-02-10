@@ -6,19 +6,19 @@ using System.Windows;
 using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
+using ATTrafficAnalayzer.Modes;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class SummaryConfig : IConfigScreen
+    public partial class SummaryConfig
     {
         private readonly IDataSource _dataSource;
         private bool IsNewConfig = true;
         private string _oldName;
 
-        public event ConfigurationSavedEventHander ConfigurationSaved;
 
         /// <summary>
         /// Default constructor for when constructing a new summary config
@@ -94,8 +94,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             _dataSource.SaveMonthlySummaryConfig(configName, Rows);
 
             //Fire saved event
-            if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+            if (ConfigurationSaved != null) ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName, null));
         }
+
+        public event ConfigurationSavedEventHandler ConfigurationSaved;
 
         /// <summary>
         /// Handler to automatically generate a name for a new config

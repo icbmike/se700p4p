@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
+using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Controls;
 
 namespace ATTrafficAnalayzer.Views.Screens
@@ -16,7 +17,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     /// <summary>
     /// Interaction logic for Config.xaml
     /// </summary>
-    public partial class ReportConfig : IConfigScreen, INotifyPropertyChanged
+    public partial class ReportConfig : INotifyPropertyChanged
     {
         private readonly IDataSource _dataSource;
         private readonly bool _isNewConfig = true;
@@ -138,7 +139,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        public event ConfigurationSavedEventHander ConfigurationSaved;
 
         /// <summary>
         /// Save button click handler. Replaces configs if they are being edited, creates new entries in the database otherwise.
@@ -178,8 +178,10 @@ namespace ATTrafficAnalayzer.Views.Screens
 
             //Fire the saved event
             if (ConfigurationSaved != null)
-                ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName));
+                ConfigurationSaved(this, new ConfigurationSavedEventArgs(configName, null)); //We don't have a reference to the containing mode right now
         }
+
+        
 
         /// <summary>
         /// Button handler. Convenience button to distribute detectors into their own approach.
@@ -299,5 +301,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             Popup.Visibility = Visibility.Collapsed;
         }
+
+
+       
+        public event ConfigurationSavedEventHandler ConfigurationSaved;
     }
 }

@@ -136,6 +136,7 @@
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Modes\BaseMode.cs" />
     <Compile Include="Modes\Configurable.cs" />
+    <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\ReportConfigurable.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Annotations1.cs" />
@@ -187,7 +188,6 @@
     <Compile Include="Views\Screens\ReportGraph.xaml.cs">
       <DependentUpon>ReportGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Screens\IConfigScreen.cs" />
     <Compile Include="Views\Screens\IView.cs" />
     <Compile Include="Views\Screens\SummaryTable.xaml.cs">
       <DependentUpon>SummaryTable.xaml</DependentUpon>

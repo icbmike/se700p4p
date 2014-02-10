@@ -34,28 +34,14 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public ObservableCollection<Configurable> Configurables { get; set; }
 
-        #region New/Edit Configuration
+        #region New Configuration
 
-        public delegate void EditConfigurationEventHandler(object sender, EditConfigurationEventHandlerArgs args);
+        public event EventHandler NewConfigurationEvent;
 
-        public event EditConfigurationEventHandler EditConfigurationEvent;
-
-        public class EditConfigurationEventHandlerArgs
+        protected virtual void OnNewConfigwurationEvent()
         {
-            public EditConfigurationEventHandlerArgs()
-            {
-                New = true;
-                ConfigToBeEdited = null;
-            }
-
-            public EditConfigurationEventHandlerArgs(string configToBeEdited)
-            {
-                New = false;
-                ConfigToBeEdited = configToBeEdited;
-            }
-
-            public Boolean New { get; set; }
-            public string ConfigToBeEdited { get; set; }
+            var handler = NewConfigurationEvent;
+            if (handler != null) handler(this, EventArgs.Empty);
         }
 
         #endregion
@@ -64,7 +50,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         public delegate void ExportConfigurationEventHandler(object sender, ExportConfigurationEventHandlerArgs args);
 
-        public event EditConfigurationEventHandler ExportEvent;
+        public event ExportConfigurationEventHandler ExportEvent;
 
         public class ExportConfigurationEventHandlerArgs
         {
@@ -110,18 +96,18 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void newBtn_Click(object sender, RoutedEventArgs e)
         {
-            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs());
+            OnNewConfigwurationEvent();
         }
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-            EditConfigurationEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
+            
         }
 
         private void removeBtn_Click(object sender, RoutedEventArgs e)
         {
             //Get selection
-            var selectedItem = ConfigurablesListView.SelectedItem as string;
+            var selectedItem = GetSelectedConfiguration();
 
             //Configure the message box to be displayed 
             string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
@@ -137,24 +123,14 @@ namespace ATTrafficAnalayzer.Views.Controls
             {
                 case MessageBoxResult.OK:
                     var backgroundWorker = new BackgroundWorker();
-                    if (_mode.Equals(Mode.Report))
-                    {
-                        backgroundWorker.DoWork += (o, args) =>
-                        {
-                            _dataSource.RemoveConfiguration(selectedItem);
-                        };
-
-                    }
-                    else
-                    {
-                        backgroundWorker.DoWork += (o, args) => _dataSource.RemoveSummary(selectedItem);
-                    }
+                    backgroundWorker.DoWork += (o, args) => selectedItem.Delete();
+                    
                     ProgressBar.Visibility = Visibility.Visible;
                     backgroundWorker.RunWorkerCompleted +=
                         (o, args) =>
                             {
                                 ProgressBar.Visibility = Visibility.Collapsed;
-                                messageBoxText = selectedItem + " was deleted";
+                                messageBoxText = selectedItem.Name + " was deleted";
                                 caption = "Delete successful";
                                 button = MessageBoxButton.OK;
                                 icon = MessageBoxImage.Information;
@@ -164,18 +140,18 @@ namespace ATTrafficAnalayzer.Views.Controls
                     backgroundWorker.RunWorkerAsync();
 
 
-                    Logger.Debug(selectedItem + " report deleted", "Reports panel");
+                    Logger.Debug(selectedItem.Name + " report deleted", "Reports panel");
                     break;
 
                 case MessageBoxResult.Cancel:
-                    Logger.Debug(selectedItem + " report deletion was canceled", "Reports panel");
+                    Logger.Debug(selectedItem.Name + " report deletion was canceled", "Reports panel");
                     break;
             }
         }
 
         private void exportBtn_Click(object sender, RoutedEventArgs e)
         {
-            ExportEvent(this, new EditConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
+            ExportEvent(this, new ExportConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
         }
 
         #endregion

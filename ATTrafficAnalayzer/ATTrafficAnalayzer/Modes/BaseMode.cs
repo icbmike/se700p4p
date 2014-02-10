@@ -70,13 +70,16 @@ namespace ATTrafficAnalayzer.Modes
             //Default, don't do anything
         }
 
-        public event EventHandler ConfigurationCreated;
+       
 
-        protected virtual void OnConfigurationCreated()
+        public event ConfigurationSavedEventHandler ConfigurationSaved;
+
+        protected virtual void OnConfigurationSaved(ConfigurationSavedEventArgs args)
         {
-            var handler = ConfigurationCreated;
-            if (handler != null) handler(this, EventArgs.Empty);
+            var handler = ConfigurationSaved;
+            if (handler != null) handler(this, args);
         }
+
 
         public abstract ImageSource Image { get; protected set; }
         public abstract String ModeName { get; protected set; }
@@ -108,4 +111,5 @@ namespace ATTrafficAnalayzer.Modes
         }
         
     }
+    
 }

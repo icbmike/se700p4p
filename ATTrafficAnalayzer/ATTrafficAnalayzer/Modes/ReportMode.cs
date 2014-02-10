@@ -24,7 +24,7 @@ namespace ATTrafficAnalayzer.Modes
 
         private ReportTable _tableView;
         private ReportGraph _graphView;
-        private UserControl _configView;
+        private ReportConfig _configView;
         private Configuration _configuration;
         private int _interval;
 
@@ -232,9 +232,16 @@ namespace ATTrafficAnalayzer.Modes
             if (_configView == null)
             {
                 _configView = new ReportConfig(_dataSource);
+                _configView.ConfigurationSaved += ConfigViewOnConfigurationSaved;
             }
             _currentView = ReportViews.Configuration;
             _view.Content = _configView;
+        }
+
+        private void ConfigViewOnConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
+        {
+            args.Mode = this; //Set the mode now that we know it
+            OnConfigurationSaved(args); //Bubble the event up
         }
 
         public override void ShowConfigurable(Configurable configurable)

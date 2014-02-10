@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Modes;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Controls.Parago.ProgressDialog;
-using ATTrafficAnalayzer.Views.Screens;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Win32;
 
@@ -179,7 +175,7 @@ namespace ATTrafficAnalayzer.Views
         /// </summary>
         /// <param configName="sender"></param>
         /// <param configName="args"></param>
-        private void ReportBrowser_OnExportEvent(object sender, ReportBrowser.EditConfigurationEventHandlerArgs args)
+        private void ReportBrowser_OnExportEvent(object sender, ReportBrowser.ExportConfigurationEventHandlerArgs args)
         {
             var dlg = new SaveFileDialog
             {
@@ -280,6 +276,13 @@ namespace ATTrafficAnalayzer.Views
 
             //Setup ReportMode
             reportMode.DateVolumeCountsDontMatch += ReportModeOnDateVolumeCountsDontMatch;
+            reportMode.ConfigurationSaved += OnConfigurationCreated;
+        }
+
+        private void OnConfigurationCreated(object sender, ConfigurationSavedEventArgs eventArgs)
+        {
+            ReportBrowser.Configurables.Clear();
+            ReportBrowser.Configurables.AddMany(eventArgs.Mode.PopulateReportBrowser());
         }
 
         private void ReportModeOnDateVolumeCountsDontMatch(object sender, EventArgs eventArgs)
@@ -298,11 +301,17 @@ namespace ATTrafficAnalayzer.Views
             }
             else
             {
+                ReportBrowser.Configurables.Clear();
                 ReportBrowser.Configurables.AddMany(reportBrowserItems);
                 ReportBrowser.Visibility = Visibility.Visible;
             }
             SettingsToolbar.CustomizableToolBar.Items.Clear();
             mode.PopulateToolbar(SettingsToolbar.CustomizableToolBar);
+        }
+
+        private void ReportBrowserOnNewConfigurationEvent(object sender, EventArgs e)
+        {
+            _currentMode.ShowConfigurationView();
         }
     }
 }
