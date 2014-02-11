@@ -3,9 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:atTrafficAnalayzer="clr-namespace:ATTrafficAnalayzer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <atTrafficAnalayzer:ApproacheStringShortnerConverter x:Key="ApproachesStringShortnerConverter" />
+        <atTrafficAnalayzer:ApproachesLineBreakConverter x:Key="ApproachesLineBreakerConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,6 +38,12 @@
             ItemsSource="{Binding ReportConfigurations}"
             Name="ReportConfigListView"
             >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="ToolTip" Value="{Binding Path=Approaches, Converter={StaticResource ApproachesLineBreakerConverter}}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Configuration"/>
@@ -51,6 +62,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Approaches, Converter={StaticResource ApproachesStringShortnerConverter}}" Header="Approaches" />
                 </GridView>
             </ListView.View>
         </ListView>

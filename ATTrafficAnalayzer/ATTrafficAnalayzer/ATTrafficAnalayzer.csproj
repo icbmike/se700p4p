@@ -117,6 +117,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApproachesLineBreakConverter.cs" />
+    <Compile Include="ApproacheStringShortnerConverter.cs" />
     <Compile Include="ApproachSummaryConverter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Models\DatabaseMetrics.cs" />

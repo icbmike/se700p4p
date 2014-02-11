@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 
 namespace ATTrafficAnalayzer.Models
@@ -27,7 +28,16 @@ namespace ATTrafficAnalayzer.Models
                 dataRow["Site ID"] = reportConfiguration.Intersection;
                 dataRow["Total Volume"] = dataSource.GetTotalVolumeForDay(dateSettings.StartDate,
                     reportConfiguration.Intersection);
-                dataRow["Total Red Light Running Volume"] = reportConfiguration.GetTotalVolume(dateSettings);
+                
+                try
+                {
+                    dataRow["Total Red Light Running Volume"] = reportConfiguration.GetTotalVolume(dateSettings);
+                }
+                catch (NoDataForDateSpecifiedException)
+                {
+                    dataRow["Total Red Light Running Volume"] = "No data for this date";
+                }
+                
 
                 dataTable.Rows.Add(dataRow);
             }

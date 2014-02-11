@@ -36,7 +36,8 @@ namespace ATTrafficAnalayzer.Views.Screens
                 {
                     Name = config.Name, 
                     Selected = false,
-                    Intersection = config.Intersection
+                    Intersection = config.Intersection,
+                    Approaches = string.Join(", ", config.Approaches.Select(approach => approach.ApproachName))
                 }).ToList();
 
             InitializeComponent();
@@ -73,11 +74,14 @@ namespace ATTrafficAnalayzer.Views.Screens
     {
         private bool _selected;
         public string Name { get; set; }
+        public string Approaches { get; set; }
+
+
 
         public bool Selected
         {
             get { return _selected; }
-            set { _selected = value;OnPropertyChanged("Selected"); }
+            set { _selected = value; OnPropertyChanged("Selected"); }
         }
 
         public int Intersection { get; set; }
