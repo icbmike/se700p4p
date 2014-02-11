@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
@@ -110,7 +111,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             var selectedItem = GetSelectedConfiguration();
 
             //Configure the message box to be displayed 
-            string messageBoxText = "Are you sure you wish to delete " + selectedItem + "?";
+            string messageBoxText = "Are you sure you wish to delete " + selectedItem.Name + "?";
             string caption = "Confirm delete";
             var button = MessageBoxButton.OKCancel;
             var icon = MessageBoxImage.Question;
@@ -136,6 +137,7 @@ namespace ATTrafficAnalayzer.Views.Controls
                                 icon = MessageBoxImage.Information;
                                 MessageBox.Show(messageBoxText, caption, button, icon);
                                 //Refresh the view
+                                RaiseRefreshRequested();
                             };
                     backgroundWorker.RunWorkerAsync();
 
@@ -149,6 +151,14 @@ namespace ATTrafficAnalayzer.Views.Controls
             }
         }
 
+        public event EventHandler RefreshRequested;
+
+        protected virtual void RaiseRefreshRequested()
+        {
+            var handler = RefreshRequested;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
         private void exportBtn_Click(object sender, RoutedEventArgs e)
         {
             ExportEvent(this, new ExportConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
@@ -156,13 +166,10 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #endregion
 
-        private void ConfigurablesListViewOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HandleDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.AddedItems.Count == 1)
-            {
-                //The regular case
-                GetSelectedConfiguration().View();
-            }
+            var configurable = ((ListViewItem)sender).Content as Configurable;
+            configurable.View();
         }
     }
 }

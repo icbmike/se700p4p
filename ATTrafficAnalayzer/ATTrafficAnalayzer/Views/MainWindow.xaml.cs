@@ -326,5 +326,13 @@ namespace ATTrafficAnalayzer.Views
         {
             _currentMode.ShowConfigurationView();
         }
+
+        private void ReportBrowserOnRefreshRequested(object sender, EventArgs e)
+        {
+            var reportBrowserItems = _currentMode.PopulateReportBrowser();
+           
+            ReportBrowser.Configurables.Clear();
+            ReportBrowser.Configurables.AddMany(reportBrowserItems);
+        }
     }
 }

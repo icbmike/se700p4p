@@ -23,7 +23,13 @@ namespace ATTrafficAnalayzer.Models
 
             foreach (var reportConfiguration in Sites)
             {
-                dataTable.Rows.Add(new[] {reportConfiguration.Intersection, dataSource.GetTotalVolumeForDay(dateSettings.StartDate, reportConfiguration.Intersection), reportConfiguration.GetTotalVolume(dateSettings)});
+                var dataRow = dataTable.NewRow();
+                dataRow["Site ID"] = reportConfiguration.Intersection;
+                dataRow["Total Volume"] = dataSource.GetTotalVolumeForDay(dateSettings.StartDate,
+                    reportConfiguration.Intersection);
+                dataRow["Total Red Light Running Volume"] = reportConfiguration.GetTotalVolume(dateSettings);
+
+                dataTable.Rows.Add(dataRow);
             }
             
             return dataTable;

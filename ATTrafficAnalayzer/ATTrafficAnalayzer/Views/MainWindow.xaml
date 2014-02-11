@@ -72,7 +72,8 @@
 
         <controls:ReportBrowser x:Name="ReportBrowser"
                                 Visibility="Collapsed"
-                                NewConfigurationEvent="ReportBrowserOnNewConfigurationEvent"/>
+                                NewConfigurationEvent="ReportBrowserOnNewConfigurationEvent"
+                                RefreshRequested="ReportBrowserOnRefreshRequested"/>
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="ContentScreen"

@@ -66,6 +66,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             Detectors = detectors;
             _dataSource = dataSource;
             HasDataForDate = false;
+            _interval = 5; //Set interval to default value
         }
 
         /// <summary>
