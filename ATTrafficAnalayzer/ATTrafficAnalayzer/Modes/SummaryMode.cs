@@ -56,7 +56,7 @@ namespace ATTrafficAnalayzer.Modes
 
         }
 
-        public override void ShowConfigurable(Configurable configurable)
+        public override void ShowConfigurable(BaseConfigurable configurable)
         {
             _tableView.Configuration = _dataSource.GetSummaryConfig(configurable.Name);
             _viewContainer.Content = _tableView;
@@ -69,7 +69,7 @@ namespace ATTrafficAnalayzer.Modes
             _currentView = SummaryViews.Configuration;
         }
 
-        public override void EditConfigurable(Configurable configurable)
+        public override void EditConfigurable(BaseConfigurable configurable)
         {
         }
 
@@ -83,9 +83,9 @@ namespace ATTrafficAnalayzer.Modes
             return _viewContainer;
         }
 
-        public override List<Configurable> PopulateReportBrowser()
+        public override List<BaseConfigurable> PopulateReportBrowser()
         {
-            return _dataSource.GetSummaryNames().Select(name => new SummaryConfigurable(name, this, _dataSource)).Cast<Configurable>().ToList();
+            return _dataSource.GetSummaryNames().Select(name => new SummaryConfigurable(name, this, _dataSource)).Cast<BaseConfigurable>().ToList();
         }
 
         public override ImageSource Image { get; protected set; }

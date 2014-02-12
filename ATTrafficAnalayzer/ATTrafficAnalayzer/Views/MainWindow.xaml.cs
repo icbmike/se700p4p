@@ -167,36 +167,6 @@ namespace ATTrafficAnalayzer.Views
 
         #endregion
 
-        #region File Exporting
-
-        /// <summary>
-        /// Handler for when the report browser asks to export a config
-        /// Creates a dialog to ask the user for a filename and then uses a CSVExporter to do the deed.
-        /// </summary>
-        /// <param configName="sender"></param>
-        /// <param configName="args"></param>
-        private void ReportBrowser_OnExportEvent(object sender, ReportBrowser.ExportConfigurationEventHandlerArgs args)
-        {
-            var dlg = new SaveFileDialog
-            {
-                FileName = "",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                DefaultExt = ".csv",
-                Filter = "CSV Files (.csv)|*.csv"
-            };
-
-            if (dlg.ShowDialog() == true)
-            {
-//                var csvExporter = new CSVExporter(dlg.FileName, SettingsToolbar.DateSettings, args.ConfigToBeEdited, _amPeakIndex, _pmPeakIndex, _dataSource);
-//
-//                if (_mode.Equals(Mode.Report))
-//                    csvExporter.ExportReport();
-//                else if (_mode.Equals(Mode.Summary))
-//                    csvExporter.ExportSummary();
-            }
-        }
-
-        #endregion
 
         #region Menu Event Handlers
 

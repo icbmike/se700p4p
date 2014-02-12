@@ -2,7 +2,7 @@
 
 namespace ATTrafficAnalayzer.Modes
 {
-    class ReportConfigurable : Configurable
+    class ReportConfigurable : BaseConfigurable
     {
         private readonly IDataSource _dataSource;
 

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Modes;
-using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Views.Controls
 {
@@ -26,14 +23,14 @@ namespace ATTrafficAnalayzer.Views.Controls
         public ReportBrowser()
         {
             DataContext = this;
-            Configurables = new ObservableCollection<Configurable>();
+            Configurables = new ObservableCollection<BaseConfigurable>();
             InitializeComponent();
             
             _dataSource = DataSourceFactory.GetDataSource();
 
         }
 
-        public ObservableCollection<Configurable> Configurables { get; set; }
+        public ObservableCollection<BaseConfigurable> Configurables { get; set; }
 
         #region New Configuration
 
@@ -47,30 +44,12 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         #endregion
 
-        #region Export Configuration
-
-        public delegate void ExportConfigurationEventHandler(object sender, ExportConfigurationEventHandlerArgs args);
-
-        public event ExportConfigurationEventHandler ExportEvent;
-
-        public class ExportConfigurationEventHandlerArgs
-        {
-            public ExportConfigurationEventHandlerArgs(string configToBeExported)
-            {
-                ConfigToBeExported = configToBeExported;
-            }
-
-            public string ConfigToBeExported { get; set; }
-        }
-
-        #endregion
-
         #region Selected Configuration
 
 
-        public Configurable GetSelectedConfiguration()
+        public BaseConfigurable GetSelectedConfiguration()
         {
-            return (ConfigurablesListView.SelectedValue as Configurable);
+            return (ConfigurablesListView.SelectedValue as BaseConfigurable);
         }
 
         public class SelectedReportChangeEventHandlerArgs
@@ -161,14 +140,14 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void exportBtn_Click(object sender, RoutedEventArgs e)
         {
-            ExportEvent(this, new ExportConfigurationEventHandlerArgs(GetSelectedConfiguration().Name));
+            GetSelectedConfiguration().Export();
         }
 
         #endregion
 
         private void HandleDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var configurable = ((ListViewItem)sender).Content as Configurable;
+            var configurable = ((ListViewItem)sender).Content as BaseConfigurable;
             configurable.View();
         }
     }

@@ -2,7 +2,7 @@ using ATTrafficAnalayzer.Models;
 
 namespace ATTrafficAnalayzer.Modes
 {
-    public class RedLightRunningConfigurable : Configurable
+    public class RedLightRunningConfigurable : BaseConfigurable
     {
         private readonly IDataSource _dataSource;
 

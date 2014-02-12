@@ -95,9 +95,9 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
-        public override List<Configurable> PopulateReportBrowser()
+        public override List<BaseConfigurable> PopulateReportBrowser()
         {
-            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this, _dataSource)).Cast<Configurable>().ToList();
+            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this, _dataSource)).Cast<BaseConfigurable>().ToList();
         }
 
         public override void PopulateToolbar(ToolBar toolbar)
@@ -244,7 +244,7 @@ namespace ATTrafficAnalayzer.Modes
             OnConfigurationSaved(args); //Bubble the event up
         }
 
-        public override void ShowConfigurable(Configurable configurable)
+        public override void ShowConfigurable(BaseConfigurable configurable)
         {
             //Need to check if it's the same configuration before we go off and do a whole database call
             _configuration = _dataSource.GetConfiguration(configurable.Name);
@@ -266,7 +266,7 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
-        public override void EditConfigurable(Configurable configurable)
+        public override void EditConfigurable(BaseConfigurable configurable)
         {
             //Lazily instatiate config view
             if (_configView == null)

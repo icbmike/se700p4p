@@ -70,12 +70,12 @@ namespace ATTrafficAnalayzer.Modes
             _tableView.DateRangeChanged();
         }
 
-        public override void EditConfigurable(Configurable configurable)
+        public override void EditConfigurable(BaseConfigurable configurable)
         {
             throw new NotImplementedException();
         }
 
-        public override void ShowConfigurable(Configurable configurable)
+        public override void ShowConfigurable(BaseConfigurable configurable)
         {
             _tableView.Configuration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
             _currentView = Views.ViewScreen;
@@ -89,12 +89,12 @@ namespace ATTrafficAnalayzer.Modes
             _configScreen.RefreshReportConfigurations();
         }
 
-        public override List<Configurable> PopulateReportBrowser()
+        public override List<BaseConfigurable> PopulateReportBrowser()
         {
             return
                 _dataSource.GetRedLightRunningConfigurationNames()
                     .Select(name => new RedLightRunningConfigurable(name, this, _dataSource))
-                    .Cast<Configurable>()
+                    .Cast<BaseConfigurable>()
                     .ToList();
         }
 

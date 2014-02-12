@@ -134,7 +134,7 @@
     <Compile Include="Models\VolumeStoreDecoder.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Modes\BaseMode.cs" />
-    <Compile Include="Modes\Configurable.cs" />
+    <Compile Include="Modes\BaseConfigurable.cs" />
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
     <Compile Include="Modes\RedLightRunningConfigurable.cs" />
