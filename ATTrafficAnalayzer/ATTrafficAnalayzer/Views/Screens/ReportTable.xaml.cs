@@ -77,7 +77,7 @@ namespace ATTrafficAnalayzer.Views.Screens
                 stringBuilder.Append("[b]" + Configuration.GetPMPeakPeriod(DateSettings).ToShortTimeString() + "[/b]");
                 stringBuilder.Append(" with volume: ");
                 stringBuilder.AppendLine("[b]" + Configuration.GetPMPeakVolume(DateSettings) + "[/b]");
-                stringBuilder.Append("Total volume: [b]" + Configuration.GetTotalVolume() +"[/b]");
+                stringBuilder.Append("Total volume: [b]" + Configuration.GetTotalVolume(DateSettings) +"[/b]");
 
                 OverallSummaryTextBlock.Html = stringBuilder.ToString();
                 OverallSummaryBorder.Visibility = Visibility.Visible;

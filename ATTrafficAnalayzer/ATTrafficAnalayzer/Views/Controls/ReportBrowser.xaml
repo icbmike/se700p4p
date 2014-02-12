@@ -73,8 +73,12 @@
                   BorderBrush="{x:Null}"
                   DockPanel.Dock="Top"
                   ItemsSource="{Binding Configurables}"
-                  DisplayMemberPath="Name"
-                  SelectionChanged="ConfigurablesListViewOnSelectionChanged">
+                  DisplayMemberPath="Name">
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+                </Style>
+            </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="_Edit"

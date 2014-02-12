@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
+using ATTrafficAnalayzer.Modes;
 
 namespace ATTrafficAnalayzer.Models
 {
@@ -38,7 +39,7 @@ namespace ATTrafficAnalayzer.Models
 
         #region Configuration Related Methods
         
-        Configuration GetConfiguration(string name);
+        ReportConfiguration.ReportConfiguration GetConfiguration(string name);
         
         SummaryConfiguration GetSummaryConfig(string name);
 
@@ -46,7 +47,7 @@ namespace ATTrafficAnalayzer.Models
         
         List<String> GetConfigurationNames();
 
-        void AddConfiguration(Configuration config);
+        void AddConfiguration(ReportConfiguration.ReportConfiguration config);
         
         void SaveMonthlySummaryConfig(string configName, IEnumerable<SummaryRow> rows);
 
@@ -82,5 +83,10 @@ namespace ATTrafficAnalayzer.Models
 
         void AddIntersection(int intersection, IEnumerable<int> detectors);
 
+        List<String> GetRedLightRunningConfigurationNames();
+        void RemoveRedLightRunningConfiguration(string name);
+        RedLightRunningConfiguration GetRedLightRunningConfiguration(string name);
+        void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration);
+        int GetTotalVolumeForDay(DateTime date, int intersection);
     }
 }

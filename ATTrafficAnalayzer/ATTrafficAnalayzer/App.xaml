@@ -59,7 +59,5 @@
             <Setter Property="FontSize" Value="16"/>
         </Style>
 
-        <models:SqlceDataSource x:Key="DataSourceResource" />
-        
     </Application.Resources>
 </Application>

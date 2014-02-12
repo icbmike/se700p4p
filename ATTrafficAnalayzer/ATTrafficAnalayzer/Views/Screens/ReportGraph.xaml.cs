@@ -38,7 +38,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             Plotter.Children.Remove(Plotter.DefaultContextMenu);
             Plotter.Legend.Visibility = Visibility.Collapsed;
 
-            Render();
         }
 
         /// <summary>

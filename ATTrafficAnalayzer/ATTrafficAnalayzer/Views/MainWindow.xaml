@@ -16,13 +16,13 @@
     <DockPanel LastChildFill="True">
 
         <Canvas DockPanel.Dock="Top"
-                Height="100">
+                Height="80">
             <Canvas.Background>
                 <ImageBrush ImageSource="/Resources/Images/at-banner.png" />
             </Canvas.Background>
 
-            <Menu Canvas.Top="20"
-                  Canvas.Left="20"
+            <Menu Canvas.Top="5"
+                  Canvas.Left="10"
                   Background="{x:Null}">
                 <MenuItem Header="_File"
                           FontSize="16"
@@ -62,8 +62,8 @@
                 </MenuItem>
             </Menu>
 
-            <controls:Toolbar Canvas.Top="55"
-                              Canvas.Left="20"
+            <controls:Toolbar Canvas.Top="30"
+                              Canvas.Left="10"
                               x:Name="SettingsToolbar"
                               DateRangeChanged="SettingsToolbar_OnDateRangeChanged"
                               Loaded="SettingsToolbar_OnLoaded"
@@ -72,7 +72,8 @@
 
         <controls:ReportBrowser x:Name="ReportBrowser"
                                 Visibility="Collapsed"
-                                NewConfigurationEvent="ReportBrowserOnNewConfigurationEvent"/>
+                                NewConfigurationEvent="ReportBrowserOnNewConfigurationEvent"
+                                RefreshRequested="ReportBrowserOnRefreshRequested"/>
 
         <ContentControl DockPanel.Dock="Right"
                         x:Name="ContentScreen"

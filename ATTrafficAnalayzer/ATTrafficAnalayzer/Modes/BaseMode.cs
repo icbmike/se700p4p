@@ -70,8 +70,6 @@ namespace ATTrafficAnalayzer.Modes
             //Default, don't do anything
         }
 
-       
-
         public event ConfigurationSavedEventHandler ConfigurationSaved;
 
         protected virtual void OnConfigurationSaved(ConfigurationSavedEventArgs args)
@@ -79,7 +77,6 @@ namespace ATTrafficAnalayzer.Modes
             var handler = ConfigurationSaved;
             if (handler != null) handler(this, args);
         }
-
 
         public abstract ImageSource Image { get; protected set; }
         public abstract String ModeName { get; protected set; }

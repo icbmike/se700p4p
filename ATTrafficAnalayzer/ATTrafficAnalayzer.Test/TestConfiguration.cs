@@ -81,17 +81,17 @@ namespace ATTrafficAnalayzer.Test
             Assert.AreEqual(600, pmPeakVolume);
         }
 
-        private Configuration GetTestConfiguration()
+        private ReportConfiguration GetTestConfiguration()
         {
             var testApproach = new Approach("Test Approach", new List<int> { 1 }, _mockDataSource);
-            var testConfiguration = new Configuration("Test Config", _dummyIntersection,
+            var testConfiguration = new ReportConfiguration("Test Config", _dummyIntersection,
                                                       new List<Approach> { testApproach }, _mockDataSource);
             return testConfiguration;
         }
 
-        private Configuration GetTestConfigurationWithMultipleApproaches()
+        private ReportConfiguration GetTestConfigurationWithMultipleApproaches()
         {
-            return new Configuration("Test Config",
+            return new ReportConfiguration("Test Config",
                                     _dummyIntersection,
                                     new List<Approach>
                                     {

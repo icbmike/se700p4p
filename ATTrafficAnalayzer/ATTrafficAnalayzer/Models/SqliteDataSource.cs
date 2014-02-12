@@ -94,6 +94,25 @@ namespace ATTrafficAnalayzer.Models
 
                         command.ExecuteNonQuery();
 
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [red_light_running_configurations] (
+                                               [id] INTEGER NOT NULL
+                                              ,[name] nvarchar(100) NOT NULL
+                                              ,CONSTRAINT [PK_red_light_running_configurations] PRIMARY KEY ([id])
+                                              );";
+
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"CREATE TABLE IF NOT EXISTS [red_light_running_site_mapping] (
+                                                [red_light_running_config_id] int NOT NULL
+                                              , [site_config_id] int NOT NULL
+                                              , CONSTRAINT [PK_red_light_running_site_mapping] PRIMARY KEY ([red_light_running_config_id], [site_config_id])
+                                              , FOREIGN KEY ([red_light_running_config_id]) REFERENCES [red_light_running_configurations] ([id]) ON DELETE CASCADE ON UPDATE CASCADE
+                                              , FOREIGN KEY ([site_config_id]) REFERENCES [configs] ([config_id]) ON DELETE CASCADE ON UPDATE CASCADE
+                                              );";
+
+                        command.ExecuteNonQuery();
+
                         command.CommandText =
                             @"CREATE UNIQUE INDEX IF NOT EXISTS [UQ__monthly_summaries__0000000000000050] ON [monthly_summaries] ([name] ASC);";
                         command.ExecuteNonQuery();
@@ -466,6 +485,179 @@ namespace ATTrafficAnalayzer.Models
             }
         }
 
+        public List<string> GetRedLightRunningConfigurationNames()
+        {
+            var names = new List<string>();
+
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "SELECT name FROM red_light_running_configurations;";
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            names.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+            return names;
+        }
+
+        public void RemoveRedLightRunningConfiguration(string name)
+        {
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM red_light_running_configurations WHERE name = @name;";
+                    command.Parameters.AddWithValue("@name", name);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public RedLightRunningConfiguration GetRedLightRunningConfiguration(string name)
+        {
+            var reportConfigurations = new List<ReportConfiguration.ReportConfiguration>();
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    //Time for a sick join
+                    command.CommandText = @"SELECT configs.config_id, configs.name, configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector
+                                            FROM red_light_running_configurations AS RLRconfigs
+                                            INNER JOIN red_light_running_site_mapping AS RLRsiteMappings
+                                            ON RLRconfigs.id = RLRsiteMappings.red_light_running_config_id
+                                            INNER JOIN configs
+                                            ON RLRsiteMappings.site_config_id = configs.config_id
+                                            INNER JOIN config_approach_mapping
+                                            ON configs.config_id = config_approach_mapping.config_id
+                                            INNER JOIN approaches
+                                            ON approaches.approach_id = config_approach_mapping.approach_id
+                                            INNER JOIN approach_detector_mapping
+                                            ON approaches.approach_id = approach_detector_mapping.approach_id
+                                            WHERE RLRconfigs.name = @name";
+                    command.Parameters.AddWithValue("@name", name);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (!reader.Read()) //No results
+                            return new RedLightRunningConfiguration {Name = name, Sites = reportConfigurations};
+                        
+                        var configId = reader.GetInt32(0);
+                        var approachId = reader.GetInt32(3);
+
+                        var currentApproach = new Approach(reader.GetString(4), new List<int> {reader.GetByte(5)}, this);
+                        var currentConfig = new ReportConfiguration.ReportConfiguration(reader.GetString(1),  reader.GetInt32(2),
+                            new List<Approach>(), this);
+
+                        while (reader.Read())
+                        {
+                            if (reader.GetInt32(0) != configId) //Starting a new config and a new approach
+                            {
+                                //Add current approach to current config
+                                currentConfig.Approaches.Add(currentApproach);
+                                //Add current config to config list
+                                reportConfigurations.Add(currentConfig);
+                                //Reset both
+                                currentConfig = new ReportConfiguration.ReportConfiguration(reader.GetString(1),reader.GetInt32(2), new List<Approach>(), this);
+                                currentApproach = new Approach(reader.GetString(4), new List<int>(), this);
+                                //Reset configId and approachId
+                                configId = reader.GetInt32(0);
+                                approachId = reader.GetInt32(3);
+                            }
+
+                            else if (reader.GetInt32(3) != approachId) //Only starting a new approach 
+                            {
+                                //Add currentApproach to currentConfig
+                                currentConfig.Approaches.Add(currentApproach);
+                                //Start a new one
+                                currentApproach = new Approach(reader.GetString(4), new List<int>(), this);
+                                //Reset approachId
+                                approachId = reader.GetInt32(3);
+                            }
+
+                            currentApproach.Detectors.Add(reader.GetByte(5));
+                        }
+
+                        //Add final things to that which they should belong to
+                        currentConfig.Approaches.Add(currentApproach);
+                        //Add current config to config list
+                        reportConfigurations.Add(currentConfig);
+                    }
+                }
+            }
+
+            return new RedLightRunningConfiguration {Name = name, Sites = reportConfigurations};
+        }
+
+        public void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration)
+        {
+            //Insert into regular table
+            using (var connection = new SQLiteConnection(DbPath))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "INSERT INTO red_light_running_configurations (name) VALUES (@name);";
+                    command.Parameters.AddWithValue("@name", configuration.Name);
+                    command.ExecuteNonQuery();
+
+                    command.Parameters.Clear();
+                    command.CommandText = "SELECT last_insert_rowid();";
+                    var rlrId = (Int64)command.ExecuteScalar();
+
+                    foreach (var reportConfiguration in configuration.Sites)
+                    {
+                        command.Parameters.Clear();
+                        command.CommandText = "SELECT config_id FROM configs WHERE name = @name;";
+                        command.Parameters.AddWithValue("@name", reportConfiguration.Name);
+                        var configId = (Int64)command.ExecuteScalar();
+
+                        command.Parameters.Clear();
+                        command.CommandText =
+                            @"INSERT INTO red_light_running_site_mapping (red_light_running_config_id, site_config_id) 
+                                                VALUES (@rlrId, @config_id);";
+                        command.Parameters.AddWithValue("@rlrId", rlrId);
+                        command.Parameters.AddWithValue("@config_id", configId);
+                        command.ExecuteNonQuery();
+
+                    }
+                }
+            }
+        }
+
+        public int GetTotalVolumeForDay(DateTime date, int intersection)
+        {
+            int volume;
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                using (var query = new SQLiteCommand(conn))
+                {
+                    query.CommandText =
+                        @"SELECT ifnull(SUM(volume), 0) 
+                        FROM volumes 
+                        WHERE intersection = @intersection 
+                        AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+
+                    query.Parameters.AddWithValue("@intersection", intersection);
+                    query.Parameters.AddWithValue("@startDateTime", date);
+                    query.Parameters.AddWithValue("@endDateTime", date.AddDays(1));
+
+                    volume = Convert.ToInt32(query.ExecuteScalar());
+                    
+                }
+                conn.Close();
+            }
+            return volume;
+        }
+
         /// <summary>
         ///     Get the volumes for a single detector at a specific datetime
         /// </summary>
@@ -682,9 +874,9 @@ namespace ATTrafficAnalayzer.Models
         /// </summary>
         /// <param name="name">Configuration name</param>
         /// <returns>configuration</returns>
-        public Configuration GetConfiguration(string name)
+        public ReportConfiguration.ReportConfiguration GetConfiguration(string name)
         {
-            Configuration result = null;
+            ReportConfiguration.ReportConfiguration result = null;
             using (var conn = new SQLiteConnection(DbPath))
             {
                 conn.Open();
@@ -692,15 +884,15 @@ namespace ATTrafficAnalayzer.Models
                 using (var query = conn.CreateCommand())
                 {
                     query.CommandText =
-                        "SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector " +
-                        "FROM configs " +
-                        "INNER JOIN config_approach_mapping " +
-                        "ON configs.config_id = config_approach_mapping.config_id " +
-                        "INNER JOIN approaches " +
-                        "ON approaches.approach_id = config_approach_mapping.approach_id " +
-                        "INNER JOIN approach_detector_mapping " +
-                        "ON approaches.approach_id = approach_detector_mapping.approach_id " +
-                        "WHERE configs.name = @name";
+                        @"SELECT configs.intersection_id, approaches.approach_id, approaches.name, approach_detector_mapping.detector 
+                        FROM configs 
+                        INNER JOIN config_approach_mapping 
+                        ON configs.config_id = config_approach_mapping.config_id 
+                        INNER JOIN approaches 
+                        ON approaches.approach_id = config_approach_mapping.approach_id 
+                        INNER JOIN approach_detector_mapping 
+                        ON approaches.approach_id = approach_detector_mapping.approach_id 
+                        WHERE configs.name = @name";
                     query.Parameters.AddWithValue("@name", name);
                     using (var reader = query.ExecuteReader())
                     {
@@ -726,7 +918,7 @@ namespace ATTrafficAnalayzer.Models
                                 currentApproach.Detectors.Add((reader.GetByte(3)));
                             }
 
-                            result = new Configuration(name, intersection, approaches, this);
+                            result = new ReportConfiguration.ReportConfiguration(name, intersection, approaches, this);
                         }
                     }
                 }
@@ -788,7 +980,7 @@ namespace ATTrafficAnalayzer.Models
         ///     Create a report record in the database
         /// </summary>
         /// <param name="config">Configuration configuration</param>
-        public void AddConfiguration(Configuration config)
+        public void AddConfiguration(ReportConfiguration.ReportConfiguration config)
         {
             using (var conn = new SQLiteConnection(DbPath))
             {

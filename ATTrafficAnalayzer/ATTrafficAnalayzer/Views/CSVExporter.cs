@@ -16,7 +16,7 @@ namespace ATTrafficAnalayzer.Views
         private readonly DateSettings _settings;
         private readonly IDataSource _dataSource;
 //        private readonly DataTableHelper _dtHelper;
-        private readonly Configuration _config;
+        private readonly ReportConfiguration _config;
         private readonly SummaryConfiguration _summaryConfig;
         private readonly string _configName;
         private int _amPeakIndex = 8;

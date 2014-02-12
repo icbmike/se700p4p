@@ -262,13 +262,16 @@ namespace ATTrafficAnalayzer.Views
             var reportMode = new ReportMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
             var faultsMode = new FaultsMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
             var summaryMode = new SummaryMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
+            var redLightRunningMode = new RedLightRunningMode(ModeChange, _dataSource, SettingsToolbar.DateSettings);
+
             //Add them to the toolbar
             var modes = new List<BaseMode>
             {
                 _homeMode,
                 reportMode,
                 faultsMode,
-                summaryMode
+                summaryMode,
+                redLightRunningMode
             };
             SettingsToolbar.Modes.AddMany(modes);
 
@@ -278,11 +281,15 @@ namespace ATTrafficAnalayzer.Views
             ContentScreen.Content = _homeMode.GetView();
 
             //Setup ReportMode
-            reportMode.DateVolumeCountsDontMatch += ReportModeOnDateVolumeCountsDontMatch;
+            reportMode.DateVolumeCountsDontMatch += OnDateVolumeCountsDontMatch;
             reportMode.ConfigurationSaved += OnConfigurationCreated;
 
             //Setup SummaryMode
             summaryMode.ConfigurationSaved += OnConfigurationCreated;
+
+            //Setup Red Light Running Mode
+            reportMode.DateVolumeCountsDontMatch += OnDateVolumeCountsDontMatch;
+            redLightRunningMode.ConfigurationSaved += OnConfigurationCreated;
         }
 
         private void OnConfigurationCreated(object sender, ConfigurationSavedEventArgs eventArgs)
@@ -291,7 +298,7 @@ namespace ATTrafficAnalayzer.Views
             ReportBrowser.Configurables.AddMany(eventArgs.Mode.PopulateReportBrowser());
         }
 
-        private void ReportModeOnDateVolumeCountsDontMatch(object sender, EventArgs eventArgs)
+        private void OnDateVolumeCountsDontMatch(object sender, EventArgs eventArgs)
         {
             ModeChange(_homeMode);
         }
@@ -318,6 +325,14 @@ namespace ATTrafficAnalayzer.Views
         private void ReportBrowserOnNewConfigurationEvent(object sender, EventArgs e)
         {
             _currentMode.ShowConfigurationView();
+        }
+
+        private void ReportBrowserOnRefreshRequested(object sender, EventArgs e)
+        {
+            var reportBrowserItems = _currentMode.PopulateReportBrowser();
+           
+            ReportBrowser.Configurables.Clear();
+            ReportBrowser.Configurables.AddMany(reportBrowserItems);
         }
     }
 }

@@ -95,7 +95,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public Configuration GetConfiguration(string name)
+        public ReportConfiguration GetConfiguration(string name)
         {
             throw new NotImplementedException();
         }
@@ -120,7 +120,7 @@ namespace ATTrafficAnalayzer.Test
             throw new NotImplementedException();
         }
 
-        public void AddConfiguration(Configuration config)
+        public void AddConfiguration(ReportConfiguration config)
         {
             throw new NotImplementedException();
         }
@@ -171,6 +171,31 @@ namespace ATTrafficAnalayzer.Test
         }
 
         public void AddIntersection(int intersection, IEnumerable<int> detectors)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<string> GetRedLightRunningConfigurationNames()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveRedLightRunningConfiguration(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RedLightRunningConfiguration GetRedLightRunningConfiguration(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetTotalVolumeForDay(DateTime startDate, int intersection)
         {
             throw new NotImplementedException();
         }

@@ -98,10 +98,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Data.SQLite.1.0.89.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SQL Server Compact Edition\v4.0\Desktop\System.Data.SqlServerCe.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -121,9 +117,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApproachesLineBreakConverter.cs" />
+    <Compile Include="ApproacheStringShortnerConverter.cs" />
     <Compile Include="ApproachSummaryConverter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Models\DatabaseMetrics.cs" />
+    <Compile Include="Models\RedLightRunningConfiguration.cs" />
     <Compile Include="Models\ReportConfiguration\SummaryConfiguration.cs" />
     <Compile Include="Models\ReportConfiguration\SummaryRow.cs" />
     <Compile Include="Models\DataSourceFactory.cs" />
@@ -131,7 +130,6 @@
     <Compile Include="Models\IDataSource.cs" />
     <Compile Include="Models\ReportConfiguration\Approach.cs" />
     <Compile Include="Models\Settings\Mode.cs" />
-    <Compile Include="Models\SqlceDataSource.cs" />
     <Compile Include="Models\SqliteDataSource.cs" />
     <Compile Include="Models\VolumeStoreDecoder.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
@@ -139,6 +137,8 @@
     <Compile Include="Modes\Configurable.cs" />
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
+    <Compile Include="Modes\RedLightRunningConfigurable.cs" />
+    <Compile Include="Modes\RedLightRunningMode.cs" />
     <Compile Include="Modes\ReportConfigurable.cs" />
     <Compile Include="Modes\SummaryConfigurable.cs" />
     <Compile Include="Modes\SummaryMode.cs" />
@@ -179,11 +179,17 @@
     <Compile Include="Views\CSVExporter.cs" />
     <Compile Include="Modes\HomeMode.cs" />
     <Compile Include="Modes\ReportMode.cs" />
+    <Compile Include="Views\Screens\RedLightRunningConfigScreen.xaml.cs">
+      <DependentUpon>RedLightRunningConfigScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Screens\RedLightRunningViewScreen.xaml.cs">
+      <DependentUpon>RedLightRunningViewScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Screens\ReportConfig.xaml.cs">
       <DependentUpon>ReportConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Settings\DateSettings.cs" />
-    <Compile Include="Models\ReportConfiguration\Configuration.cs" />
+    <Compile Include="Models\ReportConfiguration\ReportConfiguration.cs" />
     <Compile Include="Models\Volume\VolumeRecord.cs" />
     <Compile Include="Views\Screens\DetectorsListToStringConverter.cs" />
     <Compile Include="Views\Screens\Faults.xaml.cs">
@@ -244,6 +250,14 @@
     <Page Include="Views\Controls\Parago\ProgressDialog\ProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Screens\RedLightRunningConfigScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Screens\RedLightRunningViewScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Screens\ReportConfig.xaml">
       <SubType>Designer</SubType>
@@ -307,6 +321,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\Icons\red_traffic_light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
