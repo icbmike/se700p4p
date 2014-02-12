@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.Settings;
+using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Screens;
 
 namespace ATTrafficAnalayzer.Modes
@@ -62,6 +63,11 @@ namespace ATTrafficAnalayzer.Modes
         {
             args.Mode = this; //Set the mode now that we know it
             OnConfigurationSaved(args); //Bubble the event up
+        }
+
+        public override void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args)
+        {
+            _tableView.DateRangeChanged();
         }
 
         public override void EditConfigurable(Configurable configurable)

@@ -114,6 +114,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         /// <returns></returns>
         public DataTable GetDataTable(DateSettings settings, int intersection, int day, int limit = 24, int offset = 0)
         {
+           
+
             if (_dataTable != null) return _dataTable;
 
              // Get volume store data 24 hours
@@ -181,6 +183,11 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             return _dataTable;
         }
 
+        private void CheckDateSettings(DateSettings dateSettings)
+        {
+            CheckDateSettings(dateSettings, _interval);
+        }
+
         private int _interval;
         private DateTime _startDate;
         private DateTime _endDate;
@@ -235,6 +242,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         private void PopulateDataTable(DateSettings settings, int intersection, int day, int limit, int offset)
         {
+            CheckDateSettings(settings);
+
             if (_dataTable == null) _dataTable = GetDataTable(settings, intersection, day, limit, offset);
 
             //Datatable may still be null
@@ -352,14 +361,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public void LoadDataTable(DateSettings dateSettings, int interval, int intersection, int day)
         {
-            if(interval != _interval || 
-                _startDate != dateSettings.StartDate || 
-                _endDate != dateSettings.EndDate) 
-                Invalidate();
-
-            _startDate = dateSettings.StartDate;
-            _endDate = dateSettings.EndDate;
-            _interval = interval;
+           
 
             try
             {
@@ -372,6 +374,18 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             {
                 HasDataForDate = false;
             }
+        }
+
+        private void CheckDateSettings(DateSettings dateSettings, int interval)
+        {
+            if (interval != _interval ||
+                _startDate != dateSettings.StartDate ||
+                _endDate != dateSettings.EndDate)
+                Invalidate();
+
+            _startDate = dateSettings.StartDate;
+            _endDate = dateSettings.EndDate;
+            _interval = interval;
         }
     }
 

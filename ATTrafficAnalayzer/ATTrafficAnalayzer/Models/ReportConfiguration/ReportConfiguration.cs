@@ -14,6 +14,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
         private int _amPeakVolume;
         private int _pmPeakVolume;
         private int _totalVolume;
+        private DateTime _startDate;
+        private DateTime _endDate;
         public List<Approach> Approaches { get; set; }
         public string Name { get; set; }
         public int Intersection { get; set; }
@@ -78,11 +80,14 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             _pmPeakPeriod = null;
             _amPeakVolume = -1;
             _pmPeakVolume = -1;
+            _totalVolume = -1;
 
         }
 
         public Approach GetBusiestApproach(DateSettings settings)
         {
+            CheckDateSettings(settings);
+
             if (_currentBusiest != null) return _currentBusiest;
 
             foreach (var approach in Approaches)
@@ -110,6 +115,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public DateTime GetPMPeakPeriod(DateSettings settings)
         {
+            CheckDateSettings(settings);
+
             if (_pmPeakPeriod != null) return _pmPeakPeriod.Value;
             
             //This sets the peak period anyway
@@ -120,6 +127,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public int GetAMPeakVolume(DateSettings settings)
         {
+            CheckDateSettings(settings);
+
             if (_amPeakVolume != -1) return _amPeakVolume;
 
             foreach (var approach in Approaches)
@@ -136,6 +145,8 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public int GetPMPeakVolume(DateSettings settings)
         {
+            CheckDateSettings(settings);
+
             if (_pmPeakVolume != -1) return _pmPeakVolume;
 
             foreach (var approach in Approaches)
@@ -152,11 +163,25 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public int GetTotalVolume(DateSettings settings)
         {
+            CheckDateSettings(settings);
+
              if (_totalVolume != -1) return _totalVolume;
 
             _totalVolume = Approaches.Sum(approach => approach.GetTotal(settings, Intersection, 0));
             
             return _totalVolume;
+        }
+
+        private void CheckDateSettings(DateSettings settings)
+        {
+            if (settings.StartDate != _startDate ||
+                settings.EndDate != _endDate)
+            {
+                Invalidate();
+            }
+
+            _startDate = settings.StartDate;
+            _endDate = settings.EndDate;
         }
     }
 }

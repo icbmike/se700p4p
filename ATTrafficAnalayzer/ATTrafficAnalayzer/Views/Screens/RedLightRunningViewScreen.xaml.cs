@@ -49,5 +49,10 @@ namespace ATTrafficAnalayzer.Views.Screens
             Grid.View = grid;
             Grid.ItemsSource = dataTable.DefaultView;
         }
+
+        public void DateRangeChanged()
+        {
+            if(Configuration != null) Render();
+        }
     }
 }
