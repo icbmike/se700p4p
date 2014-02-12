@@ -30,17 +30,23 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _dataSource = dataSource;
             Configuration = new RedLightRunningConfiguration();
+            
+            RefreshReportConfigurations(); //Needs a better name
+
+            InitializeComponent();
+        }
+
+        public void RefreshReportConfigurations()
+        {
             ReportConfigurations = _dataSource.GetConfigurationNames().
                 Select(name => _dataSource.GetConfiguration(name)).
                 Select(config => new ReportConfigSelectedModel
                 {
-                    Name = config.Name, 
+                    Name = config.Name,
                     Selected = false,
                     Intersection = config.Intersection,
                     Approaches = string.Join(", ", config.Approaches.Select(approach => approach.ApproachName))
                 }).ToList();
-
-            InitializeComponent();
         }
 
         public RedLightRunningConfiguration Configuration { get; set; } // What we will be saving eventually
