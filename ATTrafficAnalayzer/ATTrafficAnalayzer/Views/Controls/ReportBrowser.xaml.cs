@@ -104,11 +104,11 @@ namespace ATTrafficAnalayzer.Views.Controls
                     var backgroundWorker = new BackgroundWorker();
                     backgroundWorker.DoWork += (o, args) => selectedItem.Delete();
                     
-                    ProgressBar.Visibility = Visibility.Visible;
+//                    ProgressBar.Visibility = Visibility.Visible;
                     backgroundWorker.RunWorkerCompleted +=
                         (o, args) =>
                             {
-                                ProgressBar.Visibility = Visibility.Collapsed;
+//                                ProgressBar.Visibility = Visibility.Collapsed;
                                 messageBoxText = selectedItem.Name + " was deleted";
                                 caption = "Delete successful";
                                 button = MessageBoxButton.OK;

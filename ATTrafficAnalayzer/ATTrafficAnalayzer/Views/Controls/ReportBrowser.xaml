@@ -109,12 +109,6 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <ProgressBar
-            DockPanel.Dock="Bottom"
-            VerticalAlignment="Bottom"
-            Height="20"
-            Name="ProgressBar"
-            Visibility="Collapsed"
-            IsIndeterminate="True" />
+        
     </DockPanel>
 </UserControl>
