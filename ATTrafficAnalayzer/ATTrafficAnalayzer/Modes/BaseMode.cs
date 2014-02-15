@@ -115,7 +115,7 @@ namespace ATTrafficAnalayzer.Modes
         {
             var dlg = new SaveFileDialog
             {
-                FileName = "",
+                FileName = baseConfigurable.Name + ".csv",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 DefaultExt = ".csv",
                 Filter = "CSV Files (.csv)|*.csv"
@@ -127,7 +127,11 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
-        protected abstract IEnumerable<string> GetExportLines();
+        protected virtual IEnumerable<string> GetExportLines()
+        {
+            //Do nothing
+            return null;
+        }
 
         /// <summary>
         /// private method to write the prepared lines to the filename specified.

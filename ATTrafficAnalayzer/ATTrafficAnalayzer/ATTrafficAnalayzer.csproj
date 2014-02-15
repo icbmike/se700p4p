@@ -176,7 +176,6 @@
     <Compile Include="Views\Controls\Toolbar.xaml.cs">
       <DependentUpon>Toolbar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CSVExporter.cs" />
     <Compile Include="Modes\HomeMode.cs" />
     <Compile Include="Modes\ReportMode.cs" />
     <Compile Include="Views\Screens\RedLightRunningConfigScreen.xaml.cs">

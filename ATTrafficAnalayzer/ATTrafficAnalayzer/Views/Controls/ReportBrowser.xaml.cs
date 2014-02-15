@@ -24,10 +24,9 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             DataContext = this;
             Configurables = new ObservableCollection<BaseConfigurable>();
-            InitializeComponent();
-            
             _dataSource = DataSourceFactory.GetDataSource();
 
+            InitializeComponent();
         }
 
         public ObservableCollection<BaseConfigurable> Configurables { get; set; }

@@ -14,7 +14,10 @@ namespace ATTrafficAnalayzer.Modes
         {
             Name = name;
             Mode = mode;
+            CanExport = false;
         }
+
+        public bool CanExport { get; set; }
 
         public abstract void Delete();
 

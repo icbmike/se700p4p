@@ -21,7 +21,6 @@ namespace ATTrafficAnalayzer.Test
             _mockDataSource = new MockDataSource(_dummyIntersection);
             _dateSettings = new DateSettings
                 {
-                    Interval = 5,
                     StartDate = new DateTime(2013, 3, 11),
                     EndDate = new DateTime(2013, 3, 12)
                 }; 
