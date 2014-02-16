@@ -81,7 +81,8 @@
                         <Setter.Value>
                             <ContextMenu>
                                 <MenuItem Header="_Edit"
-                                            Click="editBtn_Click">
+                                            Command="{Binding ConfigurableCommand}"
+                                            CommandParameter="edit">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
                                     </MenuItem.Icon>
@@ -95,7 +96,8 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="_Remove"
-                                            Click="removeBtn_Click">
+                                            Command="{Binding ConfigurableCommand}"
+                                            CommandParameter="delete">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
                                     </MenuItem.Icon>
