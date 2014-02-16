@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -275,6 +276,41 @@ namespace ATTrafficAnalayzer.Modes
             }
             _currentView = ReportViews.Configuration;
             _view.Content = _configView;
+        }
+
+        protected override IEnumerable<string> GetExportLines(BaseConfigurable configurable)
+        {
+            var stringBuilder = new StringBuilder();
+
+            var config = _dataSource.GetConfiguration(configurable.Name);
+            config.Approaches.ForEach(approach => approach.LoadDataTable(DateSettings, Interval, config.Intersection, 0));
+
+            stringBuilder.AppendLine(configurable.Name + "\n");
+
+            stringBuilder.Append("Busiest Approach: ");
+            stringBuilder.AppendLine( config.GetBusiestApproach(DateSettings).ApproachName);
+
+            stringBuilder.Append("Busiest AM Hour: ");
+            stringBuilder.Append(config.GetAMPeakPeriod(DateSettings).ToShortTimeString());
+            stringBuilder.Append(" with volume: ");
+            stringBuilder.AppendLine(config.GetAMPeakVolume(DateSettings).ToString());
+
+            stringBuilder.Append("Busiest PM Hour: ");
+            stringBuilder.Append(config.GetPMPeakPeriod(DateSettings).ToShortTimeString());
+            stringBuilder.Append(" with volume: "); 
+            stringBuilder.AppendLine(config.GetPMPeakVolume(DateSettings).ToString());
+            stringBuilder.Append("Total volume: " + config.GetTotalVolume(DateSettings) + "\n");
+
+            foreach (var approach in config.Approaches)
+            {
+                stringBuilder.AppendLine(approach.ApproachName);
+                stringBuilder.AppendLine("AM Peak Volume: " + approach.AMPeakVolume + " at " + approach.AMPeakTime.ToShortTimeString());
+                stringBuilder.AppendLine("PM Peak Volume: " + approach.PMPeakVolume + " at " + approach.PMPeakTime.ToShortTimeString());
+                stringBuilder.AppendLine("Total volume: " + approach.TotalVolume + "\n");
+
+            }
+
+            return stringBuilder.ToString().Split(new []{'\n'});
         }
 
         public override ImageSource Image { get; protected set; }

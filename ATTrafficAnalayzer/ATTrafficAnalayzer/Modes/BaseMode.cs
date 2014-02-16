@@ -123,11 +123,11 @@ namespace ATTrafficAnalayzer.Modes
 
             if (dlg.ShowDialog() == true) //They clicked okay
             {
-                WriteToFile(GetExportLines(), dlg.FileName);
+                WriteToFile(GetExportLines(baseConfigurable), dlg.FileName);
             }
         }
 
-        protected virtual IEnumerable<string> GetExportLines()
+        protected virtual IEnumerable<string> GetExportLines(BaseConfigurable baseConfigurable)
         {
             //Do nothing
             return null;

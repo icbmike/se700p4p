@@ -9,6 +9,7 @@ namespace ATTrafficAnalayzer.Modes
         public ReportConfigurable(string name, BaseMode mode, IDataSource dataSource) : base(name, mode)
         {
             _dataSource = dataSource;
+            CanExport = true;
         }
 
         public override void Delete()

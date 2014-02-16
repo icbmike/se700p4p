@@ -15,7 +15,6 @@ namespace ATTrafficAnalayzer.Views.Controls
     /// </summary>
     public partial class ReportBrowser
     {
-        private readonly IDataSource _dataSource;
         private bool _hasModeChanged;
         private Mode _mode;
         private bool _selectionCleared;
@@ -24,7 +23,6 @@ namespace ATTrafficAnalayzer.Views.Controls
         {
             DataContext = this;
             Configurables = new ObservableCollection<BaseConfigurable>();
-            _dataSource = DataSourceFactory.GetDataSource();
 
             InitializeComponent();
         }
@@ -104,11 +102,9 @@ namespace ATTrafficAnalayzer.Views.Controls
                     var backgroundWorker = new BackgroundWorker();
                     backgroundWorker.DoWork += (o, args) => selectedItem.Delete();
                     
-//                    ProgressBar.Visibility = Visibility.Visible;
                     backgroundWorker.RunWorkerCompleted +=
                         (o, args) =>
                             {
-//                                ProgressBar.Visibility = Visibility.Collapsed;
                                 messageBoxText = selectedItem.Name + " was deleted";
                                 caption = "Delete successful";
                                 button = MessageBoxButton.OK;
@@ -137,7 +133,7 @@ namespace ATTrafficAnalayzer.Views.Controls
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
-        private void exportBtn_Click(object sender, RoutedEventArgs e)
+        public void exportBtn_Click(object sender, RoutedEventArgs e)
         {
             GetSelectedConfiguration().Export();
         }

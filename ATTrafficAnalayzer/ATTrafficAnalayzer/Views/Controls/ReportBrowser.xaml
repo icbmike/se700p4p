@@ -74,13 +74,9 @@
                   DockPanel.Dock="Top"
                   ItemsSource="{Binding Configurables}"
                   DisplayMemberPath="Name">
-            <ListView.Resources>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
-                </Style>
-            </ListView.Resources>
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
@@ -91,7 +87,8 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="_Export"
-                                            Click="exportBtn_Click"
+                                            Command="{Binding ConfigurableCommand}"
+                                            CommandParameter="export"
                                             IsEnabled="{Binding CanExport}">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
@@ -109,6 +106,5 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        
     </DockPanel>
 </UserControl>
