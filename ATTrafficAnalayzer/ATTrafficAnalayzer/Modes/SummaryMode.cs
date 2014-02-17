@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Screens;
@@ -19,6 +20,7 @@ namespace ATTrafficAnalayzer.Modes
         private SummaryConfigScreen _configView;
         private readonly SummaryTable _tableView;
         private SummaryViews _currentView;
+        private List<SummaryStatistic> statistics;
 
         enum SummaryViews
         {
@@ -39,6 +41,14 @@ namespace ATTrafficAnalayzer.Modes
             _configView =  new SummaryConfigScreen(_dataSource);
             _configView.ConfigurationSaved += ConfigViewOnConfigurationSaved;
             _tableView = new SummaryTable(dateSettings, dataSource);
+
+            statistics = new List<SummaryStatistic>
+            {
+                new SummaryStatistic("Daily Totals", CalculateDailyTotals),
+                new SummaryStatistic("Sample", (time, row) => time.Day)
+            };
+
+            _tableView.Statistics.AddRange(statistics);
 
             //Set the startup view
             _viewContainer.Content = _configView;
@@ -106,12 +116,38 @@ namespace ATTrafficAnalayzer.Modes
                 stringBuilder.AppendLine(summaryRow.DividingFactorOut + "\n");
             }
 
+            foreach (var summaryStatistic in statistics)
+            {
+                stringBuilder.AppendLine(summaryStatistic.Name);
+                stringBuilder.Append("Date,");
+                stringBuilder.AppendLine(string.Join(",", summaryConfiguration.SummaryRows.Select(row => row.RouteName)));
+
+                for (var day = DateSettings.StartDate; day < DateSettings.EndDate; day = day.AddDays(1))
+                {
+                    stringBuilder.Append(day.ToShortDateString() + ",");
+                    DateTime day1 = day; //Closure stuff ?
+                    SummaryStatistic statistic = summaryStatistic;
+                    stringBuilder.AppendLine(string.Join(",", summaryConfiguration.SummaryRows.Select(row => statistic.Calculation(day1, row))));
+                }
+                stringBuilder.AppendLine("");
+            }
+
             return stringBuilder.ToString();
         }
 
         public override List<BaseConfigurable> PopulateReportBrowser()
         {
             return _dataSource.GetSummaryNames().Select(name => new SummaryConfigurable(name, this, _dataSource)).Cast<BaseConfigurable>().ToList();
+        }
+
+
+        private int CalculateDailyTotals(DateTime dateTime, SummaryRow summaryRow)
+        {
+            Console.WriteLine(dateTime);
+            var totalVolumeForDay = _dataSource.GetTotalVolumeForDay(dateTime.Date, summaryRow.SelectedIntersectionIn, summaryRow.DetectorsIn);
+            totalVolumeForDay += _dataSource.GetTotalVolumeForDay(dateTime.Date, summaryRow.SelectedIntersectionOut,
+                summaryRow.DetectorsOut);
+            return totalVolumeForDay;
         }
 
         public override ImageSource Image { get; protected set; }

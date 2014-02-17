@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
@@ -29,6 +30,8 @@ namespace ATTrafficAnalayzer.Views.Screens
                 Render();
             }
         }
+
+        public List<SummaryStatistic> Statistics { get; set; } 
 
         public DateTime AMPeakTime
         {
@@ -60,18 +63,11 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             _dateSettings = dateSettings;
             _dataSource = dataSource;
-
+            Statistics = new List<SummaryStatistic>();
             InitializeComponent();
         }
 
-        private int CalulateDailyTotals(DateTime dateTime, SummaryRow summaryRow)
-        {
-            Console.WriteLine(dateTime);
-            var totalVolumeForDay = _dataSource.GetTotalVolumeForDay(dateTime.Date, summaryRow.SelectedIntersectionIn, summaryRow.DetectorsIn);
-            totalVolumeForDay += _dataSource.GetTotalVolumeForDay(dateTime.Date, summaryRow.SelectedIntersectionOut,
-                summaryRow.DetectorsOut);
-            return totalVolumeForDay;
-        }
+       
 
         /// <summary>
         /// Display the table
@@ -83,11 +79,16 @@ namespace ATTrafficAnalayzer.Views.Screens
             //Remove all previous tables
             StatsStackPanel.Children.Clear();
 
-            new List<StatsTable>
+
+            foreach (var statsTable in Statistics.Select(statistic => new StatsTable(_dataSource, _dateSettings, Configuration, statistic)))
             {
-                new StatsTable(_dataSource, _dateSettings, Configuration, "sample", (time, row) => time.Day),
-                new StatsTable(_dataSource, _dateSettings, Configuration, "Daily Totals", CalulateDailyTotals)
-            }.ForEach(statsTable => StatsStackPanel.Children.Add(statsTable));
+                StatsStackPanel.Children.Add(statsTable);
+            }
+//            new List<StatsTable>
+//            {
+//                new StatsTable(_dataSource, _dateSettings, Configuration, "sample", (time, row) => time.Day),
+//                new StatsTable(_dataSource, _dateSettings, Configuration, "Daily Totals", CalulateDailyTotals)
+//            }.ForEach(statsTable => StatsStackPanel.Children.Add(statsTable));
         }
 
         public void DateSettingsChanged()
