@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using ATTrafficAnalayzer.Models.Settings;
@@ -163,12 +164,17 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public int GetTotalVolume(DateSettings settings)
         {
+            return GetTotalVolume(settings, 0);
+        }
+
+        public int GetTotalVolume(DateSettings settings, int day)
+        {
             CheckDateSettings(settings);
 
-             if (_totalVolume != -1) return _totalVolume;
+            if (_totalVolume != -1) return _totalVolume;
 
-            _totalVolume = Approaches.Sum(approach => approach.GetTotal(settings, Intersection, 0));
-            
+            _totalVolume = Approaches.Sum(approach => approach.GetTotal(settings, Intersection, day));
+
             return _totalVolume;
         }
 
