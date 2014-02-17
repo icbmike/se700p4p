@@ -123,11 +123,11 @@ namespace ATTrafficAnalayzer.Modes
 
             if (dlg.ShowDialog() == true) //They clicked okay
             {
-                WriteToFile(GetExportLines(baseConfigurable), dlg.FileName);
+                WriteToFile(GetExportContent(baseConfigurable), dlg.FileName);
             }
         }
 
-        protected virtual IEnumerable<string> GetExportLines(BaseConfigurable baseConfigurable)
+        protected virtual string GetExportContent(BaseConfigurable baseConfigurable)
         {
             //Do nothing
             return null;
@@ -138,13 +138,13 @@ namespace ATTrafficAnalayzer.Modes
         /// </summary>
         /// <param name="lines"></param>
         /// <param name="filename"></param>
-        private static void WriteToFile(IEnumerable<string> lines, string filename)
+        private static void WriteToFile(string contents, string filename)
         {
             while (true)
             {
                 try
                 {
-                    File.WriteAllLines(filename, lines);
+                    File.WriteAllText(filename, contents);
                     System.Windows.Forms.MessageBox.Show("Successfully exported");
                     break;
                 }

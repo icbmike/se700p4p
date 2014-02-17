@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -278,7 +279,7 @@ namespace ATTrafficAnalayzer.Modes
             _view.Content = _configView;
         }
 
-        protected override IEnumerable<string> GetExportLines(BaseConfigurable configurable)
+        protected override string GetExportContent(BaseConfigurable configurable)
         {
             var stringBuilder = new StringBuilder();
 
@@ -299,7 +300,7 @@ namespace ATTrafficAnalayzer.Modes
             stringBuilder.Append(config.GetPMPeakPeriod(DateSettings).ToShortTimeString());
             stringBuilder.Append(" with volume: "); 
             stringBuilder.AppendLine(config.GetPMPeakVolume(DateSettings).ToString());
-            stringBuilder.Append("Total volume: " + config.GetTotalVolume(DateSettings) + "\n");
+            stringBuilder.AppendLine("Total volume: " + config.GetTotalVolume(DateSettings) + "\n");
 
             foreach (var approach in config.Approaches)
             {
@@ -308,9 +309,23 @@ namespace ATTrafficAnalayzer.Modes
                 stringBuilder.AppendLine("PM Peak Volume: " + approach.PMPeakVolume + " at " + approach.PMPeakTime.ToShortTimeString());
                 stringBuilder.AppendLine("Total volume: " + approach.TotalVolume + "\n");
 
+                var dataTable = approach.GetDataTable(DateSettings, config.Intersection, 0);
+
+                var columnNames = dataTable.Columns.Cast<DataColumn>().
+                                                 Select(column => column.ColumnName).
+                                                 ToArray();
+                var header = string.Join(",", columnNames);
+                stringBuilder.AppendLine(header);
+
+                foreach (var csvRow in dataTable.AsEnumerable().Select(row => string.Join(",", row.ItemArray)))
+                {
+                    stringBuilder.AppendLine(csvRow); // 
+                }
+
+                stringBuilder.AppendLine("");
             }
 
-            return stringBuilder.ToString().Split(new []{'\n'});
+            return stringBuilder.ToString();
         }
 
         public override ImageSource Image { get; protected set; }
