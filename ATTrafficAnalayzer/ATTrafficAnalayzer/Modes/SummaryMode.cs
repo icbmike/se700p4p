@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -81,6 +82,31 @@ namespace ATTrafficAnalayzer.Modes
         public override UserControl GetView()
         {
             return _viewContainer;
+        }
+
+        protected override string GetExportContent(BaseConfigurable configurable)
+        {
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine(configurable.Name);
+            var summaryConfiguration = _dataSource.GetSummaryConfig(configurable.Name);
+
+
+            stringBuilder.AppendLine(
+                "Route Name,Intersection In,Detectors In,Dividing Factor In,Intersection Out,Detectors Out,Dividing Factor Out");
+
+            foreach (var summaryRow in summaryConfiguration.SummaryRows)
+            {
+                stringBuilder.Append(summaryRow.RouteName + ",");
+                stringBuilder.Append(summaryRow.SelectedIntersectionIn + ",");
+                stringBuilder.Append(string.Join(" ", summaryRow.DetectorsIn) + ",");
+                stringBuilder.Append(summaryRow.DividingFactorIn + ",");
+                stringBuilder.Append(summaryRow.SelectedIntersectionOut + ",");
+                stringBuilder.Append(string.Join(" ", summaryRow.DetectorsOut) + ",");
+                stringBuilder.AppendLine(summaryRow.DividingFactorOut + "\n");
+            }
+
+            return stringBuilder.ToString();
         }
 
         public override List<BaseConfigurable> PopulateReportBrowser()

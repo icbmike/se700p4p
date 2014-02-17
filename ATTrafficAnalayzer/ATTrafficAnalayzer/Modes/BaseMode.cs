@@ -127,7 +127,7 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
-        protected virtual string GetExportContent(BaseConfigurable baseConfigurable)
+        protected virtual string GetExportContent(BaseConfigurable configurable)
         {
             //Do nothing
             return null;

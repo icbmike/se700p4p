@@ -8,6 +8,7 @@ namespace ATTrafficAnalayzer.Modes
 
         public SummaryConfigurable(string name, BaseMode mode, IDataSource dataSource) : base(name, mode)
         {
+            CanExport = true;
             _dataSource = dataSource;
         }
 
