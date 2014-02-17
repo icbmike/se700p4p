@@ -18,6 +18,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         private readonly IDataSource _dataSource;
         private bool IsNewConfig = true;
         private string _oldName;
+        private SummaryConfiguration _configuration;
 
 
         /// <summary>
@@ -50,6 +51,33 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         public ObservableCollection<SummaryRow> Rows { get; set; }
+
+        public SummaryConfiguration Configuration
+        {
+            get { return _configuration; }
+            set { _configuration = value;
+                Render();
+            }
+        }
+
+        private void Render()
+        {
+            if (Configuration == null) return;
+
+            Rows.Clear();
+
+            IsNewConfig = false;
+            _oldName = Configuration.Name;
+            ConfigNameTextBox.Text = Configuration.Name;
+            var intersections = _dataSource.GetIntersections();
+
+            foreach (var summaryRow in _dataSource.GetSummaryConfig(Configuration.Name).SummaryRows)
+            {
+                intersections.ForEach(i => summaryRow.Intersections.Add(i));
+                Rows.Add(summaryRow);
+            }
+
+        }
 
         /// <summary>
         /// Click handler for the save button.

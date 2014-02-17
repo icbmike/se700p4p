@@ -82,6 +82,8 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void EditConfigurable(BaseConfigurable configurable)
         {
+            _configView.Configuration = _dataSource.GetSummaryConfig(configurable.Name);
+            ShowConfigurationView();
         }
 
         public override void DateRangeChangedEventHandler(object sender, DateRangeChangedEventArgs args)

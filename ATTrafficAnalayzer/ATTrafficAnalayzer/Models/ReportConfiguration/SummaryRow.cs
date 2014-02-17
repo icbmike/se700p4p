@@ -32,6 +32,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
             List<int> detectorsOut, int dividingFactorIn, int dividingFactorOut)
         {
             RouteName = routeName;
+            Intersections = new ObservableCollection<int>();
             SelectedIntersectionIn = intersectionIn;
             SelectedIntersectionOut = intersectionOut;
             DetectorsIn = detectorsIn;
