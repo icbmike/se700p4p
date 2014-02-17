@@ -20,8 +20,8 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class ReportConfig : INotifyPropertyChanged
     {
         private readonly IDataSource _dataSource;
-        private readonly bool _isNewConfig = true;
-        private readonly string _oldName;
+        private bool _isNewConfig = true;
+        private string _oldName;
 
         /// <summary>
         /// Default constructor
@@ -87,13 +87,45 @@ namespace ATTrafficAnalayzer.Views.Screens
         }
 
         private ObservableCollection<int> _detectorList;
+        private ReportConfiguration _configuration;
+
         public ObservableCollection<int> DetectorList
         {
             get { return _detectorList; }
             set { _detectorList = value; }
         }
 
+        public ReportConfiguration Configuration
+        {
+            get { return _configuration; }
+            set { _configuration = value;
+                Render();
+            }
+        }
+
         #endregion
+
+        private void Render()
+        {
+            if (Configuration == null) return;
+
+            ReportNameTextBox.Text = Configuration.Name;
+
+            Approaches.Children.RemoveRange(1, Approaches.Children.Count - 1);
+            foreach (var approach in Configuration.Approaches)
+            {
+                var configApproachBox = new ConfigApproachBox(Approaches, approach.Detectors, approach.ApproachName)
+                {
+                    Margin = new Thickness(20, 20, 0, 0)
+                };
+                Approaches.Children.Add(configApproachBox);
+            }
+
+            SelectedIntersection = Configuration.Intersection;
+            _isNewConfig = false;
+            _oldName = Configuration.Name;
+        }
+
 
         #region Control Event Handlers
 

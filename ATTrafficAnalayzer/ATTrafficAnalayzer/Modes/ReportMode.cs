@@ -273,8 +273,12 @@ namespace ATTrafficAnalayzer.Modes
             //Lazily instatiate config view
             if (_configView == null)
             {
-                _configView = new ReportConfig(configurable.Name, _dataSource);
+                _configView = new ReportConfig(_dataSource);
             }
+            
+            //Set the configuration of the config screen to the one we want to edit
+            _configView.Configuration = _dataSource.GetConfiguration(configurable.Name);
+            
             _currentView = ReportViews.Configuration;
             _view.Content = _configView;
         }
