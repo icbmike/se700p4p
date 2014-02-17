@@ -2,12 +2,13 @@ using ATTrafficAnalayzer.Models;
 
 namespace ATTrafficAnalayzer.Modes
 {
-    public class SummaryConfigurable : Configurable
+    public class SummaryConfigurable : BaseConfigurable
     {
         private readonly IDataSource _dataSource;
 
         public SummaryConfigurable(string name, BaseMode mode, IDataSource dataSource) : base(name, mode)
         {
+            CanExport = true;
             _dataSource = dataSource;
         }
 

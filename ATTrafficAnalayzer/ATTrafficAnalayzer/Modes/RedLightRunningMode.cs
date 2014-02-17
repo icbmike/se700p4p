@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Screens;
@@ -59,6 +61,52 @@ namespace ATTrafficAnalayzer.Modes
 
         }
 
+        protected override string GetExportContent(BaseConfigurable configurable)
+        {
+            var stringBuilder = new StringBuilder();
+
+            var configuration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
+            stringBuilder.AppendLine(configurable.Name);
+
+            stringBuilder.AppendLine("Site ID,Total Volume,Total Red Light Running Volume,Approaches...");
+
+            foreach (var reportConfiguration in configuration.Sites)
+            {
+                stringBuilder.Append(reportConfiguration.Intersection + ",");
+                stringBuilder.Append(_dataSource.GetTotalVolumeForDay(DateSettings.StartDate,
+                    reportConfiguration.Intersection) + ",");
+
+                string totalRedLightRunning;
+                try
+                {
+                    totalRedLightRunning = reportConfiguration.GetTotalVolume(DateSettings).ToString();
+                }
+                catch (NoDataForDateSpecifiedException)
+                {
+                    totalRedLightRunning = "No data for date";
+                }
+
+                stringBuilder.Append(totalRedLightRunning + ",");
+
+                foreach (var approach in reportConfiguration.Approaches)
+                {
+                    string approachTotal;
+                    try
+                    {
+                        approachTotal = approach.GetTotal(DateSettings, reportConfiguration.Intersection, 0).ToString();
+                    }
+                    catch (NoDataForDateSpecifiedException e)
+                    {
+                        approachTotal = "No data for date";
+                    }
+                    stringBuilder.Append(approach.ApproachName + ": " + approachTotal + ",");
+                }
+                stringBuilder.AppendLine("");
+            }
+
+            return stringBuilder.ToString();
+        }
+
         private void ConfigViewOnConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
         {
             args.Mode = this; //Set the mode now that we know it
@@ -70,12 +118,12 @@ namespace ATTrafficAnalayzer.Modes
             _tableView.DateRangeChanged();
         }
 
-        public override void EditConfigurable(Configurable configurable)
+        public override void EditConfigurable(BaseConfigurable configurable)
         {
             throw new NotImplementedException();
         }
 
-        public override void ShowConfigurable(Configurable configurable)
+        public override void ShowConfigurable(BaseConfigurable configurable)
         {
             _tableView.Configuration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
             _currentView = Views.ViewScreen;
@@ -89,12 +137,12 @@ namespace ATTrafficAnalayzer.Modes
             _configScreen.RefreshReportConfigurations();
         }
 
-        public override List<Configurable> PopulateReportBrowser()
+        public override List<BaseConfigurable> PopulateReportBrowser()
         {
             return
                 _dataSource.GetRedLightRunningConfigurationNames()
                     .Select(name => new RedLightRunningConfigurable(name, this, _dataSource))
-                    .Cast<Configurable>()
+                    .Cast<BaseConfigurable>()
                     .ToList();
         }
 

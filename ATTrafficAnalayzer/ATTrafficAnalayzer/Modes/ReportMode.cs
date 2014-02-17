@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -95,9 +97,9 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
-        public override List<Configurable> PopulateReportBrowser()
+        public override List<BaseConfigurable> PopulateReportBrowser()
         {
-            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this, _dataSource)).Cast<Configurable>().ToList();
+            return _dataSource.GetConfigurationNames().Select(name => new ReportConfigurable(name, this, _dataSource)).Cast<BaseConfigurable>().ToList();
         }
 
         public override void PopulateToolbar(ToolBar toolbar)
@@ -244,7 +246,7 @@ namespace ATTrafficAnalayzer.Modes
             OnConfigurationSaved(args); //Bubble the event up
         }
 
-        public override void ShowConfigurable(Configurable configurable)
+        public override void ShowConfigurable(BaseConfigurable configurable)
         {
             //Need to check if it's the same configuration before we go off and do a whole database call
             _configuration = _dataSource.GetConfiguration(configurable.Name);
@@ -266,7 +268,7 @@ namespace ATTrafficAnalayzer.Modes
             }
         }
 
-        public override void EditConfigurable(Configurable configurable)
+        public override void EditConfigurable(BaseConfigurable configurable)
         {
             //Lazily instatiate config view
             if (_configView == null)
@@ -275,6 +277,55 @@ namespace ATTrafficAnalayzer.Modes
             }
             _currentView = ReportViews.Configuration;
             _view.Content = _configView;
+        }
+
+        protected override string GetExportContent(BaseConfigurable configurable)
+        {
+            var stringBuilder = new StringBuilder();
+
+            var config = _dataSource.GetConfiguration(configurable.Name);
+            config.Approaches.ForEach(approach => approach.LoadDataTable(DateSettings, Interval, config.Intersection, 0));
+
+            stringBuilder.AppendLine(configurable.Name + "\n");
+
+            stringBuilder.Append("Busiest Approach: ");
+            stringBuilder.AppendLine( config.GetBusiestApproach(DateSettings).ApproachName);
+
+            stringBuilder.Append("Busiest AM Hour: ");
+            stringBuilder.Append(config.GetAMPeakPeriod(DateSettings).ToShortTimeString());
+            stringBuilder.Append(" with volume: ");
+            stringBuilder.AppendLine(config.GetAMPeakVolume(DateSettings).ToString());
+
+            stringBuilder.Append("Busiest PM Hour: ");
+            stringBuilder.Append(config.GetPMPeakPeriod(DateSettings).ToShortTimeString());
+            stringBuilder.Append(" with volume: "); 
+            stringBuilder.AppendLine(config.GetPMPeakVolume(DateSettings).ToString());
+            stringBuilder.AppendLine("Total volume: " + config.GetTotalVolume(DateSettings) + "\n");
+
+            foreach (var approach in config.Approaches)
+            {
+                stringBuilder.AppendLine(approach.ApproachName);
+                stringBuilder.AppendLine("AM Peak Volume: " + approach.AMPeakVolume + " at " + approach.AMPeakTime.ToShortTimeString());
+                stringBuilder.AppendLine("PM Peak Volume: " + approach.PMPeakVolume + " at " + approach.PMPeakTime.ToShortTimeString());
+                stringBuilder.AppendLine("Total volume: " + approach.TotalVolume + "\n");
+
+                var dataTable = approach.GetDataTable(DateSettings, config.Intersection, 0);
+
+                var columnNames = dataTable.Columns.Cast<DataColumn>().
+                                                 Select(column => column.ColumnName).
+                                                 ToArray();
+                var header = string.Join(",", columnNames);
+                stringBuilder.AppendLine(header);
+
+                foreach (var csvRow in dataTable.AsEnumerable().Select(row => string.Join(",", row.ItemArray)))
+                {
+                    stringBuilder.AppendLine(csvRow); // 
+                }
+
+                stringBuilder.AppendLine("");
+            }
+
+            return stringBuilder.ToString();
         }
 
         public override ImageSource Image { get; protected set; }

@@ -74,40 +74,39 @@
                   DockPanel.Dock="Top"
                   ItemsSource="{Binding Configurables}"
                   DisplayMemberPath="Name">
-            <ListView.Resources>
+            <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="_Edit"
+                                            Command="{Binding ConfigurableCommand}"
+                                            CommandParameter="edit">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="_Export"
+                                            Command="{Binding ConfigurableCommand}"
+                                            CommandParameter="export"
+                                            IsEnabled="{Binding CanExport}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="_Remove"
+                                            Command="{Binding ConfigurableCommand}"
+                                            CommandParameter="delete">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
-            </ListView.Resources>
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="_Edit"
-                              Click="editBtn_Click">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_030_pencil.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="_Export"
-                              Click="exportBtn_Click">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_359_file_export.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="_Remove"
-                              Click="removeBtn_Click">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Images/Icons/glyphicons_016_bin.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
+            </ListView.ItemContainerStyle>
         </ListView>
-        <ProgressBar
-            DockPanel.Dock="Bottom"
-            VerticalAlignment="Bottom"
-            Height="20"
-            Name="ProgressBar"
-            Visibility="Collapsed"
-            IsIndeterminate="True" />
     </DockPanel>
 </UserControl>

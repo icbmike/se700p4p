@@ -134,7 +134,7 @@
     <Compile Include="Models\VolumeStoreDecoder.cs" />
     <Compile Include="Models\Volume\VolumeMetric.cs" />
     <Compile Include="Modes\BaseMode.cs" />
-    <Compile Include="Modes\Configurable.cs" />
+    <Compile Include="Modes\BaseConfigurable.cs" />
     <Compile Include="Modes\ConfigurationSavedEventArgs.cs" />
     <Compile Include="Modes\FaultsMode.cs" />
     <Compile Include="Modes\RedLightRunningConfigurable.cs" />
@@ -176,7 +176,6 @@
     <Compile Include="Views\Controls\Toolbar.xaml.cs">
       <DependentUpon>Toolbar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CSVExporter.cs" />
     <Compile Include="Modes\HomeMode.cs" />
     <Compile Include="Modes\ReportMode.cs" />
     <Compile Include="Views\Screens\RedLightRunningConfigScreen.xaml.cs">
@@ -199,6 +198,7 @@
       <DependentUpon>ReportGraph.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Screens\BaseReportView.cs" />
+    <Compile Include="Views\Screens\SummaryStatistic.cs" />
     <Compile Include="Views\Screens\SummaryTable.xaml.cs">
       <DependentUpon>SummaryTable.xaml</DependentUpon>
     </Compile>

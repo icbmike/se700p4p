@@ -27,7 +27,6 @@ namespace ATTrafficAnalayzer.Test
 
             _dateSettings = new DateSettings
             {
-                Interval = 5,
                 StartDate = March11Th2013,
                 EndDate = March12Th2013
             }; 

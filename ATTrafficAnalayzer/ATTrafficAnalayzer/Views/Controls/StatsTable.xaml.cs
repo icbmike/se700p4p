@@ -33,6 +33,12 @@ namespace ATTrafficAnalayzer.Views.Controls
             Render();
         }
 
+        public StatsTable(IDataSource dataSource, DateSettings dateSettings, SummaryConfiguration configuration, SummaryStatistic statistic)
+        :
+            this(dataSource, dateSettings, configuration, statistic.Name, statistic.Calculation)
+        {
+        }
+
         private void Render()
         {
             StatsSummary.Html = "[b]" + _title + "[/b]";
