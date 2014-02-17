@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ATTrafficAnalayzer.Models;
+using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Models.Settings;
 using ATTrafficAnalayzer.Views.Controls;
 using ATTrafficAnalayzer.Views.Screens;
@@ -57,6 +59,52 @@ namespace ATTrafficAnalayzer.Modes
         public override void PopulateToolbar(ToolBar toolbar)
         {
 
+        }
+
+        protected override string GetExportContent(BaseConfigurable configurable)
+        {
+            var stringBuilder = new StringBuilder();
+
+            var configuration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
+            stringBuilder.AppendLine(configurable.Name);
+
+            stringBuilder.AppendLine("Site ID,Total Volume,Total Red Light Running Volume,Approaches...");
+
+            foreach (var reportConfiguration in configuration.Sites)
+            {
+                stringBuilder.Append(reportConfiguration.Intersection + ",");
+                stringBuilder.Append(_dataSource.GetTotalVolumeForDay(DateSettings.StartDate,
+                    reportConfiguration.Intersection) + ",");
+
+                string totalRedLightRunning;
+                try
+                {
+                    totalRedLightRunning = reportConfiguration.GetTotalVolume(DateSettings).ToString();
+                }
+                catch (NoDataForDateSpecifiedException)
+                {
+                    totalRedLightRunning = "No data for date";
+                }
+
+                stringBuilder.Append(totalRedLightRunning + ",");
+
+                foreach (var approach in reportConfiguration.Approaches)
+                {
+                    string approachTotal;
+                    try
+                    {
+                        approachTotal = approach.GetTotal(DateSettings, reportConfiguration.Intersection, 0).ToString();
+                    }
+                    catch (NoDataForDateSpecifiedException e)
+                    {
+                        approachTotal = "No data for date";
+                    }
+                    stringBuilder.Append(approach.ApproachName + ": " + approachTotal + ",");
+                }
+                stringBuilder.AppendLine("");
+            }
+
+            return stringBuilder.ToString();
         }
 
         private void ConfigViewOnConfigurationSaved(object sender, ConfigurationSavedEventArgs args)
