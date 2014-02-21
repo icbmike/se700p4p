@@ -120,7 +120,8 @@ namespace ATTrafficAnalayzer.Modes
 
         public override void EditConfigurable(BaseConfigurable configurable)
         {
-            throw new NotImplementedException();
+            _configScreen.Configuration = _dataSource.GetRedLightRunningConfiguration(configurable.Name);
+            ShowConfigurationView();
         }
 
         public override void ShowConfigurable(BaseConfigurable configurable)

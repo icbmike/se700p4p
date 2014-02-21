@@ -25,6 +25,7 @@ namespace ATTrafficAnalayzer.Views.Screens
     public partial class RedLightRunningConfigScreen
     {
         private readonly IDataSource _dataSource;
+        private RedLightRunningConfiguration _configuration;
 
         public RedLightRunningConfigScreen(IDataSource dataSource)
         {
@@ -49,7 +50,27 @@ namespace ATTrafficAnalayzer.Views.Screens
                 }).ToList();
         }
 
-        public RedLightRunningConfiguration Configuration { get; set; } // What we will be saving eventually
+        public RedLightRunningConfiguration Configuration
+        {
+            get { return _configuration; }
+            set { _configuration = value;
+                Render();
+            }
+        }
+
+        private void Render()
+        {
+            //We need to restore the selected checkbox
+            foreach (var reportConfigSelectedModel in ReportConfigurations)
+            {
+                reportConfigSelectedModel.Selected = false;
+            }
+            foreach (var reportConfigSelectedModel in Configuration.Sites.
+                SelectMany(reportConfiguration => ReportConfigurations.Where(reportConfigSelectedModel => reportConfigSelectedModel.Name == reportConfiguration.Name)))
+            {
+                reportConfigSelectedModel.Selected = true;
+            }
+        }
 
         public List<ReportConfigSelectedModel> ReportConfigurations { get; set; }
 
