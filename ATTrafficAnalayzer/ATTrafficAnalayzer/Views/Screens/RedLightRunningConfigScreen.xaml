@@ -52,7 +52,7 @@
                         <GridViewColumnHeader>
                             <GridViewColumnHeader.ContentTemplate>
                                 <DataTemplate>
-                                    <CheckBox Checked="CheckboxHeaderOnChange" Unchecked="CheckboxHeaderOnChange"></CheckBox>
+                                    <CheckBox Checked="CheckboxHeaderOnChange" Unchecked="CheckboxHeaderOnChange"/>
                                 </DataTemplate>
                             </GridViewColumnHeader.ContentTemplate>
                         </GridViewColumnHeader>

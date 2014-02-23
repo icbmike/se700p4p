@@ -135,7 +135,6 @@ namespace ATTrafficAnalayzer.Modes
         {
             _currentView = Views.ConfigScreen;
             _viewContainer.Content = _configScreen;
-            _configScreen.RefreshReportConfigurations();
         }
 
         public override List<BaseConfigurable> PopulateReportBrowser()

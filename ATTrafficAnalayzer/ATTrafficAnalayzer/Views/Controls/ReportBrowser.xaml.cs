@@ -78,7 +78,7 @@ namespace ATTrafficAnalayzer.Views.Controls
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+            GetSelectedConfiguration().Edit();
         }
 
         private void removeBtn_Click(object sender, RoutedEventArgs e)
