@@ -1386,7 +1386,7 @@ namespace ATTrafficAnalayzer.Models
                 {
                     command.CommandText =
                         "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
-                        "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
+                        "FROM volumes WHERE (volume BETWEEN @faultThreshold AND 2045) AND (dateTime BETWEEN @startDate AND @endDate)" +
                         "GROUP BY intersection";
                     command.Parameters.AddWithValue("@faultThreshold", threshold);
                     command.Parameters.AddWithValue("@startDate", startDate);
