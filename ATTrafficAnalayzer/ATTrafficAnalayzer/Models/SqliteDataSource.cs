@@ -1326,27 +1326,6 @@ namespace ATTrafficAnalayzer.Models
             return importedDates;
         }
 
-        /// <summary>
-        ///     Data adapter to the faults table
-        /// </summary>
-        /// <param name="startDate">date at the start of the time period</param>
-        /// <param name="endDate">date at the end of the time period</param>
-        /// <param name="faultThreshold">return all detectors with a value of this threshold</param>
-        /// <returns>data adapter</returns>
-        public SQLiteDataAdapter GetFaultsDataAdapter(DateTime startDate, DateTime endDate, int faultThreshold)
-        {
-            const string sql = "SELECT intersection as 'Intersection', group_concat(detector) as 'Faulty detectors'" +
-                               "FROM volumes WHERE volume > @faultThreshold  AND (dateTime BETWEEN @startDate AND @endDate)" +
-                               "GROUP BY intersection";
-            return GetDataAdapter(sql,
-                new Dictionary<string, object>
-                {
-                    {"@startDate", startDate},
-                    {"@endDate", endDate},
-                    {"@faultThreshold", faultThreshold}
-                });
-        }
-
         #endregion
 
         /// <summary>

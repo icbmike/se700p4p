@@ -361,8 +361,7 @@ namespace ATTrafficAnalayzer.Models.ReportConfiguration
 
         public void LoadDataTable(DateSettings dateSettings, int interval, int intersection, int day)
         {
-           
-
+           CheckDateSettings(dateSettings, interval);
             try
             {
                 PopulateDataTable(dateSettings, intersection, day, 24, 0);
