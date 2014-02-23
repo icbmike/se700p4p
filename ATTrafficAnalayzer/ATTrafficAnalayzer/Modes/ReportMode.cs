@@ -285,6 +285,9 @@ namespace ATTrafficAnalayzer.Modes
 
         protected override string GetExportContent(BaseConfigurable configurable)
         {
+
+
+
             var stringBuilder = new StringBuilder();
 
             var config = _dataSource.GetConfiguration(configurable.Name);
@@ -306,24 +309,24 @@ namespace ATTrafficAnalayzer.Modes
             stringBuilder.AppendLine(config.GetPMPeakVolume(DateSettings).ToString());
             stringBuilder.AppendLine("Total volume: " + config.GetTotalVolume(DateSettings) + "\n");
 
+            stringBuilder.Append(",");
+            for (var d = DateSettings.StartDate; d < DateSettings.EndDate; d = d.AddMinutes(5))
+            {
+                stringBuilder.Append(d.ToShortTimeString() + ",");
+            }
+            stringBuilder.AppendLine("");
+
             foreach (var approach in config.Approaches)
             {
-                stringBuilder.AppendLine(approach.ApproachName);
-                stringBuilder.AppendLine("AM Peak Volume: " + approach.AMPeakVolume + " at " + approach.AMPeakTime.ToShortTimeString());
-                stringBuilder.AppendLine("PM Peak Volume: " + approach.PMPeakVolume + " at " + approach.PMPeakTime.ToShortTimeString());
-                stringBuilder.AppendLine("Total volume: " + approach.TotalVolume + "\n");
 
                 var dataTable = approach.GetDataTable(DateSettings, config.Intersection, 0);
 
-                var columnNames = dataTable.Columns.Cast<DataColumn>().
-                                                 Select(column => column.ColumnName).
-                                                 ToArray();
-                var header = string.Join(",", columnNames);
-                stringBuilder.AppendLine(header);
-
-                foreach (var csvRow in dataTable.AsEnumerable().Select(row => string.Join(",", row.ItemArray)))
+                stringBuilder.Append(approach.ApproachName + ",");
+               
+                foreach (var csvRow in GenerateTransposedTable(dataTable).AsEnumerable()
+                    .Select(row => string.Join(",", row.ItemArray.Skip(1).Take(12))))
                 {
-                    stringBuilder.AppendLine(csvRow); // 
+                    stringBuilder.Append(csvRow + ",");
                 }
 
                 stringBuilder.AppendLine("");
@@ -332,7 +335,55 @@ namespace ATTrafficAnalayzer.Modes
             return stringBuilder.ToString();
         }
 
+        private DataTable GenerateTransposedTable(DataTable inputTable)
+        {
+            DataTable outputTable = new DataTable();
+
+            // Add columns by looping rows
+
+            // Header row's first column is same as in inputTable
+            outputTable.Columns.Add(inputTable.Columns[0].ColumnName.ToString());
+
+            // Header row's second column onwards, 'inputTable's first column taken
+            foreach (DataRow inRow in inputTable.Rows)
+            {
+                string newColName = inRow[0].ToString();
+                outputTable.Columns.Add(newColName);
+            }
+
+            // Add rows by looping columns        
+            for (int rCount = 1; rCount <= inputTable.Columns.Count - 1; rCount++)
+            {
+                DataRow newRow = outputTable.NewRow();
+
+                // First column is inputTable's Header row's second column
+                newRow[0] = inputTable.Columns[rCount].ColumnName.ToString();
+                for (int cCount = 0; cCount <= inputTable.Rows.Count - 1; cCount++)
+                {
+                    string colValue = inputTable.Rows[cCount][rCount].ToString();
+                    newRow[cCount + 1] = colValue;
+                }
+                outputTable.Rows.Add(newRow);
+            }
+
+            return outputTable;
+        }
+
+        private void OutputDataTable(DataTable dataTable)
+        {
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Console.WriteLine();
+                for (int x = 0; x < dataTable.Columns.Count; x++)
+                {
+                    Console.Write(row[x] + " ");
+                }
+            }
+        }
+
         public override ImageSource Image { get; protected set; }
         public override string ModeName { get; protected set; }
     }
+
+
 }
