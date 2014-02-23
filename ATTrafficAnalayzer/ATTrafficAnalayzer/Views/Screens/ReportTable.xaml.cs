@@ -35,7 +35,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Displays the grid
         /// </summary>
-        protected override void Render()
+        protected override void Render(bool reloadConfiguration = true)
         {
             OverallSummaryBorder.Visibility = Visibility.Hidden;
             Approaches.Clear();

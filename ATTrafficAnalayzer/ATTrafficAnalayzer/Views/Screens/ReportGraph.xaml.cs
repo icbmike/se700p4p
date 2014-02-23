@@ -43,7 +43,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Method to display and render the graph.
         /// </summary>
-        protected override void Render()
+        protected override void Render(bool reloadConfiguration = true)
         {
 
             if (!DataSource.VolumesExistForDateRange(DateSettings.StartDate, DateSettings.EndDate))
@@ -69,6 +69,16 @@ namespace ATTrafficAnalayzer.Views.Screens
                 Plotter.Children.Remove(graph.MarkerGraph);
             }
             //Clear the checkboxes
+            var checkboxMask = new bool[ToggleContainer.Children.Count];
+            
+            if (!reloadConfiguration)
+            {
+                for (var index = 0; index < ToggleContainer.Children.Count; index++)
+                {
+                    checkboxMask[index] = (ToggleContainer.Children[index] as CheckBox).IsChecked.Value;
+                }
+            }
+
             ToggleContainer.Children.Clear();
             
             //Clear the series
@@ -86,31 +96,33 @@ namespace ATTrafficAnalayzer.Views.Screens
             
             var brushCounter = 0;
             var countsMatch = true;
-            foreach (var approach in Configuration.Approaches)
+            for (var index = 0; index < Configuration.Approaches.Count; index++)
             {
-                //Get volume info from db
+                var approach = Configuration.Approaches[index];
+//Get volume info from db
                 var approachVolumes = approach.GetVolumesList(intersection, DateSettings.StartDate, DateSettings.EndDate);
-                for (int i=0; i < approachVolumes.Count(); i++) {
+                for (var i = 0; i < approachVolumes.Count(); i++)
+                {
                     if (approachVolumes[i] >= 150 && Interval == 5)
                         approachVolumes[i] = 150;
-                }                                           
+                }
 
                 //Check that we actually have volumes that we need
-                if (approachVolumes.Count / (Interval / 5) != dateList.Count)
+                if (approachVolumes.Count/(Interval/5) != dateList.Count)
                 {
                     countsMatch = false;
                     break;
                 }
                 //Sum volumes based on the interval
                 var compressedVolumes = new int[dateList.Count];
-                var valuesPerCell = Interval / 5;
+                var valuesPerCell = Interval/5;
                 for (var j = 0; j < dateList.Count; j++)
                 {
                     var cellValue = 0;
 
-                    for (var i = 0; i < Interval / 5; i++)
+                    for (var i = 0; i < Interval/5; i++)
                     {
-                        cellValue += approachVolumes[i + valuesPerCell * j];
+                        cellValue += approachVolumes[i + valuesPerCell*j];
                     }
                     compressedVolumes[j] = cellValue;
                 }
@@ -121,19 +133,34 @@ namespace ATTrafficAnalayzer.Views.Screens
                 var compositeDataSource = new CompositeDataSource(datesDataSource, volumesDataSource);
 
                 //Add the series to the graph
-               _series.Add(Plotter.AddLineGraph(compositeDataSource, new Pen(SeriesColours[brushCounter % SeriesColours.Count()], 1),
-                  new CirclePointMarker { Size = 0.0, Fill = SeriesColours[(brushCounter) % SeriesColours.Count()] },
-                  new PenDescription(approach.ApproachName)));
+                _series.Add(Plotter.AddLineGraph(compositeDataSource,
+                    new Pen(SeriesColours[brushCounter%SeriesColours.Count()], 1),
+                    new CirclePointMarker {Size = 0.0, Fill = SeriesColours[(brushCounter)%SeriesColours.Count()]},
+                    new PenDescription(approach.ApproachName)));
 
-               //Add toggle checkboxes
+
+                if (!reloadConfiguration && !checkboxMask[index])
+                {
+                    //If we aren't reloading the configuration, immediately remove the line and markers
+                    Plotter.Children.Remove(_series[index].LineGraph);
+                    Plotter.Children.Remove(_series[index].MarkerGraph);
+                }
+
+                //Add toggle checkboxes
                 var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
-                stackPanel.Children.Add( new Label {Content = approach.ApproachName, Margin = new Thickness(0, -5, 0, 0) });
-                stackPanel.Children.Add( new Border{Background = SeriesColours[(brushCounter)%SeriesColours.Count()], Height = 15, Width = 15, CornerRadius = new CornerRadius(5)});
-                
+                stackPanel.Children.Add(new Label {Content = approach.ApproachName, Margin = new Thickness(0, -5, 0, 0)});
+                stackPanel.Children.Add(new Border
+                {
+                    Background = SeriesColours[(brushCounter)%SeriesColours.Count()],
+                    Height = 15,
+                    Width = 15,
+                    CornerRadius = new CornerRadius(5)
+                });
+
                 var checkbox = new CheckBox
                 {
                     Content = stackPanel,
-                    IsChecked = true
+                    IsChecked = reloadConfiguration || checkboxMask[index]
                 };
                 brushCounter++;
 

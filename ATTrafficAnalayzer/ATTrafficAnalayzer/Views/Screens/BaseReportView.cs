@@ -48,7 +48,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        protected abstract void Render();
+        protected abstract void Render(bool reloadConfiguration = true);
 
         public int Interval
         {
@@ -56,7 +56,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             set
             {
                 _interval = value;
-                if (_configuration != null) Render();
+                if (_configuration != null) Render(false);
             }
         }
 
