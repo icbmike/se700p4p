@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ATTrafficAnalayzer.Annotations;
 using ATTrafficAnalayzer.Models;
-using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Modes;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -43,7 +34,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public void RefreshReportConfigurations()
         {
-            ReportConfigurations = _dataSource.GetConfigurationNames().
+            ReportConfigurations = new ObservableCollection<ReportConfigSelectedModel>(_dataSource.GetConfigurationNames().
                 Select(name => _dataSource.GetConfiguration(name)).
                 Select(config => new ReportConfigSelectedModel
                 {
@@ -51,35 +42,40 @@ namespace ATTrafficAnalayzer.Views.Screens
                     Selected = false,
                     Intersection = config.Intersection,
                     Approaches = string.Join(", ", config.Approaches.Select(approach => approach.ApproachName))
-                }).ToList();
+                }));
+            if(ReportConfigListView != null)
+                ReportConfigListView.ItemsSource = ReportConfigurations;
         }
 
         public RedLightRunningConfiguration Configuration
         {
             get { return _configuration; }
             set { _configuration = value;
-                OnPropertyChanged("Configuration");
                 _isEditing = true;
                 _oldName = _configuration.Name;
-                Render();
+                Render(); 
+                OnPropertyChanged("Configuration");
             }
         }
 
         private void Render()
         {
+
+            RefreshReportConfigurations();
             //We need to restore the selected checkbox
             foreach (var reportConfigSelectedModel in ReportConfigurations)
             {
                 reportConfigSelectedModel.Selected = false;
             }
-            foreach (var reportConfigSelectedModel in Configuration.Sites.
-                SelectMany(reportConfiguration => ReportConfigurations.Where(reportConfigSelectedModel => reportConfigSelectedModel.Name == reportConfiguration.Name)))
+            foreach (var model in Configuration.Sites.SelectMany(configuration => ReportConfigurations
+                .Where(model => model.Name.Equals(configuration.Name))))
             {
-                reportConfigSelectedModel.Selected = true;
+                model.Selected = true;
             }
+
         }
 
-        public List<ReportConfigSelectedModel> ReportConfigurations { get; set; }
+        public ObservableCollection<ReportConfigSelectedModel> ReportConfigurations { get; set; }
 
         private void SaveButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -109,7 +105,10 @@ namespace ATTrafficAnalayzer.Views.Screens
         private void CheckboxHeaderOnChange(object sender, RoutedEventArgs e)
         {
             var isChecked = (sender as CheckBox).IsChecked;
-            ReportConfigurations.ForEach(model => model.Selected = isChecked.Value);
+            foreach (var reportConfigSelectedModel in ReportConfigurations)
+            {
+                reportConfigSelectedModel.Selected = isChecked.Value;
+            }
             
         }
 
@@ -128,8 +127,6 @@ namespace ATTrafficAnalayzer.Views.Screens
         private bool _selected;
         public string Name { get; set; }
         public string Approaches { get; set; }
-
-
 
         public bool Selected
         {
