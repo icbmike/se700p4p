@@ -46,7 +46,7 @@ namespace ATTrafficAnalayzer.Views.Screens
         /// <summary>
         /// Fetches data and displays it in the screen's data grid
         /// </summary>
-        protected override void Render()
+        protected override void Render(bool reloadConfiguration = true)
         {
             if (!DataSource.VolumesExistForDateRange(DateSettings.StartDate, DateSettings.EndDate))
                 MessageBox.Show("You haven't imported volume data for the selected date range");
