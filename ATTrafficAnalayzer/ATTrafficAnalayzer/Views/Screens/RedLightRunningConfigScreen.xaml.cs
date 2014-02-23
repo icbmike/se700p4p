@@ -16,24 +16,28 @@ using ATTrafficAnalayzer.Annotations;
 using ATTrafficAnalayzer.Models;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Modes;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ATTrafficAnalayzer.Views.Screens
 {
     /// <summary>
     /// Interaction logic for RedLightRunningConfigScreen.xaml
     /// </summary>
-    public partial class RedLightRunningConfigScreen
+    public partial class RedLightRunningConfigScreen : INotifyPropertyChanged
     {
         private readonly IDataSource _dataSource;
         private RedLightRunningConfiguration _configuration;
+        private bool _isEditing;
+        private string _oldName;
 
         public RedLightRunningConfigScreen(IDataSource dataSource)
         {
             _dataSource = dataSource;
-            Configuration = new RedLightRunningConfiguration();
+            _configuration = new RedLightRunningConfiguration();
             
             RefreshReportConfigurations(); //Needs a better name
-
+            _isEditing = false;
+            _oldName = null;
             InitializeComponent();
         }
 
@@ -54,6 +58,9 @@ namespace ATTrafficAnalayzer.Views.Screens
         {
             get { return _configuration; }
             set { _configuration = value;
+                OnPropertyChanged("Configuration");
+                _isEditing = true;
+                _oldName = _configuration.Name;
                 Render();
             }
         }
@@ -76,9 +83,19 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         private void SaveButtonOnClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Configuration.Name))
+            {
+                MessageBox.Show("You need to give this configuration a name.");
+                return;
+            }
+
             Configuration.Sites = ReportConfigurations.Where(model => model.Selected)
                 .Select(model => _dataSource.GetConfiguration(model.Name))
                 .ToList();
+
+            //If we're editing, we delete the old version
+            if(_isEditing)
+                _dataSource.RemoveRedLightRunningConfiguration(_oldName);
 
             _dataSource.SaveRedLightRunningConfiguration(Configuration);
 
@@ -94,6 +111,15 @@ namespace ATTrafficAnalayzer.Views.Screens
             var isChecked = (sender as CheckBox).IsChecked;
             ReportConfigurations.ForEach(model => model.Selected = isChecked.Value);
             
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
