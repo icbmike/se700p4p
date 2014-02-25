@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using ATTrafficAnalayzer.Models.ReportConfiguration;
 using ATTrafficAnalayzer.Modes;
 
@@ -28,6 +29,7 @@ namespace ATTrafficAnalayzer.Models
         /// </summary>
         /// <returns>True if there is no data</returns>
         bool VolumesExist();
+        bool VolumesExist(DateTime dateTime);
 
         #endregion
         
@@ -88,5 +90,10 @@ namespace ATTrafficAnalayzer.Models
         RedLightRunningConfiguration GetRedLightRunningConfiguration(string name);
         void SaveRedLightRunningConfiguration(RedLightRunningConfiguration configuration);
         int GetTotalVolumeForDay(DateTime date, int intersection);
+
+        int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime,
+            DateTime endDateTime);
+
+
     }
 }

@@ -1388,5 +1388,45 @@ namespace ATTrafficAnalayzer.Models
 
             return suspectedFaults;
         }
+
+        /// <summary>
+        ///     Get the volumes for a detector at a specific datetime
+        /// </summary>
+        /// <param name="intersection">Intersection ID</param>
+        /// <param name="detectorList">List of detector to query volumes for</param>
+        /// <param name="startDateTime">Start of the period</param>
+        /// <param name="endDateTime">End of the period</param>
+        /// <returns>The total volumes for the detectors between the start and end date</returns>
+        public int GetVolumeForTimePeriod(int intersection, IList<int> detectorList, DateTime startDateTime, DateTime endDateTime)
+        {
+            int volume;
+            using (var conn = new SQLiteConnection(DbPath))
+            {
+                conn.Open();
+                volume = 0;
+                using (var query = new SQLiteCommand(conn))
+                {
+                    foreach (var detector in detectorList)
+                    {
+                        query.CommandText =
+                            "SELECT volume " +
+                            "FROM volumes " +
+                            "WHERE intersection = @intersection " +
+                            "AND detector = @detector " +
+                            "AND (dateTime BETWEEN @startDateTime AND @endDateTime);";
+
+                        query.Parameters.AddWithValue("@intersection", intersection);
+                        query.Parameters.AddWithValue("@detector", detector);
+                        query.Parameters.AddWithValue("@startDateTime", startDateTime);
+                        query.Parameters.AddWithValue("@endDateTime", endDateTime);
+
+                        volume += Convert.ToInt32(query.ExecuteScalar());
+                    }
+                }
+                conn.Close();
+            }
+            return volume;
+        }
+    
     }
 }

@@ -79,6 +79,13 @@ namespace ATTrafficAnalayzer.Modes
         private int CalculatePeakVolumes(DateTime dateTime, SummaryRow row, bool isAM)
         {
             
+            var date = dateTime.AddHours(isAM ? _amPeakTime : _pmPeakTime);
+            if (_dataSource.VolumesExist(dateTime))
+            {
+                return _dataSource.GetVolumeForTimePeriod(row.SelectedIntersectionIn, row.DetectorsIn, date, date.AddHours(1)) +
+                    _dataSource.GetVolumeForTimePeriod(row.SelectedIntersectionOut, row.DetectorsOut, date, date.AddHours(1));
+            }
+            return 0;
         }
 
         public int AmPeakTime
@@ -88,15 +95,17 @@ namespace ATTrafficAnalayzer.Modes
             {
                 _amPeakTime = value;
                 Console.WriteLine(value);
-                _tableView.AMPeakTime = value;
+                if (_tableView != null) _tableView.AMPeakTime = value;
             }
         }
 
         public int PmPeakTime
         {
             get { return _pmPeakTime; }
-            set { _pmPeakTime = value;
-                _tableView.PMPeakTime = value;
+            set
+            {
+                _pmPeakTime = value;
+                if (_tableView != null) _tableView.PMPeakTime = value;
             }
         }
 
