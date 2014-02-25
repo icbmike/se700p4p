@@ -19,8 +19,8 @@ namespace ATTrafficAnalayzer.Views.Screens
         private List<StatsTable> _statsTables;
         private bool _hasWeekends;
         private SummaryConfiguration _configuration;
-        private DateTime _amPeakTime;
-        private DateTime _pmPeakTime;
+        private int _amPeakTime;
+        private int _pmPeakTime;
 
         public SummaryConfiguration Configuration
         {
@@ -33,7 +33,7 @@ namespace ATTrafficAnalayzer.Views.Screens
 
         public List<SummaryStatistic> Statistics { get; set; } 
 
-        public DateTime AMPeakTime
+        public int AMPeakTime
         {
             get { return _amPeakTime; }
             set
@@ -43,7 +43,7 @@ namespace ATTrafficAnalayzer.Views.Screens
             }
         }
 
-        public DateTime PMPeakTime
+        public int PMPeakTime
         {
             get { return _pmPeakTime; }
             set
@@ -84,11 +84,6 @@ namespace ATTrafficAnalayzer.Views.Screens
             {
                 StatsStackPanel.Children.Add(statsTable);
             }
-//            new List<StatsTable>
-//            {
-//                new StatsTable(_dataSource, _dateSettings, Configuration, "sample", (time, row) => time.Day),
-//                new StatsTable(_dataSource, _dateSettings, Configuration, "Daily Totals", CalulateDailyTotals)
-//            }.ForEach(statsTable => StatsStackPanel.Children.Add(statsTable));
         }
 
         public void DateSettingsChanged()
