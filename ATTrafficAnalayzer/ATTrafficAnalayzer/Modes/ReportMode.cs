@@ -192,9 +192,7 @@ namespace ATTrafficAnalayzer.Modes
             var label = new Label
             {
                 Content = "Interval: ",
-                Margin = new Thickness(5, 0, 0, 0),
-                Foreground = Brushes.White,
-                FontSize = 16
+                Style = Application.Current.FindResource("ToolbarLableStyle") as Style
             };
             return label;
         }
@@ -203,13 +201,8 @@ namespace ATTrafficAnalayzer.Modes
         {
             var intervals = new ComboBox()
             {
-                Padding = new Thickness(6, 0, 6, 0),
-                Foreground = Brushes.Black,
-                FontSize = 14,
                 DataContext = this,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center,
-                Height = 23
+                Style = Application.Current.FindResource("ToolbarComboBoxStyle") as Style
             };
             intervals.Items.Add("5 min");
             intervals.Items.Add("15 min");
@@ -285,9 +278,6 @@ namespace ATTrafficAnalayzer.Modes
 
         protected override string GetExportContent(BaseConfigurable configurable)
         {
-
-
-
             var stringBuilder = new StringBuilder();
 
             var config = _dataSource.GetConfiguration(configurable.Name);
@@ -367,18 +357,6 @@ namespace ATTrafficAnalayzer.Modes
             }
 
             return outputTable;
-        }
-
-        private void OutputDataTable(DataTable dataTable)
-        {
-            foreach (DataRow row in dataTable.Rows)
-            {
-                Console.WriteLine();
-                for (int x = 0; x < dataTable.Columns.Count; x++)
-                {
-                    Console.Write(row[x] + " ");
-                }
-            }
         }
 
         public override ImageSource Image { get; protected set; }
